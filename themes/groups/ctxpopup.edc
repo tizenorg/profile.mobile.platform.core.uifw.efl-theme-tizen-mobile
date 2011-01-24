@@ -1,0 +1,2123 @@
+/*
+ *  nBeat-theme
+ *
+ * Copyright (c) 2000 - 2010 Samsung Electronics Co., Ltd.
+ *
+ * Contact: Seokjae Jeong <seok.j.jeong@samsung.com>, Myoungwoon Roy Kim <Myoungwoon.kim@samsung.com>, Jeonghyun Yun <jh0506.yun@samsung.com>, Jaehwan Kim <jae.hwan.kim@samsung.com>, 
+ * 		Chuneon Park <chuneon.park@samsung.com>, Juyung Seo <juyung.seo@samsung.com>, Woohyun Jung <wh0705.jung@samsung.com>, Myungjae Lee <mjae.lee@samsung.com>, Hyoyoung Chang <hyoyoung.chang@samsung.com>, 
+ *		Hyunsil Park <hyunsil.park@samsung.com>, Sohyun Kim <anna1014.kim@samsung.com>, Seunggyun Kim <sgyun.kim@samsung.com>
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
+
+///////////////////////////////////////////////////////////////////////////////////////
+//
+// ctxpopup
+//
+///////////////////////////////////////////////////////////////////////////////////////
+
+#define CTXPOPUP_ITEM_PADDING 15
+#define CTXPOPUP_SHADOW_PADDING 10
+#define CTXPOPUP_ITEM_HEIGHT 80
+#define CTXPOPUP_ENTRY_ITEM_HEIGHT 65
+#define CTXPOPUP_ENTRY_ITEM_WIDTH_MAX 150
+#define CTXPOPUP_BTN_HEIGHT 60
+#define CTXPOPUP_CONTENT_WIDTH_MIN 300
+#define CTXPOPUP_CONTENT_WIDTH_MAX 460
+#define CTXPOPUP_CONTENT_HEIGHT_MAX 630
+#define CTXPOPUP_SEPARATOR_COLOR 204 198 180 255
+#define CTXPOPUP_FONT_COLOR 0 0 0 255
+#define CTXPOPUP_CLICKED_FONT_COLOR 255 255 255 255
+#define CTXPOPUP_DISABLED_FONT_COLOR 0 0 0 127
+#define CTXPOPUP_DISABLED_ICON_COLOR 0 0 0 0 
+#define CTXPOPUP_ICON_WIDTH 50
+#define CTXPOPUP_ICON_HEIGHT 50
+#define CTXPOPUP_ARROW_SIZE 30	
+#define CTXPOPUP_LIST_PADDING 7
+#define CTXPOPUP_LIST_SHADOW_PADDING 3
+
+	group { 
+		name: "elm/scroller/base/ctxpopup";
+		script {
+			public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
+			public timer0(val) {
+				new v;
+            	v = get_int(sbvis_v);
+  	         	if (v) {
+  	         		v = get_int(sbalways_v);
+					if(!v) {
+						emit("do-hide-vbar", "");
+  	         			set_int(sbvis_v, 0);
+  	         		}
+            	}
+				v = get_int(sbvis_h);
+				if (v) {
+					v = get_int(sbalways_h);
+					if(!v) {
+						emit("do-hide-hbar", "");
+						set_int(sbvis_h, 0);
+					}
+				}
+            	set_int(sbvis_timer, 0);
+            	return 0;
+			}
+		}
+		images {
+			image: "01_scroller.png" COMP;
+		}
+		parts {
+			part { 
+				name: "clipper";
+				type: RECT;
+				mouse_events: 0;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					max: CTXPOPUP_CONTENT_WIDTH_MAX CTXPOPUP_CONTENT_HEIGHT_MAX;				
+				}
+			}
+			part { 
+				name: "elm.swallow.content";
+				clip_to: "clipper";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					max: CTXPOPUP_CONTENT_WIDTH_MAX CTXPOPUP_CONTENT_HEIGHT_MAX;				
+					align: 0.5 0.5;
+				}
+			}
+			part { 
+				name: "sb_vbar_clip_master";
+	    		type: RECT;
+	    		mouse_events: 0;
+	    		description { 
+	    			state: "default" 0.0;
+	    		}
+	    		description { 
+	    			state: "hidden" 0.0;
+	       			visible: 0;
+	       			color: 255 255 255 0;
+	    		}
+	 		}			
+			part { 
+				name: "sb_vbar_clip";
+				clip_to:"sb_vbar_clip_master";
+				type: RECT;
+				mouse_events: 0;
+				scale: 1;
+				description { 
+					state: "default" 0.0;
+					align: 0.0 0.0;
+					rel2{ to:"clipper"; relative: 1.0 1.0;}
+				}
+				description { 
+					state: "hidden" 0.0;
+					visible: 0;
+					color: 255 255 255 0;
+				}
+			}
+			part { 
+				name: "sb_vbar";
+				type: RECT;
+				mouse_events: 0;
+				scale: 1;
+				description { 
+					state: "default" 0.0;
+					fixed: 1 1;
+					visible: 0;
+					align: 1.0 0.0;
+					rel1{ to:"clipper"; relative: 1.0 0.0; }
+					rel2{ to:"clipper"; relative: 1.0 1.0;}
+				}
+			}
+			part { 
+				name: "elm.dragable.vbar";
+				clip_to: "sb_vbar_clip";
+				mouse_events: 0;    
+				scale: 1;
+				dragable {
+					x: 0 0 0;
+					y: 1 1 0;
+					confine: "sb_vbar";
+				}
+				description { 
+					state: "default" 0.0;
+					fixed: 1 1;
+					min: 14 32;
+					rel1 {
+						relative: 0.5  0.5;
+						to: "sb_vbar";
+					}
+					rel2 {
+						relative: 0.5  0.5;
+						to: "sb_vbar";
+					}
+					image {
+						normal: "01_scroller.png";
+						border: 0 0 6 6;
+						border_scale: 1;
+					}
+				}
+			}
+	 		part { 
+	 			name: "sb_hbar_clip_master";
+	    		type: RECT;
+	    		mouse_events: 0;
+	    		description { 
+	    			state: "default" 0.0;
+	    		}
+	    		description { 
+	    			state: "hidden" 0.0;
+	       			visible: 0;
+	       			color: 255 255 255 0;
+	    		}
+	 		}			
+			part { 
+				name: "sb_hbar_clip";
+				clip_to: "sb_hbar_clip_master";
+				type: RECT;
+				mouse_events: 0;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					align: 0.0 0.0;
+					rel2{ to:"clipper"; relative: 1.0 1.0;}
+				}
+				description { 
+					state: "hidden" 0.0;
+					visible: 0;
+					color: 255 255 255 0;
+				}
+			}
+			part { 
+				name: "sb_hbar";
+				type: RECT;
+				mouse_events: 0;
+				scale: 1;
+				description { 
+					state: "default" 0.0;
+					fixed: 1 1;
+					visible: 0;
+					align: 0.0 1.0;
+					rel1 {to:"clipper"; relative: 0.0 1.0;}
+					rel2 {to:"clipper"; relative: 1.0 1.0;}       
+				}
+			}
+			part { 
+				name: "elm.dragable.hbar";
+				clip_to: "sb_hbar_clip";
+				mouse_events: 0;   
+				scale: 1;
+				dragable {
+					x: 1 1 0;
+					y: 0 0 0;
+					confine: "sb_hbar";
+				}
+				description { 
+					state: "default" 0.0;
+					fixed: 1 1;
+					min: 32 12;
+					rel1 {relative: 0.5  0.5; to: "sb_hbar";}
+					rel2 {relative: 0.5  0.5; to: "sb_hbar";}
+					image {
+						normal: "01_scroller.png";
+						border: 6 6 0 0;
+						border_scale: 1;						
+					}
+				}
+			}
+		}   
+		programs {
+			program { 
+				name: "load";
+				signal: "load";
+				source: "";
+				script {
+					set_state(PART:"sb_vbar_clip", "hidden", 0.0);
+					set_state(PART:"sb_hbar_clip", "hidden", 0.0);
+					set_int(sbvis_v, 0);
+					set_int(sbvis_h, 0);
+					set_int(sbalways_v, 0);
+					set_int(sbalways_h, 0);
+					set_int(sbvis_timer, 0);
+				}
+			}	
+			program {
+				name: "vbar_show";
+				signal: "elm,action,show,vbar";
+				source: "elm";
+				action: STATE_SET "default" 0.0;
+				target: "sb_vbar_clip_master";
+			}
+	 		program { 
+	 			name: "vbar_hide";
+	    		signal: "elm,action,hide,vbar";
+	    		source: "elm";
+            	action:  STATE_SET "hidden" 0.0;
+            	target: "sb_vbar_clip_master";
+	 		}			
+	 		program { 
+	 			name: "vbar_show_always";
+	    		signal: "elm,action,show_always,vbar";
+	    		source: "elm";
+            	script {
+               		new v;
+               		v = get_int(sbvis_v);
+               		v |= get_int(sbalways_v);
+               		if (!v) {
+                  		set_int(sbalways_v, 1);
+                  		emit("do-show-vbar", "");
+                  		set_int(sbvis_v, 1);
+               		}
+            	}
+	 		}
+	 		program { 
+	 			name: "vbar_show_notalways";
+	    		signal: "elm,action,show_notalways,vbar";
+	    		source: "elm";
+            		script {
+               		new v;
+               		v = get_int(sbalways_v);
+               		if (v) {
+                  		set_int(sbalways_v, 0);
+                  		v = get_int(sbvis_v);
+                  		if (!v) {
+                     		emit("do-hide-vbar", "");
+                     		set_int(sbvis_v, 0);
+                  		}
+               		}
+            	}
+	 		}	 		
+			program { 
+				name: "sb_vbar_show";
+				signal: "do-show-vbar";
+				source: "";
+				action:  STATE_SET "default" 0.0;
+				transition: LINEAR 1.0;
+				target: "sb_vbar_clip";
+			}
+			program { 
+				name: "sb_vbar_hide";
+				signal: "do-hide-vbar";
+				source: "";
+				action:  STATE_SET "hidden" 0.0;
+				transition: LINEAR 1.0;
+				target: "sb_vbar_clip";
+			}
+			program { 
+				name: "hbar_show";
+	    		signal: "elm,action,show,hbar";
+	    		source: "elm";
+            	action:  STATE_SET "default" 0.0;
+            	target: "sb_hbar_clip_master";
+	 		}
+	 		program { 
+	 			name: "hbar_hide";
+	    		signal: "elm,action,hide,hbar";
+	    		source: "elm";
+            	action:  STATE_SET "hidden" 0.0;
+            	target: "sb_hbar_clip_master";
+	 		}
+	 		program { 
+	 			name: "hbar_show_always";
+	    		signal: "elm,action,show_always,hbar";
+	    		source: "elm";
+            	script {
+               		new v;
+               		v = get_int(sbvis_h);
+               		v |= get_int(sbalways_h);
+               		if (!v) {
+                  		set_int(sbalways_h, 1);
+                  		emit("do-show-hbar", "");
+                  		set_int(sbvis_h, 1);
+               		}
+            	}
+	 		}
+	 		program { 
+	 			name: "hbar_show_notalways";
+	    		signal: "elm,action,show_notalways,hbar";
+	    		source: "elm";
+        		script {
+        			new v;
+            		v = get_int(sbalways_h);
+            		if (v) {
+            			set_int(sbalways_h, 0);
+                 		v = get_int(sbvis_h);
+                 		if (!v) {
+                 			emit("do-hide-hbar", "");
+                    		set_int(sbvis_h, 0);
+						}
+					}
+				}
+			}
+			program { 
+				name: "sb_hbar_show";
+				signal: "do-show-hbar";
+				source: "";
+				action:  STATE_SET "default" 0.0;
+				transition: LINEAR 1.0;
+				target: "sb_hbar_clip";
+			}
+			program { 
+				name: "sb_hbar_hide";
+				signal: "do-hide-hbar";
+				source: "";
+				action:  STATE_SET "hidden" 0.0;
+				transition: LINEAR 1.0;
+				target: "sb_hbar_clip";
+			}									
+			program { 
+				name: "scroll";
+				signal: "elm,action,scroll";
+				source: "elm";
+				action:  STATE_SET "default" 0.0;
+				script {
+					new v;
+					v = get_int(sbvis_v);
+					v |= get_int(sbalways_v);
+					if (!v) {
+						emit("do-show-vbar", "");
+						set_int(sbvis_v, 1);
+					}	
+					v = get_int(sbvis_h);
+					v |= get_int(sbalways_h);
+					if(!v) {
+						emit("do-show-hbar", "");
+						set_int(sbvis_h, 1);
+					}
+					v = get_int(sbvis_timer);
+					if (v > 0) cancel_timer(v);
+					v = timer(2.0, "timer0", 0);
+					set_int(sbvis_timer, v);
+				}
+			}
+		}	
+	}	
+	group {
+		name: "elm/ctxpopup/bg/default";
+		parts {
+			part {
+				name: "ctxpopup_bg";
+				type: RECT;
+				mouse_events: 1;
+				description {
+					state: "default" 0.0;
+					color: 0 0 0 0;
+					visible: 1;
+				}
+				description {
+					state: "visible" 0.0;
+					inherit: "default" 0.0;
+					color: 0 0 0 0;
+					visible: 1;
+				}
+			}
+		}
+		programs {
+			program {
+				name:	"clicked_event";
+				signal: "mouse,clicked,1";
+				source: "ctxpopup_bg";
+				action: SIGNAL_EMIT "elm,action,click" "";
+			}
+			program {
+				name: "show";
+				signal: "elm,state,show";
+				source: "elm";
+				action: STATE_SET "visible" 0.0;
+				target: "ctxpopup_bg";
+				transition: "DECELERATE" 0.5; 
+			}
+			program {
+				name: "hide";
+				signal: "elm,state,hide";
+				source: "elm";
+				action: STATE_SET "default" 0.0;
+				target: "ctxpopup_bg";
+				transition: "DECELERATE" 0.5; 
+			}			
+		}
+	}
+	group { 
+		name: "elm/ctxpopup/base/default";
+		images {
+			image: "ctxpopup_bg.png" COMP;
+			image: "ctxpopup_shadow.png" COMP;
+			image: "ctxpopup_list_bg.png" COMP;
+			image: "ctxpopup_left_bottom_corner.png" COMP;
+			image: "ctxpopup_right_top_corner.png" COMP;
+			image: "ctxpopup_left_top_corner.png" COMP;
+			image: "ctxpopup_right_bottom_corner.png" COMP;
+		}
+		parts {
+			part {
+				name:"frame_shadow_left_top_padding";
+				type:RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {					
+					min: CTXPOPUP_SHADOW_PADDING CTXPOPUP_SHADOW_PADDING;
+					max: CTXPOPUP_SHADOW_PADDING CTXPOPUP_SHADOW_PADDING;
+					align: 0 0;
+					fixed: 1 1;
+					visible: 0;
+				}
+			}
+			part {
+				name:"frame_shadow_right_bottom_padding";
+				type:RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {					
+					min: CTXPOPUP_LIST_PADDING CTXPOPUP_LIST_PADDING;
+					max: CTXPOPUP_LIST_PADDING CTXPOPUP_LIST_PADDING;
+					rel1{relative: 1 1;}
+					align: 0 0;
+					fixed: 1 1;					
+					visible: 0;
+				}
+			}	
+			part {
+				name: "frame_shadow";
+				type: IMAGE;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					rel1 {to:"frame_shadow_left_top_padding"; relative: 1 1;}
+					rel2 {to:"frame_shadow_right_bottom_padding";}					
+					image {
+						normal: "ctxpopup_shadow.png";
+						border: 10 10 10 10;						
+						border_scale: 1;
+					}
+					color: 255 255 255 0;
+				}
+				description {
+					state: "show" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				}								
+			} 		
+			part {
+				name: "ctxpopup_frame";
+				type: IMAGE;
+				scale: 1;
+				description {
+					image {
+						normal: "ctxpopup_bg.png";
+						border: 10 10 10 10;
+						border_scale: 1;
+					}
+				}
+			}
+			part {
+				name:"list_shadow_right_bottom_padding";
+				type:RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {					
+					min: CTXPOPUP_LIST_SHADOW_PADDING CTXPOPUP_LIST_SHADOW_PADDING;
+					max: CTXPOPUP_LIST_SHADOW_PADDING CTXPOPUP_LIST_SHADOW_PADDING;
+					align: 0 0;
+					fixed: 1 1;
+					visible: 0;
+					rel1 {to:"elm.swallow.scroller";  relative: 1 1;}
+				}
+			}	
+			part {
+				name: "ctxpopup_list";
+				type: IMAGE;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					max: CTXPOPUP_CONTENT_WIDTH_MAX CTXPOPUP_CONTENT_HEIGHT_MAX;				
+					image {
+						normal: "ctxpopup_list_bg.png";
+						border: 10 10 14 14;
+						border_scale: 1;
+					}
+					rel1 {to: "elm.swallow.scroller";}
+					rel2 {to: "list_shadow_right_bottom_padding";}
+					color: 255 255 255 0;
+				}
+				description {
+					state: "show" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				}
+			}			
+			part {
+				name:"scroller_left_top_padding";
+				type:RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {			
+					state: "default" 0.0;		
+					min: CTXPOPUP_LIST_PADDING CTXPOPUP_LIST_PADDING;
+					max: CTXPOPUP_LIST_PADDING CTXPOPUP_LIST_PADDING;
+					align: 0 0;
+					fixed: 1 1;
+					visible: 0;
+				}
+			}
+			part {
+				name:"scroller_right_bottom_padding";
+				type:RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {					
+					min: CTXPOPUP_LIST_PADDING CTXPOPUP_LIST_PADDING;
+					max: CTXPOPUP_LIST_PADDING CTXPOPUP_LIST_PADDING;
+					rel1 { to:"elm.swallow.btns"; relative: 1 0;}
+					rel2 { to:"elm.swallow.btns"; relative: 1 0;}
+					align: 0 1;
+					fixed: 1 1;					
+					visible: 0;
+				}
+			}
+			part {
+				name: "elm.swallow.content";
+				type: SWALLOW;
+				description {
+					state: "default" 0.0;
+					rel1 {to:"scroller_left_top_padding"; relative: 1 1;}
+					rel2 {to:"scroller_right_bottom_padding"; relative: 0 0;}
+				}
+			}								
+			part { 
+				name: "elm.swallow.scroller";
+				type: SWALLOW;				
+				description {
+					state: "default" 0.0;
+					rel1 {to:"scroller_left_top_padding"; relative: 1 1;}
+					rel2 {to:"scroller_right_bottom_padding"; relative: 0 0;}
+				}
+				description {
+					state: "enabled" 0.0;
+					//TODO: Remove ! 
+					min: CTXPOPUP_CONTENT_WIDTH_MIN 0;
+					rel1 {to:"scroller_left_top_padding"; relative: 1 1;}
+					rel2 {to:"scroller_right_bottom_padding"; relative: 0 0;}
+				}
+			}			
+			part {
+				name: "list_left_bottom_corner";
+				type: IMAGE;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					min: 10 9;
+					max: 10 9;
+					rel1 { to: "elm.swallow.content"; relative: 0 1; }
+					rel2 { to: "elm.swallow.content"; relative: 0 1; }
+					align: 0 1;
+					fixed: 1 1;
+					image {
+						normal: "ctxpopup_left_bottom_corner.png";
+					}					
+					color: 255 255 255 0;
+				}
+				description {
+					state: "show" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255; 
+				}				
+			}
+			part {
+				name: "list_right_top_corner";
+				type: IMAGE;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					min: 10 9;
+					max: 10 9;
+					rel1 { to: "elm.swallow.content"; relative: 1 0; }
+					rel2 { to: "elm.swallow.content"; relative: 1 0; }
+					align: 1 0;
+					fixed: 1 1;
+					image {
+						normal: "ctxpopup_right_top_corner.png";
+					}			
+					color: 255 255 255 0;
+				}			
+				description {
+					state: "show" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255; 
+				}					
+			}			
+			part {
+				name: "list_left_top_corner";
+				type: IMAGE;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					min: 10 9;
+					max: 10 9;
+					rel1 { to: "elm.swallow.content"; relative: 0 0; }
+					rel2 { to: "elm.swallow.content"; relative: 0 0; }
+					align: 0 0;
+					fixed: 1 1;
+					image {
+						normal: "ctxpopup_left_top_corner.png";
+					} 
+					color: 255 255 255 0;					
+				}	
+				description {
+					state: "show" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				}							
+			}		
+			part {
+				name: "list_right_bottom_corner";
+				type: IMAGE;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					min: 10 9;
+					max: 10 9;
+					rel1 { to: "elm.swallow.content"; relative: 1 1; }
+					rel2 { to: "elm.swallow.content"; relative: 1 1; }
+					align: 1 1;
+					fixed: 1 1;
+					image {
+						normal: "ctxpopup_right_bottom_corner.png";
+					}				
+					color: 255 255 255 0;
+				}			
+				description {
+					state: "show" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				}				
+			}					
+			part {
+				name:"btns_right_bottom_padding";
+				type:RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {			
+					state: "default" 0.0;
+					min: CTXPOPUP_LIST_PADDING 0;
+					max: CTXPOPUP_LIST_PADDING 0;
+					align: 1 1;
+					fixed: 1 1;		
+					visible: 0;
+				}
+				description {			
+					state: "enabled" 0.0;		
+					min: CTXPOPUP_LIST_PADDING CTXPOPUP_LIST_PADDING;
+					max: CTXPOPUP_LIST_PADDING CTXPOPUP_LIST_PADDING;
+					align: 1 1;
+					fixed: 1 1;					
+					visible: 0;
+				}
+			}			
+			part { 
+				name: "elm.swallow.btns";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					rel1 {relative: 0 1;}
+					rel2 {to: "btns_right_bottom_padding"; relative: 0 0;}
+					align: 0.5 1; 
+					fixed: 1 1;
+				}
+				description {
+					state: "enabled" 0.0;
+					align: 0.5 1;
+					fixed: 1 1;	
+					rel1 {to: "scroller_left_top_padding"; relative: 1 1; }
+					rel2 {to: "btns_right_bottom_padding"; relative: 0 0;}
+				}
+			} 	
+		} 
+		programs {  
+			program {
+				name:   "enable_buttons";
+				signal: "elm,state,buttons,enable";
+				source: "elm";
+				action: STATE_SET "enabled" 0.0;
+				target: "btns_right_bottom_padding";
+				target: "elm.swallow.btns";
+				target: "elm.swallow.scroller";
+			}
+			program {
+				name: "show";
+				signal: "elm,state,show";
+				source: "elm";
+				action: STATE_SET "show" 0.0;
+				target: "ctxpopup_list";
+				target: "frame_shadow";
+				target: "list_left_top_corner";
+				target: "list_left_bottom_corner";
+				target: "list_right_top_corner";
+				target: "list_right_bottom_corner";
+				transition: "DECELERATE" 0.5; 
+			}
+			program {
+				name: "hide";
+				signal: "elm,state,hide";
+				source: "elm";
+				action: STATE_SET "default" 0.0;
+				target: "ctxpopup_list";
+				target: "frame_shadow";
+				target: "ctxpopup_frame";
+				target: "list_left_top_corner";
+				target: "list_left_bottom_corner";
+				target: "list_right_top_corner";
+				target: "list_right_bottom_corner";
+			}			
+		}
+	} 
+	group { name: "elm/ctxpopup/arrow/default";
+		images {
+			image: "00_popup_tail_left.png" COMP;
+			image: "00_popup_tail_right.png" COMP;
+			image: "00_popup_tail_top.png" COMP;
+			image: "00_popup_tail_bottom.png" COMP;
+		}
+		parts {
+			part { 
+				name: "ctxpopup_arrow";
+				type: IMAGE;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					min: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					max: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					fixed: 1 1;
+					visible: 0;
+					align: 0.5 0.5;
+				}
+				description {
+					state: "left" 0.0;
+					min: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					max: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					fixed: 1 1;
+					align: 0.0 0.5;
+					image {
+						normal: "00_popup_tail_left.png";
+					}
+				}
+				description {
+					state: "right" 0.0;
+					min: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					max: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					fixed: 1 1;
+   	 		  	align: 1.0 0.5;
+					image {
+						normal: "00_popup_tail_right.png";
+						
+					}
+				}
+				description { 
+					state: "top" 0.0;
+					min: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					max: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					fixed: 1 1;
+					align: 0.5 0.0;
+					image {
+						normal: "00_popup_tail_top.png";
+					}
+				}
+				description { 
+					state: "bottom" 0.0;
+					min: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					max: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					fixed: 1 1;
+					align: 0.5 1.0;
+					image {
+						normal: "00_popup_tail_bottom.png";
+					}
+				}
+			}
+		}
+		programs {
+			program { 
+				name: "enable_left_arrow";
+				signal: "elm,state,left";
+				source: "elm";
+				action: STATE_SET "left" 0.0;
+				target: "ctxpopup_arrow";
+			}
+			program { 
+				name: "enable_right_arrow";
+				signal: "elm,state,right";
+				source: "elm";
+				action: STATE_SET "right" 0.0;
+				target: "ctxpopup_arrow";
+			}
+			program { 
+				name: "enable_top_arrow";
+				signal: "elm,state,top";
+				source: "elm";
+				action: STATE_SET "top" 0.0;
+				target: "ctxpopup_arrow";
+			}
+			program { 
+				name: "enable_bottom_arrow";
+				signal: "elm,state,bottom";
+				source: "elm";
+				action: STATE_SET "bottom" 0.0;
+				target: "ctxpopup_arrow";
+			}
+		}
+	}
+	group { name: "elm/ctxpopup/separator/default";
+		parts {
+			part { 
+				name: "separator"; 
+				type: RECT;
+				scale: 1;
+				description { 
+					state: "vertical" 0.0;
+					min: 1 1;
+					max: CTXPOPUP_CONTENT_WIDTH_MAX 1;
+					fixed: 1 1;
+					color: CTXPOPUP_SEPARATOR_COLOR;
+				}
+				description { 
+					state: "horizontal" 0.0;
+					min: 1 1;
+					max: 1 CTXPOPUP_ITEM_HEIGHT;
+					fixed: 1 1;
+					color: CTXPOPUP_SEPARATOR_COLOR;
+				}
+			}
+		}
+		programs {
+			program { 
+				name: "vertical";
+				signal: "elm,state,vertical";
+				source: "elm";
+				action: STATE_SET "vertical" 0.0;
+				target: "separator";
+			}
+			program { 
+				name: "horizontal";
+				signal: "elm,state,horizontal";
+				source: "elm";
+				action: STATE_SET "horizontal" 0.0;
+				target: "separator";
+			}
+		}
+	}
+	group { 
+		name: "elm/ctxpopup/text_style_item/default";
+		images {
+			image: "00_list_bar_press.png" COMP;
+		}
+		script {
+			public disabled_v;
+		}
+		parts {			
+			part { 
+				name: "event_blocker";
+				mouse_events: 1;
+				description { 
+					state: "default" 0.0;
+					color: 0 0 0 0;
+				}
+			}		
+			part { 
+				name: "bg";				
+				mouse_events: 0;
+				type: IMAGE;
+				description { 
+					state: "default" 0.0;
+					visible: 0;
+				}
+				description { 
+					state: "clicked" 0.0;
+					image {
+						normal: "00_list_bar_press.png";
+						border: 10 10 10 10;
+						border_scale: 1;
+					}										
+				}
+			}
+			part {
+				name: "left_padding";
+				type: RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					min: 30 CTXPOPUP_ITEM_HEIGHT;
+					max: 30 CTXPOPUP_ITEM_HEIGHT;
+					align: 0 0.5;
+					fixed: 1 1;
+					visible: 0;										
+				}			
+			}		
+			part {
+				name: "elm.text";
+				type:  TEXT;
+				mouse_events:  0;
+				scale: 1;
+				description { 
+					state: "default" 0.0;
+					min: 1 CTXPOPUP_ITEM_HEIGHT;
+					max: (CTXPOPUP_CONTENT_WIDTH_MAX-2*CTXPOPUP_ITEM_PADDING) CTXPOPUP_ITEM_HEIGHT;
+					fixed: 0 1;
+					align: 0.5 0.5;
+					rel1 {relative: 1.0 0.0; to: "left_padding";}
+					rel2 {relative: 0.0 1.0; to: "right_padding";}
+					color: CTXPOPUP_FONT_COLOR;
+					text {
+						font:     "SLP:style=Roman";
+						size:     34;
+						align:    0.5 0.5;
+						min: 1 1;
+					}
+				}
+				description {
+					state: "clicked" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_CLICKED_FONT_COLOR;
+				}
+				description { 
+					state: "disabled" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_DISABLED_FONT_COLOR;
+				}
+			}
+ 			part { 
+				name: "right_padding";
+				type: RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					visible: 0;
+					min: 30 CTXPOPUP_ITEM_HEIGHT;
+					max: 30 CTXPOPUP_ITEM_HEIGHT;
+					fixed: 1 0;
+					align: 1.0 0.5;
+      			}
+			}	
+			part { 
+				name: "over1";
+				mouse_events: 1;
+				repeat_events: 1;
+				ignore_flags: ON_HOLD;
+				description { 
+					state: "default" 0.0;
+				}
+				description { 
+					state: "disabled" 0.0;
+					inherit:  "default" 0.0;
+					visible: 0;
+				}
+			}
+			part { 
+				name: "over2";
+				mouse_events: 1;
+				repeat_events: 1;
+				description { 
+					state: "default" 0.0;
+					color: 255 255 255 0;
+				}
+				description { 
+					state: "clicked" 0.0;
+					inherit:  "default" 0.0;
+					color: 255 255 255 255;
+				}
+			}
+		}
+		programs {
+			program {
+				name:   "item_unclick3";
+				signal: "mouse,up,1";
+				source: "over1";
+				action: SIGNAL_EMIT "elm,action,click" "";
+			} 
+			program {
+				name: "disable";
+				signal: "elm,state,disabled";
+				source: "elm";
+				after: "disable_text";
+			}
+			program { 
+				name: "disable_text";
+				script {
+					set_state(PART:"elm.text", "disabled", 0.0);
+					set_int( disabled_v, 1 );
+				}
+			}
+			program { 
+				name: "enable";
+				signal: "elm,state,enabled";
+				source: "elm";
+				after: "enable_text";
+			}
+			program { 
+				name: "enable_text";
+				script {
+					set_state(PART:"elm.text", "enabled", 0.0);
+					set_int( disabled_v, 0 );
+				}
+			}			
+			program {
+				name:   "item_click";
+				signal: "mouse,down,1";
+				source: "over2";
+				script {
+					if(!get_int( disabled_v)) {
+						set_state(PART:"elm.text", "clicked", 0.0);
+						set_state(PART:"bg", "clicked", 0.0);
+					}
+				}
+			}  
+		}
+		program {
+			name:   "item_unclick";
+			signal: "mouse,up,1";
+			source: "over2";
+			script {
+				if(!get_int(disabled_v)) {
+					set_state(PART:"elm.text", "default", 0.0);
+					set_state(PART:"bg", "default", 0.0);
+				}
+			}  
+		}
+	}	
+ group { 
+		name: "elm/ctxpopup/icon_style_item/default";\
+		images {
+			image: "00_list_bar_press.png" COMP;
+		}		
+		script {
+			public disabled_v;
+		}		
+		parts {
+			part { 
+				name: "event_blocker";
+				mouse_events: 1;
+				description { 
+					state: "default" 0.0;
+					color: 0 0 0 0;
+				}
+			}		
+			part { 
+				name: "bg";				
+				mouse_events: 0;
+				type: IMAGE;
+				description { 
+					state: "default" 0.0;
+					visible: 0;
+				}
+				description { 
+					state: "clicked" 0.0;
+					image {
+						normal: "00_list_bar_press.png";
+						border: 10 10 10 10;
+						border_scale: 1;
+					}										
+				}
+			}
+			part { 
+				name: "left_top_padding";
+				type: RECT;
+				scale: 1;
+				description {
+					min: CTXPOPUP_ITEM_PADDING CTXPOPUP_ITEM_PADDING;
+					max: CTXPOPUP_ITEM_PADDING CTXPOPUP_ITEM_PADDING;
+					visible: 0;
+					align: 0 0;
+					fixed: 1 1;
+				}
+			}
+			part { 
+				name: "elm.swallow.icon";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					min: (CTXPOPUP_ICON_WIDTH+30) CTXPOPUP_ICON_HEIGHT;
+					max: (CTXPOPUP_ICON_WIDTH+30) CTXPOPUP_ICON_HEIGHT;					
+					align: 0.5 0.5;     
+					aspect: 1.0 1.0;
+					rel1 { to: "left_top_padding"; relative: 1 1; }
+					rel2 { to: "right_bottom_padding"; relative: 0 0; }		
+				}
+				description { 
+					state: "disabled" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_DISABLED_ICON_COLOR;
+				}
+			}
+			part { 
+				name: "right_bottom_padding";
+				type: RECT;
+				scale: 1;
+				description {
+					min: CTXPOPUP_ITEM_PADDING CTXPOPUP_ITEM_PADDING;
+					max: CTXPOPUP_ITEM_PADDING CTXPOPUP_ITEM_PADDING;
+					visible: 0;
+					align: 1 1;
+					fixed: 1 1;
+				}
+			}			
+			part { 
+				name: "over1";
+				mouse_events: 1;
+				repeat_events: 1;
+				ignore_flags: ON_HOLD;
+				description { 
+					state: "default" 0.0;
+				}
+				description { 
+					state: "disabled" 0.0;
+					inherit:  "default" 0.0;
+					visible: 0;
+				}
+			}
+			part { 
+				name: "over2";
+				mouse_events: 1;
+				repeat_events: 1;
+				description { 
+					state: "default" 0.0;
+					color: 255 255 255 0;
+				}
+				description { 
+					state: "clicked" 0.0;
+					inherit:  "default" 0.0;
+					color: 255 255 255 255;
+				}
+			}
+		}
+		programs {
+			program {
+				name:   "item_unclick3";
+				signal: "mouse,up,1";
+				source: "over1";
+				action: SIGNAL_EMIT "elm,action,click" "";
+			} 
+			program {
+				name: "disable";
+				signal: "elm,state,disabled";
+				source: "elm";
+				after: "disable_icon";
+			}
+			program { 
+				name: "disable_icon";
+				script {
+					set_state(PART:"elm.swallow.icon", "disabled", 0.0);
+					set_int(disabled_v, 1);					
+				}
+			}
+			program { 
+				name: "enable";
+				signal: "elm,state,enabled";
+				source: "elm";
+				after: "enable_icon";
+			}
+			program { 
+				name: "enable_icon";
+				script {
+					set_state(PART:"elm.swallow.icon", "default", 0.0);
+					set_int(disabled_v, 0);
+				}
+			}
+			program {
+				name:   "button_click";
+				signal: "mouse,down,1";
+				source: "over2";
+				script {
+					if(!get_int( disabled_v)) {
+						set_state(PART:"bg", "clicked", 0.0);
+					}
+				}				
+			}  
+		}
+		program {
+			name:   "button_unclick";
+			signal: "mouse,up,1";
+			source: "over2";
+			script {
+				if(!get_int(disabled_v)) {
+					set_state(PART:"bg", "default", 0.0);
+				}
+			}  			
+		}
+	}
+group { 
+		name: "elm/ctxpopup/icon_text_style_item/default";
+		images {
+			image: "00_list_bar_press.png" COMP;
+		}			
+		script {
+			public disabled_v;
+		}
+		parts {
+			part { 
+				name: "event_blocker";
+				mouse_events: 1;
+				description { 
+					state: "default" 0.0;
+				}
+			}
+			part { 
+				name: "bg";				
+				mouse_events: 0;
+				type: IMAGE;
+				description { 
+					state: "default" 0.0;
+					visible: 0;					
+				}
+				description { 
+					state: "clicked" 0.0;
+					image {
+						normal: "00_list_bar_press.png";
+						border: 10 10 10 10;
+						border_scale: 1;						
+					}										
+				}
+			}			
+			part {
+				name: "icon_left_padding";
+				type: RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					min: CTXPOPUP_ITEM_PADDING CTXPOPUP_ITEM_HEIGHT;
+					max: CTXPOPUP_ITEM_PADDING CTXPOPUP_ITEM_HEIGHT;
+					align: 0 0;
+					fixed: 1 1;
+					visible: 0;
+				}			
+			}				
+			part { 
+				name: "elm.swallow.icon";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					min: CTXPOPUP_ICON_WIDTH CTXPOPUP_ICON_HEIGHT;
+					max: CTXPOPUP_ICON_WIDTH CTXPOPUP_ICON_HEIGHT;					
+					align: 0 0.5;     
+					aspect: 1.0 1.0;
+					rel1 { to:"icon_left_padding"; relative: 1 0; }					
+				}
+				description { 
+					state: "disabled" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_DISABLED_ICON_COLOR;
+				}
+			}			
+			part {
+				name: "icon_right_padding";
+				type: RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					min: CTXPOPUP_ITEM_PADDING CTXPOPUP_ITEM_HEIGHT;
+					max: CTXPOPUP_ITEM_PADDING CTXPOPUP_ITEM_HEIGHT;
+					align: 0 0.5;
+					fixed: 1 1;
+					visible: 0;
+					rel1 { to:"elm.swallow.icon"; relative: 1 1; }					
+				}			
+			}	
+			part {
+				name: "elm.text";
+				type:  TEXT;
+				mouse_events:  0;
+				scale: 1;
+				description { 
+					state: "default" 0.0;
+					min: 1 CTXPOPUP_ITEM_HEIGHT;
+					max: (CTXPOPUP_CONTENT_WIDTH_MAX-(3*CTXPOPUP_ITEM_PADDING)-CTXPOPUP_ICON_WIDTH) CTXPOPUP_ITEM_HEIGHT;
+					fixed: 0 1;
+					align: 0.5 0.5;
+					rel1 {relative: 1.0 0.0; to_x: "icon_right_padding";}
+					rel2 {relative: 0.0 1.0; to_x: "text_right_padding";}
+					color: CTXPOPUP_FONT_COLOR;
+					text {
+						font:     "SLP:style=Roman";
+						size:     30;
+						align:    0.0 0.5;
+						min: 1 1;
+					}
+				}
+				description {
+					state: "clicked" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_CLICKED_FONT_COLOR;
+				}
+				description { 
+					state: "disabled" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_DISABLED_FONT_COLOR;
+				}
+			}
+ 			part { 
+				name: "text_right_padding";
+				type: RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					visible: 0;
+					min: CTXPOPUP_ITEM_PADDING CTXPOPUP_ITEM_HEIGHT;
+					max: CTXPOPUP_ITEM_PADDING CTXPOPUP_ITEM_HEIGHT;
+					fixed: 1 0;
+					align: 1.0 0.5;
+      			}
+			}			
+			part { 
+				name: "over1";
+				mouse_events: 1;
+				repeat_events: 1;
+				ignore_flags: ON_HOLD;
+				description { 
+					state: "default" 0.0;
+				}
+				description { 
+					state: "disabled" 0.0;
+					inherit:  "default" 0.0;
+					visible: 0;
+				}
+			}
+			part { 
+				name: "over2";
+				mouse_events: 1;
+				repeat_events: 1;
+				description { 
+					state: "default" 0.0;
+					color: 255 255 255 0;
+				}
+				description { 
+					state: "clicked" 0.0;
+					inherit:  "default" 0.0;
+					color: 255 255 255 255;
+				}
+			}
+		}
+		programs {
+			program {
+				name:   "item_unclick3";
+				signal: "mouse,up,1";
+				source: "over1";
+				action: SIGNAL_EMIT "elm,action,click" "";
+			} 
+			program {
+				name: "disable";
+				signal: "elm,state,disabled";
+				source: "elm";
+				after: "disable_text";
+			}
+			program { 
+				name: "disable_text";
+				script {
+					set_state(PART:"elm.text", "disabled", 0.0);
+					set_int( disabled_v, 1 );
+				}
+			}
+			program { 
+				name: "enable";
+				signal: "elm,state,enabled";
+				source: "elm";
+				after: "enable_text";
+			}
+			program { 
+				name: "enable_text";
+				script {
+					set_state(PART:"elm.text", "enabled", 0.0);
+					set_int( disabled_v, 0 );
+				}
+			}			
+			program {
+				name:   "button_click";
+				signal: "mouse,down,1";
+				source: "over2";
+				script {
+					if(!get_int( disabled_v)) {
+						set_state(PART:"elm.text", "clicked", 0.0);
+						set_state(PART:"bg", "clicked", 0.0);
+					}
+				}
+			}  
+		}
+		program {
+			name:   "button_unclick";
+			signal: "mouse,up,1";
+			source: "over2";
+			script {
+				if(!get_int(disabled_v)) {
+					set_state(PART:"elm.text", "default", 0.0);
+					set_state(PART:"bg", "default", 0.0);
+				}
+			}  
+		}
+	}
+
+///////////////////////////////////////////////////////////////////////////////////////
+#define CTXPOPUP_ENTRY_LIST_PADDING_LEFT_TOP 5
+#define CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM 9
+#define CTXPOPUP_ENTRY_FONT_COLOR 118 118 118 255
+#define CTXPOPUP_ENTRY_SEPARATOR_COLOR 171 171 171 255
+
+	group { 
+		name: "elm/ctxpopup/base/extended/entry";
+		images {
+			image: "ctxpopup_bg.png" COMP;
+			image: "ctxpopup_shadow.png" COMP;
+			image: "00_btn_copy&paste_n.png" COMP;
+			image: "ctxpopup_left_bottom_corner.png" COMP;
+			image: "ctxpopup_right_top_corner.png" COMP;
+			image: "ctxpopup_left_top_corner.png" COMP;
+			image: "ctxpopup_right_bottom_corner.png" COMP;
+		}
+		parts {
+			part {
+				name:"frame_shadow_left_top_padding";
+				type:RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {					
+					min: CTXPOPUP_SHADOW_PADDING CTXPOPUP_SHADOW_PADDING;
+					max: CTXPOPUP_SHADOW_PADDING CTXPOPUP_SHADOW_PADDING;
+					align: 0 0;
+					fixed: 1 1;
+					visible: 0;
+				}
+			}
+			part {
+				name:"frame_shadow_right_bottom_padding";
+				type:RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {					
+					min: CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM;
+					max: CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM;
+					rel1{relative: 1 1;}
+					align: 0 0;
+					fixed: 1 1;					
+					visible: 0;
+				}
+			}	
+			part {
+				name: "frame_shadow";
+				type: IMAGE;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					rel1 {to:"frame_shadow_left_top_padding"; relative: 1 1;}
+					rel2 {to:"frame_shadow_right_bottom_padding";}					
+					image {
+						normal: "ctxpopup_shadow.png";
+						border: 10 10 10 10;						
+						border_scale: 1;
+					}
+					color: 255 255 255 0;
+				}
+				description {
+					state: "show" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				}								
+			} 		
+			part {
+				name: "ctxpopup_frame";
+				type: IMAGE;
+				scale: 1;
+				description {
+					image {
+						normal: "00_btn_copy&paste_n.png";
+						border: 6 10 10 10;
+						border_scale: 1;
+					}
+				}
+			}
+			part {
+				name:"list_shadow_right_bottom_padding";
+				type:RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {					
+					min: CTXPOPUP_LIST_SHADOW_PADDING CTXPOPUP_LIST_SHADOW_PADDING;
+					max: CTXPOPUP_LIST_SHADOW_PADDING CTXPOPUP_LIST_SHADOW_PADDING;
+					align: 0 0;
+					fixed: 1 1;
+					visible: 0;
+					rel1 {to:"elm.swallow.scroller";  relative: 1 1;}
+				}
+			}				
+			part {
+				name: "ctxpopup_list";
+				type: IMAGE;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					max: CTXPOPUP_CONTENT_WIDTH_MAX CTXPOPUP_CONTENT_HEIGHT_MAX;				
+					//image {
+					//	normal: "ctxpopup_list_bg.png";
+					//	border: 10 10 14 14;
+					//	border_scale: 1;
+					//}
+					rel1 {to: "elm.swallow.scroller";}
+					rel2 {to: "list_shadow_right_bottom_padding";}
+					color: 255 255 255 0;
+				}
+				description {
+					state: "show" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				}
+			}
+
+			part {
+				name:"scroller_left_top_padding";
+				type:RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {			
+					state: "default" 0.0;		
+					min: CTXPOPUP_ENTRY_LIST_PADDING_LEFT_TOP CTXPOPUP_ENTRY_LIST_PADDING_LEFT_TOP;
+					max: CTXPOPUP_ENTRY_LIST_PADDING_LEFT_TOP CTXPOPUP_ENTRY_LIST_PADDING_LEFT_TOP;
+					align: 0 0;
+					fixed: 1 1;
+					visible: 0;
+				}
+			}
+			part {
+				name:"scroller_right_bottom_padding";
+				type:RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {					
+					min: CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM;
+					max: CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM;
+					rel1 { to:"elm.swallow.btns"; relative: 1 0;}
+					rel2 { to:"elm.swallow.btns"; relative: 1 0;}
+					align: 0 1;
+					fixed: 1 1;					
+					visible: 0;
+				}
+			}
+			part {
+				name: "elm.swallow.content";
+				type: SWALLOW;
+				description {
+					state: "default" 0.0;
+					rel1 {to:"scroller_left_top_padding"; relative: 1 1;}
+					rel2 {to:"scroller_right_bottom_padding"; relative: 0 0;}
+				}
+			}								
+			part { 
+				name: "elm.swallow.scroller";
+				type: SWALLOW;				
+				description {
+					state: "default" 0.0;
+					rel1 {to:"scroller_left_top_padding"; relative: 1 1;}
+					rel2 {to:"scroller_right_bottom_padding"; relative: 0 0;}
+				}
+				description {
+					state: "enabled" 0.0;
+					min: CTXPOPUP_CONTENT_WIDTH_MIN 0;
+					rel1 {to:"scroller_left_top_padding"; relative: 1 1;}
+					rel2 {to:"scroller_right_bottom_padding"; relative: 0 0;}
+				}				
+			}
+			part {
+				name: "list_left_bottom_corner";
+				type: IMAGE;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					min: 10 9;
+					max: 10 9;
+					rel1 { to: "elm.swallow.content"; relative: 0 1; }
+					rel2 { to: "elm.swallow.content"; relative: 0 1; }
+					align: 0 1;
+					fixed: 1 1;
+					//image {
+					//	normal: "ctxpopup_left_bottom_corner.png";
+					//}					
+					color: 255 255 255 0;
+				}
+				description {
+					state: "show" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255; 
+				}				
+			}
+			part {
+				name: "list_right_top_corner";
+				type: IMAGE;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					min: 10 9;
+					max: 10 9;
+					rel1 { to: "elm.swallow.content"; relative: 1 0; }
+					rel2 { to: "elm.swallow.content"; relative: 1 0; }
+					align: 1 0;
+					fixed: 1 1;
+					//image {
+					//	normal: "ctxpopup_right_top_corner.png";
+					//}			
+					color: 255 255 255 0;
+				}			
+				description {
+					state: "show" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255; 
+				}					
+			}			
+			part {
+				name: "list_left_top_corner";
+				type: IMAGE;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					min: 10 9;
+					max: 10 9;
+					rel1 { to: "elm.swallow.content"; relative: 0 0; }
+					rel2 { to: "elm.swallow.content"; relative: 0 0; }
+					align: 0 0;
+					fixed: 1 1;
+					//image {
+					//	normal: "ctxpopup_left_top_corner.png";
+					//} 
+					color: 255 255 255 0;					
+				}	
+				description {
+					state: "show" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				}							
+			}		
+			part {
+				name: "list_right_bottom_corner";
+				type: IMAGE;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					min: 10 9;
+					max: 10 9;
+					rel1 { to: "elm.swallow.content"; relative: 1 1; }
+					rel2 { to: "elm.swallow.content"; relative: 1 1; }
+					align: 1 1;
+					fixed: 1 1;
+					//image {
+					//	normal: "ctxpopup_right_bottom_corner.png";
+					//}				
+					color: 255 255 255 0;
+				}			
+				description {
+					state: "show" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				}				
+			}
+
+			part {
+				name:"btns_right_bottom_padding";
+				type:RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {			
+					state: "default" 0.0;
+					min: CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM 0;
+					max: CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM 0;
+					align: 1 1;
+					fixed: 1 1;		
+					visible: 0;
+				}
+				description {			
+					state: "enabled" 0.0;		
+					min: CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM;
+					max: CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM CTXPOPUP_ENTRY_LIST_PADDING_RIGHT_BOTTOM;
+					align: 1 1;
+					fixed: 1 1;					
+					visible: 0;
+				}
+			}			
+			part { 
+				name: "elm.swallow.btns";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					rel1 {relative: 0 1;}
+					rel2 {to: "btns_right_bottom_padding"; relative: 0 0;}
+					align: 0.5 1; 
+					fixed: 1 1;
+				}
+				description {
+					state: "enabled" 0.0;
+					align: 0.5 1;
+					fixed: 1 1;	
+					rel1 {to: "scroller_left_top_padding"; relative: 1 1; }
+					rel2 {to: "btns_right_bottom_padding"; relative: 0 0;}
+				}
+			} 	
+		} 
+		programs {  
+			program {
+				name:   "enable_buttons";
+				signal: "elm,state,buttons,enable";
+				source: "elm";
+				action: STATE_SET "enabled" 0.0;
+				target: "btns_right_bottom_padding";
+				target: "elm.swallow.btns";
+				target: "elm.swallow.scroller"; 
+			}
+			program {
+				name: "show";
+				signal: "elm,state,show";
+				source: "elm";
+				action: STATE_SET "show" 0.0;
+				target: "ctxpopup_list";
+				target: "frame_shadow";
+				target: "list_left_top_corner";
+				target: "list_left_bottom_corner";
+				target: "list_right_top_corner";
+				target: "list_right_bottom_corner";
+				transition: "DECELERATE" 0.5; 
+			}
+			program {
+				name: "hide";
+				signal: "elm,state,hide";
+				source: "elm";
+				action: STATE_SET "default" 0.0;
+				target: "ctxpopup_list";
+				target: "frame_shadow";
+				target: "list_left_top_corner";
+				target: "list_left_bottom_corner";
+				target: "list_right_top_corner";
+				target: "list_right_bottom_corner";
+			}			
+		}
+	}
+	group { name: "elm/ctxpopup/arrow/extended/entry";
+		parts {
+			part { 
+				name: "ctxpopup_arrow";
+				type: IMAGE;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					min: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					max: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					fixed: 1 1;
+					visible: 0;
+					align: 0.5 0.5;
+				}
+				description {
+					state: "left" 0.0;
+					min: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					max: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					fixed: 1 1;
+					align: 0.0 0.5;
+				}
+				description {
+					state: "right" 0.0;
+					min: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					max: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					fixed: 1 1;
+   		 		  	align: 1.0 0.5;
+				}
+				description { 
+					state: "top" 0.0;
+					min: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					max: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					fixed: 1 1;
+					align: 0.5 0.0;
+				}
+				description { 
+					state: "bottom" 0.0;
+					min: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					max: CTXPOPUP_ARROW_SIZE CTXPOPUP_ARROW_SIZE;
+					fixed: 1 1;
+					align: 0.5 1.0;
+				}
+			}
+		}
+		programs {
+			program { 
+				name: "enable_left_arrow";
+				signal: "elm,state,left";
+				source: "elm";
+				action: STATE_SET "left" 0.0;
+				target: "ctxpopup_arrow";
+			}
+			program { 
+				name: "enable_right_arrow";
+				signal: "elm,state,right";
+				source: "elm";
+				action: STATE_SET "right" 0.0;
+				target: "ctxpopup_arrow";
+			}
+			program { 
+				name: "enable_top_arrow";
+				signal: "elm,state,top";
+				source: "elm";
+				action: STATE_SET "top" 0.0;
+				target: "ctxpopup_arrow";
+			}
+			program { 
+				name: "enable_bottom_arrow";
+				signal: "elm,state,bottom";
+				source: "elm";
+				action: STATE_SET "bottom" 0.0;
+				target: "ctxpopup_arrow";
+			}
+		}
+	}
+
+	group { name: "elm/ctxpopup/separator/default";
+		parts {
+			part { 
+				name: "separator"; 
+				type: RECT;
+				scale: 1;
+				description { 
+					state: "vertical" 0.0;
+					min: 1 1;
+					max: CTXPOPUP_CONTENT_WIDTH_MAX 1;
+					fixed: 1 1;
+					color: CTXPOPUP_ENTRY_SEPARATOR_COLOR;
+				}
+				description { 
+					state: "horizontal" 0.0;
+					min: 1 1;
+					max: 1 CTXPOPUP_ITEM_HEIGHT;
+					fixed: 1 1;
+					color: CTXPOPUP_ENTRY_SEPARATOR_COLOR;
+				}
+			}
+		}
+		programs {
+			program { 
+				name: "vertical";
+				signal: "elm,state,vertical";
+				source: "elm";
+				action: STATE_SET "vertical" 0.0;
+				target: "separator";
+			}
+			program { 
+				name: "horizontal";
+				signal: "elm,state,horizontal";
+				source: "elm";
+				action: STATE_SET "horizontal" 0.0;
+				target: "separator";
+			}
+		}
+	}
+	group { 
+		name: "elm/ctxpopup/text_style_item/extended/entry";
+		images {
+			image: "00_list_bar_press.png" COMP;
+		}
+		script {
+			public disabled_v;
+		}
+		parts {			
+			part { 
+				name: "event_blocker";
+				mouse_events: 1;
+				description { 
+					state: "default" 0.0;
+					color: 0 0 0 0;
+				}
+			}		
+			part { 
+				name: "bg";				
+				mouse_events: 0;
+				type: IMAGE;
+				description { 
+					state: "default" 0.0;
+					visible: 0;
+				}
+				description { 
+					state: "clicked" 0.0;
+					image {
+						normal: "00_list_bar_press.png";
+						border: 10 10 10 10;
+						border_scale: 1;
+					}										
+				}
+			}
+			part {
+				name: "left_padding";
+				type: RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					min: 16 CTXPOPUP_ENTRY_ITEM_HEIGHT;
+					max: 16 CTXPOPUP_ENTRY_ITEM_HEIGHT;
+					align: 0 0.5;
+					fixed: 1 1;
+					visible: 0;										
+				}			
+			}		
+			part {
+				name: "elm.text";
+				type:  TEXT;
+				mouse_events:  0;
+				scale: 1;
+				description { 
+					state: "default" 0.0;
+					min: 1 CTXPOPUP_ENTRY_ITEM_HEIGHT;
+					max: CTXPOPUP_ENTRY_ITEM_WIDTH_MAX CTXPOPUP_ENTRY_ITEM_HEIGHT;
+					fixed: 0 1;
+					align: 0.5 0.5;
+					rel1 {relative: 1.0 0.0; to: "left_padding";}
+					rel2 {relative: 0.0 1.0; to: "right_padding";}
+					color: CTXPOPUP_ENTRY_FONT_COLOR;
+					text {
+						font:     "SLP:style=Roman";
+						size:     26;
+						align:    0.5 0.5;
+						min: 1 1;
+					}
+				}
+				description {
+					state: "clicked" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_CLICKED_FONT_COLOR;
+				}
+				description { 
+					state: "disabled" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_DISABLED_FONT_COLOR;
+				}
+			}
+ 			part { 
+				name: "right_padding";
+				type: RECT;
+				scale: 1;
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					visible: 0;
+					min: 16 CTXPOPUP_ENTRY_ITEM_HEIGHT;
+					max: 16 CTXPOPUP_ENTRY_ITEM_HEIGHT;
+					fixed: 1 0;
+					align: 1.0 0.5;
+      			}
+			}	
+			part { 
+				name: "over1";
+				mouse_events: 1;
+				repeat_events: 1;
+				ignore_flags: ON_HOLD;
+				description { 
+					state: "default" 0.0;
+				}
+				description { 
+					state: "disabled" 0.0;
+					inherit:  "default" 0.0;
+					visible: 0;
+				}
+			}
+			part { 
+				name: "over2";
+				mouse_events: 1;
+				repeat_events: 1;
+				description { 
+					state: "default" 0.0;
+					color: 255 255 255 0;
+				}
+				description { 
+					state: "clicked" 0.0;
+					inherit:  "default" 0.0;
+					color: 255 255 255 255;
+				}
+			}
+		}
+		programs {
+			program {
+				name:   "item_unclick3";
+				signal: "mouse,up,1";
+				source: "over1";
+				action: SIGNAL_EMIT "elm,action,click" "";
+			} 
+			program {
+				name: "disable";
+				signal: "elm,state,disabled";
+				source: "elm";
+				after: "disable_text";
+			}
+			program { 
+				name: "disable_text";
+				script {
+					set_state(PART:"elm.text", "disabled", 0.0);
+					set_int( disabled_v, 1 );
+				}
+			}
+			program { 
+				name: "enable";
+				signal: "elm,state,enabled";
+				source: "elm";
+				after: "enable_text";
+			}
+			program { 
+				name: "enable_text";
+				script {
+					set_state(PART:"elm.text", "enabled", 0.0);
+					set_int( disabled_v, 0 );
+				}
+			}			
+			program {
+				name:   "item_click";
+				signal: "mouse,down,1";
+				source: "over2";
+				script {
+					if(!get_int( disabled_v)) {
+						set_state(PART:"elm.text", "clicked", 0.0);
+						set_state(PART:"bg", "clicked", 0.0);
+					}
+				}
+			}  
+		}
+		program {
+			name:   "item_unclick";
+			signal: "mouse,up,1";
+			source: "over2";
+			script {
+				if(!get_int(disabled_v)) {
+					set_state(PART:"elm.text", "default", 0.0);
+					set_state(PART:"bg", "default", 0.0);
+				}
+			}  
+		}
+	}
+

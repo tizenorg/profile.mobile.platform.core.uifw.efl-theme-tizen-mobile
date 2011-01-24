@@ -1,0 +1,4206 @@
+/*
+ *  nBeat-theme
+ *
+ * Copyright (c) 2000 - 2010 Samsung Electronics Co., Ltd.
+ *
+ * Contact: Seokjae Jeong <seok.j.jeong@samsung.com>, Myoungwoon Roy Kim <Myoungwoon.kim@samsung.com>, Jeonghyun Yun <jh0506.yun@samsung.com>, Jaehwan Kim <jae.hwan.kim@samsung.com>, 
+ *              Chuneon Park <chuneon.park@samsung.com>, Juyung Seo <juyung.seo@samsung.com>, Woohyun Jung <wh0705.jung@samsung.com>, Myungjae Lee <mjae.lee@samsung.com>, Hyoyoung Chang <hyoyoung.chang@samsung.com>, 
+ *              Hyunsil Park <hyunsil.park@samsung.com>, Sohyun Kim <anna1014.kim@samsung.com>, Seunggyun Kim <sgyun.kim@samsung.com>
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
+
+
+//////////////////////////////////////////////// dialogue group /////////////////////////////////////////////////////////
+#define DIALOGUE_GROUP_BACKGROUND(group_name, location,  height_offset, r_border, l_border, t_border, b_border, r_p_border, l_p_border, t_p_border, b_p_border) \
+   group{ \
+      name: "elm/dialoguegroup/"group_name"_"location"/default";\
+      images{\
+         image: "01_dialoguegroup_"group_name"_"location".png" COMP;\
+         image: "00_list_bar_group_"location"_focus.png" COMP;\
+      }\
+      script {\
+         public press_off = 0;\
+         public set_press_effect_on() {\
+            set_int(press_off, 0);\
+         }\
+         public set_press_effect_off() {\
+            set_int(press_off, 1);\
+         }\
+         public thumb_down() {\
+            if(get_int(press_off) == 1) {\
+               set_state(PART:"bg_press", "default", 0.0);\
+            } else {\
+               set_state(PART:"bg_press", "pressed", 0.0);\
+            }\
+         }\
+      }\
+      parts{\
+         part{\
+            name: "left";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 0 0.5;\
+               rel1.relative: 0.0 0.0;\
+               rel2.relative: 0.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "right";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 1 0.5;\
+               rel1.relative: 1.0 0.0;\
+               rel2.relative: 1.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "left1";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 15 0;\
+               fixed: 1 0;\
+               align: 0 0.5;\
+               rel1.relative: 0.0 0.0;\
+               rel2.relative: 0.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "right1";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 15 0;\
+               fixed: 1 0;\
+               align: 1 0.5;\
+               rel1.relative: 1.0 0.0;\
+               rel2.relative: 1.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "bg";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left";\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right";\
+               image.normal: "01_dialoguegroup_"group_name"_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+         }\
+         part{\
+            name: "bg_press";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left";\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right";\
+               image.normal: "00_list_bar_group_"location"_focus.png" ;\
+               image.border: r_p_border l_p_border t_p_border b_p_border;\
+               image.border_scale: 1;\
+            }\
+            description{\
+               state: "pressed" 0.0;\
+               inherit: "default" 0.0;\
+               visible: 1;\
+            }\
+         }\
+         part{\
+            name: "swallow";\
+            type: SWALLOW;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left1";\
+               rel1.to_y: "bg";\
+               rel1.offset: 0 0;\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right1";\
+               rel2.to_y: "bg";\
+               rel2.offset: -1 height_offset;\
+            }\
+         }\
+         part{\
+            name: "over";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               rel1.to: "bg";\
+               rel2.to: "bg";\
+               color: 255 255 255 180;\
+               image.normal: "01_dialoguegroup_"group_name"_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+            description{\
+               state: "disabled" 0.0;\
+               inherit: "default" 0.0;\
+               visible: 1;\
+            }\
+         }\
+      }\
+      programs {\
+         program {\
+            name:   "mouse_down";\
+            signal: "mouse,down,1";\
+            source: "swallow";\
+            script: {\
+               thumb_down();\
+            }\
+         }\
+         program {\
+            name:   "mouse_up";\
+            signal: "mouse,up,1";\
+            source: "swallow";\
+            action: STATE_SET "default" 0.0;\
+            target: "bg_press";\
+         }\
+         program { \
+            name: "press_effect_on";\
+            signal: "elm,state,press,on";\
+            source: "elm";\
+            script {\
+               set_press_effect_on();\
+            }\
+         }\
+         program { \
+            name: "press_effect_off";\
+            signal: "elm,state,press,off";\
+            source: "elm";\
+            script {\
+               set_press_effect_off();\
+            }\
+         }\
+         program { \
+            name: "disabled";\
+            signal: "elm,state,disabled";\
+            source: "elm";\
+            action: STATE_SET "disabled" 0.0;\
+            target: "over";\
+         }\
+         program { \
+            name: "enabled";\
+            signal: "elm,state,enabled";\
+            source: "elm";\
+            action: STATE_SET "default" 0.0;\
+            target: "over";\
+         }\
+      }\
+   }
+
+DIALOGUE_GROUP_BACKGROUND("bg", "default", -5, 13, 13, 10, 15, 13, 13, 39, 39);
+DIALOGUE_GROUP_BACKGROUND("bg", "top", -1, 13, 13, 10, 3, 13, 13, 39, 39);
+DIALOGUE_GROUP_BACKGROUND("bg", "middle", -1, 4, 4, 3, 3, 13, 13, 39, 39);
+DIALOGUE_GROUP_BACKGROUND("bg", "bottom", -5, 13, 13, 3, 15, 13, 13, 39, 44);
+
+#define DIALOGUE_GROUP_SUB_BACKGROUND(group_name, location,  height_offset, r_border, l_border, t_border, b_border, r_p_border, l_p_border, t_p_border, b_p_border) \
+   group{ \
+      name: "elm/dialoguegroup/"group_name"_"location"/default";\
+      images{\
+         image: "01_dialoguegroup_"group_name"_"location".png" COMP;\
+         image: "00_list_bar_group_"location"_focus.png" COMP;\
+         image: "01_dialoguegroup_sub_move.png" COMP ;\
+      }\
+      script {\
+         public press_off = 0;\
+         public set_press_effect_on() {\
+            set_int(press_off, 0);\
+         }\
+         public set_press_effect_off() {\
+            set_int(press_off, 1);\
+         }\
+         public thumb_down() {\
+            if(get_int(press_off) == 1) {\
+               set_state(PART:"bg_press", "default", 0.0);\
+            } else {\
+               set_state(PART:"bg_press", "pressed", 0.0);\
+            }\
+         }\
+      }\
+      parts{\
+         part { \
+            name: "point"; \
+            type: RECT; \
+            scale: 1; \
+            description { \
+               state: "default" 0.0; \
+               color: 0 0 0 0; \
+               rel1 { relative: 0.0 0.0; } \
+               rel2 { relative: 1.0 0.0; } \
+            } \
+         }\
+         part{\
+            name: "left";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 0 0.5;\
+               rel1.relative: 0.0 0.0;\
+               rel2.relative: 0.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "right";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 1 0.5;\
+               rel1.relative: 1.0 0.0;\
+               rel2.relative: 1.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "left1";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 15 0;\
+               fixed: 1 0;\
+               align: 0 0.5;\
+               rel1.relative: 0.0 0.0;\
+               rel2.relative: 0.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "right1";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 15 0;\
+               fixed: 1 0;\
+               align: 1 0.5;\
+               rel1.relative: 1.0 0.0;\
+               rel2.relative: 1.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "bg_rect";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left1";\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right1";\
+               image.normal: "01_dialoguegroup_sub_move.png" ;\
+            }\
+            description { \
+               state: "map_transition" 0.0; \
+               inherit: "default" 0.0; \
+               map { \
+                  perspective: "point"; \
+                  on: 1; \
+                  smooth: 1; \
+                  perspective_on: 1; \
+                  backface_cull: 1; \
+                  rotation { \
+                     center: "point"; \
+                     x: -90.0; \
+                     y: 0.0; \
+                     z: 0.0; \
+                  } \
+               } \
+            }\
+            description { \
+               state: "map_rotate" 0.0; \
+               inherit: "default" 0.0; \
+               map.rotation.x: 0.0; \
+               map.rotation.y: 0.0; \
+               map.rotation.z: 0.0; \
+            }\
+            description { \
+               state: "show_bg" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 0;\
+            }\
+         }\
+         part{\
+            name: "bg";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left";\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right";\
+               image.normal: "01_dialoguegroup_"group_name"_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+            description { \
+               state: "show_bg" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1;\
+            }\
+         }\
+         part{\
+            name: "bg_press";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left";\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right";\
+               image.normal: "00_list_bar_group_"location"_focus.png" ;\
+               image.border: r_p_border l_p_border t_p_border b_p_border;\
+               image.border_scale: 1;\
+            }\
+            description{\
+               state: "pressed" 0.0;\
+               inherit: "default" 0.0;\
+               visible: 1;\
+            }\
+         }\
+         part{\
+            name: "swallow";\
+            type: SWALLOW;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left1";\
+               rel1.to_y: "bg";\
+               rel1.offset: 0 0;\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right1";\
+               rel2.to_y: "bg";\
+               rel2.offset: -1 height_offset;\
+            }\
+            description { \
+               state: "map_transition" 0.0; \
+               inherit: "default" 0.0; \
+               map { \
+                  perspective: "point"; \
+                  on: 1; \
+                  smooth: 1; \
+                  perspective_on: 1; \
+                  backface_cull: 1; \
+                  rotation { \
+                     center: "point"; \
+                     x: -90.0; \
+                     y: 0.0; \
+                     z: 0.0; \
+                  } \
+               } \
+            }\
+            description { \
+               state: "map_rotate" 0.0; \
+               inherit: "default" 0.0; \
+               map.rotation.x: 0.0; \
+               map.rotation.y: 0.0; \
+               map.rotation.z: 0.0; \
+            }\
+         }\
+         part{\
+            name: "over";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               rel1.to: "bg";\
+               rel2.to: "bg";\
+               color: 255 255 255 180;\
+               image.normal: "01_dialoguegroup_"group_name"_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+         }\
+      }\
+      programs {\
+         program {\
+            name:   "mouse_down";\
+            signal: "mouse,down,1";\
+            source: "swallow";\
+            script: {\
+               thumb_down();\
+            }\
+         }\
+         program {\
+            name:   "mouse_up";\
+            signal: "mouse,up,1";\
+            source: "swallow";\
+            action: STATE_SET "default" 0.0;\
+            target: "bg_press";\
+         }\
+         program { \
+            name: "press_effect_on";\
+            signal: "elm,state,press,on";\
+            source: "elm";\
+            script {\
+               set_press_effect_on();\
+            }\
+         }\
+         program { \
+            name: "press_effect_off";\
+            signal: "elm,state,press,off";\
+            source: "elm";\
+            script {\
+               set_press_effect_off();\
+            }\
+         }\
+         program { \
+            name: "disabled";\
+            signal: "elm,state,disabled";\
+            source: "elm";\
+            action: STATE_SET "disabled" 0.0;\
+            target: "over";\
+         }\
+         program { \
+            name: "enabled";\
+            signal: "elm,state,enabled";\
+            source: "elm";\
+            action: STATE_SET "default" 0.0;\
+            target: "over";\
+         }\
+         program { \
+            name: "rotaion_transition"; \
+            signal: "flip_item"; \
+            action: STATE_SET "map_transition" 0.0; \
+            after: "rotation"; \
+            target: "bg_rect";\
+            target: "swallow";\
+         }\
+         program {\
+            name: "rotation"; \
+            action: STATE_SET "map_rotate" 0.0; \
+            transition: LINEAR 0.4; \
+            after: "rotation_finish";\
+            target: "bg_rect";\
+            target: "swallow";\
+         }\
+         program {\
+            name: "rotation_finish"; \
+            action: STATE_SET "show_bg" 0.0; \
+            target: "bg_rect";\
+            target: "bg";\
+         }\
+      }\
+   }
+
+DIALOGUE_GROUP_SUB_BACKGROUND("sub", "default", -5, 13, 13, 10, 15, 13, 13, 39, 39);
+DIALOGUE_GROUP_SUB_BACKGROUND("sub", "top", -1, 13, 13, 10, 3, 13, 13, 39, 39);
+DIALOGUE_GROUP_SUB_BACKGROUND("sub", "middle", -1, 4, 4, 3, 3, 13, 13, 39, 39);
+DIALOGUE_GROUP_SUB_BACKGROUND("sub", "bottom", -5, 13, 13, 3, 15, 13, 13, 39, 44);
+
+
+#define DIALOGUE_GROUP_EDIT_BACKGROUND(location, height_offset, r_border, l_border, t_border, b_border) \
+   group{ \
+      name: "elm/dialoguegroup/editfield_"location"/default";\
+      images{\
+         image: "01_dialoguegroup_bg_"location".png" COMP;\
+         image: "01_dialoguegroup_edit_"location".png" COMP;\
+      }\
+      parts{\
+         part{\
+            name: "left";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 0 0.5;\
+               rel1.relative: 0.0 0.0;\
+               rel2.relative: 0.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "right";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 1 0.5;\
+               rel1.relative: 1.0 0.0;\
+               rel2.relative: 1.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "left1";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 15 0;\
+               fixed: 1 0;\
+               align: 0 0.5;\
+               rel1.relative: 0.0 0.0;\
+               rel2.relative: 0.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "right1";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 15 0;\
+               fixed: 1 0;\
+               align: 1 0.5;\
+               rel1.relative: 1.0 0.0;\
+               rel2.relative: 1.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "bg";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left";\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right";\
+               image.normal: "01_dialoguegroup_bg_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+         }\
+         part{\
+            name: "inner_bg";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left";\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right";\
+               image.normal: "01_dialoguegroup_edit_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+         }\
+         part{\
+            name: "swallow";\
+            type: SWALLOW;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left1";\
+               rel1.to_y: "inner_bg";\
+               rel1.offset: 0 0;\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right1";\
+               rel2.to_y: "inner_bg";\
+               rel2.offset: -1 height_offset;\
+            }\
+         }\
+         part{\
+            name: "over";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               rel1.to: "bg";\
+               rel2.to: "bg";\
+               color: 255 255 255 180;\
+               image.normal: "01_dialoguegroup_bg_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+            description{\
+               state: "disabled" 0.0;\
+               inherit: "default" 0.0;\
+               visible: 1;\
+            }\
+         }\
+      }\
+      programs {\
+         program { \
+            name: "disabled";\
+            signal: "elm,state,disabled";\
+            source: "elm";\
+            action: STATE_SET "disabled" 0.0;\
+            target: "over";\
+         }\
+         program { \
+            name: "enabled";\
+            signal: "elm,state,enabled";\
+            source: "elm";\
+            action: STATE_SET "default" 0.0;\
+            target: "over";\
+         }\
+      }\
+   }
+
+DIALOGUE_GROUP_EDIT_BACKGROUND("default", -5, 13, 13, 10, 15);
+DIALOGUE_GROUP_EDIT_BACKGROUND("top", -1, 13, 13, 10, 4);
+DIALOGUE_GROUP_EDIT_BACKGROUND("middle", -1, 13, 13, 5, 5);
+DIALOGUE_GROUP_EDIT_BACKGROUND("bottom", -5, 13, 13, 5, 14);
+
+#define DIALOGUE_GROUP_EDIT_WITH_TITLE_BACKGROUND(location, inner_loc, height_offset, r_border, l_border, t_border, b_border, in_rborder, in_lborder, in_tborder, in_bborder) \
+        group{ \
+           name: "elm/dialoguegroup/editfield_with_title_"location"/default";\
+           images{\
+              image: "01_dialoguegroup_bg_"location".png" COMP;\
+              image: "01_dialoguegroup_edit_"location".png" COMP;\
+           }\
+           parts{\
+              part { name: "top";\
+                 type: RECT;\
+                 scale: 1;\
+                 ignore_flags: ON_HOLD;\
+                 description {\
+                    state: "default" 0.0;\
+                    visible: 0;\
+                    min: 0 30;\
+                    fixed: 1 1;\
+                    rel1.relative: 0.0 0.0;\
+                    rel2.relative: 1.0 0.0;\
+                    align: 0.5 0;\
+                 }\
+              }\
+              part{\
+                 name: "left";\
+                 type: RECT;\
+                 scale: 1;\
+                 mouse_events: 0;\
+                 description{\
+                    state: "default" 0.0;\
+                    visible: 0;\
+                    min: 11 0;\
+                    fixed: 1 0;\
+                    align: 0 0.5;\
+                    rel1.relative: 0.0 0.0;\
+                    rel2.relative: 0.0 1.0;\
+                 }\
+              }\
+              part{\
+                 name: "right";\
+                 type: RECT;\
+                 scale: 1;\
+                 mouse_events: 0;\
+                 description{\
+                    state: "default" 0.0;\
+                    visible: 0;\
+                    min: 11 0;\
+                    fixed: 1 0;\
+                    align: 1 0.5;\
+                    rel1.relative: 1.0 0.0;\
+                    rel2.relative: 1.0 1.0;\
+                 }\
+              }\
+              part{\
+                 name: "left1";\
+                 type: RECT;\
+                 scale: 1;\
+                 mouse_events: 0;\
+                 description{\
+                    state: "default" 0.0;\
+                    visible: 0;\
+                    min: 15 0;\
+                    fixed: 1 0;\
+                    align: 0 0.5;\
+                    rel1.relative: 0.0 0.0;\
+                    rel2.relative: 0.0 1.0;\
+                 }\
+              }\
+              part{\
+                 name: "right1";\
+                 type: RECT;\
+                 scale: 1;\
+                 mouse_events: 0;\
+                 description{\
+                    state: "default" 0.0;\
+                    visible: 0;\
+                    min: 15 0;\
+                    fixed: 1 0;\
+                    align: 1 0.5;\
+                    rel1.relative: 1.0 0.0;\
+                    rel2.relative: 1.0 1.0;\
+                 }\
+              }\
+              part{\
+                 name: "bg";\
+                 type: IMAGE;\
+                 description{\
+                    state: "default" 0.0;\
+                    rel1.relative: 1.0 0.0;\
+                    rel1.to_x: "left";\
+                    rel2.relative: 0.0 1.0;\
+                    rel2.to_x: "right";\
+                    image.normal: "01_dialoguegroup_bg_"location".png" ;\
+                    image.border: r_border l_border t_border b_border;\
+                    image.border_scale: 1;\
+                 }\
+              }\
+              part{\
+                 name: "inner_bg";\
+                 type: IMAGE;\
+                 description{\
+                    state: "default" 0.0;\
+                    rel1.relative: 1.0 1.0;\
+                    rel1.to_x: "left";\
+                    rel1.to_y: "top";\
+                    rel2.relative: 0.0 1.0;\
+                    rel2.to_x: "right";\
+                    image.normal: "01_dialoguegroup_edit_"inner_loc".png" ;\
+                    image.border: in_rborder in_lborder in_tborder in_bborder;\
+                    image.border_scale: 1;\
+                 }\
+              }\
+              part{\
+                 name: "swallow";\
+                 type: SWALLOW;\
+                 description{\
+                    state: "default" 0.0;\
+                    rel1.relative: 1.0 0.0;\
+                    rel1.to_x: "left1";\
+                    rel1.to_y: "bg";\
+                    rel1.offset: 0 0;\
+                    rel2.relative: 0.0 1.0;\
+                    rel2.to_x: "right1";\
+                    rel2.to_y: "bg";\
+                    rel2.offset: -1 height_offset;\
+                 }\
+              }\
+              part{\
+                 name: "over";\
+                 type: IMAGE;\
+                 description{\
+                    state: "default" 0.0;\
+                    visible: 0;\
+                    rel1.to: "bg";\
+                    rel2.to: "bg";\
+                    color : 255 255 255 180;\
+                    image.normal: "01_dialoguegroup_bg_"location".png" ;\
+                    image.border: r_border l_border t_border b_border;\
+                    image.border_scale: 1;\
+                 }\
+                 description{\
+                    state: "disabled" 0.0;\
+                    inherit: "default" 0.0;\
+                    visible: 1;\
+                 }\
+              }\
+           }\
+           programs {\
+              program { \
+                 name: "disabled";\
+                 signal: "elm,state,disabled";\
+                 source: "elm";\
+                 action: STATE_SET "disabled" 0.0;\
+                 target: "over";\
+              }\
+              program { \
+                 name: "enabled";\
+                 signal: "elm,state,enabled";\
+                 source: "elm";\
+                 action: STATE_SET "default" 0.0;\
+                 target: "over";\
+              }\
+           }\
+        }
+
+DIALOGUE_GROUP_EDIT_WITH_TITLE_BACKGROUND("default", "bottom", -5, 13, 13, 10, 15, 13, 13, 5, 14);
+DIALOGUE_GROUP_EDIT_WITH_TITLE_BACKGROUND("top", "middle", -1, 13, 13, 10, 4, 13, 13, 5, 5);
+DIALOGUE_GROUP_EDIT_WITH_TITLE_BACKGROUND("middle", "middle",  -1, 13, 13, 5, 5, 13, 13, 5, 5);
+DIALOGUE_GROUP_EDIT_WITH_TITLE_BACKGROUND("bottom", "bottom", -5, 13, 13, 5, 14, 13, 13, 5, 14);
+
+#define DIALOGUE_GROUP_EDIT_TITLE_BACKGROUND(location, height_offset, r_border, l_border, t_border, b_border) \
+   group{ \
+      name: "elm/dialoguegroup/edit_title_"location"/default";\
+      images{\
+         image: "01_dialoguegroup_bg_"location".png" COMP;\
+         image: "01_dialoguegroup_title_"location".png" COMP;\
+      }\
+      parts{\
+         part{\
+            name: "left";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 0 0.5;\
+               rel1.relative: 0.0 0.0;\
+               rel2.relative: 0.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "right";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 1 0.5;\
+               rel1.relative: 1.0 0.0;\
+               rel2.relative: 1.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "left1";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 15 0;\
+               fixed: 1 0;\
+               align: 0 0.5;\
+               rel1.relative: 0.0 0.0;\
+               rel2.relative: 0.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "right1";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 15 0;\
+               fixed: 1 0;\
+               align: 1 0.5;\
+               rel1.relative: 1.0 0.0;\
+               rel2.relative: 1.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "bg";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left";\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right";\
+               image.normal: "01_dialoguegroup_bg_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+         }\
+         part{\
+            name: "inner_bg";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left";\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right";\
+               image.normal: "01_dialoguegroup_title_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+         }\
+         part{\
+            name: "swallow";\
+            type: SWALLOW;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left1";\
+               rel1.to_y: "inner_bg";\
+               rel1.offset: 0 0;\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right1";\
+               rel2.to_y: "inner_bg";\
+               rel2.offset: -1 height_offset;\
+            }\
+         }\
+         part{\
+            name: "over";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               rel1.to: "inner_bg";\
+               rel2.to: "inner_bg";\
+               image.normal: "01_dialoguegroup_title_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+               color: 255 255 255 180;\
+            }\
+            description{\
+               state: "disabled" 0.0;\
+               inherit: "default" 0.0;\
+               visible: 1;\
+            }\
+         }\
+      }\
+      programs {\
+         program { \
+            name: "disabled";\
+            signal: "elm,state,disabled";\
+            source: "elm";\
+            action: STATE_SET "disabled" 0.0;\
+            target: "over";\
+         }\
+         program { \
+            name: "enabled";\
+            signal: "elm,state,enabled";\
+            source: "elm";\
+            action: STATE_SET "default" 0.0;\
+            target: "over";\
+         }\
+      }\
+   }
+
+DIALOGUE_GROUP_EDIT_TITLE_BACKGROUND("default", -5, 13, 13, 10, 15);
+DIALOGUE_GROUP_EDIT_TITLE_BACKGROUND("top", -1, 13, 13, 10, 4);
+
+#define DIALOGUE_GROUP_HIDDEN_BACKGROUND(location, height_offset, r_border, l_border, t_border, b_border) \
+   group{ \
+      name: "elm/dialoguegroup/hidden_"location"/default";\
+      images{\
+         image: "01_dialoguegroup_bg_"location".png" COMP;\
+         image: "01_dialoguegroup_hidden_"location".png" COMP;\
+      }\
+      parts{\
+         part{\
+            name: "left";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 0 0.5;\
+               rel1.relative: 0.0 0.0;\
+               rel2.relative: 0.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "right";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 1 0.5;\
+               rel1.relative: 1.0 0.0;\
+               rel2.relative: 1.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "left1";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 15 0;\
+               fixed: 1 0;\
+               align: 0 0.5;\
+               rel1.relative: 0.0 0.0;\
+               rel2.relative: 0.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "right1";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 15 0;\
+               fixed: 1 0;\
+               align: 1 0.5;\
+               rel1.relative: 1.0 0.0;\
+               rel2.relative: 1.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "bg";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left";\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right";\
+               image.normal: "01_dialoguegroup_bg_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+         }\
+         part{\
+            name: "inner_bg";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left";\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right";\
+               image.normal: "01_dialoguegroup_hidden_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+         }\
+         part{\
+            name: "swallow";\
+            type: SWALLOW;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left1";\
+               rel1.to_y: "inner_bg";\
+               rel1.offset: 0 0;\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right1";\
+               rel2.to_y: "inner_bg";\
+               rel2.offset: -1 height_offset;\
+            }\
+         }\
+         part{\
+            name: "over";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               rel1.to: "inner_bg";\
+               rel2.to: "inner_bg";\
+               color: 255 255 255 180;\
+               image.normal: "01_dialoguegroup_hidden_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+            description{\
+               state: "disabled" 0.0;\
+               inherit: "default" 0.0;\
+               visible: 1;\
+            }\
+         }\
+      }\
+      programs {\
+         program { \
+            name: "disabled";\
+            signal: "elm,state,disabled";\
+            source: "elm";\
+            action: STATE_SET "disabled" 0.0;\
+            target: "over";\
+         }\
+         program { \
+            name: "enabled";\
+            signal: "elm,state,enabled";\
+            source: "elm";\
+            action: STATE_SET "default" 0.0;\
+            target: "over";\
+         }\
+      }\
+   }
+
+DIALOGUE_GROUP_HIDDEN_BACKGROUND("default", -5, 13, 13, 10, 15);
+DIALOGUE_GROUP_HIDDEN_BACKGROUND("top", -1, 13, 13, 10, 4);
+DIALOGUE_GROUP_HIDDEN_BACKGROUND("middle", -1, 13, 13, 5, 5);
+DIALOGUE_GROUP_HIDDEN_BACKGROUND("bottom", -5, 13, 13, 5, 14);
+
+#define DIALOGUE_GROUP_DATAVIEW_BACKGROUND(location, height_offset, r_border, l_border, t_border, b_border) \
+   group{ \
+      name: "elm/dialoguegroup/dataview_"location"/default";\
+      images{\
+         image: "01_dialoguegroup_dataview_"location".png" COMP;\
+      }\
+      parts{\
+         part{\
+            name: "left";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 0 0.5;\
+               rel1.relative: 0.0 0.0;\
+               rel2.relative: 0.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "right";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 1 0.5;\
+               rel1.relative: 1.0 0.0;\
+               rel2.relative: 1.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "left1";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 15 0;\
+               fixed: 1 0;\
+               align: 0 0.5;\
+               rel1.relative: 0.0 0.0;\
+               rel2.relative: 0.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "right1";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 15 0;\
+               fixed: 1 0;\
+               align: 1 0.5;\
+               rel1.relative: 1.0 0.0;\
+               rel2.relative: 1.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "bg";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left";\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right";\
+               image.normal: "01_dialoguegroup_dataview_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+         }\
+         part{\
+            name: "swallow";\
+            type: SWALLOW;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left1";\
+               rel1.to_y: "bg";\
+               rel1.offset: 0 0;\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right1";\
+               rel2.to_y: "bg";\
+               rel2.offset: -1 height_offset;\
+            }\
+         }\
+         part{\
+            name: "over";\
+            type: IMAGE;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               rel1.to: "bg";\
+               rel2.to: "bg";\
+               color: 255 255 255 180;\
+               image.normal: "01_dialoguegroup_dataview_"location".png" ;\
+               image.border: r_border l_border t_border b_border;\
+               image.border_scale: 1;\
+            }\
+            description{\
+               state: "disabled" 0.0;\
+               inherit: "default" 0.0;\
+               visible: 1;\
+            }\
+         }\
+      }\
+      programs {\
+         program { \
+            name: "disabled";\
+            signal: "elm,state,disabled";\
+            source: "elm";\
+            action: STATE_SET "disabled" 0.0;\
+            target: "over";\
+         }\
+         program { \
+            name: "enabled";\
+            signal: "elm,state,enabled";\
+            source: "elm";\
+            action: STATE_SET "default" 0.0;\
+            target: "over";\
+         }\
+      }\
+   }
+
+DIALOGUE_GROUP_DATAVIEW_BACKGROUND("default", -5, 13, 13, 10, 15);
+DIALOGUE_GROUP_DATAVIEW_BACKGROUND("top", -1, 13, 13, 10, 4);
+DIALOGUE_GROUP_DATAVIEW_BACKGROUND("middle", -1, 13, 13, 5, 5);
+DIALOGUE_GROUP_DATAVIEW_BACKGROUND("bottom", -5, 13, 13, 5, 14);
+
+#define DIALOGUE_GROUP_NO_BACKGROUND(location, height_offset) \
+   group{ \
+      name: "elm/dialoguegroup/no_bg_"location"/default";\
+      parts{\
+         part{\
+            name: "left";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 0 0.5;\
+               rel1.relative: 0.0 0.0;\
+               rel2.relative: 0.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "right";\
+            type: RECT;\
+            scale: 1;\
+            mouse_events: 0;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               min: 11 0;\
+               fixed: 1 0;\
+               align: 1 0.5;\
+               rel1.relative: 1.0 0.0;\
+               rel2.relative: 1.0 1.0;\
+            }\
+         }\
+         part{\
+            name: "bg";\
+            type: RECT;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left";\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right";\
+               color: 0 0 0 0;\
+            }\
+         }\
+         part{\
+            name: "swallow";\
+            type: SWALLOW;\
+            description{\
+               state: "default" 0.0;\
+               rel1.relative: 1.0 0.0;\
+               rel1.to_x: "left";\
+               rel1.to_y: "bg";\
+               rel1.offset: 0 0;\
+               rel2.relative: 0.0 1.0;\
+               rel2.to_x: "right";\
+               rel2.to_y: "bg";\
+               rel2.offset: -1 height_offset;\
+            }\
+         }\
+         part{\
+            name: "over";\
+            type: RECT;\
+            mouse_events: 1;\
+            description{\
+               state: "default" 0.0;\
+               visible: 0;\
+               rel1.to: "bg";\
+               rel2.to: "bg";\
+               color: 0 0 0 0;\
+            }\
+            description{\
+               state: "disabled" 0.0;\
+               inherit: "default" 0.0;\
+               visible: 1;\
+            }\
+         }\
+      }\
+      programs {\
+         program { \
+            name: "disabled";\
+            signal: "elm,state,disabled";\
+            source: "elm";\
+            action: STATE_SET "disabled" 0.0;\
+            target: "over";\
+         }\
+         program { \
+            name: "enabled";\
+            signal: "elm,state,enabled";\
+            source: "elm";\
+            action: STATE_SET "default" 0.0;\
+            target: "over";\
+         }\
+      }\
+   }
+
+DIALOGUE_GROUP_NO_BACKGROUND("default", -5);
+DIALOGUE_GROUP_NO_BACKGROUND("top", -1);
+DIALOGUE_GROUP_NO_BACKGROUND("middle", -1);
+DIALOGUE_GROUP_NO_BACKGROUND("bottom", -5);
+
+
+group { name: "elm/dialoguegroup/title/default";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 30;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "left_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;                    
+         }
+      }
+      part { name: "text";
+         type: TEXT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 1.0 0.5;
+            rel1.to_x: "left_padding";
+            rel2.relative: 1.0 0.5;
+            
+            color: DIALOGUEGROUP_ITEM_TITLE_TEXT_COLOR_INC;
+            text {
+               font: "SLP:style=Medium";
+               size: 20;
+               min: 0 0;
+               align: 0.0 0.5;
+            }
+         }      
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/default";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 80;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "left_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;                    
+         }
+      }
+      part { name: "right_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      }
+      part { name: "right_padding_e";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 5 0;
+            max: 5 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      } 
+      part { name: "text";
+         type: TEXT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 1.0 0.5;
+            rel1.to_x: "left_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "content";
+            
+            color: DIALOGUEGROUP_ITEM_SINGLE_TEXT_COLOR_INC;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.5;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;                                     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC;
+         }
+      }
+      part { name: "content";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding";
+         }      
+      }
+      part { name: "content_extended";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding_e";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding_e";
+         }      
+      } 
+      part { name: "over";
+         type: RECT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            color: 0 0 0 0;
+         }      
+         description { 
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program {
+         name:   "mouse_down";
+         signal: "mouse,down,1";
+         source: "over";
+         action: STATE_SET "pressed" 0.0;
+         target: "text";
+      }
+      program {
+         name:   "mouse_up";
+         signal: "mouse,up,1";
+         source: "over";
+         action: STATE_SET "default" 0.0;
+         target: "text";
+      }
+      program { 
+         name: "highlight_off";
+         signal: "elm,text,highlight,off";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "over";
+      }
+      program { 
+         name: "highlight_on";
+         signal: "elm,text,highlight,on";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "over";
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/text_with_button";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 80;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "left_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;                    
+         }
+      }
+      part { name: "right_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      }
+      part { name: "right_padding_e";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 5 0;
+            max: 5 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      } 
+      part { name: "text";
+         type: TEXT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 1.0 0.5;
+            rel1.to_x: "left_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "content";       
+            color: DIALOGUEGROUP_ITEM_SINGLE_TEXT_COLOR_INC;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "content";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding";
+         }      
+      }
+      part { name: "content_extended";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding_e";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding_e";
+         }      
+      } 
+   }
+}
+
+group { name: "elm/dialogueitem/base/text_with_button_2_wrap";
+   styles{
+      style { name: "dialogue_text_style";
+         base: "font=SLP:style=Roman font_size=32 align=left color="DIALOGUEGROUP_ITEM_SINGLE_TEXT_COLOR_INC_HEX" wrap=word";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "hilight" "+ font=SLP:style=Bold";
+         tag:  "b" "+ font=SLP:style=Bold";
+         tag:  "tab" "\t";
+      }
+      style { name: "dialogue_text_pressed_style";
+         base: "font=SLP:style=Roman font_size=32 align=left color="DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC_HEX" wrap=word";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "hilight" "+ font=SLP:style=Bold";
+         tag:  "b" "+ font=SLP:style=Bold";
+         tag:  "tab" "\t";
+      }
+   }    
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 80;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "left_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;                    
+         }
+      }
+      part { name: "right_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      }
+      part { name: "right_padding_e";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 5 0;
+            max: 5 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      } 
+      part {
+         name: "text";
+         type: TEXTBLOCK;
+         effect: SHADOW;
+         scale:1;       
+         description {
+            state: "default" 0.0;
+            text {
+               style: "dialogue_text_style";
+               min: 0 0;
+               max: 0 1;
+            }
+            rel1 { relative: 1.0 0.0; to_x: "left_padding"; to_y: "bg"; }  //1.0 0.0
+            rel2 { relative: 0.0 1.0; to_x: "content"; to_y: "bg"; }
+            align: 0.0 0.5;
+         }      
+         description {
+            state: "pressed" 0.0;
+            text {
+               style: "dialogue_text_pressed_style";
+               min: 0 0;
+               max: 0 1;
+            }
+            rel1 { relative: 1.0 0.0; to_x: "left_padding"; to_y: "bg"; }  //1.0 0.0
+            rel2 { relative: 0.0 1.0; to_x: "content"; to_y: "bg"; }
+            align: 0.0 0.5;
+         }      
+      }
+      part { name: "over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { 
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "content";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding";
+         }      
+      }
+      part { name: "content_extended";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding_e";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding_e";
+         }      
+      } 
+   }
+   programs {
+      program {
+         name:   "mouse_down";
+         signal: "mouse,down,1";
+         source: "over";
+         action: STATE_SET "pressed" 0.0;
+         target: "text";
+      }
+      program {
+         name:   "mouse_up";
+         signal: "mouse,up,1";
+         source: "over";
+         action: STATE_SET "default" 0.0;
+         target: "text";
+      }
+      program { 
+         name: "highlight_off";
+         signal: "elm,text,highlight,off";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "over";
+      }
+      program { 
+         name: "highlight_on";
+         signal: "elm,text,highlight,on";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "over";
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/text_with_button_2";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 80;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "left_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;                    
+         }
+      }
+      part { name: "right_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      }
+      part { name: "right_padding_e";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 5 0;
+            max: 5 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      } 
+      part { name: "text";
+         type: TEXT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 1.0 0.5;
+            rel1.to_x: "left_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "content";
+            
+            color: DIALOGUEGROUP_ITEM_SINGLE_TEXT_COLOR_INC;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.5;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;                                     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC;
+         }
+      }
+      part { name: "over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { 
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "content";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding";
+         }      
+      }
+      part { name: "content_extended";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding_e";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding_e";
+         }      
+      } 
+   }
+   programs {
+      program {
+         name:   "mouse_down";
+         signal: "mouse,down,1";
+         source: "over";
+         action: STATE_SET "pressed" 0.0;
+         target: "text";
+      }
+      program {
+         name:   "mouse_up";
+         signal: "mouse,up,1";
+         source: "over";
+         action: STATE_SET "default" 0.0;
+         target: "text";
+      }
+      program { 
+         name: "highlight_off";
+         signal: "elm,text,highlight,off";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "over";
+      }
+      program { 
+         name: "highlight_on";
+         signal: "elm,text,highlight,on";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "over";
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/button_with_text";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 80;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "left_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;                    
+         }
+      }
+      part { name: "left_padding1";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 10 0;
+            max: 10 9999;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel1.to_x: "content";
+            rel2.to_x: "content";
+         }
+      }
+      part { name: "right_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 10 0;
+            max: 10 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      }
+      part { name: "text";
+         type: TEXT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 1.0 0.5;
+            rel1.to_x: "left_padding1";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding";
+            
+            color: DIALOGUEGROUP_ITEM_SINGLE_TEXT_COLOR_INC;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "content";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 1.0 0.5;
+            rel1.to_x: "left_padding";
+            rel2.relative: 1.0 0.5;
+            rel2.to_x: "left_padding";
+         }      
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/text_with_arrow";
+   images{
+      image: "00_list_on_arrow.png" COMP;       
+      image: "00_list_on_arrow_press.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 80;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "left_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;                    
+         }
+      }
+      part { name: "right_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      }
+      part { name: "text";
+         type: TEXT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 1.0 0.5;
+            rel1.to_x: "left_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "arrow_image";
+            
+            color: DIALOGUEGROUP_ITEM_SINGLE_TEXT_COLOR_INC;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.5;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;                                     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC;
+         }
+      }
+      part { name: "arrow_image";
+         type: IMAGE;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 15 28;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding";
+            image.normal: "00_list_on_arrow.png" ;
+         }      
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;     
+            image.normal: "00_list_on_arrow_press.png" ;
+         }
+      }
+      part { name: "over";
+         type: RECT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            color: 0 0 0 0;
+         }
+         description { 
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program {
+         name:   "mouse_down";
+         signal: "mouse,down,1";
+         source: "over";
+         action: STATE_SET "pressed" 0.0;
+         target: "text";
+         target: "arrow_image";
+      }
+      program {
+         name:   "mouse_up";
+         signal: "mouse,up,1";
+         source: "over";
+         action: STATE_SET "default" 0.0;
+         target: "text";
+         target: "arrow_image";
+      }
+      program { 
+         name: "highlight_off";
+         signal: "elm,text,highlight,off";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "over";
+      }
+      program { 
+         name: "highlight_on";
+         signal: "elm,text,highlight,on";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "over";
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/default_dim";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 80;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "left_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;                    
+         }
+      }
+      part { name: "right_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      }
+      part { name: "right_padding_e";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 5 0;
+            max: 5 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      }
+ 
+      part { name: "text";
+         type: TEXT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 1.0 0.5;
+            rel1.to_x: "left_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "content";
+            
+            color: 163 157 138 255;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "content";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding";
+         }      
+      }
+      part { name: "content_extended";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding_e";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding_e";
+         }      
+      } 
+   }
+}
+
+group { name: "elm/dialogueitem/base/dataview";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 66;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "left_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 0;
+            align: 0.0 0.0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;                    
+         }
+      }
+      part { name: "right_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 5 0;
+            fixed: 1 0;
+            align: 1.0 0.0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      }
+      part { name: "right_padding1";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 176 0;
+            fixed: 1 0;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      }
+      part { name: "left.text";
+         type: TEXT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 1.0 0.5;
+            rel1.to_x: "left_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding1";                
+            color: 0 0 0 255;
+            text {
+               font: "SLP:style=Roman";
+               size: 30;
+               min: 0 0;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "right.text";
+         type: TEXT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding1";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding";
+            color: 90 73 40 255;
+            text {
+               font: "SLP:style=Medium";
+               size: 26;
+               min: 0 0;
+               align: 0.0 0.5;
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/two_line_text_with_button_2";
+   parts {
+      part { name: "base";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            min: 0 90;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "top1";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 50;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "top2";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 10;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "left";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;
+         }
+      }
+      part { name: "right";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 1 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;
+         }
+      }
+      part { name: "right_e";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 5 0;
+            fixed: 1 1;
+            align: 1 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;
+         }
+      } 
+      part { name: "top.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top2";                                            
+            }
+            rel2 {
+               relative: 0.0 0.5;
+               to_x: "content";
+            }
+            color: DIALOGUEGROUP_ITEM_TOP_TEXT_COLOR_1_INC;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;                                     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC;
+         }
+      }
+      part { name: "bottom.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top1";            
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "content";
+            }
+            color: DIALOGUEGROUP_ITEM_BOTTOM_TEXT_COLOR_1_INC;
+            text {
+               font: "SLP:style=Medium";
+               size: 24;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;                                     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC; 
+         }
+      }
+      part { name: "over";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+         }                              
+         description { 
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "content";
+         type: SWALLOW;
+         scale: 1;
+         repeat_events: 0;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right";
+         }      
+      }
+      part { name: "content_extended";
+         type: SWALLOW;
+         scale: 1;
+         repeat_events: 0;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_e";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_e";
+         }      
+      }
+ 
+   }
+   programs {
+      program {
+         name:   "mouse_down";
+         signal: "mouse,down,1";
+         source: "over";
+         action: STATE_SET "pressed" 0.0;
+         target: "top.text";
+         target: "bottom.text";
+      }
+      program {
+         name:   "mouse_up";
+         signal: "mouse,up,1";
+         source: "over";
+         action: STATE_SET "default" 0.0;
+         target: "top.text";
+         target: "bottom.text";
+      }
+      program { 
+         name: "highlight_off";
+         signal: "elm,text,highlight,off";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "over";
+      }
+      program { name: "highlight_on";
+         signal: "elm,text,highlight,on";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "over";
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/two_line_text_with_button";
+   parts {
+      part { name: "base";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            min: 0 90;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "top1";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 50;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "top2";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 10;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "left";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;
+         }
+      }
+      part { name: "right";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 1 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;
+         }
+      }
+      part { name: "right_e";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 5 0;
+            fixed: 1 1;
+            align: 1 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;
+         }
+      } 
+      part { name: "top.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top2";                                            
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               to_x: "content";
+            }
+            color: DIALOGUEGROUP_ITEM_TOP_TEXT_COLOR_1_INC;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "bottom.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top1";            
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               to_x: "content";
+            }
+            color: DIALOGUEGROUP_ITEM_BOTTOM_TEXT_COLOR_1_INC;
+            text {
+               font: "SLP:style=Medium";
+               size: 24;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "content";
+         type: SWALLOW;
+         scale: 1;
+         repeat_events: 0;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right";
+         }      
+      }
+      part { name: "content_extended";
+         type: SWALLOW;
+         scale: 1;
+         repeat_events: 0;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_e";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_e";
+         }      
+      } 
+   }
+}
+
+group { name: "elm/dialogueitem/base/two_line_text";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            min: 0 90;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "top1";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 50;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "top2";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 10;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "left";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;
+         }
+      }
+      part { name: "right";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 1 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;
+         }
+      }
+      part { name: "right_e";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 5 0;
+            fixed: 1 1;
+            align: 1 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;
+         }
+      }
+ 
+      part { name: "top.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top2";                                            
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               to_x: "content";
+            }
+            color: DIALOGUEGROUP_ITEM_TOP_TEXT_COLOR_1_INC;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;                                     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC;
+         }
+      }
+      part { name: "bottom.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top1";            
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "content";
+            }
+            color: DIALOGUEGROUP_ITEM_BOTTOM_TEXT_COLOR_1_INC;
+            text {
+               font: "SLP:style=Medium";
+               size: 24;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;                                     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC; 
+         }
+      }
+      part { name: "content";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right";
+         }      
+      }
+      part { name: "content_extended";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_e";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_e";
+         }      
+      } 
+      part { name: "over";
+         type: RECT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            color: 0 0 0 0;
+            visible: 1;
+         }
+         description { 
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program {
+         name:   "mouse_down";
+         signal: "mouse,down,1";
+         source: "over";
+         action: STATE_SET "pressed" 0.0;
+         target: "top.text";
+         target: "bottom.text";
+      }
+      program {
+         name:   "mouse_up";
+         signal: "mouse,up,1";
+         source: "over";
+         action: STATE_SET "default" 0.0;
+         target: "top.text";
+         target: "bottom.text";
+      }
+      program { 
+         name: "highlight_off";
+         signal: "elm,text,highlight,off";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "over";
+      }
+      program { 
+         name: "highlight_on";
+         signal: "elm,text,highlight,on";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "over";
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/two_line_text_with_arrow";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            min: 0 90;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "top1";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 50;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "top2";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 10;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "left";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;
+         }
+      }
+      part { name: "right";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 1 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;
+         }
+      }
+      part { name: "top.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top2";                                            
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               to_x: "arrow_image";
+            }
+            color: DIALOGUEGROUP_ITEM_TOP_TEXT_COLOR_1_INC;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;                                     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC;
+         }
+      }
+      part { name: "bottom.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top1";            
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               to_x: "arrow_image";
+            }
+            color: DIALOGUEGROUP_ITEM_BOTTOM_TEXT_COLOR_1_INC;
+            text {
+               font: "SLP:style=Medium";
+               size: 24;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;                                     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC;
+         }
+      }
+      part { name: "arrow_image";
+         type: IMAGE;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 15 28;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right";
+            image.normal: "00_list_on_arrow.png" ;
+         }      
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;     
+            image.normal: "00_list_on_arrow_press.png" ;
+         }
+      }
+      part { name: "over";
+         type: RECT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            color: 0 0 0 0;
+         }                              
+         description { 
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program {
+         name:   "mouse_down";
+         signal: "mouse,down,1";
+         source: "over";
+         action: STATE_SET "pressed" 0.0;
+         target: "top.text";
+         target: "bottom.text";
+         target: "arrow_image";
+      }
+      program {
+         name:   "mouse_up";
+         signal: "mouse,up,1";
+         source: "over";
+         action: STATE_SET "default" 0.0;
+         target: "top.text";
+         target: "bottom.text";
+         target: "arrow_image";
+      }
+      program { 
+         name: "highlight_off";
+         signal: "elm,text,highlight,off";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "over";
+      }
+      program { 
+         name: "highlight_on";
+         signal: "elm,text,highlight,on";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "over";
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/edit_title_with_button";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 80;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "left_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;                    
+         }
+      }
+      part { name: "right_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      }
+      part { name: "right_padding_e";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 5 0;
+            max: 5 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      } 
+      part { name: "text";
+         type: TEXT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 1.0 0.5;
+            rel1.to_x: "left_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "content";
+            
+            color: 255 255 255 255;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "content";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding";
+         }      
+      }
+      part { name: "content_extended";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding_e";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding_e";
+         }      
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/edit_two_line_text";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            min: 0 90;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "top1";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 40;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "top2";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 10;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "left";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;
+         }
+      }
+      part { name: "right";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 1 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;
+         }
+      }
+      part { name: "right_e";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 5 0;
+            fixed: 1 1;
+            align: 1 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;
+         }
+      } 
+      part { name: "top.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top2";                                            
+            }
+            rel2 {
+               relative: 0.0 0.5;
+               to_x: "content";
+            }
+            color: DIALOGUEGROUP_ITEM_TOP_TEXT_COLOR_2_INC;
+            text {
+               font: "SLP:style=Medium";
+               size: 24;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;                                     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC; 
+         }
+      }
+      part { name: "bottom.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top1";            
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "content";
+            }
+            color: DIALOGUEGROUP_ITEM_BOTTOM_TEXT_COLOR_2_INC;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;                                     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC;
+         }
+      }
+      part { name: "content";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right";
+         }      
+      }
+      part { name: "content_extended";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_e";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_e";
+         }      
+      } 
+      part { name: "over";
+         type: RECT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            color: 0 0 0 0;
+         }      
+         description { 
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program {
+         name:   "mouse_down";
+         signal: "mouse,down,1";
+         source: "over";
+         action: STATE_SET "pressed" 0.0;
+         target: "top.text";
+         target: "bottom.text";
+      }
+      program {
+         name:   "mouse_up";
+         signal: "mouse,up,1";
+         source: "over";
+         action: STATE_SET "default" 0.0;
+         target: "top.text";
+         target: "bottom.text";
+      }
+      program { 
+         name: "highlight_off";
+         signal: "elm,text,highlight,off";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "over";
+      }
+      program { 
+         name: "highlight_on";
+         signal: "elm,text,highlight,on";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "over";
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/edit_two_line_text_with_arrow";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            min: 0 90;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "top1";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 40;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "top2";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 10;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "left";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;
+         }
+      }
+      part { name: "right";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 1 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;
+         }
+      }
+      part { name: "top.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top2";                                            
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               to_x: "arrow_image";
+            }
+            color: DIALOGUEGROUP_ITEM_TOP_TEXT_COLOR_2_INC; 
+            text {
+               font: "SLP:style=Medium";
+               size: 24;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;                                     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC;
+         }
+      }
+      part { name: "bottom.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top1";            
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               to_x: "arrow_image";
+            }
+            color: DIALOGUEGROUP_ITEM_BOTTOM_TEXT_COLOR_2_INC;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;                                     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC;                           
+         }
+      }
+      part { name: "arrow_image";
+         type: IMAGE;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 15 28;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right";
+            image.normal: "00_list_on_arrow.png" ;
+         }      
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;     
+            image.normal: "00_list_on_arrow_press.png" ;
+         }
+      }
+      part { name: "over";
+         type: RECT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            color: 0 0 0 0;
+         }                              
+         description { 
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program {
+         name:   "mouse_down";
+         signal: "mouse,down,1";
+         source: "over";
+         action: STATE_SET "pressed" 0.0;
+         target: "top.text";
+         target: "bottom.text";
+         target: "arrow_image";
+      }
+      program {
+         name:   "mouse_up";
+         signal: "mouse,up,1";
+         source: "over";
+         action: STATE_SET "default" 0.0;
+         target: "top.text";
+         target: "bottom.text";
+         target: "arrow_image";
+      }
+      program { 
+         name: "highlight_off";
+         signal: "elm,text,highlight,off";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "over";
+      }
+      program { 
+         name: "highlight_on";
+         signal: "elm,text,highlight,on";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "over";
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/edit_two_line_text_with_button";
+   parts {
+      part { name: "base";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            min: 0 90;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "top1";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 40;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "top2";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 10;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.5 0;
+         }
+      }
+      part { name: "left";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;
+         }
+      }
+      part { name: "right";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 15 0;
+            fixed: 1 1;
+            align: 1 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;
+         }
+      }
+      part { name: "right_e";
+         type: RECT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 5 0;
+            fixed: 1 1;
+            align: 1 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;
+         }
+      } 
+      part { name: "top.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top2";                                            
+            }
+            rel2 {
+               relative: 0.0 0.5;
+               to_x: "content";
+            }
+            color: DIALOGUEGROUP_ITEM_TOP_TEXT_COLOR_2_INC; 
+            text {
+               font: "SLP:style=Medium";
+               size: 24;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "bottom.text";
+         type: TEXT;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left";
+               to_y: "top1";            
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "content";
+            }
+            color: DIALOGUEGROUP_ITEM_BOTTOM_TEXT_COLOR_2_INC; 
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "content";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right";
+         }      
+      }
+      part { name: "content_extended";
+         type: SWALLOW;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_e";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_e";
+         }      
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/list_on_off";
+   images{
+      image: "00_list_on_arrow.png" COMP;       
+      image: "00_list_on_arrow_press.png" COMP;
+   }
+   script        {
+      public off_style = 0;
+      
+      public set_on_style() {
+         set_int(off_style, 0);
+         set_state(PART:"on_off_text", "default", 0.0);
+      }
+      public set_off_style() {
+         set_int(off_style, 1);
+         set_state(PART:"on_off_text", "off_style", 0.0);
+      }
+      public thumb_up() {
+         if(get_int(off_style) == 1)
+           set_state(PART:"on_off_text", "off_style", 0.0);
+         else
+           set_state(PART:"on_off_text", "default", 0.0);
+         set_state(PART:"text", "default", 0.0);
+         set_state(PART:"arrow_image", "default", 0.0);
+      }
+   }
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 80;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "left_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;                    
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "right_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "text_icon_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            rel1.relative : 0.0 0.0;
+            rel1.to_x : "arrow_image";
+            rel2.relative : 0.0 1.0;                    
+            rel2.to_x : "arrow_image";
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "text";
+         type: TEXT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 1.0 0.5;
+            rel1.to_x: "left_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "on_off_text";
+            color: DIALOGUEGROUP_ITEM_SINGLE_TEXT_COLOR_INC;
+            text {
+               font: "SLP:style=Roman";
+               size: 32;
+               min: 0 0;
+               align: 0.0 0.5;
+            }
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;             
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC;
+         }
+      }
+      part { name: "on_off_text";
+         type: TEXT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "text_icon_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "text_icon_padding";
+            color: DIALOGUEGROUP_ITEM_ON_TEXT_COLOR_INC;
+            text {
+               font: "SLP:style=Roman";
+               size: 22;
+               min: 1 1;
+               align: 1.0 0.5;
+            }
+         }
+         description { 
+            state: "off_style" 0.0;
+            inherit: "default" 0.0;     
+            color: DIALOGUEGROUP_ITEM_OFF_TEXT_COLOR_INC;
+         }
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;     
+            color: DIALOGUEGROUP_ITEM_PRESSED_TEXT_COLOR_INC; 
+         }
+      }
+      part { name: "arrow_image";
+         type: IMAGE;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 15 28;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.5;
+            rel1.to_x: "right_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding";
+            image.normal: "00_list_on_arrow.png" ;
+         }      
+         description { 
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;     
+            image.normal: "00_list_on_arrow_press.png" ;
+         }
+      }
+      part { name: "over";
+         type: RECT;
+         scale: 1;
+         description { 
+            state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            color: 0 0 0 0;
+         }      
+         description { 
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program { 
+         name: "on_style";
+         signal: "elm,state,on,style";
+         source: "elm";
+         script {
+            set_on_style();
+         }
+      }
+      program { 
+         name: "invert_off";
+         signal: "elm,state,off,style";
+         source: "elm";
+         script {
+            set_off_style();
+         }
+      }
+      program {
+         name:   "mouse_down";
+         signal: "mouse,down,1";
+         source: "over";
+         action: STATE_SET "pressed" 0.0;
+         target: "text";
+         target: "on_off_text";
+         target: "arrow_image";
+      }
+      program {
+         name:   "mouse_up";
+         signal: "mouse,up,1";
+         source: "over";
+         script {
+            thumb_up();
+         }                              
+      }
+      program { 
+         name: "highlight_off";
+         signal: "elm,text,highlight,off";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "over";
+      }
+      program { name: "highlight_on";
+         signal: "elm,text,highlight,on";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "over";
+      }
+   }
+}
+
+group { name: "elm/dialogueitem/base/slider";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 80;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "left_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 0.0 0.0;
+            rel2.relative : 0.0 1.0;                    
+         }
+      }
+      part { name: "right_padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 15 0;
+            max: 15 9999;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            color: 0 0 0 0;
+            rel1.relative : 1.0 0.0;
+            rel2.relative : 1.0 1.0;                    
+         }
+      }
+      part { name: "slider";
+         type: SWALLOW;
+         description { 
+            state: "default" 0.0;
+            fixed: 1 1;
+            rel1.relative: 1.0 0.5;
+            rel1.to_x: "left_padding";
+            rel2.relative: 0.0 0.5;
+            rel2.to_x: "right_padding";
+         }      
+      }
+   }
+}

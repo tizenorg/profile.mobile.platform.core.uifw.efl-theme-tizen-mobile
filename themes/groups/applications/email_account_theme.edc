@@ -1,0 +1,908 @@
+#define BOX_LIST_H	110
+
+	group { name: "elm/genlist/item/dummy/default";
+		alias: "elm/genlist/item_odd/dummy/default";
+		alias: "elm/genlist/item_compress/dummy/default";
+		alias: "elm/genlist/item_compress_odd/dummy/default";
+
+		data.item: "stacking" "above";
+		data.item: "selectraise" "on";
+		data.item: "labels" "elm.text";
+		data.item: "treesize" "20";	
+		parts {
+			part { name: "rect"; 
+				type: RECT; 
+				description { 
+					min: 0 BOX_LIST_H; 
+					state: "default" 0.0; 
+					color: 0 0 0 0;
+				} 
+			} 
+			part { name: "base";
+				mouse_events: 0;
+				description {
+					state: "default" 0.0;
+					min: 0 (BOX_LIST_H-2);
+					image {
+						//normal: "01_list_lighting.png";
+						//border: 2 2 2 2;
+					}
+					//fill.smooth: 0;
+				}
+			}
+			part { name: "bg";
+				mouse_events: 0;
+				description { state: "default" 0.0;
+					min: 0 (BOX_LIST_H-2);
+					visible: 0;
+					color: 255 255 255 0;
+					rel1 {
+						relative: 0.0 0.0;
+						offset: -5 -5;
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 4 4;
+					}
+					//image {
+						//#  normal: "tw3_list_select.png";
+					//}
+				}
+				description { state: "selected" 0.0;
+					inherit: "default" 0.0;
+					visible: 1;
+					color: 255 255 255 255;
+					rel1 {
+						relative: 0.0 0.0;
+						offset: -2 -2;
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 1 1;
+					}
+				}
+			}
+		}
+		programs {
+			program {
+				name:    "go_active";
+				signal:  "elm,state,selected";
+				source:  "elm";
+				action:  STATE_SET "selected" 0.0;
+				target:  "bg";
+				transition: LINEAR 0.5;
+				after: "go_passive";
+			}
+			program {
+				name:    "go_passive";
+				source:  "elm";
+				action:  STATE_SET "default" 0.0;
+				target:  "bg";
+				transition: LINEAR 0.5;
+			}
+		}
+	}
+
+
+group { 
+	name: "elm/genlist/item/emaillisttree/title/default";
+	alias: "elm/genlist/item_odd/emaillisttree/title/default";
+	alias: "elm/genlist/item_compress/emaillisttree/title/default";
+	alias: "elm/genlist/item_compress_odd/emaillisttree/title/default";
+
+    data.item: "stacking" "above";
+    data.item: "selectraise" "on";
+    data.item: "labels" "elm.text.title elm.text.count";
+    images {
+    	image: "00_list_bar_press_1x80.png" COMP;
+	}
+	parts {
+		BEAT_GENLIST_PART_BASE( 90 )
+        BEAT_GENLIST_PART_BG_IMAGE
+        BEAT_GENLIST_PART_PADDING_TOP( 20 )
+        BEAT_GENLIST_PART_PADDING_BOTTOM( 20 )
+        BEAT_GENLIST_PART_PADDING_LEFT( 20 )
+        BEAT_GENLIST_PART_PADDING_RIGHT( 20 )
+        part { name: "elm.text.title";
+           clip_to: "disclip";
+           type: TEXT;
+           mouse_events: 0;
+           scale: 1;
+           description { 
+				state: "default" 0.0;
+              	min: 0 50;
+               	fixed: 0 1;
+               	align: 1 0.5;
+               	rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.top"; relative: 1 1; }
+               	rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.bottom"; relative: 0 0; }
+               	color: GENLIST_PART_TEXT_COLOR_INC;
+               	text {
+                	font: FONT_ROM;
+                  	size: 32;
+                  	min: 0 1;
+                  	align: 0.0 0.5;
+               	}
+            }
+           description { 
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 225 225 225 255;
+            }            
+        }        
+         part { 
+         	name: "elm.text.count";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { 
+			   state: "default" 0.0;
+               min: 0 40;
+               fixed: 1 1;
+               rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.top"; relative: 1 1; }
+               rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.bottom"; relative: 0 0; }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: FONT_ROM;
+                  size: 18;
+                  min: 1 1;
+                  align: 1.0 0.5;
+               }
+           }
+           description { 
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 225 225 225 255;
+            }
+		}
+      	part { name: "bottom_line";
+            type: RECT; 
+            clip_to: "disclip"; 
+            mouse_events: 0;
+            description {  
+               min: 0 1;
+               fixed: 0 1;
+              rel1 { relative: 0.0 1.0;  offset: 0 -1; }       
+               color: 199 195 183 255;
+            } 
+         }
+		BEAT_GENLIST_PART_DISCLIP         
+      }
+      programs {
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.count";
+            target: "elm.text.title";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.count";
+            target: "elm.text.title";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;            
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+    	}
+	}
+}
+
+group { 
+   	  name: "elm/genlist/tree/emaillisttree/email/default";
+      alias: "elm/genlist/tree_odd/emaillisttree/email/default";
+      alias: "elm/genlist/item_compress/emaillisttree/email/default";
+      alias: "elm/genlist/item_compress_odd/emaillisttree/email/default";
+      
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.email elm.text.account elm.text.count";
+      data.item: "icons" "elm.icon.bar elm.icon.email";
+      data.item: "treesize" "0";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+         image: "00_button_expand_closed.png" COMP;
+         image: "00_button_expand_closed_press.png" COMP;
+         image: "00_button_expand_opened.png" COMP;
+         image: "00_button_expand_opened_press.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 90 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_PADDING_LEFT( 15 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 15 )
+         BEAT_GENLIST_PART_PADDING_TOP( 10 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 10 )
+         part { name: "touch_arrow";
+            type: RECT;
+            clip_to: "disclip";
+            ignore_flags: ON_HOLD;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 70 80;
+               fixed: 1 1;
+               align: 0.5 0.5;
+               rel1 {
+                  relative: 0.5 0.5;
+                  to: "arrow";
+               }
+               rel2 {
+                  relative: 0.5 0.5;
+                  to: "arrow";
+               }
+               color: 0 0 0 0;
+            }
+         }
+         part { 
+         	name: "arrow";
+            clip_to: "disclip";
+            ignore_flags: ON_HOLD;
+            mouse_events: 0;
+            scale: 1;
+            description { 
+               state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               aspect: 1.0 1.0; // needed?
+               rel1 { to_x: "elm.padding.left";  relative: 1 0; }
+               image.normal: "00_button_expand_closed.png";
+            }
+            description { 
+            	state: "selected" 1.0;
+                inherit: "default" 0.0;
+                image.normal: "00_button_expand_closed_press.png";
+            }
+            description { 
+            	state: "active" 0.0;
+                inherit: "default" 0.0;
+                image.normal: "00_button_expand_opened.png";
+            }
+            description { 
+            	state: "active" 1.0;
+                inherit: "default" 0.0;
+                image.normal: "00_button_expand_opened_press.png";
+            }
+         }
+         part { 
+         	name: "arrow_right_padding";
+         	clip_to: "disclip";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            description { 
+               min: 15 0;
+               fixed: 1 0;
+               visible: 0;
+               align: 0 0;
+               rel1 { to:"arrow"; relative: 1 0; }
+               rel2 { to:"arrow"; relative: 1 0; }
+            }
+         } 
+         part {
+         	name: "elm.icon.bar";
+         	clip_to:"disclip";
+         	type: SWALLOW;
+         	scale: 1;
+         	mouse_events: 0;
+         	description {
+			   min: 5 1;
+			   max: 5 90;
+               fixed: 1 1;
+               rel1 { to_x: "arrow_right_padding"; to_y:"elm.padding.top"; relative: 1 1;  }
+               rel2 { to_x: "arrow_right_padding"; to_y:"elm.padding.bottom"; relative: 1 0;  }
+         	}
+         }
+         part { 
+         	name: "iconbar_right_padding";
+         	clip_to: "disclip";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            description { 
+               min: 15 0;
+               fixed: 1 0;
+               visible: 0;
+               align: 0 0;
+               rel1 { to:"elm.icon.bar"; relative: 1 0; }
+               rel2 { to:"elm.icon.bar"; relative: 1 0; }
+            }
+         }         
+         part { name: "elm.icon.email";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 50 50;
+               max: 50 50;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 { to_x: "iconbar_right_padding"; relative: 1.0 0;  }
+               rel2 { to_x: "iconbar_right_padding"; relative: 1.0 1;  }
+            }
+         }   
+         part { 
+         	name: "icon_right_padding";
+         	clip_to: "disclip";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            description { 
+               min: 15 0;
+               fixed: 1 0;
+               visible: 0;
+               align: 0 0;
+               rel1 { to:"elm.icon.email"; relative: 1 0; }
+               rel2 { to:"elm.icon.email"; relative: 1 0; }
+            }
+         }                          
+         part { name: "elm.text.email";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { 
+            	state: "default" 0.0;
+               align: 0.5 0;
+               min: 1 40;
+               fixed: 0 1;
+               rel1 { relative: 1 1;  to_x: "icon_right_padding";  to_y:"elm.padding.top"; }
+               rel2 {  relative: 0 1;  to_x: "elm.padding.right"; to_y:"elm.padding.top"; }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: FONT_ROM;
+                  size: 32;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+           description { 
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 225 225 225 255;
+            }            
+         } 
+         part { name: "elm.text.account";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { 
+               state: "default" 0.0;
+               align: 0 0;
+               rel1 { relative: 0 1;  to: "elm.text.email"; }               
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: FONT_ROM;
+                  size: 24;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+           description { 
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 225 225 225 255;
+            }            
+         }
+         part { 
+         	name: "elm.text.count";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { 
+			   state: "default" 0.0;
+               min: 0 40;
+               fixed: 1 1;
+               rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.top"; relative: 1 1; }
+               rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.bottom"; relative: 0 0; }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: FONT_ROM;
+                  size: 18;
+                  min: 1 1;
+                  align: 1.0 0.5;
+               }
+           }
+           description { 
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 225 225 225 255;
+            }
+		}         
+      	part { name: "bottom_line";
+            type: RECT; 
+            clip_to: "disclip"; 
+            mouse_events: 0;
+            description {  
+               min: 0 1;
+               fixed: 0 1;
+              rel1 { relative: 0.0 1.0;  offset: 0 -1; }       
+               color: 199 195 183 255;
+            } 
+         }         
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program {
+            name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.email";
+            target: "elm.text.account";
+            target: "elm.text.count";
+            target: "arrow";
+         }
+         program {
+            name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.email";
+            target: "elm.text.account";
+            target: "elm.text.count";            
+            target: "arrow";
+            transition: LINEAR 0.1;
+         }
+         program {
+            name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program {
+            name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+         program {
+            name: "expand";
+            signal: "mouse,up,1";
+            source: "touch_arrow";
+            action: SIGNAL_EMIT "elm,action,expand,toggle" "elm";
+         }
+         program {
+            name: "arrow_down";
+            signal: "mouse,down,1";
+            source: "touch_arrow";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"arrow", st, 30, vl)
+               if (vl == 0.0)
+                  set_state(PART:"arrow", st, 1.0);
+               else
+                  set_state(PART:"arrow", st, 0.0);
+            }
+         }
+         program {
+            name: "go_expanded";
+            signal: "elm,state,expanded";
+            source: "elm";
+            action: STATE_SET "active" 0.0;
+            target: "arrow";
+         }
+         program {
+            name: "go_contracted";
+            signal: "elm,state,contracted";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "arrow";
+         }
+      }
+   }
+   
+   group { 
+   	  name: "elm/genlist/tree/emaillisttree/sub_title/default";
+      alias: "elm/genlist/tree_odd/emaillisttree/sub_title/default";
+      alias: "elm/genlist/item_compress/emaillisttree/sub_title/default";
+      alias: "elm/genlist/item_compress_odd/emaillisttree/sub_title/default";
+      
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.title elm.text.count";
+      data.item: "treesize" "15";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+         image: "00_button_expand_2_closed.png" COMP;
+         image: "00_button_expand_2_closed_press.png" COMP;
+         image: "00_button_expand_2_opened.png" COMP;
+         image: "00_button_expand_2_opened_press.png" COMP;
+         image: "00_list_expandable_bg.png" COMP;
+      }
+      parts {
+         //BEAT_GENLIST_PART_BASE( 90 )
+	 BEAT_GENLIST_PART_MAP_PERSPECTIVE_POINT()
+         BEAT_GENLIST_PART_MAP_BASE( 90 )
+         GENLIST_EXPANDABLE3_PART_BG_IMAGE_INC
+         BEAT_GENLIST_PART_PADDING_LEFT( 15 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 15 )
+         BEAT_GENLIST_PART_PADDING_TOP( 10 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 10 )
+         part { name: "elm.swallow.pad";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               fixed: 1 0;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.padding.left";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+               }
+            }
+         }
+         part { name: "touch_arrow";
+            type: RECT;
+            clip_to: "disclip";
+            ignore_flags: ON_HOLD;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 70 80;
+               fixed: 1 1;
+               align: 0.5 0.5;
+               rel1 {
+                  relative: 0.5 0.5;
+                  to: "arrow";
+               }
+               rel2 {
+                  relative: 0.5 0.5;
+                  to: "arrow";
+               }
+               color: 0 0 0 0;
+            }
+         }
+         part { 
+         	name: "arrow";
+            clip_to: "disclip";
+            ignore_flags: ON_HOLD;
+            mouse_events: 0;
+            scale: 1;
+            description { 
+               state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               aspect: 1.0 1.0; // needed?
+               rel1 { to_x: "elm.swallow.pad";  relative: 1 0; }
+               image.normal: "00_button_expand_2_closed.png";
+            }
+            description { 
+            	state: "selected" 1.0;
+                inherit: "default" 0.0;
+                image.normal: "00_button_expand_2_closed_press.png";
+            }
+            description { 
+            	state: "active" 0.0;
+                inherit: "default" 0.0;
+                image.normal: "00_button_expand_2_opened.png";
+            }
+            description { 
+            	state: "active" 1.0;
+                inherit: "default" 0.0;
+                image.normal: "00_button_expand_2_opened_press.png";
+            }
+         }
+         part { 
+         	name: "arrow_right_padding";
+         	clip_to: "disclip";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            description { 
+               min: 15 0;
+               fixed: 1 0;
+               visible: 0;
+               align: 0 0;
+               rel1 { to:"arrow"; relative: 1 0; }
+               rel2 { to:"arrow"; relative: 1 0; }
+            }
+         } 
+         part { name: "elm.text.title";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { 
+            	state: "default" 0.0;
+               align: 0.5 0.5;
+               min: 1 40;
+               fixed: 0 1;
+               rel1 { relative: 1 1;  to_x: "arrow_right_padding";  to_y:"elm.padding.top"; }
+               rel2 {  relative: 0 0;  to_x: "elm.padding.right"; to_y:"elm.padding.bottom"; }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: FONT_ROM;
+                  size: 32;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+           description { 
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 225 225 225 255;
+            }            
+         } 
+         part { 
+         	name: "elm.text.count";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { 
+			   state: "default" 0.0;
+               min: 0 40;
+               fixed: 1 1;
+               rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.top"; relative: 1 1; }
+               rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.bottom"; relative: 0 0; }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: FONT_ROM;
+                  size: 18;
+                  min: 1 1;
+                  align: 1.0 0.5;
+               }
+           }
+           description { 
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 225 225 225 255;
+            }
+		}         
+      	part { name: "bottom_line";
+            type: RECT; 
+            clip_to: "disclip"; 
+            mouse_events: 0;
+            description {  
+               min: 0 1;
+               fixed: 0 1;
+              rel1 { relative: 0.0 1.0;  offset: 0 -1; }       
+               color: 199 195 183 255;
+            } 
+         }         
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program {
+            name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.title";
+            target: "elm.text.count";
+            target: "arrow";
+         }
+         program {
+            name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.title";
+            target: "elm.text.count";            
+            target: "arrow";
+            transition: LINEAR 0.1;
+         }
+         program {
+            name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program {
+            name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+         program {
+            name: "expand";
+            signal: "mouse,up,1";
+            source: "touch_arrow";
+            action: SIGNAL_EMIT "elm,action,expand,toggle" "elm";
+         }
+         program {
+            name: "arrow_down";
+            signal: "mouse,down,1";
+            source: "touch_arrow";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"arrow", st, 30, vl)
+               if (vl == 0.0)
+                  set_state(PART:"arrow", st, 1.0);
+               else
+                  set_state(PART:"arrow", st, 0.0);
+            }
+         }
+         program {
+            name: "go_expanded";
+            signal: "elm,state,expanded";
+            source: "elm";
+            action: STATE_SET "active" 0.0;
+            target: "arrow";
+         }
+         program {
+            name: "go_contracted";
+            signal: "elm,state,contracted";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "arrow";
+         }
+      }
+   }
+   group { 
+		name: "elm/genlist/item/emaillisttree/content/default";
+		alias: "elm/genlist/item_odd/emaillisttree/content/default";
+      alias: "elm/genlist/item_compress/emaillisttree/content/default";
+      alias: "elm/genlist/item_compress_odd/emaillisttree/content/default";
+      
+    	data.item: "stacking" "above";
+    	data.item: "selectraise" "on";
+    	data.item: "labels" "elm.text.content elm.text.count";
+    	data.item: "treesize" "15";
+    	images {
+    		image: "00_list_bar_press_1x80.png" COMP;
+    		image: "00_list_expandable_2_bg.png" COMP;
+		}
+		parts {
+			//BEAT_GENLIST_PART_BASE( 90 )
+		BEAT_GENLIST_PART_MAP_PERSPECTIVE_POINT()
+	        BEAT_GENLIST_PART_MAP_BASE( 90 )
+        	//GENLIST_EXPANDABLE3_PART_BG_IMAGE_INC
+		GENLIST_EXPANDABLE_PART_BG_IMAGE_INC
+        	BEAT_GENLIST_PART_PADDING_TOP( 20 )
+        	BEAT_GENLIST_PART_PADDING_BOTTOM( 20 )
+        	BEAT_GENLIST_PART_PADDING_LEFT( 20 )
+        	BEAT_GENLIST_PART_PADDING_RIGHT( 20 )
+        	part { name: "elm.swallow.pad";
+            	type: SWALLOW;
+            	description { state: "default" 0.0;
+               	fixed: 1 0;
+                align: 0.0 0.5;
+                rel1 {
+                	relative: 1.0 0.0;
+                	to_x: "elm.padding.left";
+                }
+                rel2 {
+                	relative: 1.0 1.0;
+                	to_x: "elm.padding.left";
+                }
+              }
+           }
+           part { name: "elm.text.content";
+           clip_to: "disclip";
+           	type: TEXT;
+           	mouse_events: 0;
+           	scale: 1;
+           description { 
+				state: "default" 0.0;
+              	min: 0 50;
+               	fixed: 0 1;
+               	align: 1 0.5;
+               	rel1 { to_x: "elm.swallow.pad"; to_y: "elm.padding.top"; relative: 1 1; }
+               	rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.bottom"; relative: 0 0; }
+               	color: GENLIST_PART_TEXT_COLOR_INC;
+               	text {
+                	font: FONT_ROM;
+                  	size: 32;
+                  	min: 0 1;
+                  	align: 0.0 0.5;
+               	}
+            }
+           description { 
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 225 225 225 255;
+            }            
+        }        
+         part { 
+         	name: "elm.text.count";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { 
+			   state: "default" 0.0;
+               min: 0 40;
+               fixed: 1 1;
+               rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.top"; relative: 1 1; }
+               rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.bottom"; relative: 0 0; }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: FONT_ROM;
+                  size: 18;
+                  min: 1 1;
+                  align: 1.0 0.5;
+               }
+           }
+           description { 
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 225 225 225 255;
+            }
+		}
+      	part { name: "bottom_line";
+            type: RECT; 
+            clip_to: "disclip"; 
+            mouse_events: 0;
+            description {  
+               min: 0 1;
+               fixed: 0 1;
+              rel1 { relative: 0.0 1.0;  offset: 0 -1; }       
+               color: 199 195 183 255;
+            } 
+         }
+		BEAT_GENLIST_PART_DISCLIP         
+      }
+      programs {
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.count";
+            target: "elm.text.content";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.count";
+            target: "elm.text.content";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;            
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+    	}
+	}
+}
+

@@ -1,0 +1,341 @@
+/*
+ *  nBeat-theme
+ *
+ * Copyright (c) 2000 - 2010 Samsung Electronics Co., Ltd.
+ *
+ * Contact: Seokjae Jeong <seok.j.jeong@samsung.com>, Myoungwoon Roy Kim <Myoungwoon.kim@samsung.com>, Jeonghyun Yun <jh0506.yun@samsung.com>, Jaehwan Kim <jae.hwan.kim@samsung.com>, 
+ * 		Chuneon Park <chuneon.park@samsung.com>, Juyung Seo <juyung.seo@samsung.com>, Woohyun Jung <wh0705.jung@samsung.com>, Myungjae Lee <mjae.lee@samsung.com>, Hyoyoung Chang <hyoyoung.chang@samsung.com>, 
+ *		Hyunsil Park <hyunsil.park@samsung.com>, Sohyun Kim <anna1014.kim@samsung.com>, Seunggyun Kim <sgyun.kim@samsung.com>
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
+
+///////////////////////////////////////////////////////////////////////////////
+/*
+Wiper Control
+
+  1) Drag object confie
+
+  +-[confine]---------------------------------------------------------------------+
+  |+-[bar]---------------------------------------------+                          |
+  ||                                                   |                          |
+  ||                                                   |                          |
+  ||                                                   |                          |
+  |+---------------------------------------------------+                          |
+  +-------------------------------------------------------------------------------+
+
+  2) Content.below
+                            +-[bg]---------------------+
+                            |+-[content.below]--------+|
+                            ||                        ||
+                            || swallow                ||
+                            ||                        ||
+                            |+------------------------+|
+                            +--------------------------+
+
+  3) Bar-Left state
+
+                            +-[bg]---------------------+
+  +-[content.above]--------+|+-[bar.right]------------+|
+  |                        |||                        ||
+  | swallow                ||| transparent            ||
+  |                        |||                        ||
+  +------------------------+|+------------------------+|
+                            +--------------------------+
+
+  4) Bar-Right state
+
+                            +-[bg]---------------------+
+                            |+-[content.above]--------+|+-[bar.right]------------+
+                            ||                        |||                        |
+                            || swallow                ||| transparent            |
+                            ||                        |||                        |
+                            |+------------------------+|+------------------------+
+                            +--------------------------+
+
+  5) Position / Size
+    - bar width = bg * 2 (content.above + bar.right)
+	- bar height = bg height
+	- content width = bg width 
+	- content height = bg height
+	- content position = left of bar
+
+*/
+
+//collections {
+	group {
+		name: "elm/wipercontrol/base/default";
+
+		parts {	
+			part {
+				name: "bg";
+				type: RECT;
+				mouse_events: 0;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+					color: 0 0 0 0;
+				}
+			}
+			part {
+				name: "content.below";
+				type: RECT;
+				mouse_events: 1;
+				scale: 1;
+				description {
+					state: "default" 0.0;				
+					rel1 { relative: 0.0 0.0; to: "bg";}
+					rel2 { relative: 1.0 1.0; to: "bg";}
+					color: 0 0 0 0;
+				}
+			}
+			part {
+				name: "content.below.swallow";
+				type: SWALLOW;
+				mouse_events: 1;
+				scale: 1;
+				description {
+					state: "default" 0.0;				
+					rel1 { relative: 0.0 0.0; to: "content.below";}
+					rel2 { relative: 1.0 1.0; to: "content.below";}
+					color: 0 0 0 0;
+				}
+			}
+			part {
+				name: "content.below.mouse_block";
+				type: RECT;
+				mouse_events: 1;
+				repeat_events: 0;
+				scale: 1;
+				description {
+					state: "default" 0.0;				
+					rel1 { relative: 0.0 0.0; to: "content.below";}
+					rel2 { relative: 1.0 1.0; to: "content.below";}
+					color: 0 0 0 0;
+					visible: 0;
+				}
+				description {
+					state: "block" 0.0;				
+					inherit: "default" 0.0;				
+					visible: 1;
+				}
+			}
+			part {
+				name: "bg2";
+				type: RECT;
+				mouse_events: 0;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					rel1 { relative: -1.0 0.0; to:"bg"; }
+					rel2 { relative: 2.0 1.0;  to:"bg";}
+					color: 0 0 0 0;
+				}
+			}
+			part {
+				name: "confine";
+				type: RECT;
+				mouse_events: 0;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					rel1 { relative: 0.0 0.0; to:"bg2"; }
+					rel2 { relative: 1.0 1.0; to:"bg2";}
+					color: 0 0 0 0;
+				}
+			}
+
+			part {
+				name: "bar";
+				type: RECT;
+				mouse_events: 1;
+				repeat_events: 1;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					min: 1 1;
+					fixed: 1 1;
+					align: 0.0 0.0;
+					rel1 { relative: 0.0 0.0; to: "confine";}
+					rel2 { relative: 0.0 1.0; to: "confine";}
+					color: 0 0 0 0;
+				}
+				dragable {
+					confine: "confine";
+					x: -1 1 1;
+					y: 0 0 0;
+				}
+			}
+
+			part {
+				name: "content.above";
+				type: RECT;
+				mouse_events: 1;
+				repeat_events: 1;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					min: 1 1;
+					fixed: 1 1;
+					align: 0.0 0.0;
+					rel1 { relative: 0.0 0.0; to: "bar";}
+					rel2 { relative: 0.0 1.0; to: "bar";}
+					color: 0 0 0 0;
+				}
+			}
+			part {
+				name: "bar.right";
+				type: RECT;
+				mouse_events: 0;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					min: 1 1;
+					fixed: 1 1;
+					align: 1.0 0.0;
+					rel1 { relative: 1.0 0.0; to: "bar";}
+					rel2 { relative: 1.0 1.0; to: "bar";}
+					color: 0 0 0 0;
+				}
+			}
+			part {
+				name: "content.above.swallow";
+				type: SWALLOW;
+				mouse_events: 1;
+				scale: 1;
+				description {
+					state: "default" 0.0;				
+					rel1 { relative: 0.0 0.0; to: "content.above";}
+					rel2 { relative: 1.0 1.0; to: "content.above";}
+					color: 0 0 0 0;
+				}
+			}
+		}
+
+		script {
+
+			/* 0: mouse_down(no draged), 1: draged */
+			public g_mouse_state = 0;
+
+			/* FIXME: smooth animation */
+			public animator_left(val, Float:step) {
+				new Float:vx;
+				new Float:vy;
+
+				get_drag(PART:"bar", vx, vy);
+				vx += step;
+				if (vx > 0.9)
+					vx = 1.0;
+				set_drag(PART:"bar", vx, 1.0);
+			}
+
+			/* FIXME: smooth animation */
+			public animator_right(val, Float:step) {
+				new Float:vx;
+				new Float:vy;
+
+				get_drag(PART:"bar", vx, vy);
+				vx -= step;
+				if (vx < 0.1)
+					vx = 0.0;
+				set_drag(PART:"bar", vx, 1.0);
+			}
+		}
+
+		programs {
+
+			/* default program for resize event */
+			program { 
+				name: "on_resize"; 
+				signal: "resize"; 
+				source: ""; 
+				script { 
+					emit("resize_content", "content");
+					set_drag(PART:"bar", 1.0, 1.0);
+					set_state(PART:"content.below.mouse_block", "default", 0.0); 
+				} 
+			} 
+
+			program { 
+				name: "resize_content"; 
+				signal: "resize_content"; 
+				source: "content"; 
+				script { 
+					new x;
+					new y;
+					new w;
+					new h;
+					get_geometry (PART:"bg", x, y, w, h);
+
+					/* bar resize */
+					custom_state (PART:"bar", "default", 0.0);
+					set_state_val (PART:"bar", STATE_MIN,  w*2, h);
+					set_state (PART:"bar", "custom", 0.0);
+					
+					/* bar resize */
+					custom_state (PART:"content.above", "default", 0.0);
+					set_state_val (PART:"content.above", STATE_MIN,  w, h);
+					set_state (PART:"content.above", "custom", 0.0);
+				} 
+			} 
+
+			program { 
+				name: "drag_bar"; 
+				signal: "drag"; 
+				source: "bar"; 
+				script { 
+					set_int (g_mouse_state, 1);
+				} 
+			}
+
+			program { 
+				name: "down_bar"; 
+				signal: "mouse,down,*"; 
+				source: "bar"; 
+				script { 
+					set_int (g_mouse_state, 0);
+				} 
+			}
+
+			program { 
+				name: "up_bar"; 
+				signal: "mouse,up,*"; 
+				source: "bar"; 
+				script { 
+					new Float:vx;
+					new Float:vy;
+
+					if (get_int(g_mouse_state) != 0) {
+						get_drag(PART:"bar", vx, vy);
+						if (vx > 0.5) {
+							anim(0.2, "animator_left", 1);
+							set_state(PART:"content.below.mouse_block", "default", 0.0); 
+						}
+						else {
+							anim(0.2, "animator_right", 1);
+							set_state(PART:"content.below.mouse_block", "block", 0.0); 
+						}
+					}
+				} 
+			}
+
+
+		} /* programs */
+
+	} /* group */
+//}

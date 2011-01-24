@@ -1,0 +1,164 @@
+/*
+ *  nBeat-theme
+ *
+ * Copyright (c) 2000 - 2010 Samsung Electronics Co., Ltd.
+ *
+ * Contact: Seokjae Jeong <seok.j.jeong@samsung.com>, Myoungwoon Roy Kim <Myoungwoon.kim@samsung.com>, Jeonghyun Yun <jh0506.yun@samsung.com>, Jaehwan Kim <jae.hwan.kim@samsung.com>, 
+ * 		Chuneon Park <chuneon.park@samsung.com>, Juyung Seo <juyung.seo@samsung.com>, Woohyun Jung <wh0705.jung@samsung.com>, Myungjae Lee <mjae.lee@samsung.com>, Hyoyoung Chang <hyoyoung.chang@samsung.com>, 
+ *		Hyunsil Park <hyunsil.park@samsung.com>, Sohyun Kim <anna1014.kim@samsung.com>, Seunggyun Kim <sgyun.kim@samsung.com>
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
+
+group { 
+	name: "elm/pagecontrol/base/default";
+	
+	parts {
+		part {
+			name: "bg";
+			type: RECT;
+			mouse_events: 1;
+			scale: 1;
+			description {
+				state: "default" 0.0;	
+				color: 0 0 0 0;
+			}
+		}
+		part {
+			name: "elm.swallow.page";
+			type: SWALLOW;
+			mouse_events: 1;
+			scale: 1;
+			description {
+				state: "default" 0.0;
+				align: 0.5 0.5;
+			}
+		}
+	}
+}
+
+#define PAGE_ITEM(number) \
+group { \
+	name: "elm/page/item/default_"number; \
+	images { \
+		image: "00_mainmenu_page_bar_01.png" COMP; \
+		image: "00_mainmenu_page_bar_02.png" COMP; \
+		image: "00_mainmenu_page_bar_0001.png" COMP; \
+		image: "00_mainmenu_page_bar_0002.png" COMP; \
+		image: "00_mainmenu_page_bar_0003.png" COMP; \
+		image: "00_mainmenu_page_bar_0004.png" COMP; \
+		image: "00_mainmenu_page_bar_0005.png" COMP; \
+	} \
+	parts { \
+		part { \
+                       	name: "bg"; \
+			type: RECT; \
+                        mouse_events: 1; \
+			scale: 1; \
+               	        description { \
+                        	state: "default" 0.0; \
+				min: 60 52; \
+				max: 60 52; \
+				align: 0.5 0.5; \
+                                color: 0 0 0 0; \
+                        } \
+                } \
+		part { \
+			name: "indicator_1"; \
+			mouse_events: 0; \
+			scale: 1; \
+			description { \
+				state: "default" 0.0; \
+				min: 32 32; \
+				max: 32 32; \
+				fixed: 1 1; \
+				align: 0.5 0.5; \
+				visible: 1; \
+				rel1 { to: "bg"; } \
+                                rel2 { to: "bg"; } \
+				image { \
+					normal: "00_mainmenu_page_bar_01.png"; \
+				} \
+			} \
+			description { \
+				state: "selected" 0.0; \
+				inherit: "default" 0.0; \
+				min: 16 16; \
+				max: 16 16; \
+				visible: 0; \
+			} \
+		} \
+		part { \
+                        name: "indicator_2"; \
+                        mouse_events: 0; \
+                        scale: 1; \
+			description { \
+                                state: "default" 0.0; \
+                                min: 16 16; \
+                                max: 16 16; \
+                                fixed: 1 1; \
+                                align: 0.5 0.5; \
+				visible: 0; \
+                                rel1 { to: "bg"; } \
+                                rel2 { to: "bg"; } \
+                                image { \
+                                        normal: "00_mainmenu_page_bar_000"number".png"; \
+                                } \
+                        } \
+                        description { \
+                                state: "selected" 0.0; \
+				inherit: "default" 0.0; \
+                                min: 32 32; \
+                                max: 32 32; \
+				visible: 1; \
+                        } \
+                } \
+	} \
+	programs { \
+		program { \
+			name: "indicator_on"; \
+			signal: "elm,state,indicator,on"; \
+			source: "elm"; \
+			action: STATE_SET "selected" 0.0; \
+			target: "indicator_1"; \
+			target: "indicator_2"; \
+			transition: LINEAR 0.2; \
+		} \
+		program { \
+			name: "indicator_off"; \
+			signal: "elm,state,indicator,off"; \
+			source: "elm"; \
+			action: STATE_SET "default" 0.0; \
+			target: "indicator_1"; \
+			target: "indicator_2"; \
+			transition: LINEAR 0.2; \
+		} \
+		program { \
+                        name: "indicator_clicked"; \
+			signal: "mouse,clicked,1"; \
+                        source: "bg"; \
+			action: SIGNAL_EMIT "clicked" "indicator_clicked"; \
+		} \
+	} \
+} \
+
+PAGE_ITEM(1)
+PAGE_ITEM(2)
+PAGE_ITEM(3)
+PAGE_ITEM(4)
+PAGE_ITEM(5)
+
+
