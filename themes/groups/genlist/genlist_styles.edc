@@ -262,7 +262,9 @@
       }
    }
 
-   group { name: "elm/genlist/item/1line_textonly/default";
+   group { name: "elm/genlist/item/1text/default";
+      alias: "elm/genlist/item_odd/1text/default";
+      alias: "elm/genlist/item/1line_textonly/default";
       alias: "elm/genlist/item_odd/1line_textonly/default";
       alias: "elm/genlist/item_compress/1line_textonly/default";
       alias: "elm/genlist/item_compress_odd/1line_textonly/default";
@@ -347,10 +349,414 @@
       }
    }
 
-   group { name: "elm/genlist/item/1line_icontext/default";
-      alias: "elm/genlist/item_odd/1line_icontext/default";
-      alias: "elm/genlist/item_compress/1line_icontext/default";
-      alias: "elm/genlist/item_compress_odd/1line_icontext/default";
+   group { name: "elm/genlist/item/2text/default";
+      alias: "elm/genlist/item_odd/2text/default";
+      alias: "elm/genlist/item_compress/2text/default";
+      alias: "elm/genlist/item_compress_odd/2text/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 70 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0  0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+               }
+               rel2 {
+                  relative: 0.0  1.0;
+                  offset:   0   0;
+                  to_x: "elm.padding.right";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0  0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+               }
+               rel2 {
+                  relative: 0.0  1.0;
+                  offset:   0   0;
+                  to_x: "elm.padding.right";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 1.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+/*
+   group { name: "elm/genlist/item/2text.4/default";
+      alias: "elm/genlist/item_odd/2text.4/default";
+      alias: "elm/genlist/item_compress/2text.4/default";
+      alias: "elm/genlist/item_compress_odd/2text.4/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 70 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.separator";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               visible: 1;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.padding.text1.right";
+               }
+               rel2.to_x: "elm.padding.text1.right";
+               align: 0.0 0.0;
+               color: GENLIST_PART_BOTTOM_LINE_INC;
+            }
+         }
+         part { name: "elm.padding.text1.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.text.1";
+               }
+               rel2.to_x: "elm.text.1";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.padding.text2.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.separator";
+               }
+               rel2.to_x: "elm.separator";
+               align: 1.0 0.0;
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 0;
+               fixed: 1 0;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0  0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+               }
+               rel2 {
+                  relative: 1.0  1.0;
+                  offset:   0   0;
+                  to_x: "elm.padding.left";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 1 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0  0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.text2.left";
+               }
+               rel2 {
+                  relative: 0.0  1.0;
+                  offset:   0   0;
+                  to_x: "elm.padding.right";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+*/
+
+   group { name: "elm/genlist/item/1text.1icon/default";
+      alias: "elm/genlist/item_odd/1text.1icon/default";
+      alias: "elm/genlist/item_compress/1text.1icon/default";
+      alias: "elm/genlist/item_compress_odd/1text.1icon/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text";
+      data.item: "icons" "elm.icon";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 70 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 10 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 10 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.icon";
+               }
+               rel2.to_x: "elm.icon";
+               align: 1.0 0.0;
+            }
+         }
+         part { name: "elm.icon";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.text";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon.left";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+       BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/1text.1icon.2/default";
+      alias: "elm/genlist/item_odd/1text.1icon.2/default";
+      alias: "elm/genlist/item_compress/1text.1icon.2/default";
+      alias: "elm/genlist/item_compress_odd/1text.1icon.2/default";
 
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
@@ -372,7 +778,7 @@
             type: RECT;
             scale: 1;
             description { state: "default" 0.0;
-               min: 15 0;
+               min: 10 0;
                fixed: 1 0;
                visible: 0;
                rel1 {
@@ -388,8 +794,8 @@
             type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
-               min: 50 50;
-               max: 50 50;
+               min: 40 40;
+               max: 40 40;
                fixed: 1 1;
                align: 0.0 0.0;
                rel1 {
@@ -454,6 +860,878 @@
             action: STATE_SET "default" 0.0;
             target: "bg_image";
             target: "elm.text";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/1text.2icon/default";
+      alias: "elm/genlist/item_odd/1text.2icon/default";
+      alias: "elm/genlist/item_compress/1text.2icon/default";
+      alias: "elm/genlist/item_compress_odd/1text.2icon/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text";
+      data.item: "icons" "elm.icon.1 elm.icon.2";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 70 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 10 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 10 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon.1";
+               }
+               rel2.to_x: "elm.icon.1";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.1";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.icon.2";
+               }
+               rel2.to_x: "elm.icon.2";
+               align: 1.0 0.0;
+            }
+         }
+         part { name: "elm.icon.2";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+
+         part { name: "elm.text";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon.left";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+       BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/1text.2icon.2/default";
+      alias: "elm/genlist/item_odd/1text.2icon.2/default";
+      alias: "elm/genlist/item_compress/1text.2icon.2/default";
+      alias: "elm/genlist/item_compress_odd/1text.2icon.2/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text";
+      data.item: "icons" "elm.icon.1 elm.icon.2";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 70 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 10 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 10 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon1.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon.1";
+               }
+               rel2.to_x: "elm.icon.1";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.1";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 26 26;
+               max: 26 26;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon2.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon.2";
+               }
+               rel2.to_x: "elm.icon.2";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.2";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+
+         part { name: "elm.text";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon2.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+       BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/1text.3icon/default";
+      alias: "elm/genlist/item_odd/1text.3icon/default";
+      alias: "elm/genlist/item_compress/1text.3icon/default";
+      alias: "elm/genlist/item_compress_odd/1text.3icon/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text";
+      data.item: "icons" "elm.icon.1 elm.icon.2 elm.icon.3";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 70 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 10 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 10 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon1.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon.1";
+               }
+               rel2.to_x: "elm.icon.1";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.1";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 26 26;
+               max: 26 26;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon2.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon.2";
+               }
+               rel2.to_x: "elm.icon.2";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.2";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon3.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.icon.3";
+               }
+               rel2.to_x: "elm.icon.3";
+               align: 1.0 0.0;
+            }
+         }
+         part { name: "elm.icon.3";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.text";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon2.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon3.left";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+       BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/1text.3icon.2/default";
+      alias: "elm/genlist/item_odd/1text.3icon.2/default";
+      alias: "elm/genlist/item_compress/1text.3icon.2/default";
+      alias: "elm/genlist/item_compress_odd/1text.3icon.2/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text";
+      data.item: "icons" "elm.icon.1 elm.icon.2 elm.icon.3";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 70 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 10 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 10 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon1.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon.1";
+               }
+               rel2.to_x: "elm.icon.1";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.1";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 26 26;
+               max: 26 26;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon2.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.icon.2";
+               }
+               rel2.to_x: "elm.icon.2";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.2";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               fixed: 1 1;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon3.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon3.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon3.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.icon.3";
+               }
+               rel2.to_x: "elm.icon.3";
+               align: 1.0 0.0;
+            }
+         }
+         part { name: "elm.icon.3";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.text";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon2.left";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+       BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/2text.1icon/default";
+      alias: "elm/genlist/item_odd/2text.1icon/default";
+      alias: "elm/genlist/item_compress/2text.1icon/default";
+      alias: "elm/genlist/item_compress_odd/2text.1icon/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      data.item: "icons" "elm.icon";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 70 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 10 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 10 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon";
+               }
+               rel2.to_x: "elm.icon";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               fixed: 1 1;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0  0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+               }
+               rel2 {
+                  relative: 0.0  1.0;
+                  offset:   0   0;
+                  to_x: "elm.padding.right";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 1.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+       BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
             transition: LINEAR 0.1;
          }
          program { name: "go_disabled";
@@ -593,14 +1871,14 @@
 // 1line_icontext2
 */
 
-   group { name: "elm/genlist/item/2line_textonly/default";
-      alias: "elm/genlist/item_odd/2line_textonly/default";
-      alias: "elm/genlist/item_compress/2line_textonly/default";
-      alias: "elm/genlist/item_compress_odd/2line_textonly/default";
+   group { name: "elm/genlist/item/2text.2/default";
+      alias: "elm/genlist/item_odd/2text.2/default";
+      alias: "elm/genlist/item_compress/2text.2/default";
+      alias: "elm/genlist/item_compress_odd/2text.2/default";
 
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
+      data.item: "labels" "elm.text.1 elm.text.2";
       images {
          image: "00_list_bar_press_1x80.png" COMP;
       }
@@ -613,7 +1891,7 @@
          BEAT_GENLIST_PART_PADDING_LEFT( 10 )
          BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
 
-         part { name: "elm.text";
+         part { name: "elm.text.1";
             clip_to: "disclip";
             type: TEXT;
             mouse_events: 0;
@@ -646,7 +1924,7 @@
                color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
             }
          }
-         part { name: "elm.text.sub";
+         part { name: "elm.text.2";
             clip_to: "disclip";
             type: TEXT;
             mouse_events: 0;
@@ -655,7 +1933,7 @@
                rel1 {
                   relative: 1.0 1.0;
                   to_x: "elm.padding.left";
-                  to_y: "elm.text";
+                  to_y: "elm.text.1";
                }
                rel2 {
                   relative: 0.0 0.0;
@@ -689,14 +1967,2345 @@
             source: "elm";
             action: STATE_SET "selected" 0.0;
             target: "bg_image";
-            target: "elm.text";
+            target: "elm.text.1";
+            target: "elm.text.2";
          }
          program { name: "go_passive";
             signal: "elm,state,unselected";
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "bg_image";
-            target: "elm.text";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/2text.1icon.2/default";
+      alias: "elm/genlist/item_odd/2text.1icon.2/default";
+      alias: "elm/genlist/item_compress/2text.1icon.2/default";
+      alias: "elm/genlist/item_compress_odd/2text.1icon.2/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      data.item: "icons" "elm.icon";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 80 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 6 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 6 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.icon";
+               }
+               rel2.to_x: "elm.icon";
+               align: 1.0 0.0;
+            }
+         }
+         part { name: "elm.icon";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon.left";
+                  to_y: "elm.padding.top";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon.left";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/2text.1icon.3/default";
+      alias: "elm/genlist/item_odd/2text.1icon.3/default";
+      alias: "elm/genlist/item_compress/2text.1icon.3/default";
+      alias: "elm/genlist/item_compress_odd/2text.1icon.3/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      data.item: "icons" "elm.icon";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 80 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 6 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 6 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.icon";
+               }
+               rel2.to_x: "elm.icon";
+               align: 1.0 0.0;
+            }
+         }
+         part { name: "elm.icon";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.text.1";
+               }
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon.left";
+                  to_y: "elm.padding.top";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon.left";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/3text.1icon/default";
+      alias: "elm/genlist/item_odd/3text.1icon/default";
+      alias: "elm/genlist/item_compress/3text.1icon/default";
+      alias: "elm/genlist/item_compress_odd/3text.1icon/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2 elm.text.3";
+      data.item: "icons" "elm.icon";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 80 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 6 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 6 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.icon";
+               }
+               rel2.to_x: "elm.icon";
+               align: 1.0 0.0;
+            }
+         }
+         part { name: "elm.icon";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.text.1";
+               }
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon.left";
+                  to_y: "elm.padding.top";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon.left";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.3";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 1.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            target: "elm.text.3";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            target: "elm.text.3";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/2text.2icon/default";
+      alias: "elm/genlist/item_odd/2text.2icon/default";
+      alias: "elm/genlist/item_compress/2text.2icon/default";
+      alias: "elm/genlist/item_compress_odd/2text.2icon/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      data.item: "icons" "elm.icon.1 elm.icon.2";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 80 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 6 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 6 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon1.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon.1";
+               }
+               rel2.to_x: "elm.icon.1";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.1";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 20 20;
+               max: 20 20;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon2.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.icon.2";
+               }
+               rel2.to_x: "elm.icon.2";
+               align: 1.0 0.0;
+            }
+         }
+         part { name: "elm.icon.2";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.text.1";
+               }
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon2.left";
+                  to_y: "elm.padding.top";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/2text.2icon.2/default";
+      alias: "elm/genlist/item_odd/2text.2icon.2/default";
+      alias: "elm/genlist/item_compress/2text.2icon.2/default";
+      alias: "elm/genlist/item_compress_odd/2text.2icon.2/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      data.item: "icons" "elm.icon.1 elm.icon.2";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 80 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 6 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 6 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.text2.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.text.2";
+               }
+               rel2.to_x: "elm.text.2";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.1";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 20 20;
+               max: 20 20;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.text2.right";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.text2.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon2.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.icon.2";
+               }
+               rel2.to_x: "elm.icon.2";
+               align: 1.0 0.0;
+            }
+         }
+         part { name: "elm.icon.2";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon2.left";
+                  to_y: "elm.padding.top";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 0;
+               fixed: 1 0;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 1 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/2text.1icon.4/default";
+      alias: "elm/genlist/item_odd/2text.1icon.4/default";
+      alias: "elm/genlist/item_compress/2text.1icon.4/default";
+      alias: "elm/genlist/item_compress_odd/2text.1icon.4/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      data.item: "icons" "elm.icon";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 80 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 6 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 6 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon";
+               }
+               rel2.to_x: "elm.icon";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon.right";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/3text.1icon.2/default";
+      alias: "elm/genlist/item_odd/3text.1icon.2/default";
+      alias: "elm/genlist/item_compress/3text.1icon.2/default";
+      alias: "elm/genlist/item_compress_odd/3text.1icon.2/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2 elm.text.3";
+      data.item: "icons" "elm.icon";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 80 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 6 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 6 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon";
+               }
+               rel2.to_x: "elm.icon";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon.right";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.3";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.text.1";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 1.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            target: "elm.text.3";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            target: "elm.text.3";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/2text.2icon.3/default";
+      alias: "elm/genlist/item_odd/2text.2icon.3/default";
+      alias: "elm/genlist/item_compress/2text.2icon.3/default";
+      alias: "elm/genlist/item_compress_odd/2text.2icon.3/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      data.item: "icons" "elm.icon.1 elm.icon.2";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 80 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 6 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 6 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon1.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon.1";
+               }
+               rel2.to_x: "elm.icon.1";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.1";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon2.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.icon.2";
+               }
+               rel2.to_x: "elm.icon.2";
+               align: 1.0 0.0;
+            }
+         }
+         part { name: "elm.icon.2";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.text.1";
+               }
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon2.left";
+                  to_y: "elm.padding.top";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon2.left";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/2text.2icon.4/default";
+      alias: "elm/genlist/item_odd/2text.2icon.4/default";
+      alias: "elm/genlist/item_compress/2text.2icon.4/default";
+      alias: "elm/genlist/item_compress_odd/2text.2icon.4/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      data.item: "icons" "elm.icon.1 elm.icon.2";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 80 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 6 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 6 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon1.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon.1";
+               }
+               rel2.to_x: "elm.icon.1";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.1";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon2.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.icon.2";
+               }
+               rel2.to_x: "elm.icon.2";
+               align: 1.0 0.0;
+            }
+         }
+         part { name: "elm.icon.2";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon2.left";
+                  to_y: "elm.padding.top";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/2text.2icon.5/default";
+      alias: "elm/genlist/item_odd/2text.2icon.5/default";
+      alias: "elm/genlist/item_compress/2text.2icon.5/default";
+      alias: "elm/genlist/item_compress_odd/2text.2icon.5/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      data.item: "icons" "elm.icon.1 elm.icon.2";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 80 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 6 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 6 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon1.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon.1";
+               }
+               rel2.to_x: "elm.icon.1";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.1";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 26 26;
+               max: 26 26;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon2.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon.2";
+               }
+               rel2.to_x: "elm.icon.2";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.2";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon2.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon2.right";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/2text.2icon.6/default";
+      alias: "elm/genlist/item_odd/2text.2icon.6/default";
+      alias: "elm/genlist/item_compress/2text.2icon.6/default";
+      alias: "elm/genlist/item_compress_odd/2text.2icon.6/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      data.item: "icons" "elm.icon.1 elm.icon.2";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 80 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 6 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 6 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.padding.icon1.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon.1";
+               }
+               rel2.to_x: "elm.icon.1";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon.1";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 40 40;
+               max: 40 40;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon2.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.icon.2";
+               }
+               rel2.to_x: "elm.icon.2";
+               align: 1.0 0.0;
+            }
+         }
+         part { name: "elm.icon.2";
+            clip_to: "disclip";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon2.left";
+                  to_y: "elm.padding.top";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.icon1.right";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon2.left";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/3text/default";
+      alias: "elm/genlist/item_odd/3text/default";
+      alias: "elm/genlist/item_compress/3text/default";
+      alias: "elm/genlist/item_compress_odd/3text/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2 elm.text.3";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 80 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 6 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 6 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.text.1";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.3";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1 1;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.text.1";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 1.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            target: "elm.text.3";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+            target: "elm.text.3";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item/2text.3/default";
+      alias: "elm/genlist/item_odd/2text.3/default";
+      alias: "elm/genlist/item_compress/2text.3/default";
+      alias: "elm/genlist/item_compress_odd/2text.3/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      parts {
+         BEAT_GENLIST_PART_BASE( 80 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_TOP( 6 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 6 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 1;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 0 1;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.text.1";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text.1";
+            target: "elm.text.2";
             transition: LINEAR 0.1;
          }
          program { name: "go_disabled";
@@ -991,3 +4600,1171 @@
       }
    }
 
+   group { name : "elm/genlist/item/dialogue.pad/default";
+      alias: "elm/genlist/item_odd/dialogue.pad/default";
+      alias: "elm/genlist/item_compress/dialogue.pad/default";
+      alias: "elm/genlist/item_compress_odd/dialogue.pad/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "treesize" "20";
+   
+      parts {
+         BEAT_GENLIST_PART_DIALOGUE_BASE( 10 )
+      }
+   }
+   group { name: "elm/genlist/item/dialogue.1text/default";
+      alias: "elm/genlist/item_odd/dialogue.1text/default";
+      alias: "elm/genlist/item_compress/dialogue.1text/default";
+      alias: "elm/genlist/item_compress_odd/dialogue.1text/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text";
+
+      parts {
+         BEAT_GENLIST_PART_BASE( 71 )
+         BEAT_GENLIST_PART_BG_IMAGE
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_LEFT( 20 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
+         BEAT_GENLIST_PART_DIALOGUE_ITEM
+         part { name: "elm.text";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0  0.0;
+                  to_x: "elm.padding.left";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+      }
+   }
+   group { name: "elm/genlist/item/dialogue.1title.1text/default";
+      alias: "elm/genlist/item_odd/dialogue.1title.1text/default";
+      alias: "elm/genlist/item_compress/dialogue.1title.1text/default";
+      alias: "elm/genlist/item_compress_odd/dialogue.1title.1text/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.title elm.text";
+
+      images {
+          image: "00_list_img_check.png" COMP;
+      }
+
+      parts {
+         BEAT_GENLIST_PART_BASE( 71 )
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_LEFT( 17 )
+         BEAT_GENLIST_PART_DIALOGUE_PADDING_RIGHT( 10 )
+         BEAT_GENLIST_PART_DIALOGUE_ITEM
+         part { name: "vertical_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               color: GENLIST_PART_BOTTOM_LINE_INC;
+               rel1 { 
+                  relative: 1.0 0.0;
+                  to_x: "elm.title";
+               }
+               rel2.to_x: "elm.title";
+               align: 0.0 0.5;
+            } 
+         }
+         part { name: "editing_vertical_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               color: GENLIST_PART_BOTTOM_LINE_INC;
+               rel1.to_x: "elm.padding.right";
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+               }
+               align: 0.0 0.5;
+               visible: 0;
+            } 
+            description { state: "editing" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "elm.title";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 102 0;
+               fixed: 1 0;
+               rel1 {
+                  relative: 1.0  0.0;
+                  to_x: "elm.padding.left";
+               }
+               rel2.to_x: "elm.padding.left";
+               align: 0.0 0.5;
+               color: 78 73 69 255;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+         }
+         part { name: "elm.padding.title.right";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 1.0 0.0;
+                   to_x: "vertical_line";
+               }
+               rel2.to_x: "vertical_line";
+               visible: 0;
+               align: 0.0 0.5;
+            }
+         }
+         part { name: "elm.text";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0  0.0;
+                  to_x: "elm.padding.title.right";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+         }
+         part { name: "elm.icon.edit";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.179 0.0;
+                  to_x: "elm.padding.right";
+               }
+               rel2 {
+                  relative: 1.0 0.648;
+                  to_x: "elm.padding.right";
+               }
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         /*program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "elm.text";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text";
+            transition: LINEAR 0.1;
+         }*/
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_editing";
+            signal: "elm,state,editing";
+            source: "elm";
+            action: STATE_SET "editing" 0.0;
+            target: "elm.padding.right";
+            target: "editing_vertical_line";
+         }
+         program { name: "go_viewing";
+            signal: "elm,state,viewing";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.padding.right";
+            target: "editing_vertical_line";
+         }
+      }
+   }
+   group { name: "elm/genlist/item/dialogue.1title.1text.2/default";
+      alias: "elm/genlist/item_odd/dialogue.1title.1text.2/default";
+      alias: "elm/genlist/item_compress/dialogue.1title.1text.2/default";
+      alias: "elm/genlist/item_compress_odd/dialogue.1title.1text.2/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.title elm.text";
+      data.item: "icons" "elm.icon.edit";
+
+      images {
+          image: "00_list_img_check.png" COMP;
+      }
+
+      parts {
+         BEAT_GENLIST_PART_BASE( 71 )
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_LEFT( 17 )
+         BEAT_GENLIST_PART_DIALOGUE_PADDING_RIGHT( 10 )
+         BEAT_GENLIST_PART_DIALOGUE_ITEM
+         part { name: "vertical_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               color: GENLIST_PART_BOTTOM_LINE_INC;
+               rel1 { 
+                  relative: 1.0 0.0;
+                  to_x: "elm.title";
+               }
+               rel2.to_x: "elm.title";
+               align: 0.0 0.5;
+            } 
+         }
+         part { name: "editing_vertical_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               color: GENLIST_PART_BOTTOM_LINE_INC;
+               rel1.to_x: "elm.padding.right";
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+               }
+               align: 0.0 0.5;
+               visible: 0;
+            } 
+            description { state: "editing" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "elm.title";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 102 0;
+               fixed: 1 0;
+               rel1 {
+                  relative: 1.0  0.0;
+                  to_x: "elm.padding.left";
+               }
+               rel2.to_x: "elm.padding.left";
+               align: 0.0 0.5;
+               color: 78 73 69 255;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+         }
+         part { name: "elm.padding.title.right";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 1.0 0.0;
+                   to_x: "vertical_line";
+               }
+               rel2.to_x: "vertical_line";
+               visible: 0;
+               align: 0.0 0.5;
+            }
+         }
+         part { name: "elm.text";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0  0.0;
+                  to_x: "elm.padding.title.right";
+               }
+               rel2.to_x: "elm.padding.title.right";
+               align: 0.0 0.5;
+               fixed: 1 1;
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 1 1;
+                  max: 1 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 217 147 26 255;
+            }
+         }
+         part { name: "elm.padding.text.right";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 7 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 1.0 0.0;
+                   to_x: "elm.text";
+               }
+               rel2.to_x: "elm.text";
+               visible: 0;
+               align: 0.0 0.5;
+            }
+         }
+         part { name: "elm.image.check";
+            clip_to: "disclip";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               image.normal: "00_list_img_check.png";
+               rel1 {
+                  relative: 1.0 0.366;
+                  to_x: "elm.padding.text.right";
+               }
+               rel2 {
+                  relative: 3.857 0.648;
+                  to_x: "elm.padding.text.right";
+               } 
+               visible: 0;
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "elm.icon.edit";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.179 0.0;
+                  to_x: "elm.padding.right";
+               }
+               rel2 {
+                  relative: 1.0 0.648;
+                  to_x: "elm.padding.right";
+               }
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "elm.text";
+            target: "elm.image.check";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text";
+            target: "elm.image.check";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_editing";
+            signal: "elm,state,editing";
+            source: "elm";
+            action: STATE_SET "editing" 0.0;
+            target: "elm.padding.right";
+            target: "editing_vertical_line";
+         }
+         program { name: "go_viewing";
+            signal: "elm,state,viewing";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.padding.right";
+            target: "editing_vertical_line";
+         }
+      }
+   }
+   group { name: "elm/genlist/item/dialogue.1title.4text/default";
+      alias: "elm/genlist/item_odd/dialogue.1title.4text/default";
+      alias: "elm/genlist/item_compress/dialogue.1title.4text/default";
+      alias: "elm/genlist/item_compress_odd/dialogue.1title.4text/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.title elm.text.1 elm.text.2 elm.text.3 elm.text.4";
+
+      parts {
+         BEAT_GENLIST_PART_BASE( 284 )
+         BEAT_GENLIST_PART_BOTTOM_LINE
+         BEAT_GENLIST_PART_PADDING_LEFT( 17 )
+         BEAT_GENLIST_PART_DIALOGUE_ITEM
+         part { name: "vertical_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               color: GENLIST_PART_BOTTOM_LINE_INC;
+               rel1 { 
+                  relative: 1.0 0.0;
+                  to_x: "elm.title";
+               }
+               rel2.to_x: "elm.title";
+               align: 0.0 0.5;
+            } 
+         }
+         part { name: "center1_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 0 1;
+               fixed: 0 1;
+               color: GENLIST_PART_BOTTOM_LINE_INC;
+               rel1 { 
+                  relative: 1.0 0.25;
+                  to_x: "vertical_line";
+               }
+               rel2.relative: 1.0 0.25;
+               align: 0.5 1.0;
+            } 
+         }
+         part { name: "center2_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 0 1;
+               fixed: 0 1;
+               color: GENLIST_PART_BOTTOM_LINE_INC;
+               rel1 { 
+                  relative: 1.0 0.5;
+                  to_x: "vertical_line";
+               }
+               rel2.relative: 1.0 0.5;
+               align: 0.5 1.0;
+            } 
+         }
+         part { name: "center3_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 0 1;
+               fixed: 0 1;
+               color: GENLIST_PART_BOTTOM_LINE_INC;
+               rel1 { 
+                  relative: 1.0 0.75;
+                  to_x: "vertical_line";
+               }
+               rel2.relative: 1.0 0.75;
+               align: 0.5 1.0;
+            } 
+         }
+         BEAT_GENLIST_PART_DIALOGUE_PADDING_RIGHT( 10 )
+         part { name: "editing_vertical_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               color: GENLIST_PART_BOTTOM_LINE_INC;
+               rel1.to_x: "elm.padding.right";
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+               }
+               align: 0.0 0.5;
+               visible: 0;
+            } 
+            description { state: "editing" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "elm.title";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 102 0;
+               fixed: 1 0;
+               rel1 {
+                  relative: 1.0  0.0;
+                  to_x: "elm.padding.left";
+               }
+               rel2.to_x: "elm.padding.left";
+               align: 0.0 0.5;
+               color: 78 73 69 255;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+         }
+         part { name: "elm.padding.title.right";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 1.0 0.0;
+                   to_x: "elm.title";
+               }
+               rel2.to_x: "elm.title";
+               visible: 0;
+               align: 0.0 0.5;
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.padding.title.right";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.right";
+                  to_y: "center1_line";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 0.25;
+                  to_x: "elm.padding.title.right";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.right";
+                  to_y: "center2_line";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+         }
+         part { name: "elm.text.3";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0  0.5;
+                  to_x: "elm.padding.title.right";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.right";
+                  to_y: "center3_line";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+         }
+         part { name: "elm.text.4";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0  0.75;
+                  to_x: "elm.padding.title.right";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.right";
+                  to_y: "bottom_line";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         /*program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "elm.text";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text";
+            transition: LINEAR 0.1;
+         }*/
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_editing";
+            signal: "elm,state,editing";
+            source: "elm";
+            action: STATE_SET "editing" 0.0;
+            target: "elm.padding.right"; 
+            target: "editing_vertical_line";
+         }
+         program { name: "go_viewing";
+            signal: "elm,state,viewing";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.padding.right";
+            target: "editing_vertical_line";
+         }
+      }
+   }
+   group { name: "elm/genlist/item/dialogue.1icon.2text/default";
+      alias: "elm/genlist/item_odd/dialogue.1icon.2text/default";
+      alias: "elm/genlist/item_compress/dialogue.1icon.2text/default";
+      alias: "elm/genlist/item_compress_odd/dialogue.1icon.2text/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text.1 elm.text.2";
+      data.item: "icons" "elm.icon elm.icon.edit";
+
+      images {
+          image: "00_list_thumbnail_bg.png" COMP;
+      }
+
+      parts {
+         BEAT_GENLIST_PART_DIALOGUE_BASE( 142 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         part { name: "elm.icon.bg";
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 90 90;
+               max: 90 90;
+               fixed: 1 1;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.padding.left";
+               }
+               rel2 {
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+               }
+               image {
+                  normal: "00_list_thumbnail_bg.png";
+                  border: 1 1 1 1;
+                  border_scale: 1;
+                  middle: NONE;
+               }
+            }
+         }
+         part { name: "elm.base.text";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.padding.icon.right";
+               }
+               color: GENLIST_PART_BG_COLOR_INC;
+            }
+         }
+         part { name: "elm.rect.dialogue";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.base.text";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.base.text";
+               }
+               color: 199 199 199 255;
+               align: 0.0 0.5;
+            }
+         }
+         part { name: "center_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 0 1;
+               fixed: 0 1;
+               color: GENLIST_PART_BOTTOM_LINE_INC;
+               rel1 { 
+                  relative: 0.0 0.5;
+                  to_x: "elm.base.text";
+               }
+               rel2.relative: 1.0 0.5;
+               align: 0.5 1.0;
+            } 
+         }
+         part { name: "bottom_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 0 1;
+               fixed: 0 1;
+               color: GENLIST_PART_BOTTOM_LINE_INC;
+               rel1 { 
+                  relative: 1.0 1.0;
+                  to_x: "elm.base.text";
+               }
+               rel2.relative: 1.0 1.0;
+               align: 0.5 1.0;
+            } 
+         }
+         BEAT_GENLIST_PART_DIALOGUE_PADDING_RIGHT( 10 )
+         part { name: "editing_vertical_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               color: GENLIST_PART_BOTTOM_LINE_INC;
+               rel1.to_x: "elm.padding.right";
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+               }
+               align: 0.0 0.5;
+               visible: 0;
+            } 
+            description { state: "editing" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "elm.icon";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1.to: "elm.icon.bg";
+               rel2.to: "elm.icon.bg";
+            }
+         }
+         part { name: "elm.padding.icon.right";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 1.0 0.0;
+                   to_x: "elm.icon.bg";
+               }
+               rel2.to_x: "elm.icon.bg";
+               visible: 0;
+               align: 0.0 0.5;
+            }
+         }
+         part { name: "elm.padding.text.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.rect.dialogue";
+               }
+               rel2.to_x: "elm.rect.dialogue";
+               visible: 0;
+               align: 0.0 0.5;
+            }
+         }
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.padding.text.left";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.right";
+                  to_y: "center_line";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+         }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 0.5;
+                  to_x: "elm.padding.text.left";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.right";
+                  to_y: "bottom_line";
+               }
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+         }
+         part { name: "elm.icon.edit";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.179 0.5;
+                  to_x: "elm.padding.right";
+               }
+               rel2 {
+                  relative: 1.0 0.824;
+                  to_x: "elm.padding.right";
+               }
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         /*program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "elm.text";
+            target: "elm.text.sub";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text";
+            target: "elm.text.sub";
+            transition: LINEAR 0.1;
+         }*/
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_editing";
+            signal: "elm,state,editing";
+            source: "elm";
+            action: STATE_SET "editing" 0.0;
+            target: "elm.padding.right";
+            target: "editing_vertical_line";
+         }
+         program { name: "go_viewing";
+            signal: "elm,state,viewing";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.padding.right";
+            target: "editing_vertical_line";
+         }
+      }
+   }
+   group { name: "elm/genlist/item/dialogue.3icon/default";
+      alias: "elm/genlist/item_odd/dialogue.3icon/default";
+      alias: "elm/genlist/item_compress/dialogue.3icon/default";
+      alias: "elm/genlist/item_compress_odd/dialogue.3icon/default";
+
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "icons" "elm.icon.1 elm.icon.2 elm.icon.3";
+
+      parts {
+         BEAT_GENLIST_PART_DIALOGUE_BASE( 46 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_DIALOGUE_PADDING_RIGHT( 10 )
+         part { name: "elm.icon.1";
+	    clip_to: "disclip";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               min: 146 0;
+               fixed: 1 0;
+               rel1.to_x: "elm.padding.right";
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+               }
+               align: 1.0 0.5;
+            }
+         }
+         part { name: "elm.padding.icon.1.left";
+	    clip_to: "disclip";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1.to_x: "elm.icon.1";
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.icon.1";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
+         part { name: "elm.icon.2";
+	    clip_to: "disclip";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               min: 146 0;
+               fixed: 1 0;
+               rel1.to_x: "elm.padding.icon.1.left";
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.icon.1.left";
+               }
+               align: 1.0 0.5;
+            }
+         }
+         part { name: "elm.padding.icon.2.left";
+	    clip_to: "disclip";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1.to_x: "elm.icon.2";
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.icon.2";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
+         part { name: "elm.icon.3";
+	    clip_to: "disclip";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               min: 146 0;
+               fixed: 1 0;
+               rel1.to_x: "elm.padding.icon.2.left";
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.icon.2.left";
+               }
+               align: 1.0 0.5;
+            }
+         }
+         BEAT_GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_editing";
+            signal: "elm,state,editing";
+            source: "elm";
+            action: STATE_SET "editing" 0.0;
+            target: "elm.padding.right";
+         }
+         program { name: "go_viewing";
+            signal: "elm,state,viewing";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.padding.right";
+         }
+      }
+   }

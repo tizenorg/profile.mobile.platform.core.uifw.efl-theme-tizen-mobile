@@ -24,11 +24,11 @@
  */
 
 #define PADDING      5
-#define ITEM_HEIGHT  50
+#define ITEM_HEIGHT  60
 #define ITEM_WIDTH   0
 #define MAX_ITEM_WIDTH 112
-#define NAVI_BAR_EXTENDED_HEIGHT 93
 #define NAVI_BAR_EXTENDED_FNBTN_TOP_HEIGHT 110
+#define NAVI_BAR_EXTENDED_HEIGHT 115
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // NavigationBar
@@ -39,222 +39,107 @@ group {
 
    images {
       image: "00_winset_title_bg.png" COMP;
+      image: "00_winset_control_top_arrow.png" COMP;
    }
    
    parts {
+        part { name: "base";
+         type: RECT;
+         scale : 1;
+         mouse_events: 0;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            min: 1 NAVI_BAR_H;
+            fixed: 1 1;
+            color: 0 0 0 0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.0 0.0;
+         }
+         description {
+            state: "top" 0.0;
+            inherit: "default" 0.0;
+            min: 1 0;
+         }
+         description {
+            state: "extended" 0.0;
+            inherit: "default" 0.0;
+            min: 1 NAVI_BAR_EXTENDED_HEIGHT;
+         }
+      }
+      part {
+         name: "clip_title";
+         type: RECT;
+         mouse_events: 0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
+         }
+      }
       part {
          name: "navigationitem";
          type: IMAGE;
          mouse_events: 0;
+         clip_to: "clip_title";
          scale: 1;
          description {
             state: "default" 0.0;
             min: 1 NAVI_BAR_H;
             fixed: 0 1;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 0.0; }
-            align: 0.5 0.0;
+            rel1 { relative: 0.0 0.0; to:"base"; }
+            rel2 { relative: 1.0 0.0; to:"base"; }
+            align: 0.0 0.0;
             image {
                normal: "00_winset_title_bg.png";
             }
          }
-         description {
-            state: "top" 0.0;
-            inherit: "default" 0.0;
-            min: 1 0;
-         }
-         description {
-            state: "extended" 0.0;
-            inherit: "default" 0.0;
-            min: 1 NAVI_BAR_EXTENDED_HEIGHT;
-         }
       }
-      part {
-         type: RECT;
-         name: "clip";
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: 1 NAVI_BAR_H;
-            fixed: 0 1;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 0.0; }
-         }
-         description {
-            state: "top" 0.0;
-            inherit: "default" 0.0;
-            min: 1 0;
-         }  
-         description {
-            state: "extended" 0.0;
-            inherit: "default" 0.0;
-            min: 1 NAVI_BAR_EXTENDED_HEIGHT;
-         }
-      }  
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip"; }
-            rel2 { relative: 0.0 1.0; to: "clip"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-         description {
-            state: "extended" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 0.0 0.4; to: "clip"; }
-         }
-      }   
       part {
          name: "elm.swallow.btn1";
          type: SWALLOW;
-         clip_to: "clip";
+         clip_to: "clip_title";
          scale: 1;
          description {
             fixed: 1 1;
-            min: ITEM_WIDTH ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH ITEM_HEIGHT;
+            min: 0 40;
+            max: MAX_ITEM_WIDTH 40;
             state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad1"; }
+            rel1 { relative: 0.0 0.0; to: "navigationitem"; }
+            rel2 { relative: 0.0 1.0; to: "navigationitem"; }
             align: 0.0 0.5;
-         }
-         description {
-            state: "push" 0.0;
-            inherit: "default" 0.0;
-            rel1.relative: 10.0 0.0; 
-            rel2.relative: 1.0 1.0;
-         }
-         description {
-            state: "pop" 0.0;
-            inherit: "default" 0.0;
-            rel1.relative: -10.0 0.0;
-            rel2.relative: 1.0 1.0;
-         }
-         
-      }   
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: 0 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.btn1"; }
-         }
-         description {
-            state: "visible" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.btn1"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      } 
-      part {
-         name: "elm.rect.pad4";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip"; }
-            rel2 { relative: 1.0 1.0; to: "clip"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-         description {
-            state: "extended" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.4; to: "clip"; }
          }
       }
       part {
-         name: "elm.swallow.btn2";
-         type: SWALLOW;
-         clip_to: "clip";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad4"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad4"; }
-            align: 1.0 0.5;            
-         }
-      }   
-      part {
-         name: "elm.rect.pad3";
+         name: "elm.rect.pada";
          type: RECT;
          mouse_events: 0;
+         clip_to: "clip_title";
          scale: 1;
          description {
             state: "default" 0.0;
-            min: 0 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn2"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn2"; }
-         }
-         description {
-            state: "visible" 0.0;
             min: PADDING 0;
             fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn2"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn2"; }
-            align: 1.0 0.5;
+            rel1 { relative: 0.0 0.0; to: "navigationitem"; }
+            rel2 { relative: 0.0 1.0; to: "navigationitem"; }
+            align: 0.0 0.5;
             color: 0 0 0 0;
-         }
-         description {
-            state: "fn_btn3_set" 0.0;
-            inherit: "visible" 0.0;
-            min: 5 0;
          }
       }
       part {
-         name: "elm.swallow.btn3";
-         type: SWALLOW;
-         clip_to: "clip";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad3"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad3"; }
-            align: 1.0 0.5;            
-         }
-      }  
-      part {
-         name: "elm.rect.pad5";
+         name: "elm.rect.padb";
          type: RECT;
          mouse_events: 0;
+         clip_to: "clip_title";
          scale: 1;
          description {
             state: "default" 0.0;
-            min: 0 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn3"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn3"; }
-         }
-         description {
-            state: "visible" 0.0;
-            min: PADDING 0;
+            min: 1 0;
             fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn3"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn3"; }
+            rel1 { relative: 1.0 0.0; to: "navigationitem"; }
+            rel2 { relative: 1.0 1.0; to: "navigationitem"; }
             align: 1.0 0.5;
             color: 0 0 0 0;
          }
@@ -264,73 +149,80 @@ group {
          type: TEXT;
          effect: SHADOW;
          scale:1;
-         clip_to: "clip";        
+         clip_to: "clip_title";
          description {
             state: "default" 0.0;
             text {
                font: "SLP:style=Medium";
-               size: 30;
+               size: 22;
                min: 0 0;
                align: 0.5 0.5;
+               max: 1 0;
             }
             color: NAVIGATIONBAR_TITLE_TEXT_COLOR;
             color2: 0 0 0 255;
-            rel1 { relative: 0.0 0.0; to: "clip"; }  
-            rel2 { relative: 1.0 1.0; to: "clip"; }
+            rel1 { relative: 1.0 0.0; to: "elm.rect.pada"; }
+            rel2 { relative: 0.0 1.0; to: "elm.rect.padb"; }
             align: 0.5 0.5;
          }
-         description {
-            state: "push" 0.0;
-            inherit: "default" 0.0;
-            rel1.relative: 1.0 0.0;
-            rel2.relative: 1.0 1.0;
+      }
+     part {
+          name: "events";
+          type: RECT;
+          clip_to: "clip_title";
+          ignore_flags: ON_HOLD;
+          description {
+             state: "default" 0.0;
+             rel1 { to: "elm.text"; }
+             rel2 { to: "elm.text"; }
+             color: 0 0 0 0;
+            }
          }
+     part {
+         name: "naviarrow";
+         type: IMAGE;
+         mouse_events: 1;
+         clip_to: "clip_title";
+         scale: 1;
          description {
-            state: "pop" 0.0;
-            inherit: "default" 0.0;
-            rel1.relative: -1.0 0.0;
-            rel2.relative: 1.0 1.0;
-         }
-         description {
-            state: "fn_btn3_set" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad2"; } 
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad5"; }   
+            state: "default" 0.0;
+            min: 15 11;
+            max: 15 11;
+            visible: 0;
+            fixed: 1 1;
+            rel1 { relative: 0.0 0.0; to: "elm.text"; }
+            rel2 { relative: 1.0 1.0; to: "elm.text"; }
+            align: 0.5 1.0;
+            image {
+               normal: "00_winset_control_top_arrow.png";
+            }
          }
          description {
             state: "extended" 0.0;
-            text {
-               font: "SLP:style=Medium";
-               size: 30;
-               min: 0 0;
-               align: 0.5 0.5;
-            }
-            color: NAVIGATIONBAR_TITLE_TEXT_COLOR;
-            color2: 0 0 0 255;
-            rel1 { relative: 0.0 0.0; to: "clip"; }  //1.0 0.0
-            rel2 { relative: 1.0 0.0; to_y: "elm.swallow.title";to_x: "clip"; }        
-            align: 0.5 0.5;
+            inherit: "default" 0.0;
+            visible:1;
          }
-      } 
+      }
       part {
          name: "elm.swallow.title";
          type: SWALLOW;
          scale:1;
-         clip_to: "clip";        
+         clip_to: "clip_title";
          description {
             fixed: 0 1;
             min: 0 ITEM_HEIGHT;
+            visible: 0;
             state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad2"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad3"; }
-            align: 0.0 0.5;
+            rel1 { relative: 0.0 1.0; to_y: "navigationitem"; to_x: "base";}
+            rel2 { relative: 1.0 1.0; to: "base"; }
+            align: 0.0 0.0;
          }
          description {
-            state: "fn_btn3_set" 0.0;
+            state: "extended" 0.0;
             inherit: "default" 0.0;
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad5"; }   
+            visible:1;
          }
-      } 
+      }
       part {
          name: "elm.swallow.content";
          type: SWALLOW;
@@ -338,7 +230,7 @@ group {
          description {
             state: "default" 0.0;
             align: 0.0 0.0;
-            rel1 { relative: 0.0 1.0; to: "navigationitem"; }
+            rel1 { relative: 0.0 1.0; to_y: "base"; }
             rel2 { relative: 1.0 1.0; }
          }
          description {
@@ -351,7 +243,7 @@ group {
          name: "elm.rect.blocker";
          type: RECT;
          description {
-            state: "default" 0.0;            
+            state: "default" 0.0;
             visible: 0;
          }
          description {
@@ -368,111 +260,52 @@ group {
          signal: "elm,state,item,moveup";
          source: "elm";
          action: STATE_SET "top" 0.0;
-         target: "navigationitem";
-         target: "clip";
+         target: "base";
          target: "elm.swallow.content";
-//       transition: LINEAR 0.4;
       }
       program {
          name: "movedown";
          signal: "elm,state,item,movedown";
          source: "elm";
          action: STATE_SET "default" 0.0;
-         target: "navigationitem";
-         target: "clip";
+         target: "base";
          target: "elm.swallow.content";
-//       transition: LINEAR 0.4;
-      }
-      #if 0
-      program {
-         name: "push";
-         signal: "elm,action,push";
-         source: "elm";
-         action: STATE_SET "push" 0.0;
-         target: "elm.text";
-         target: "elm.swallow.btn1"; /*if uncommented, title object size becomes small */
       }
       program {
-         name: "pop";
-         signal: "elm,action,pop";
-         source: "elm";
-         action: STATE_SET "pop" 0.0;
-         target: "elm.text";
-         target: "elm.swallow.btn1";
-      }
-      #endif
-      program {
-         name: "add_leftpad";
-         signal: "elm,state,item,add,leftpad";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "elm.rect.pad2";
-      }
-      program {
-         name: "reset_leftpad";
-         signal: "elm,state,item,reset,leftpad";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.rect.pad2";
-      }     
-      program {
-         name: "add_rightpad";
-         signal: "elm,state,item,add,rightpad";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "elm.rect.pad3";
-      }
-      program {
-         name: "reset_rightpad";
-         signal: "elm,state,item,reset,rightpad";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.rect.pad3";
-      }
-      program {
-         name: "add_rightpad2";
-         signal: "elm,state,item,add,rightpad2";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "elm.rect.pad5";
-      }
-      program {
-         name: "reset_rightpad2";
-         signal: "elm,state,item,reset,rightpad2";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.rect.pad5";
+         name: "click";
+         signal: "mouse,up,1";
+         source: "events";
+         action: SIGNAL_EMIT "elm,action,clicked" "elm";
       }
       program {
          name: "extended_titlearea";
-         signal: "elm,state,extend,title";
+         signal: "elm,state,show,title";
          source: "elm";
          action: STATE_SET "extended" 0.0;
-         target: "navigationitem";
-         target: "elm.text";
-         target: "clip";
-         target: "elm.rect.pad1";
-         target: "elm.rect.pad4";
-         transition: LINEAR 0.4;
+         target: "base";
+         target: "elm.swallow.title";
+   //      transition: LINEAR 0.4;
+      }
+      program {
+         name: "show_extended";
+         signal: "elm,state,show,extended";
+         source: "elm";
+         action: STATE_SET "extended" 0.0;
+         target: "naviarrow";
+      }
+      program {
+         name: "hide_extended";
+         signal: "elm,state,hide,extended";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "naviarrow";
       }
       program {
          name: "default_titlearea";
-         signal: "elm,state,retract,title";
+         signal: "elm,state,hide,title";
          source: "elm";
          action: STATE_SET "default" 0.0;
-         target: "navigationitem";
-         target: "elm.text";
-         target: "clip";
-         target: "elm.rect.pad1";
-         target: "elm.rect.pad4";
-         target: "elm.swallow.btn1";
-      }
-      program {
-         name: "function_btn3_set";
-         signal: "elm,state,item,fn_btn3_set";
-         source: "elm";
-         action: STATE_SET "fn_btn3_set" 0.0;
-         target: "elm.text";
+         target: "base";
          target: "elm.swallow.title";
       }
       program {
@@ -488,10 +321,9 @@ group {
          source: "elm";
          action: STATE_SET "default" 0.0;
          target: "elm.rect.blocker";
-      }     
+      }
    } /* end of programs */
 } /* end of group "navigationbar" */
-
 
 group {
    name: "elm/navigationbar/base/title_transparent_ellipsize";
