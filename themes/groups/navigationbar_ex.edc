@@ -1,96 +1,5 @@
-#define EX_ITEM_HEIGHT     50
-#define ITEM_WIDTH      0
-#define MAX_ITEM_WIDTH 112
-#define NAVI_BAR_EXTENDED_FNBTN_TOP_HEIGHT 110
-
+#define NAVI_BAR_EXTENDED_HEIGHT2 176
 ///////////////////////////////////////////////////////////////////////////////
-group { name: "elm/navigationbar_ex/base/default";
-   images {
-      image: "00_winset_title_bg.png" COMP;
-   }
-   parts{
-      part {
-         name: "navigationitem";
-         type: IMAGE;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: 1 NAVI_BAR_H;
-            fixed: 0 1;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 0.0; }
-            align: 0.0 0.0;
-            image {
-               normal: "00_winset_title_bg.png";
-            }
-         }
-         description {
-            state: "top" 0.0;
-            inherit: "default" 0.0;
-            min: 1 0;
-         }
-         description {
-            state: "extended" 0.0;
-            inherit: "default" 0.0;
-            min: 1 NAVI_BAR_EXTENDED_FNBTN_TOP_HEIGHT;
-         }
-      }
-      part {
-         name: "elm.swallow.title";
-         type: SWALLOW;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1.to: "navigationitem";
-            rel2.to: "navigationitem";
-         }
-      }
-      part {
-         name: "elm.swallow.content";
-         type: SWALLOW;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 1.0; to: "elm.swallow.title"; }
-            rel2 { relative: 1.0 1.0; }
-         }
-         description {
-            state: "top" 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      }
-   }
-   programs {
-      program {
-         name: "moveup";
-         signal: "elm,state,item,moveup";
-         source: "elm";
-         action: STATE_SET "top" 0.0;
-         target: "navigationitem";
-         target: "elm.swallow.content";
-      }
-      program {
-         name: "movedown";
-         signal: "elm,state,item,movedown";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "navigationitem";
-         target: "elm.swallow.content";
-      }
-      program {
-         name: "extended_titlearea";
-         signal: "elm,state,extend,title";
-         source: "elm";
-         action: STATE_SET "extended" 0.0;
-         target: "navigationitem";
-      }
-   }
-}
-
 group { name: "elm/navigationbar_ex/content/default";
    parts {
       part { name: "clip";
@@ -239,1022 +148,53 @@ group { name: "elm/navigationbar_ex/content/default";
    }
 }
 
-group { name: "elm/navigationbar_ex/item/topbar_1fn/default";
+group { name: "elm/navigationbar_ex/item/title/default";
    images {
       image: "00_winset_title_bg.png" COMP;
    }
    parts {
-      part {
-         name: "clip_title";
+      part { name: "base";
          type: RECT;
+         scale : 1;
          mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      }
-      part {
-         name: "elm.rect.pada";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-         description {
-            state: "visible" 0.0;
-            min: 50 50;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            min: 1 NAVI_BAR_H;
             fixed: 1 1;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
             color: 0 0 0 0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.0 0.0;
          }
-      } 
-      part {
-         name: "elm.rect.padb";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
          description {
-            state: "default" 0.0;
+            state: "top" 0.0;
+            inherit: "default" 0.0;
             min: 1 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
          }
-      }
-      part {
-         name: "elm.text";
-         type: TEXT;
-         effect: SHADOW;
-         clip_to: "clip_title";
-         scale:1;       
          description {
-            state: "default" 0.0;
-            text
-              {
-                 font: "SLP:style=Medium";
-                 size: 30;
-                 min: 0 0;
-                 align: 0.5 0.5;
-                 max: 1 0;
-              }
-            color: NAVIGATIONBAR_TITLE_TEXT_COLOR;
-            color2: 0 0 0 255;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pada"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to: "elm.rect.padb"; }
-            align: 0.5 0.5;
+            state: "extended" 0.0;
+            inherit: "default" 0.0;
+            min: 1 NAVI_BAR_EXTENDED_HEIGHT;
          }
       }
       part {
-         name: "elm.swallow.icon";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: 50 50;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to_x: "padding_before_text";to_y: "clip_title"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to_x: "padding_before_text";to_y: "clip_title"; }
-            aspect: 1.0 1.0;
-            aspect_preference: VERTICAL;
-            align: 1.0 0.5;
-         }
-      }
-      part {
-         name: "padding_before_text";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0; //when only icon or no icon is there
-            align: 1.0 0.5;
-            rel1 { relative: 0.0 0.0; to_x: "elm.text"; to_y: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to_x: "elm.text"; to_y: "clip_title";}                    
-            fixed: 1 0;
-            min: 10 0;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
+         name: "navigationitem";
+         type: IMAGE;
          mouse_events: 0;
          clip_to: "clip_title";
          scale: 1;
          description {
             state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad1"; }
-            align: 1.0 0.5;                             
-         }
-      }
-   }
-   programs {
-      program {
-         name: "show_icon";
-         signal: "elm,state,icon,visible";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "elm.rect.pada";
-      }
-   }
-}
-
-
-group { name: "elm/navigationbar_ex/item/topbar_2fns/default";
-   parts {
-      part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      }         
-      part {
-         name: "elm.rect.pada";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-         description {
-            state: "visible" 0.0;
-            min: 50 50;
-            fixed: 1 1;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      } 
-      part {
-         name: "elm.rect.padb";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: 1 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.text";
-         type: TEXT;
-         effect: SHADOW;
-         clip_to: "clip_title";
-         scale:1;       
-         description {
-            state: "default" 0.0;
-            max: 240 67;
-            text
-              {
-                 font: "SLP:style=Medium";
-                 size: 30;
-                 min: 0 0;
-                 align: 0.5 0.5;
-                 max: 1 0;
-              }
-            color: NAVIGATIONBAR_TITLE_TEXT_COLOR;
-            color2: 0 0 0 255;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pada"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to: "elm.rect.padb"; }
-            align: 0.5 0.5;
-         }
-      }
-      part {
-         name: "elm.swallow.icon";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: 50 50;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to_x: "padding_before_text";to_y: "clip_title"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to_x: "padding_before_text";to_y: "clip_title"; }
-            aspect: 1.0 1.0;
-            aspect_preference: VERTICAL;
-            align: 1.0 0.5;
-         }
-      }
-      part {
-         name: "padding_before_text";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0; //when only icon or no icon is there
-            align: 1.0 0.5;
-            rel1 { relative: 0.0 0.0; to_x: "elm.text"; to_y: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to_x: "elm.text"; to_y: "clip_title";}                    
-            fixed: 1 0;
-            min: 10 0;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn2";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad2"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad2"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad1"; }
-            align: 0.0 0.5;
-         }
-      }
-   }
-   programs {
-      program {
-         name: "show_icon";
-         signal: "elm,state,icon,visible";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "elm.rect.pada";
-      }
-   }
-}
-
-group { name: "elm/navigationbar_ex/item/topbar_obj_2fns/default";
-   parts {
-      part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      }         
-      part {
-         name: "elm.rect.pada";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.btn1"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      } 
-      part {
-         name: "elm.rect.padb";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: 1 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn2"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn2"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.swallow.title";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale:1;       
-         description {
-            state: "default" 0.0;
-            fixed: 1 1;
-            min: 0 EX_ITEM_HEIGHT;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pada"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to: "elm.rect.padb"; }
-            align: 0.5 0.5;
-         }
-      }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn2";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad2"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad2"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad1"; }
-            align: 0.0 0.5;
-         }
-      }
-   }
-}
-
-group { name: "elm/navigationbar_ex/item/topbar_3fns/default";
-   parts {
-      part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      }         
-      part {
-         name: "elm.text";
-         type: TEXT;
-         effect: SHADOW;
-         clip_to: "clip_title";
-         scale:1;       
-         description {
-            state: "default" 0.0;
-            text
-              {
-                 font: "SLP:style=Medium";
-                 size: 30;
-                 min: 0 0;
-                 align: 0.5 0.5;
-                 max: 1 0;
-              }
-            color: NAVIGATIONBAR_TITLE_TEXT_COLOR;
-            color2: 0 0 0 255;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad5"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad4"; }    
-            align: 0.5 0.5;
-         }
-      }
-      part {
-         name: "elm.swallow.icon";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: 50 50;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to_x: "padding_before_text";to_y: "clip_title"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to_x: "padding_before_text";to_y: "clip_title"; }
-            aspect: 1.0 1.0;
-            aspect_preference: VERTICAL;
-            align: 1.0 0.5;
-         }
-      }
-      part {
-         name: "padding_before_text";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0; //when only icon or no icon is there
-            align: 1.0 0.5;
-            rel1 { relative: 0.0 0.0; to_x: "elm.text"; to_y: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to_x: "elm.text"; to_y: "clip_title";}                    
-            fixed: 1 0;
-            min: 10 0;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.rect.pad3";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn3";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad3"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad3"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn3"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn3"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.swallow.btn2";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad2"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad2"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad4";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn2"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn2"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad1"; }
-            align: 0.0 0.5;
-         }
-      }
-      part {
-         name: "elm.rect.pad5";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.btn1"; }
-            align: 0.0 0.0;
-            color: 0 0 0 0;
-         }
-         description {
-            state: "visible" 0.0;
-            min: 50 50;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.btn1"; }
-            align: 0.0 0.0;
-            color: 0 0 0 0;
-         }
-      } 
-   }
-   programs {
-      program {
-         name: "show_icon";
-         signal: "elm,state,icon,visible";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "elm.rect.pad5";
-      }
-   }
-}
-
-group { name: "elm/navigationbar_ex/item/topbar_obj_3fns/default";
-   parts {
-      part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      }         
-      part {
-         name: "elm.swallow.title";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale:1;       
-         description {
-            state: "default" 0.0;
+            min: 1 NAVI_BAR_H;
             fixed: 0 1;
-            min: 0 EX_ITEM_HEIGHT;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad5"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad4"; }    
-            align: 0.0 0.5;
-         }
-      }
-      part {
-         name: "elm.rect.pad3";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn3";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad3"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad3"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn3"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn3"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.swallow.btn2";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad2"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad2"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad4";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn2"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn2"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad1"; }
-            align: 0.0 0.5;
-         }
-      }
-      part {
-         name: "elm.rect.pad5";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.btn1"; }
+            rel1 { relative: 0.0 0.0; to: "base";}
+            rel2 { relative: 1.0 0.0; to: "base";}
             align: 0.0 0.0;
-            color: 0 0 0 0;
+            image {
+               normal: "00_winset_title_bg.png";
+            }
          }
-      } 
-   }
-}
-
-group { name: "elm/navigationbar_ex/item/topbar_right_2fns/default";
-parts {
-   part {
-      name: "clip_title";
-      type: RECT;
-      mouse_events: 0;
-      scale: 1;
-      description {
-         state: "default" 0.0;
-         align: 0.0 0.0;
-         rel1 { relative: 0.0 0.0; }
-         rel2 { relative: 1.0 1.0; }
       }
-   }    
-   part {
-      name: "elm.text";
-      type: TEXT;
-      effect: SHADOW;
-      clip_to: "clip_title";
-      scale:1;  
-      description {
-         state: "default" 0.0;
-         text
-           {
-              font: "SLP:style=Medium";
-              size: 30;
-              min: 0 0;
-              align: 0.5 0.5;
-              max: 1 0;
-           }
-         color: NAVIGATIONBAR_TITLE_TEXT_COLOR;
-         color2: 0 0 0 255;
-         rel1 { relative: 1.0 0.0; to: "elm.rect.pad4"; }  //1.0 0.0
-         rel2 { relative: 0.0 1.0; to: "elm.rect.pad3"; }       
-         align: 0.5 0.5;
-      }
-   }
-   part {
-      name: "elm.rect.pad2";
-      type: RECT;
-      mouse_events: 0;
-      clip_to: "clip_title";
-      scale: 1;
-      description {
-         state: "default" 0.0;
-         min: PADDING NAVI_BAR_H;
-         fixed: 1 0;
-         rel1 { relative: 1.0 0.0; to: "clip_title"; }
-         rel2 { relative: 1.0 1.0; to: "clip_title"; }
-         align: 1.0 0.0;
-         color: 0 0 0 0;
-      }
-   }     
-   part {
-      name: "elm.swallow.btn2";
-      type: SWALLOW;
-      clip_to: "clip_title";
-      scale: 1;
-      description {
-         fixed: 1 1;
-         min: ITEM_WIDTH EX_ITEM_HEIGHT;
-         max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-         state: "default" 0.0;
-         rel1 { relative: 0.0 0.0; to: "elm.rect.pad2"; }
-         rel2 { relative: 0.0 1.0; to: "elm.rect.pad2"; }
-         align: 1.0 0.5;                                
-      }
-   }
-   part {
-      name: "elm.rect.pad1";
-      type: RECT;
-      mouse_events: 0;
-      scale: 1;
-      clip_to: "clip_title";
-      description {
-         state: "default" 0.0;
-         min: PADDING NAVI_BAR_H;
-         fixed: 1 1;
-         rel1 { relative: 0.0 0.0; to: "elm.swallow.btn2"; }
-         rel2 { relative: 0.0 1.0; to: "elm.swallow.btn2"; }
-         align: 1.0 0.5;
-         color: 0 0 0 0;
-      }
-   }
-   part {
-      name: "elm.swallow.btn1";
-      type: SWALLOW;
-      clip_to: "clip_title";
-      scale: 1;
-      description {
-         fixed: 1 1;
-         min: ITEM_WIDTH EX_ITEM_HEIGHT;
-         max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-         state: "default" 0.0;
-         rel1 { relative: 0.0 0.0; to: "elm.rect.pad1"; }
-         rel2 { relative: 0.0 1.0; to: "elm.rect.pad1"; }
-         align: 1.0 0.5;                                
-      }
-   }
-   part {
-      name: "elm.rect.pad3";
-      type: RECT;
-      mouse_events: 0;
-      scale: 1;
-      clip_to: "clip_title";
-      description {
-         state: "default" 0.0;
-         min: PADDING NAVI_BAR_H;
-         fixed: 1 1;
-         rel1 { relative: 0.0 0.0; to: "elm.swallow.btn1"; }
-         rel2 { relative: 0.0 1.0; to: "elm.swallow.btn1"; }
-         align: 1.0 0.5;
-         color: 0 0 0 0;
-      }
-   }
-   part {
-      name: "elm.rect.pad4";
-      type: RECT;
-      mouse_events: 0;
-      scale: 1;
-      clip_to: "clip_title";
-      description {
-         state: "default" 0.0;
-         min: PADDING 0;
-         fixed: 1 0;
-         rel1 { relative: 0.0 0.0; to: "clip_title"; }
-         rel2 { relative: 0.0 1.0; to: "clip_title"; }
-         align: 0.0 0.5;
-         color: 0 0 0 0;
-      }
-      description {
-         state: "visible" 0.0;
-         min: 50 NAVI_BAR_H;
-         fixed: 1 0;
-         rel1 { relative: 0.0 0.0; to: "clip_title"; }
-         rel2 { relative: 0.0 1.0; to: "clip_title"; }
-         align: 0.0 0.5;
-         color: 0 0 0 0;
-      }
-   }
-   part {
-      name: "elm.swallow.icon";
-      type: SWALLOW;
-      clip_to: "clip_title";
-      scale: 1;
-      description {
-         fixed: 1 1;
-         min: 50 50;
-         state: "default" 0.0;
-         rel1 { relative: 0.0 0.0; to_x: "padding_before_text";to_y: "clip_title"; }  //1.0 0.0
-         rel2 { relative: 0.0 1.0; to_x: "padding_before_text";to_y: "clip_title"; }
-         aspect: 1.0 1.0;
-         aspect_preference: VERTICAL;
-         align: 1.0 0.5;
-      }
-   }
-   part {
-      name: "padding_before_text";
-      type: RECT;
-      scale: 1;
-      mouse_events: 0;
-      description { state: "default" 0.0; //when only icon or no icon is there
-         align: 1.0 0.5;
-         rel1 { relative: 0.0 0.0; to_x: "elm.text"; to_y: "clip_title"; }
-         rel2 { relative: 0.0 1.0; to_x: "elm.text"; to_y: "clip_title";}                       
-         fixed: 1 0;
-         min: 10 0;
-         color: 0 0 0 0;
-      }
-   }
-}
-   programs {
-      program {
-         name: "show_icon";
-         signal: "elm,state,icon,visible";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "elm.rect.pad4";
-      }
-   }
-}
-
-group { name: "elm/navigationbar_ex/item/topbar_seg_full/default";
-   parts {
       part {
          name: "clip_title";
          type: RECT;
@@ -1263,290 +203,25 @@ group { name: "elm/navigationbar_ex/item/topbar_seg_full/default";
          description {
             state: "default" 0.0;
             align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      }         
-      part {
-         name: "elm.swallow.title";
-         type: SWALLOW;
-         scale:1;
-         clip_to: "clip_title";
-         description {
-            fixed: 1 1;
-            min: 0 EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad1"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad2"; }
-            align: 0.0 0.5;
+            rel1 { relative: 0.0 0.0; to: "base"; }
+            rel2 { relative: 1.0 1.0; to: "base"; }
          }
       }
       part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }                 
-   }
-}
-
-group { name: "elm/navigationbar_ex/item/topbar_search/default";
-   parts {
-      part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      }         
-      part {
-         name: "elm.swallow.title";
-         type: SWALLOW;
-         scale:1;
-         clip_to: "clip_title";
-         description {
-            fixed: 1 1;
-            min: 0 EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad1"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad2"; }
-            align: 0.0 0.0;
-         }
-      }
-      part {
-         name: "elm.rect.pad3";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING NAVI_BAR_H;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      } 
-      part {
-         name: "elm.swallow.btn1";
+         name: "elm.swallow.back";
          type: SWALLOW;
          clip_to: "clip_title";
          scale: 1;
          description {
             fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
+            min: 0 40;
+            max: MAX_ITEM_WIDTH 40;
             state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad3"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad3"; }
-            align: 1.0 0.5;                             
-         }
-      } 
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         clip_to: "clip_title";
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING NAVI_BAR_H;
-            fixed: 1 1;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn1"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
+            rel1 { relative: 0.0 0.0; to: "navigationitem"; }
+            rel2 { relative: 0.0 1.0; to: "navigationitem"; }
+            align: 0.0 0.5;
          }
       }
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING NAVI_BAR_H;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      } 
-   }
-}
-
-
-group { name: "elm/navigationbar_ex/item/topbar_icon_text/default";
-   parts {
-      part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      } 
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-         description {
-            state: "visible" 0.0;
-            min: 50 50;
-            fixed: 1 1;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      } 
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: 1 50;
-            fixed: 1 1;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
-      } 
-      part {
-         name: "elm.text";
-         type: TEXT;
-         effect: SHADOW;
-         clip_to: "clip_title";
-         scale:1;       
-         description {
-            state: "default" 0.0;
-            fixed: 1 1;
-            text
-              {
-                 font: "SLP:style=Medium";
-                 size: 30;
-                 min: 0 0;
-                 align: 0.5 0.5;
-                 max: 1 0;
-              }
-            color: NAVIGATIONBAR_TITLE_TEXT_COLOR;
-            color2: 0 0 0 255;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad1"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad2"; }
-            align: 0.5 0.5;
-         }
-      }
-      part {
-         name: "elm.swallow.icon";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: 50 50;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to_x: "padding_before_text";to_y: "clip_title"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to_x: "padding_before_text";to_y: "clip_title"; }
-            aspect: 1.0 1.0;
-            aspect_preference: VERTICAL;
-            align: 1.0 0.5;
-         }
-      }         
-      part {
-         name: "padding_before_text";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0; //when only icon or no icon is there
-            align: 1.0 0.5;
-            rel1 { relative: 0.0 0.0; to_x: "elm.text"; to_y: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to_x: "elm.text"; to_y: "clip_title";}                    
-            fixed: 1 0;
-            min: 10 0;
-            color: 0 0 0 0;
-         }
-      }
-   }
-   programs
-     {
-        program {
-           name: "show_icon";
-           signal: "elm,state,icon,visible";
-           source: "elm";
-           action: STATE_SET "visible" 0.0;
-           target: "elm.rect.pad1";
-        }
-     }
-}
-
-group { name: "elm/navigationbar_ex/item/topbar_back_1fn/default";
-   parts {
-      part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      } 
       part {
          name: "elm.rect.pada";
          type: RECT;
@@ -1556,18 +231,9 @@ group { name: "elm/navigationbar_ex/item/topbar_back_1fn/default";
          description {
             state: "default" 0.0;
             min: PADDING 0;
-            fixed: 1 1;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-         description {
-            state: "visible" 0.0;
-            min: 50 50;
-            fixed: 1 1;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
+            fixed: 1 0;
+            rel1 { relative: 0.0 0.0; to: "navigationitem"; }
+            rel2 { relative: 0.0 1.0; to: "navigationitem"; }
             align: 0.0 0.5;
             color: 0 0 0 0;
          }
@@ -1580,10 +246,10 @@ group { name: "elm/navigationbar_ex/item/topbar_back_1fn/default";
          scale: 1;
          description {
             state: "default" 0.0;
-            min: 1 50;
-            fixed: 1 1;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
+            min: 1 0;
+            fixed: 1 0;
+            rel1 { relative: 1.0 0.0; to: "navigationitem"; }
+            rel2 { relative: 1.0 1.0; to: "navigationitem"; }
             align: 1.0 0.5;
             color: 0 0 0 0;
          }
@@ -1591,134 +257,124 @@ group { name: "elm/navigationbar_ex/item/topbar_back_1fn/default";
       part {
          name: "elm.text";
          type: TEXT;
-         effect: SHADOW;
          clip_to: "clip_title";
          scale:1;       
          description {
             state: "default" 0.0;
-            max: 240 67;
             text
               {
                  font: "SLP:style=Medium";
-                 size: 30;
+                 size: 22;
                  min: 0 0;
                  align: 0.5 0.5;
                  max: 1 0;
               }
             color: NAVIGATIONBAR_TITLE_TEXT_COLOR;
-            color2: 0 0 0 255;
             rel1 { relative: 1.0 0.0; to: "elm.rect.pada"; }  //1.0 0.0
             rel2 { relative: 0.0 1.0; to: "elm.rect.padb"; }
             align: 0.5 0.5;
          }
       }
       part {
-         name: "elm.swallow.icon";
+         name: "elm.swallow.content";
          type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: 50 50;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to_x: "padding_before_text";to_y: "clip_title"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to_x: "padding_before_text";to_y: "clip_title"; }
-            aspect: 1.0 1.0;
-            aspect_preference: VERTICAL;
-            align: 1.0 0.5;
-         }
-      }
-      part {
-         name: "padding_before_text";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0; //when only icon or no icon is there
-            align: 1.0 0.5;
-            rel1 { relative: 0.0 0.0; to_x: "elm.text"; to_y: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to_x: "elm.text"; to_y: "clip_title";}                    
-            fixed: 1 0;
-            min: 10 0;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
          scale: 1;
          description {
             state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
+            align: 0.0 0.0;
+            rel1 { relative: 0.0 1.0; to: "base"; }
+            rel2 { relative: 1.0 1.0; }
          }
-      }  
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
          description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad1"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         clip_to: "clip_title";
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.back";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad2"; }
-            align: 0.0 0.5;
+            state: "top" 0.0;
+            rel1 { relative: 0.0 0.0; }
+            rel2 { relative: 1.0 1.0; }
          }
       }
    }
-   programs
-     {
-        program {
-           name: "show_icon";
-           signal: "elm,state,icon,visible";
-           source: "elm";
-           action: STATE_SET "visible" 0.0;
-           target: "elm.rect.pada";
-        }
-     }
+   programs {
+      program {
+         name: "moveup";
+         signal: "elm,state,item,moveup";
+         source: "elm";
+         action: STATE_SET "top" 0.0;
+         target: "base";
+         target: "elm.swallow.content";
+      }
+      program {
+         name: "movedown";
+         signal: "elm,state,item,movedown";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "base";
+         target: "elm.swallow.content";
+      }
+      program {
+         name: "extended_titlearea";
+         signal: "elm,state,show,title";
+         source: "elm";
+         action: STATE_SET "extended" 0.0;
+         target: "base";
+         transition: LINEAR 0.2;
+      }
+      program {
+         name: "retract_titlearea";
+         signal: "elm,state,hide,title";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "base";
+         transition: LINEAR 0.2;
+      }
+   }
 }
 
-group { name: "elm/navigationbar_ex/item/topbar_back_2fns/default";
+group { name: "elm/navigationbar_ex/item/title_option_header/default";
+   images {
+      image: "00_winset_title_bg.png" COMP;
+   }
    parts {
+      part { name: "base";
+         type: RECT;
+         scale : 1;
+         mouse_events: 0;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            min: 1 NAVI_BAR_H;
+            fixed: 1 1;
+            color: 0 0 0 0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.0 0.0;
+         }
+         description {
+            state: "top" 0.0;
+            inherit: "default" 0.0;
+            min: 1 0;
+         }
+         description {
+            state: "extended" 0.0;
+            inherit: "default" 0.0;
+            min: 1 NAVI_BAR_EXTENDED_HEIGHT;
+         }
+      }
+      part {
+         name: "navigationitem";
+         type: IMAGE;
+         mouse_events: 0;
+         clip_to: "clip_title";
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 1 NAVI_BAR_H;
+            fixed: 0 1;
+            rel1 { relative: 0.0 0.0; to: "base"; }
+            rel2 { relative: 1.0 0.0; to: "base"; }
+            align: 0.0 0.0;
+            image {
+               normal: "00_winset_title_bg.png";
+            }
+         }
+      }
       part {
          name: "clip_title";
          type: RECT;
@@ -1727,14 +383,60 @@ group { name: "elm/navigationbar_ex/item/topbar_back_2fns/default";
          description {
             state: "default" 0.0;
             align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
+            rel1 { relative: 0.0 0.0; to: "base"; }
+            rel2 { relative: 1.0 1.0; to: "base"; }
          }
-      } 
+      }
+      part {
+         name: "elm.swallow.back";
+         type: SWALLOW;
+         clip_to: "clip_title";
+         scale: 1;
+         description {
+            fixed: 1 1;
+            min: 0 40;
+            max: MAX_ITEM_WIDTH 40;
+            state: "default" 0.0;
+            rel1 { relative: 0.0 0.0; to: "navigationitem"; }
+            rel2 { relative: 0.0 1.0; to: "navigationitem"; }
+            align: 0.0 0.5;
+         }
+      }
+      part {
+         name: "elm.rect.pada";
+         type: RECT;
+         mouse_events: 0;
+         clip_to: "clip_title";
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: PADDING 0;
+            fixed: 1 0;
+            rel1 { relative: 0.0 0.0; to: "navigationitem"; }
+            rel2 { relative: 0.0 1.0; to: "navigationitem"; }
+            align: 0.0 0.5;
+            color: 0 0 0 0;
+         }
+      }
+      part {
+         name: "elm.rect.padb";
+         type: RECT;
+         mouse_events: 0;
+         clip_to: "clip_title";
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 1 0;
+            fixed: 1 0;
+            rel1 { relative: 1.0 0.0; to: "navigationitem"; }
+            rel2 { relative: 1.0 1.0; to: "navigationitem"; }
+            align: 1.0 0.5;
+            color: 0 0 0 0;
+         }
+      }
       part {
          name: "elm.text";
          type: TEXT;
-         effect: SHADOW;
          clip_to: "clip_title";
          scale:1;       
          description {
@@ -1742,353 +444,168 @@ group { name: "elm/navigationbar_ex/item/topbar_back_2fns/default";
             text
               {
                  font: "SLP:style=Medium";
-                 size: 30;
+                 size: 22;
                  min: 0 0;
                  align: 0.5 0.5;
                  max: 1 0;
               }
             color: NAVIGATIONBAR_TITLE_TEXT_COLOR;
-            color2: 0 0 0 255;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad5"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad4"; }    
+            rel1 { relative: 1.0 0.0; to: "elm.rect.pada"; }  //1.0 0.0
+            rel2 { relative: 0.0 1.0; to: "elm.rect.padb"; }
             align: 0.5 0.5;
          }
       }
-      part {
-         name: "elm.swallow.icon";
-         type: SWALLOW;
+     part {
+          name: "events";
+          type: RECT;
+          clip_to: "clip_title";
+          ignore_flags: ON_HOLD;
+          description {
+             state: "default" 0.0;
+             rel1 { to: "elm.text"; }
+             rel2 { to: "elm.text"; }
+             color: 0 0 0 0;
+            }
+         }
+     part {
+         name: "naviarrow";
+         type: IMAGE;
+         mouse_events: 1;
          clip_to: "clip_title";
          scale: 1;
          description {
+            state: "default" 0.0;
+            min: 15 11;
+            max: 15 11;
             fixed: 1 1;
-            min: 50 50;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to_x: "padding_before_text";to_y: "clip_title"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to_x: "padding_before_text";to_y: "clip_title"; }
-            aspect: 1.0 1.0;
-            aspect_preference: VERTICAL;
-            align: 1.0 0.5;
+            rel1 { relative: 0.0 0.0; to: "elm.text"; }
+            rel2 { relative: 1.0 1.0; to: "elm.text"; }
+            align: 0.5 1.0;
+            image {
+               normal: "00_winset_control_top_arrow.png";
+            }
          }
       }
-      part {
-         name: "padding_before_text";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0; //when only icon or no icon is there
-            align: 1.0 0.5;
-            rel1 { relative: 0.0 0.0; to_x: "elm.text"; to_y: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to_x: "elm.text"; to_y: "clip_title";}                    
-            fixed: 1 0;
-            min: 10 0;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn2";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad1"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad3";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn2"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn2"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad3"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad3"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad4";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn1"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.back";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad2"; }
-            align: 0.0 0.5;
-         }
-      }
-      part {
-         name: "elm.rect.pad5";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.back"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.back"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-         description {
-            state: "visible" 0.0;
-            min: 50 50;
-            fixed: 1 1;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.back"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.back"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-   }
-   programs
-     {
-        program {
-           name: "show_icon";
-           signal: "elm,state,icon,visible";
-           source: "elm";
-           action: STATE_SET "visible" 0.0;
-           target: "elm.rect.pad5";
-        }
-     }
-}
-
-group { name: "elm/navigationbar_ex/item/topbar_back_obj_2fns/default";
-   parts {
-      part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      } 
       part {
          name: "elm.swallow.title";
          type: SWALLOW;
+         scale:1;
          clip_to: "clip_title";
-         scale:1;       
          description {
+            fixed: 0 1;
+            min: 0 ITEM_HEIGHT;
             state: "default" 0.0;
-            fixed: 1 1;
-            min: 0 EX_ITEM_HEIGHT;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad5"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad4"; }    
-            align: 0.0 0.5;
+            rel1 { relative: 0.0 1.0; to_y: "navigationitem"; }
+            rel2 { relative: 1.0 1.0; to: "base"; }
+            align: 0.0 0.0;
          }
       }
       part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn2";
+         name: "elm.swallow.content";
          type: SWALLOW;
-         clip_to: "clip_title";
          scale: 1;
          description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
             state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad1"; }
-            align: 1.0 0.5;                             
+            align: 0.0 0.0;
+            rel1 { relative: 0.0 1.0; to: "base"; }
+            rel2 { relative: 1.0 1.0; }
+         }
+         description {
+            state: "top" 0.0;
+            rel1 { relative: 0.0 0.0; }
+            rel2 { relative: 1.0 1.0; }
          }
       }
-      part {
-         name: "elm.rect.pad3";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn2"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn2"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
+   }
+   programs {
+      program {
+         name: "click";
+         signal: "mouse,up,1";
+         source: "events";
+         action: SIGNAL_EMIT "elm,action,clicked" "elm";
       }
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad3"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad3"; }
-            align: 1.0 0.5;                             
-         }
+      program {
+         name: "moveup";
+         signal: "elm,state,item,moveup";
+         source: "elm";
+         action: STATE_SET "top" 0.0;
+         target: "base";
+         target: "elm.swallow.content";
       }
-      part {
-         name: "elm.rect.pad4";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn1"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
+      program {
+         name: "movedown";
+         signal: "elm,state,item,movedown";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "base";
+         target: "elm.swallow.content";
       }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.back";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad2"; }
-            align: 0.0 0.5;
-         }
+      program {
+         name: "extended_titlearea";
+         signal: "elm,state,show,title";
+         source: "elm";
+         action: STATE_SET "extended" 0.0;
+         target: "base";
+         transition: LINEAR 0.2;
       }
-      part {
-         name: "elm.rect.pad5";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.back"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.back"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
+      program {
+         name: "retract_titlearea";
+         signal: "elm,state,hide,title";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "base";
+         transition: LINEAR 0.2;
       }
    }
 }
 
-group { name: "elm/navigationbar_ex/item/topbar_back_3fns/default";
+group { name: "elm/navigationbar_ex/item/title_option_header2/default";
+   images {
+      image: "00_winset_title_bg.png" COMP;
+   }
    parts {
+      part { name: "base";
+         type: RECT;
+         scale : 1;
+         mouse_events: 0;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            min: 1 NAVI_BAR_H;
+            fixed: 1 1;
+            color: 0 0 0 0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            align: 0.0 0.0;
+         }
+         description {
+            state: "top" 0.0;
+            inherit: "default" 0.0;
+            min: 1 0;
+         }
+         description {
+            state: "extended" 0.0;
+            inherit: "default" 0.0;
+            min: 1 NAVI_BAR_EXTENDED_HEIGHT2;
+         }
+      }
+      part {
+         name: "navigationitem";
+         type: IMAGE;
+         mouse_events: 0;
+         clip_to: "clip_title";
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 1 NAVI_BAR_H;
+            fixed: 0 1;
+            rel1 { relative: 0.0 0.0; to: "base"; }
+            rel2 { relative: 1.0 0.0; to: "base"; }
+            align: 0.0 0.0;
+            image {
+               normal: "00_winset_title_bg.png";
+            }
+         }
+      }
       part {
          name: "clip_title";
          type: RECT;
@@ -2097,14 +614,60 @@ group { name: "elm/navigationbar_ex/item/topbar_back_3fns/default";
          description {
             state: "default" 0.0;
             align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
+            rel1 { relative: 0.0 0.0; to: "base"; }
+            rel2 { relative: 1.0 1.0; to: "base"; }
          }
-      } 
+      }
+      part {
+         name: "elm.swallow.back";
+         type: SWALLOW;
+         clip_to: "clip_title";
+         scale: 1;
+         description {
+            fixed: 1 1;
+            min: 0 40;
+            max: MAX_ITEM_WIDTH 40;
+            state: "default" 0.0;
+            rel1 { relative: 0.0 0.0; to: "navigationitem"; }
+            rel2 { relative: 0.0 1.0; to: "navigationitem"; }
+            align: 0.0 0.5;
+         }
+      }
+      part {
+         name: "elm.rect.pada";
+         type: RECT;
+         mouse_events: 0;
+         clip_to: "clip_title";
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: PADDING 0;
+            fixed: 1 0;
+            rel1 { relative: 0.0 0.0; to: "navigationitem"; }
+            rel2 { relative: 0.0 1.0; to: "navigationitem"; }
+            align: 0.0 0.5;
+            color: 0 0 0 0;
+         }
+      }
+      part {
+         name: "elm.rect.padb";
+         type: RECT;
+         mouse_events: 0;
+         clip_to: "clip_title";
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 1 0;
+            fixed: 1 0;
+            rel1 { relative: 1.0 0.0; to: "navigationitem"; }
+            rel2 { relative: 1.0 1.0; to: "navigationitem"; }
+            align: 1.0 0.5;
+            color: 0 0 0 0;
+         }
+      }
       part {
          name: "elm.text";
          type: TEXT;
-         effect: SHADOW;
          clip_to: "clip_title";
          scale:1;       
          description {
@@ -2112,1176 +675,162 @@ group { name: "elm/navigationbar_ex/item/topbar_back_3fns/default";
             text
               {
                  font: "SLP:style=Medium";
-                 size: 30;
+                 size: 22;
                  min: 0 0;
                  align: 0.5 0.5;
                  max: 1 0;
               }
             color: NAVIGATIONBAR_TITLE_TEXT_COLOR;
-            color2: 0 0 0 255;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad6"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad5"; }    
+            rel1 { relative: 1.0 0.0; to: "elm.rect.pada"; }  //1.0 0.0
+            rel2 { relative: 0.0 1.0; to: "elm.rect.padb"; }
             align: 0.5 0.5;
          }
       }
-      part {
-         name: "elm.swallow.icon";
-         type: SWALLOW;
+     part {
+          name: "events";
+          type: RECT;
+          clip_to: "clip_title";
+          ignore_flags: ON_HOLD;
+          description {
+             state: "default" 0.0;
+             rel1 { to: "elm.text"; }
+             rel2 { to: "elm.text"; }
+             color: 0 0 0 0;
+            }
+         }
+     part {
+         name: "naviarrow";
+         type: IMAGE;
+         mouse_events: 1;
          clip_to: "clip_title";
          scale: 1;
          description {
+            state: "default" 0.0;
+            min: 15 11;
+            max: 15 11;
             fixed: 1 1;
-            min: 50 50;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to_x: "padding_before_text";to_y: "clip_title"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to_x: "padding_before_text";to_y: "clip_title"; }
-            aspect: 1.0 1.0;
-            aspect_preference: VERTICAL;
-            align: 1.0 0.5;
-         }
-      }
-      part {
-         name: "padding_before_text";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0; //when only icon or no icon is there
-            align: 1.0 0.5;
-            rel1 { relative: 0.0 0.0; to_x: "elm.text"; to_y: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to_x: "elm.text"; to_y: "clip_title";}                    
-            fixed: 1 0;
-            min: 10 0;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn3";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad1"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad3";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn3"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn3"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.swallow.btn2";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad3"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad3"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad4";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn2"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn2"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad4"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad4"; }
-            align: 1.0 0.5;                             
-         }
-      }  
-      part {
-         name: "elm.rect.pad5";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn1"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      } 
-      part {
-         name: "elm.swallow.back";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad2"; }
-            align: 0.0 0.5;
-         }
-      }
-      part {
-         name: "elm.rect.pad6";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.back"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.back"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-         description {
-            state: "visible" 0.0;
-            min: 50 50;
-            fixed: 1 1;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.back"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.back"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }                 
-   }
-   programs
-     {
-        program {
-           name: "show_icon";
-           signal: "elm,state,icon,visible";
-           source: "elm";
-           action: STATE_SET "visible" 0.0;
-           target: "elm.rect.pad6";
-        }
-     }
-}
-
-group { name: "elm/navigationbar_ex/item/topbar_back_1fn_2lines_facebook/default";
-   alias: "elm/navigationbar_ex/item/topbar_back_1fn_2lines_big/default";
-   styles{
-      style { name: "title_big_style";
-         base: "font=SLP:style=Medium font_size=28 align=center color="NAVIGATIONBAR_TITLE_TEXT_COLOR_HEX" wrap=char";
-         tag:  "br" "\n";
-         tag:  "ps" "ps";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-      style { name: "subtitle_big_style";
-         base: "font=SLP:style=Medium font_size=22 align=center color="NAVIGATIONBAR_TITLE_TEXT_COLOR_HEX" wrap=char";
-         tag:  "br" "\n";
-         tag:  "ps" "ps";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-   }    
-   parts {
-      part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      } 
-      part {
-         name: "elm.text";
-         type: TEXTBLOCK;
-         effect: SHADOW;
-         clip_to: "clip_title";
-         scale:1;       
-         description {
-            state: "default" 0.0;
-            text
-              {
-                 style: "title_big_style";
-                 min: 0 0;
-                 max: 0 1;
-              }
-            color2: 0 0 0 255;
-            rel1 { relative: 0.0 0.0; to_x: "elm.rect.pad4"; to_y: "clip_title"; }  //1.0 0.0
-            rel2 { relative: 1.0 1.0; to_x: "elm.rect.pad2"; to_y: "clip_title"; }
-            align: 0.5 0.0;
-         }
-      }
-      part {
-         name: "elm.text.sub";
-         type: TEXTBLOCK;
-         scale:1;
-         clip_to: "clip_title"; 
-         description {
-            state: "default" 0.0;
-            text
-              {
-                 style: "subtitle_big_style";
-                 min: 0 0;
-                 max: 0 1;
-              }
-            rel1 { relative: 0.0 1.0; to_x: "elm.rect.pad4"; to_y:"elm.text"; } //1.0 0.0
-            rel2 { relative: 1.0 1.0; to_x: "elm.rect.pad2"; to_y: "clip_title";}
-            align: 0.5 0.0;
-         }
-      } 
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad1"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            align: 1.0 0.5;     
-            color: 0 0 0 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn1"; }
-         }
-      }
-      part {
-         name: "elm.rect.pad3";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      } 
-      part {
-         name: "elm.swallow.back";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad3"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad3"; }
-            align: 0.0 0.5;
-         }
-      }
-      part {
-         name: "elm.rect.pad4";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.back"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.back"; }
-         }
-      }
-   }
-}
-
-group { name: "elm/navigationbar_ex/item/topbar_back_1fn_2lines_ebook/default";
-   alias: "elm/navigationbar_ex/item/topbar_back_1fn_2lines_small/default";
-   styles{
-      style { name: "title_small_style";
-         base: "font=SLP:style=Medium font_size=24 align=center color="NAVIGATIONBAR_TITLE_TEXT_COLOR_HEX" wrap=char";
-         tag:  "br" "\n";
-         tag:  "ps" "ps";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-      style { name: "subtitle_small_style";
-         base: "font=SLP:style=Medium font_size=16 align=center color="NAVIGATIONBAR_TITLE_TEXT_COLOR_HEX" wrap=char";
-         tag:  "br" "\n";
-         tag:  "ps" "ps";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-   }    
-   
-   parts {
-      part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      } 
-      part {
-         name: "elm.text";
-         type: TEXTBLOCK;
-         effect: SHADOW;
-         clip_to: "clip_title";
-         scale:1;       
-         description {
-            state: "default" 0.0;
-            text
-              {
-                 style: "title_small_style";
-                 min: 0 0;
-                 max: 0 1;
-              }
-            color2: 0 0 0 255;
-            rel1 { relative: 0.0 0.0; to_x: "elm.rect.pad4"; to_y: "clip_title"; }  //1.0 0.0
-            rel2 { relative: 1.0 1.0; to_x: "elm.rect.pad2"; to_y: "clip_title"; }
-            align: 0.5 0.2;
-         }
-      }
-      part {
-         name: "elm.text.sub";
-         type: TEXTBLOCK;
-         scale:1;
-         clip_to: "clip_title"; 
-         description {
-            state: "default" 0.0;
-            text
-              {
-                 style: "subtitle_small_style";
-                 min: 0 0;
-                 max: 0 1;
-              }
-            rel1 { relative: 0.0 1.0; to_x: "elm.rect.pad4"; to_y:"elm.text"; } //1.0 0.0
-            rel2 { relative: 1.0 1.0; to_x: "elm.rect.pad2"; to_y: "clip_title";}
-            align: 0.5 0.4;
-         }
-      } 
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad1"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            align: 1.0 0.5;     
-            color: 0 0 0 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn1"; }
-         }
-      }
-      part {
-         name: "elm.rect.pad3";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      } 
-      part {
-         name: "elm.swallow.back";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad3"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad3"; }
-            align: 0.0 0.5;
-         }
-      }
-      part {
-         name: "elm.rect.pad4";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.back"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.back"; }
-         }
-      }
-   }
-}
-
-group { name: "elm/navigationbar_ex/item/topbar_back_1fn_2lines/default";
-   styles{
-      style { name: "title_style";
-         base: "font=SLP:style=Medium font_size=26 align=center color="NAVIGATIONBAR_TITLE_TEXT_COLOR_HEX" wrap=char";
-         tag:  "br" "\n";
-         tag:  "ps" "ps";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-      style { name: "subtitle_style";
-         base: "font=SLP:style=Medium font_size=18 align=center color="NAVIGATIONBAR_TITLE_TEXT_COLOR_HEX" wrap=char";
-         tag:  "br" "\n";
-         tag:  "ps" "ps";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-   }    
-   parts {
-      part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      } 
-      part {
-         name: "elm.text";
-         type: TEXTBLOCK;
-         effect: SHADOW;
-         clip_to: "clip_title";
-         scale:1;       
-         description {
-            state: "default" 0.0;
-            text
-              {
-                 style: "title_style";
-                 min: 0 0;
-                 max: 0 1;
-              }
-            color2: 0 0 0 255;
-            rel1 { relative: 0.0 0.0; to_x: "elm.rect.pad4"; to_y: "clip_title"; }  
-            rel2 { relative: 1.0 1.0; to_x: "elm.rect.pad2"; to_y: "clip_title"; }
-            align: 0.5 0.2;
-         }
-      }
-      part {
-         name: "elm.text.sub";
-         type: TEXTBLOCK;
-         scale:1;
-         clip_to: "clip_title";                 
-         description {
-            state: "default" 0.0;
-            text
-              {
-                 style: "subtitle_style";
-                 min: 0 0;
-                 max: 0 1;
-              }
-            rel1 { relative: 0.0 1.0; to_x: "elm.rect.pad4";to_y: "elm.text"; } //1.0 0.0
-            rel2 { relative: 1.0 1.0; to_x: "elm.rect.pad2"; to_y: "clip_title"; }
-            align: 0.5 0.0;
-         }
-      } 
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad1"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            align: 1.0 0.5;     
-            color: 0 0 0 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn1"; }
-         }
-      }
-      part {
-         name: "elm.rect.pad3";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      } 
-      part {
-         name: "elm.swallow.back";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad3"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad3"; }
-            align: 0.0 0.5;
-         }
-      }
-      part {
-         name: "elm.rect.pad4";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.back"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.back"; }
-         }
-      }
-   }
-}
-
-
-group { name: "elm/navigationbar_ex/item/topbar_title_segmented_1fn/default";
-   parts {
-      part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      } 
-      part {
-         name: "elm.text";
-         type: TEXT;
-         effect: SHADOW;
-         scale:1;
-         clip_to: "clip_title";                 
-         description {
-            state: "default" 0.0;
-            text
-              {
-                 font: "SLP:style=Medium";
-                 size: 30;
-                 min: 0 0;
-                 align: 0.5 0.5;
-              }
-            color: NAVIGATIONBAR_TITLE_TEXT_COLOR;
-            color2: 0 0 0 255;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }  //1.0 0.0
-            rel2 { relative: 1.0 0.0; to_y: "elm.swallow.title";to_x: "clip_title"; }           
-            align: 0.5 0.5;
-         }
-      }
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.4; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.swallow.back";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad1"; }
-            align: 0.0 0.5;
-         }
-      }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.back"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.back"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      } 
-      part {
-         name: "elm.rect.pad3";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.4; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad3"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad3"; }
-            align: 1.0 0.5;                             
-                        }
-      }
-      part {
-         name: "elm.rect.pad4";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.swallow.btn1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.swallow.btn1"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
+            rel1 { relative: 0.0 0.0; to: "elm.text"; }
+            rel2 { relative: 1.0 1.0; to: "elm.text"; }
+            align: 0.5 1.0;
+            image {
+               normal: "00_winset_control_top_arrow.png";
+            }
          }
       }
       part {
          name: "elm.swallow.title";
          type: SWALLOW;
          scale:1;
-         clip_to: "clip_title"; 
+         clip_to: "clip_title";
          description {
-            fixed: 1 1;
-            min: 0 EX_ITEM_HEIGHT;
+            fixed: 0 1;
+            min: 0 ITEM_HEIGHT;
             state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad2"; }  //1.0 0.0
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad4"; }
-            align: 0.0 0.5;
+            rel1 { relative: 0.0 1.0; to_y: "navigationitem"; }
+            rel2 { relative: 1.0 1.0; to: "base"; }
+            align: 0.0 0.0;
          }
-      } 
-   }
-}
-
-group { name: "elm/navigationbar_ex/item/topbar_title_1fn_segmented/default";
-   parts {
+      }
       part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
+         name: "elm.swallow.content";
+         type: SWALLOW;
          scale: 1;
          description {
             state: "default" 0.0;
             align: 0.0 0.0;
+            rel1 { relative: 0.0 1.0; to: "base"; }
+            rel2 { relative: 1.0 1.0; }
+         }
+         description {
+            state: "top" 0.0;
             rel1 { relative: 0.0 0.0; }
             rel2 { relative: 1.0 1.0; }
          }
-      } 
-      part {
-         name: "elm.text";
-         type: TEXT;
-         effect: SHADOW;
-         scale:1;
-         clip_to: "clip_title";         
-         description {
-            state: "default" 0.0;
-            text
-              {
-                 font: "SLP:style=Medium";
-                 size: 30;
-                 min: 0 0;
-                 align: 0.5 0.5;
-              }
-            color: NAVIGATIONBAR_TITLE_TEXT_COLOR;
-            color2: 0 0 0 255;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }  //1.0 0.0
-            rel2 { relative: 1.0 0.0; to_y: "elm.swallow.title";to_x: "clip_title"; }                                           
-            align: 0.5 0.5;
-         }
       }
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title"; 
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.back";
-         type: SWALLOW;
-         clip_to: "clip_title"; 
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 1.0 0.5; to: "elm.rect.pad1"; }
-            align: 0.0 0.5;
-         }
+   }
+   programs {
+      program {
+         name: "click";
+         signal: "mouse,up,1";
+         source: "events";
+         action: SIGNAL_EMIT "elm,action,clicked" "elm";
       }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title"; 
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
+      program {
+         name: "moveup";
+         signal: "elm,state,item,moveup";
+         source: "elm";
+         action: STATE_SET "top" 0.0;
+         target: "base";
+         target: "elm.swallow.content";
       }
-      part {
-         name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title"; 
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad2"; }
-            rel2 { relative: 0.0 0.5; to: "elm.rect.pad2"; }
-            align: 1.0 0.5;                             
-         }
+      program {
+         name: "movedown";
+         signal: "elm,state,item,movedown";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "base";
+         target: "elm.swallow.content";
       }
-      part {
-         name: "elm.swallow.title";
-         type: SWALLOW;
-         scale:1;
-         clip_to: "clip_title";                 
-         description {
-            fixed: 1 1;
-            min: 0 EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.5; to: "elm.rect.pad1"; }  
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad2"; }
-            align: 0.0 0.5;
-         }
+      program {
+         name: "extended_titlearea";
+         signal: "elm,state,show,title";
+         source: "elm";
+         action: STATE_SET "extended" 0.0;
+         target: "base";
+         transition: LINEAR 0.2;
+      }
+      program {
+         name: "retract_titlearea";
+         signal: "elm,state,hide,title";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "base";
+         transition: LINEAR 0.2;
       }
    }
 }
 
-group { name: "elm/navigationbar_ex/item/topbar_ebook_search/default";
+group { name: "elm/standard/navigationbar_ex/title_obj2";
    parts {
       part {
-         name: "clip_title";
-         type: RECT;
-         mouse_events: 0;
+         name: "title_obj1";
+         type: SWALLOW;
          scale: 1;
          description {
             state: "default" 0.0;
-            align: 0.0 0.0;
+            min: 0 55;
+            fixed: 0 1;
             rel1 { relative: 0.0 0.0; }
+            rel2 { relative: 1.0 0.0; }
+            align: 0.0 0.0;
+         }
+      }
+      part {
+         name: "padding";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 1;
+            fixed: 0 1;
+            rel1 { relative: 0.0 1.0; to_y: "title_obj1"; }
+            rel2 { relative: 1.0 0.0; }
+            align: 0.0 0.0;
+            color: 207 128 19 255;
+         }
+      }
+      part {
+         name: "title_obj2";
+         type: SWALLOW;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 65;
+            fixed: 0 1;
+            rel1 { relative: 0.0 1.0; to_y: "padding"; }
             rel2 { relative: 1.0 1.0; }
-         }
-      } 
-      part {
-         name: "elm.rect.pad1";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "clip_title"; }
-            rel2 { relative: 1.0 1.0; to: "clip_title"; }
-            align: 1.0 0.0;
-            color: 0 0 0 0;
+            align: 0.0 0.0;
          }
       }
-      part {
-         name: "elm.swallow.title";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: 115 EX_ITEM_HEIGHT;
-            max: 115 EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.pad1"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.pad1"; }
-            align: 1.0 0.5;                             
-         }
-      }
-      part{ name: "elm.swallow.btn1";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale : 1;
-         description { state: "default" 0.0;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            fixed : 1 1;
-            align: 1.0 0.5;
-            rel1 {
-               relative: 0.0 0.0;
-               to: "elm.rect.pad_btn";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "elm.rect.pad_btn";
-            }
-         }
-      }
-      part { name: "elm.rect.pad_btn";
-         type: RECT;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0; 
-            align: 0.5 0.5;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 0.0 0.0;
-               to: "elm.swallow.btn2";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "elm.swallow.btn2";
-            }
-         }
-      }
-      part{ name: "elm.swallow.btn2";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale : 1;
-         description { state: "default" 0.0;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            fixed : 1 1;
-            align: 0.5 0.5;
-            rel1 {
-               relative: 0.5 0.0;to: "clip_title";
-            }
-            rel2 {
-               relative: 0.5 1.0;to: "clip_title";
-            }
-         }
-      }
-      part { name: "elm.rect.pad_btn2";
-         type: RECT;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0; 
-            align: 0.5 0.5;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 1.0 0.0;
-               to: "elm.swallow.btn2";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               to: "elm.swallow.btn2";
-            }
-         }
-      }
-      part{ name: "elm.swallow.btn3";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale : 1;
-         description { state: "default" 0.0;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            fixed : 1 1;
-            align: 0.0 0.5;
-            rel1 {
-               relative: 1.0 0.0;
-               to: "elm.rect.pad_btn2";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               to: "elm.rect.pad_btn2";
-            }
-         }
-      }
-      part {
-         name: "elm.rect.pad2";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "clip_title";
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "clip_title"; }
-            rel2 { relative: 0.0 1.0; to: "clip_title"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }  
-      part {
-         name: "elm.swallow.back";
-         type: SWALLOW;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            fixed: 1 1;
-            min: ITEM_WIDTH EX_ITEM_HEIGHT;
-            max: MAX_ITEM_WIDTH EX_ITEM_HEIGHT;
-            state: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.pad2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.pad2"; }
-            align: 0.0 0.5;
-         }
-      }
-      part {
-         name: "elm.rect.pad6";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clip_title";
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PADDING 0;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.swallow.back"; }
-            rel2 { relative: 1.0 1.0; to: "elm.swallow.back"; }
-            align: 0.0 0.5;
-            color: 0 0 0 0;
-         }
-      }                 
-      
    }
-}
-
+} //end group
