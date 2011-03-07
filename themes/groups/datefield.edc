@@ -3,15 +3,15 @@
  *
  * Copyright (c) 2000 - 2010 Samsung Electronics Co., Ltd.
  *
- * Contact: Seokjae Jeong <seok.j.jeong@samsung.com>, Myoungwoon Roy Kim <Myoungwoon.kim@samsung.com>, Jeonghyun Yun <jh0506.yun@samsung.com>, Jaehwan Kim <jae.hwan.kim@samsung.com>, 
- * 		Chuneon Park <chuneon.park@samsung.com>, Juyung Seo <juyung.seo@samsung.com>, Woohyun Jung <wh0705.jung@samsung.com>, Myungjae Lee <mjae.lee@samsung.com>, Hyoyoung Chang <hyoyoung.chang@samsung.com>, 
- *		Hyunsil Park <hyunsil.park@samsung.com>, Sohyun Kim <anna1014.kim@samsung.com>, Seunggyun Kim <sgyun.kim@samsung.com>
- * 
+ * Contact: Seokjae Jeong <seok.j.jeong@samsung.com>, Myoungwoon Roy Kim <Myoungwoon.kim@samsung.com>, Jeonghyun Yun <jh0506.yun@samsung.com>, Jaehwan Kim <jae.hwan.kim@samsung.com>,
+ *       Chuneon Park <chuneon.park@samsung.com>, Juyung Seo <juyung.seo@samsung.com>, Woohyun Jung <wh0705.jung@samsung.com>, Myungjae Lee <mjae.lee@samsung.com>, Hyoyoung Chang <hyoyoung.chang@samsung.com>,
+ *      Hyunsil Park <hyunsil.park@samsung.com>, Sohyun Kim <anna1014.kim@samsung.com>, Seunggyun Kim <sgyun.kim@samsung.com>
+ *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the
  * Free Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
@@ -23,1662 +23,1775 @@
  *
  */
 
-#define DATE_HEIGHT					80
-#define HYBRID_PADDING				5
-#define TIME_PADDING					12
+#define DATE_HEIGHT   52
+#define TOTAL_HEIGHT  76
 
 images {
-	image: "00_list_group_bg.png" COMP;
-	image: "00_datepicker_button_normal.png" COMP;
-	image: "00_datepicker_button_focus.png" COMP;
-	image: "00_datepicker_editfield_left.png" COMP;
-	image: "00_datepicker_editfield_right.png" COMP;
-	image: "00_datepicker_editfield_whole.png" COMP;
-	image: "00_calend_picker_day_press.png" COMP;
+   image: "00_picker_panel_bg.png" COMP;
+   image: "00_timepicker_field_bg.png" COMP;
+   image: "00_timepicker_field_bg_focus.png" COMP;
+   image: "00_timepicker_colon.png" COMP;
+   image: "00_timepicker_number_bg.png" COMP;
+   image: "00_timepicker_tail.png" COMP;
 }
 
 /////// time and date mode ////////
-group { 
-	name: "elm/datefield/dateandtime/default";
-	alias: "elm/datefield/base/default";	
-	
-	parts {
-		part {
-			name: "elm.image.date";
-			type: IMAGE;
-           		//ignore_flags: ON_HOLD;
-           		scale: 1;
-			description {
-				state: "default" 0.0;
-				min: 0 DATE_HEIGHT;
-				rel1 { relative: 0.0 0.0; } 
-				rel2 { relative: 0.527 1.0; } 
-				image {
-					normal: "00_list_group_bg.png";
-					border: 12 12 12 12;
-					border_scale: 1;
-				}
-			}
-		}
-		part {
-			name: "elm.image.date.focus";
-			type: IMAGE;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.image.date"; }
-				rel2 { relative: 1.0 0.94; to: "elm.image.date"; }
-				image {
-					normal: "00_datepicker_editfield_whole.png";
-					border: 10 10 10 10;
-					border_scale: 1;
-				}
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}
-		}
-		part {
-			name: "elm.rect.date.left.pad";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				color: 0 0 0 0;
-				rel1 { relative: 0.0 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.038 1.0; to: "elm.image.date"; }
-			}
-		}
-		part {
-			name: "elm.rect.date.right.pad";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				color: 0 0 0 0;
-				rel1 { relative: 0.966 0.0; to: "elm.image.date"; }
-				rel2 { relative: 1.0 1.0; to: "elm.image.date"; }
-			}
-		}
-		part {
-			name: "elm.image.date.year.focus";
-			type: IMAGE;
-			//ignore_flags: ON_HOLD;			
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.swallow.date.year"; }
-				rel2 { relative: 1.0 1.0; to: "elm.swallow.date.year"; }	
-				image {
-					normal: "00_calend_picker_day_press.png";
-				}
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}
-		}		
-		part {
-			name: "elm.swallow.date.year";
-			type: SWALLOW;
-			//ignore_flags: ON_HOLD;			
-			scale: 1;
-			description {
-				state: "default" 0.0;
- 				align: 0.5 0.5;
- 				fixed: 1 1;
-				rel1 { relative: 0.5 0.5; to: "elm.rect.date.year.over"; }
-				rel2 { relative: 0.5 0.5; to: "elm.rect.date.year.over"; }
-			} 		
-		}
-		part {
-			name: "elm.image.date.month.focus";
-			type: IMAGE;
-			//ignore_flags: ON_HOLD;			
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.swallow.date.month"; }
-				rel2 { relative: 1.0 1.0; to: "elm.swallow.date.month"; }	
-				image {
-					normal: "00_calend_picker_day_press.png";
-				}		
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}
-		}		
-		part {
-			name: "elm.swallow.date.month";
-			type: SWALLOW;
-			//ignore_flags: ON_HOLD;	
-			scale: 1;
-			description {
-				state: "default" 0.0; 
-				align: 0.5 0.5;
- 				fixed: 1 1;
-				rel1 { relative: 0.463 0.5; to: "elm.rect.date.month.over"; }
-				rel2 { relative: 0.463 0.5; to: "elm.rect.date.month.over"; }
-			}	
-		}	
-		part {
-			name: "elm.text.date.comma";
-			type: TEXT;
-			//ignore_flags: ON_HOLD;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				text {
-					font: "SLP:style=Roman";
-					size: 32;
-					align: 0.7 0.5;
-				}
-				rel1 { relative: 0.813 0.5; to: "elm.rect.date.month.over"; }
-				rel2 { relative: 1.0 0.5; to: "elm.rect.date.month.over"; }
-				color: 0 0 0 255;
-			}
-		}		
-		part {
-			name: "elm.image.date.day.focus";
-			type: IMAGE;
-			//ignore_flags: ON_HOLD;			
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.swallow.date.day"; }
-				rel2 { relative: 1.0 1.0; to: "elm.swallow.date.day"; }	
-				image {
-					normal: "00_calend_picker_day_press.png";
-				}		
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}			
-		}	
-		part {
-			name: "elm.swallow.date.day";
-			type: SWALLOW;
-			//ignore_flags: ON_HOLD;		
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				align: 0.5 0.5;
- 				fixed: 1 1;
-				rel1 { relative: 0.5 0.5; to: "elm.rect.date.day.over"; }
-				rel2 { relative: 0.5 0.5; to: "elm.rect.date.day.over"; }
-			}			
-		}
-		part {
-			name: "elm.rect.date.year.over";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;    //mmddyy
-				color: 0 0 0 0;
-				rel1 { relative: 0.595 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.966 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "yymmdd" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.038 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.409 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "yyddmm" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.038 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.409 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "mmyydd" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.376 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.747 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "ddyymm" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.257 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.629 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "ddmmyy" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.595 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.966 1.0; to: "elm.image.date"; }
-			}
-		}
-		part {
-			name: "elm.rect.date.month.over";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;    //mmddyy
-				color: 0 0 0 0;
-				rel1 { relative: 0.038 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.376 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "mmyydd" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.038 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.376 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "yymmdd" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.409 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.747 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "ddmmyy" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.257 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.595 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "ddyymm" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.629 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.966 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "yyddmm" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.629 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.966 1.0; to: "elm.image.date"; }
-			}			
-		}		
-		part {
-			name: "elm.rect.date.day.over";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;    //mmddyy
-				color: 0 0 0 0;
-				rel1 { relative: 0.376 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.595 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "ddmmyy" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.038 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.257 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "ddyymm" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.038 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.257 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "yyddmm" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.409 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.629 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "yymmdd" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.747 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.966 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "mmyydd" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.747 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.966 1.0; to: "elm.image.date"; }
-			}
-		}	
-		part {
-			name: "elm.rect.pad1";
-			type: RECT;
-           		scale: 1;
-			description {
-				state: "default" 0.0;
-				min: HYBRID_PADDING 0;
-				fixed: 1 1;
-				align: 0.0 0.5;
-				visible: 0;
-				rel1 { relative: 1.0 0.0; to: "elm.image.date"; }
-				rel2 { relative: 1.0 1.0; to: "elm.image.date"; }
-			}
-		}
-		part {
-			name: "elm.image.time";
-			type: IMAGE;
-           		//ignore_flags: ON_HOLD;
-           		scale: 1;
-			description {
-				state: "default" 0.0;
-				rel1 { relative: 1.0 0.0; to: "elm.rect.pad1"; }
-				rel2 { relative: 0.0 1.0; to: "elm.rect.pad2"; }
-				image {
-					normal: "00_list_group_bg.png";
-					border: 12 12 12 12;
-					border_scale: 1;
-				}
-			}	
-		}
-		part {
-			name: "elm.image.time.left.focus";
-			type: IMAGE;
-           		//ignore_flags: ON_HOLD;
-           		scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.image.time"; }
-				rel2 { relative: 0.5 0.94; to: "elm.image.time"; }
-				image {
-					normal: "00_datepicker_editfield_left.png";
-					border: 10 10 10 10;
-					border_scale: 1;
-				}				
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}	
-		}
-		part {
-			name: "elm.image.time.right.focus";
-			type: IMAGE;
-           		//ignore_flags: ON_HOLD;
-           		scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.5.0 0.0; to: "elm.image.time"; }
-				rel2 { relative: 1.0 0.94; to: "elm.image.time"; }
-				image {
-					normal: "00_datepicker_editfield_right.png";
-					border: 10 10 10 10;
-					border_scale: 1;
-				}				
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}	
-		}		
-		part {
-			name: "elm.text.colon";
-			type: TEXT;
-			//ignore_flags: ON_HOLD;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				text {
-					font: "SLP:style=Roman";
-					size: 32;
-					align: 0.6 0.5;
-				}
-				rel1 { relative: 0.408 0.5; to: "elm.image.time"; }
-				rel2 { relative: 0.592 0.5; to: "elm.image.time"; }
-				color: 0 0 0 255;
-			}
-		}		
-		part {
-			name: "elm.image.time.hour.focus";
-			type: IMAGE;
-			//ignore_flags: ON_HOLD;			
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.swallow.time.hour"; }
-				rel2 { relative: 1.0 1.0; to: "elm.swallow.time.hour"; }	
-				image {
-					normal: "00_calend_picker_day_press.png";
-				}		
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}
-		}
-		part {
-			name: "elm.swallow.time.hour";
-			type: SWALLOW;
-			//ignore_flags: ON_HOLD;		
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				align: 0.5 0.5;
- 				fixed: 1 1;
-				rel1 { relative: 0.538 0.5; to: "elm.rect.time.hour.over"; }
-				rel2 { relative: 0.538 0.5; to: "elm.rect.time.hour.over"; }
-			}
-		}		
-		part {
-			name: "elm.image.time.min.focus";
-			type: IMAGE;
-			//ignore_flags: ON_HOLD;			
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.swallow.time.min"; }
-				rel2 { relative: 1.0 1.0; to: "elm.swallow.time.min"; }	
-				image {
-					normal: "00_calend_picker_day_press.png";
-				}		
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}			
-		}	
-		part {
-			name: "elm.swallow.time.min";
-			type: SWALLOW;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				align: 0.5 0.5;
- 				fixed: 1 1;
-				rel1 { relative: 0.462 0.5; to: "elm.rect.time.min.over"; } 
-				rel2 { relative: 0.462 0.5; to: "elm.rect.time.min.over"; }
-			}
-		}
-		part {
-			name: "elm.rect.time.hour.over";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				color: 0 0 0 0;
-				rel1 { relative: 0.0 0.0; to: "elm.image.time"; }
-				rel2 { relative: 0.5 1.0; to: "elm.image.time"; }
-			}
-		}		
-		part {
-			name: "elm.rect.time.min.over";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				color: 0 0 0 0;
-				rel1 { relative: 0.5 0.0; to: "elm.image.time"; }
-				rel2 { relative: 1.0 1.0; to: "elm.image.time"; }
-			}
-		}			
-		part {
-			name: "elm.rect.pad2";
-			type: RECT;
-           		scale: 1;
-			description {
-				state: "default" 0.0;
-				min: HYBRID_PADDING 0;
-				fixed: 1 1;
-				align: 1.0 0.5;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.image.ampm"; }
-				rel2 { relative: 0.0 1.0; to: "elm.image.ampm"; }
-			}
-			description {
-				state: "hidden" 0.0;
-				inherit: "default" 0.0;
-				min: 0 0;
-			}
-		}
-		part {
-			name: "elm.image.ampm";
-			type: IMAGE;
-           		//ignore_flags: ON_HOLD;
-           		scale: 1;
-			description {
-				state: "default" 0.0;
-				//min: 0 DATE_HEIGHT;
-				rel1 { relative: 0.838 0.0; } 
-				rel2 { relative: 1.0 1.0; } 
-				image {
-					normal: "00_datepicker_button_normal.png";
-					border: 12 12 12 12;
-					border_scale: 1;
-				}
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				image {
-					normal: "00_datepicker_button_focus.png";
-					border: 12 12 12 12;
-					border_scale: 1;
-				}
-			}
-			description {
-				state: "hidden" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 1.0 0.0; }
-				rel2 { relative: 1.0 1.0; }
-			}
-		}
-		part {
-			name: "elm.text.ampm";
-			type: TEXT;
-			//ignore_flags: ON_HOLD;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				text {
-					font: "SLP:style=Roman";
-					size: 32;
-					align: 0.5 0.5;
-				}
-				rel1 { relative: 0.0 0.5; to: "elm.image.ampm"; }
-				rel2 { relative: 1.0 0.5.; to: "elm.image.ampm"; }
-				color: 0 0 0 255;
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				color: 255 255 255 255;
-			}
-		}
-		part {
-			name: "elm.rect.time.ampm.over";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				color: 0 0 0 0;
-				rel1 { relative: 0.0 0.0; to: "elm.image.ampm"; }
-				rel2 { relative: 1.0 1.0; to: "elm.image.ampm"; }
-			}
-		}
-	}
-	programs {
-		program {
-			name: "year_focus_in";
-			signal: "elm,state,year,focus,in";
-			source: "elm";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.image.date.focus";
-			target: "elm.image.date.year.focus";
-		}
-		program {
-			name: "year_focus_out";
-			signal: "elm,state,year,focus,out";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.image.date.year.focus";
-			target: "elm.image.date.focus";		
-		}
-		program {
-			name: "month_focus_in";
-			signal: "elm,state,month,focus,in";
-			source: "elm";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.image.date.focus";
-			target: "elm.image.date.month.focus";
-		}
-		program {
-			name: "month_focus_out";
-			signal: "elm,state,month,focus,out";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.image.date.month.focus";
-			target: "elm.image.date.focus";
-		}	
-		program {
-			name: "day_focus_in";
-			signal: "elm,state,day,focus,in";
-			source: "elm";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.image.date.focus";
-			target: "elm.image.date.day.focus";
-		}
-		program {
-			name: "day_focus_out";
-			signal: "elm,state,day,focus,out";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.image.date.day.focus";
-			target: "elm.image.date.focus";
-		}	
-		program {
-			name: "hour_focus_in";
-			signal: "elm,state,hour,focus,in";
-			source: "elm";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.image.time.left.focus";
-			target: "elm.image.time.hour.focus";
-		}
-		program {
-			name: "hour_focus_out";
-			signal: "elm,state,hour,focus,out";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.image.time.hour.focus";
-			target: "elm.image.time.left.focus";
-		}	
-		program {
-			name: "min_focus_in";
-			signal: "elm,state,min,focus,in";
-			source: "elm";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.image.time.right.focus";
-			target: "elm.image.time.min.focus";
-		}
-		program {
-			name: "min_focus_out";
-			signal: "elm,state,min,focus,out";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.image.time.min.focus";
-			target: "elm.image.time.right.focus";
-		}		
-		program { 
-			name: "ampm_focus_in";
-			signal: "mouse,down,1";
-			source: "elm.rect.time.ampm.over";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.image.ampm";
-			target: "elm.text.ampm";
-		}
-		program { 
-			name: "ampm_focus_out";
-			signal: "mouse,up,1";
-			source: "elm.rect.time.ampm.over";
-			action: STATE_SET "default" 0.0;
-			target: "elm.image.ampm";
-			target: "elm.text.ampm";
-		}
-		program {
-			name: "format_yyddmm";
-			signal: "elm,state,format,yyddmm";
-			source: "elm";
-			action: STATE_SET "yyddmm" 0.0;
-			target: "elm.rect.date.year.over";
-			target: "elm.rect.date.month.over";
-			target: "elm.rect.date.day.over";
-			target: "elm.text.date.comma";
-		}
-		program {
-			name: "format_yymmdd";
-			signal: "elm,state,format,yymmdd";
-			source: "elm";
-			action: STATE_SET "yymmdd" 0.0;
-			target: "elm.rect.date.year.over";
-			target: "elm.rect.date.month.over";
-			target: "elm.rect.date.day.over";
-			target: "elm.text.date.comma";
-		}
-		program {
-			name: "format_mmyydd";
-			signal: "elm,state,format,mmyydd";
-			source: "elm";
-			action: STATE_SET "mmyydd" 0.0;
-			target: "elm.rect.date.year.over";
-			target: "elm.rect.date.month.over";
-			target: "elm.rect.date.day.over";
-			target: "elm.text.date.comma";
-		}
-		program {
-			name: "format_ddyymm";
-			signal: "elm,state,format,ddyymm";
-			source: "elm";
-			action: STATE_SET "ddyymm" 0.0;
-			target: "elm.rect.date.year.over";
-			target: "elm.rect.date.month.over";
-			target: "elm.rect.date.day.over";
-			target: "elm.text.date.comma";
-		}
-		program {
-			name: "format_mmddyy";
-			signal: "elm,state,format,mmddyy";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.rect.date.year.over";
-			target: "elm.rect.date.month.over";
-			target: "elm.rect.date.day.over";
-			target: "elm.text.date.comma";
-		}		
-		program {
-			name: "format_ddmmyy";
-			signal: "elm,state,format,ddmmyy";
-			source: "elm";
-			action: STATE_SET "ddmmyy" 0.0;
-			target: "elm.rect.date.year.over";
-			target: "elm.rect.date.month.over";
-			target: "elm.rect.date.day.over";
-			target: "elm.text.date.comma";
-		}
-		program {
-			name: "24h_mode";
-			signal: "elm,state,mode,24h";
-			source: "elm";
-			action: STATE_SET "hidden" 0.0;
-			target: "elm.rect.pad2";
-			target: "elm.image.ampm";
-		}
-		program {
-			name: "12h_mode";
-			signal: "elm,state,mode,12h";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.rect.pad2";
-			target: "elm.image.ampm";
-		}
-	}
+group {
+   name: "elm/datefield/dateandtime/default";
+   alias: "elm/datefield/base/default";
+
+   parts {
+      part {
+         name: "elm.rect.bg";
+         type: RECT;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            rel1 { relative: 0.0 0.0; }
+            rel2 { relative: 1.0 1.0; }
+         }
+      }
+      part {
+         name: "elm.rect.label";
+         type: RECT;
+         mouse_events: 0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 (TOTAL_HEIGHT-DATE_HEIGHT);
+            align: 0 0;
+            fixed: 0 1;
+            rel1 { relative: 0.0 0.0; }
+            rel2 { relative: 1.0 0.0; }
+         }
+      }
+      part {
+         name: "elm.image.date";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 DATE_HEIGHT;
+            visible: 0;
+            rel1 { relative: 0.0 1.0; to_y: "elm.rect.label"; }
+            rel2 { relative: 1.0 1.0; to_y: "elm.rect.bg"; }
+            image {
+               normal: "00_picker_panel_bg.png";
+               border: 1 1 5 5;
+               border_scale: 1;
+            }
+         }
+      }
+      part {
+         name: "elm.rect.date.left.pad";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 { relative: 0.0 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.019 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.rect.date.right.pad";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 { relative: 0.981 0.0; to: "elm.image.date"; }
+            rel2 { relative: 1.0 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.image.date.year.focus";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0.0 0.0; to: "elm.rect.date.year.over"; }
+            rel2 { relative: 1.0 1.0; to: "elm.rect.date.year.over"; }
+            image {
+               normal: "00_timepicker_field_bg.png";
+               border: 1 1 5 5;
+               border_scale: 1;
+            }
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "00_timepicker_field_bg_focus.png";
+         }
+      }
+      part {
+         name: "elm.image.date.month.focus";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0.0 0.0; to: "elm.rect.date.month.over"; }
+            rel2 { relative: 1.0 1.0; to: "elm.rect.date.month.over"; }
+            image {
+               normal: "00_timepicker_field_bg.png";
+               border: 1 1 5 5;
+               border_scale: 1;
+            }
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "00_timepicker_field_bg_focus.png";
+         }
+      }
+      part {
+         name: "elm.image.date.day.focus";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0.0 0.0; to: "elm.rect.date.day.over"; }
+            rel2 { relative: 1.0 1.0; to: "elm.rect.date.day.over"; }
+            image {
+               normal: "00_timepicker_field_bg.png";
+               border: 1 1 5 5;
+               border_scale: 1;
+            }
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "00_timepicker_field_bg_focus.png";
+         }
+      }
+      part {
+         name: "elm.swallow.date.year";
+         type: SWALLOW;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+             align: 0.5 0.5;
+             fixed: 1 1;
+            rel1 { relative: 0.5 0.5; to: "elm.rect.date.year.over"; }
+            rel2 { relative: 0.5 0.5; to: "elm.rect.date.year.over"; }
+         }
+      }
+      part {
+         name: "elm.swallow.date.month";
+         type: SWALLOW;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            align: 0.5 0.5;
+             fixed: 1 1;
+            rel1 { relative: 0.5 0.5; to: "elm.rect.date.month.over"; }
+            rel2 { relative: 0.5 0.5; to: "elm.rect.date.month.over"; }
+         }
+      }
+      part {
+         name: "elm.swallow.date.day";
+         type: SWALLOW;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            align: 0.5 0.5;
+             fixed: 1 1;
+            rel1 { relative: 0.5 0.5; to: "elm.rect.date.day.over"; }
+            rel2 { relative: 0.5 0.5; to: "elm.rect.date.day.over"; }
+         }
+      }
+      part {
+         name: "elm.rect.date.year.over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;    //mmddyy
+            color: 0 0 0 0;
+            rel1 { relative: 0.340 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.502 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "yymmdd" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.019 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.181 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "yyddmm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.019 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.181 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "mmyydd" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.186 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.348 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "ddyymm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.173 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.335 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "ddmmyy" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.340 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.502 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.rect.date.month.over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;    //mmddyy
+            color: 0 0 0 0;
+            rel1 { relative: 0.019 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.165 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "mmyydd" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.019 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.165 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "yymmdd" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.202 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.348 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "ddmmyy" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.173 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.319 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "ddyymm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.356 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.502 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "yyddmm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.356 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.502 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.rect.date.day.over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;    //mmddyy
+            color: 0 0 0 0;
+            rel1 { relative: 0.186 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.319 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "ddmmyy" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.019 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.152 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "ddyymm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.019 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.152 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "yyddmm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.202 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.335 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "yymmdd" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.369 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.502 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "mmyydd" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.369 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.502 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.text.year";
+         type: TEXT;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            text {
+               font: "SLP:style=Medium";
+               size: 18;
+               align: 0.5 0.5;
+               text: "Year";
+            }
+            rel1 { relative: 0.0 0.0; to_x: "elm.rect.date.year.over"; to_y: "elm.rect.label"; }
+            rel2 { relative: 1.0 1.0; to_x: "elm.rect.date.year.over"; to_y: "elm.rect.label"; }
+            color: 200 200 200 255;
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            color: 221 134 21 255;
+         }
+      }
+      part {
+         name: "elm.text.month";
+         type: TEXT;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            text {
+               font: "SLP:style=Medium";
+               size: 18;
+               align: 0.5 0.5;
+               text: "Month";
+            }
+            rel1 { relative: 0.0 0.0; to_x: "elm.rect.date.month.over"; to_y: "elm.rect.label"; }
+            rel2 { relative: 1.0 1.0; to_x: "elm.rect.date.month.over"; to_y: "elm.rect.label"; }
+            color: 200 200 200 255;
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            color: 221 134 21 255;
+         }
+      }
+      part {
+         name: "elm.text.day";
+         type: TEXT;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            text {
+               font: "SLP:style=Medium";
+               size: 18;
+               align: 0.5 0.5;
+               text: "Day";
+            }
+            rel1 { relative: 0.0 0.0; to_x: "elm.rect.date.day.over"; to_y: "elm.rect.label"; }
+            rel2 { relative: 1.0 1.0; to_x: "elm.rect.date.day.over"; to_y: "elm.rect.label"; }
+            color: 200 200 200 255;
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            color: 221 134 21 255;
+         }
+      }
+      part {
+         name: "elm.rect.date.time.pad";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            //min: 17 0;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            visible: 0;
+            rel1 { relative: 0.502 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.537 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.image.time.hour";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0.0 0.0; to: "elm.rect.time.hour.over"; }
+            rel2 { relative: 1.0 1.0; to: "elm.rect.time.hour.over"; }
+            image {
+               normal: "00_timepicker_field_bg.png";
+               border: 1 1 5 5;
+               border_scale: 1;
+            }
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "00_timepicker_field_bg_focus.png";
+         }
+      }
+      part {
+         name: "elm.image.time.min";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0.0 0.0; to: "elm.rect.time.min.over"; }
+            rel2 { relative: 1.0 1.0; to: "elm.rect.time.min.over"; }
+            image {
+               normal: "00_timepicker_field_bg.png";
+               border: 1 1 5 5;
+               border_scale: 1;
+            }
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "00_timepicker_field_bg_focus.png";
+         }
+      }
+      part {
+         name: "elm.image.colon";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0.67 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.70 1.0; to: "elm.image.date"; }
+            image {
+               normal: "00_timepicker_colon.png";
+               border: 1 1 5 5;
+               border_scale: 1;
+            }
+         }
+         description {
+            state: "noampm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.743 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.773 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.swallow.time.hour";
+         type: SWALLOW;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            align: 0.5 0.5;
+             fixed: 1 1;
+            rel1 { relative: 0.5 0.5; to: "elm.rect.time.hour.over"; }
+            rel2 { relative: 0.5 0.5; to: "elm.rect.time.hour.over"; }
+         }
+      }
+      part {
+         name: "elm.swallow.time.min";
+         type: SWALLOW;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            align: 0.5 0.5;
+             fixed: 1 1;
+            rel1 { relative: 0.5 0.5; to: "elm.rect.time.min.over"; }
+            rel2 { relative: 0.5 0.5; to: "elm.rect.time.min.over"; }
+         }
+      }
+      part {
+         name: "elm.rect.time.hour.over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 { relative: 0.537 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.67 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "noampm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.537 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.743 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.rect.time.min.over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 { relative: 0.7 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.833 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "noampm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.773 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.981 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.rect.ampm.pad";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 10 0;
+            fixed: 1 0;
+            color: 0 0 0 0;
+            rel1 { relative: 1.0 0.0; to: "elm.rect.time.min.over"; }
+            rel2 { relative: 1.0 1.0; to: "elm.rect.time.min.over"; }
+         }
+         description {
+            state: "noampm" 0.0;
+            inherit: "default" 0.0;
+            min: 0 0;
+         }
+      }
+      part {
+         name: "elm.image.ampm";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0.854 0.0; to: "elm.image.date";}
+            rel2 { relative: 0.981 1.0; to: "elm.image.date";}
+            image {
+               normal: "00_timepicker_field_bg.png";
+               border: 1 1 5 5;
+               border_scale: 1;
+            }
+         }
+         description {
+            state: "noampm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 1.0 0.0; to: "elm.image.date";}
+            rel2 { relative: 1.0 1.0; to: "elm.image.date";}
+         }
+      }
+      part {
+         name: "elm.text.ampm";
+         type: TEXT;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            text {
+               font: "SLP:style=Roman";
+               size: 24;
+               align: 0.5 0.5;
+            }
+            rel1 { relative: 0.0 0.5; to: "elm.image.ampm"; }
+            rel2 { relative: 1.0 0.5.; to: "elm.image.ampm"; }
+            color: 0 0 0 255;
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            color: 221 134 21 255;
+         }
+      }
+      part {
+         name: "elm.rect.time.ampm.over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 { relative: 0.0 0.0; to: "elm.image.ampm"; }
+            rel2 { relative: 1.0 1.0; to: "elm.image.ampm"; }
+         }
+      }
+   }
+   programs {
+      program {
+         name: "year_focus_in";
+         signal: "elm,state,year,focus,in";
+         source: "elm";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.image.date.year.focus";
+         target: "elm.text.year";
+      }
+      program {
+         name: "year_focus_out";
+         signal: "elm,state,year,focus,out";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.image.date.year.focus";
+         target: "elm.text.year";
+      }
+      program {
+         name: "month_focus_in";
+         signal: "elm,state,month,focus,in";
+         source: "elm";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.image.date.month.focus";
+         target: "elm.text.month";
+      }
+      program {
+         name: "month_focus_out";
+         signal: "elm,state,month,focus,out";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.image.date.month.focus";
+         target: "elm.text.month";
+      }
+      program {
+         name: "day_focus_in";
+         signal: "elm,state,day,focus,in";
+         source: "elm";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.image.date.day.focus";
+         target: "elm.text.day";
+      }
+      program {
+         name: "day_focus_out";
+         signal: "elm,state,day,focus,out";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.image.date.day.focus";
+         target: "elm.text.day";
+      }
+      program {
+         name: "hour_focus_in";
+         signal: "elm,state,hour,focus,in";
+         source: "elm";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.image.time.hour";
+      }
+      program {
+         name: "hour_focus_out";
+         signal: "elm,state,hour,focus,out";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.image.time.hour";
+      }
+      program {
+         name: "min_focus_in";
+         signal: "elm,state,min,focus,in";
+         source: "elm";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.image.time.min";
+      }
+      program {
+         name: "min_focus_out";
+         signal: "elm,state,min,focus,out";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.image.time.min";
+      }
+      program {
+         name: "ampm_focus_in";
+         signal: "mouse,down,1";
+         source: "elm.rect.time.ampm.over";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.text.ampm";
+      }
+      program {
+         name: "ampm_focus_out";
+         signal: "mouse,up,1";
+         source: "elm.rect.time.ampm.over";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text.ampm";
+      }
+      program {
+         name: "format_yyddmm";
+         signal: "elm,state,format,yyddmm";
+         source: "elm";
+         action: STATE_SET "yyddmm" 0.0;
+         target: "elm.rect.date.year.over";
+         target: "elm.rect.date.month.over";
+         target: "elm.rect.date.day.over";
+      }
+      program {
+         name: "format_yymmdd";
+         signal: "elm,state,format,yymmdd";
+         source: "elm";
+         action: STATE_SET "yymmdd" 0.0;
+         target: "elm.rect.date.year.over";
+         target: "elm.rect.date.month.over";
+         target: "elm.rect.date.day.over";
+      }
+      program {
+         name: "format_mmyydd";
+         signal: "elm,state,format,mmyydd";
+         source: "elm";
+         action: STATE_SET "mmyydd" 0.0;
+         target: "elm.rect.date.year.over";
+         target: "elm.rect.date.month.over";
+         target: "elm.rect.date.day.over";
+      }
+      program {
+         name: "format_ddyymm";
+         signal: "elm,state,format,ddyymm";
+         source: "elm";
+         action: STATE_SET "ddyymm" 0.0;
+         target: "elm.rect.date.year.over";
+         target: "elm.rect.date.month.over";
+         target: "elm.rect.date.day.over";
+      }
+      program {
+         name: "format_mmddyy";
+         signal: "elm,state,format,mmddyy";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.rect.date.year.over";
+         target: "elm.rect.date.month.over";
+         target: "elm.rect.date.day.over";
+      }
+      program {
+         name: "format_ddmmyy";
+         signal: "elm,state,format,ddmmyy";
+         source: "elm";
+         action: STATE_SET "ddmmyy" 0.0;
+         target: "elm.rect.date.year.over";
+         target: "elm.rect.date.month.over";
+         target: "elm.rect.date.day.over";
+      }
+      program {
+         name: "24h_mode";
+         signal: "elm,state,mode,24h";
+         source: "elm";
+         action: STATE_SET "noampm" 0.0;
+         target: "elm.rect.ampm.pad";
+         target: "elm.image.ampm";
+         target: "elm.rect.time.hour.over";
+         target: "elm.rect.time.min.over";
+         target: "elm.image.colon";
+      }
+      program {
+         name: "12h_mode";
+         signal: "elm,state,mode,12h";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.rect.ampm.pad";
+         target: "elm.image.ampm";
+         target: "elm.rect.time.hour.over";
+         target: "elm.rect.time.min.over";
+         target: "elm.image.colon";
+      }
+   }
 }
 
 //////////// time mode /////////////
-group { 
-	name: "elm/datefield/time/default";
-	
-	parts {
-		part {
-			name: "elm.image.time";
-			type: IMAGE;
-           		//ignore_flags: ON_HOLD;
-           		scale: 1;
-			description {
-				state: "default" 0.0;
-				min: 0 DATE_HEIGHT;
-				rel1 { relative: 0.0 0.0; }
-				rel2 { relative: 0.665 1.0; }
-				image {
-					normal: "00_list_group_bg.png";
-					border: 12 12 12 12;
-					border_scale: 1;
-				}
-			}
-			description {
-				state: "hidden" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.0 0.0; }
-				rel2 { relative: 1.0 1.0; }
-			}
-		}
-		part {
-			name: "elm.image.time.left.focus";
-			type: IMAGE;
-           		//ignore_flags: ON_HOLD;
-           		scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.image.time"; }
-				rel2 { relative: 0.502 0.94; to: "elm.image.time"; }
-				image {
-					normal: "00_datepicker_editfield_left.png";
-					border: 10 10 10 10;
-					border_scale: 1;
-				}				
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}	
-		}
-		part {
-			name: "elm.image.time.right.focus";
-			type: IMAGE;
-           		//ignore_flags: ON_HOLD;
-           		scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.502 0.0; to: "elm.image.time"; }
-				rel2 { relative: 1.0 0.94; to: "elm.image.time"; }
-				image {
-					normal: "00_datepicker_editfield_right.png";
-					border: 10 10 10 10;
-					border_scale: 1;
-				}				
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}	
-		}		
-		part {
-			name: "elm.text.colon";
-			type: TEXT;
-			//ignore_flags: ON_HOLD;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				text {
-					font: "SLP:style=Roman";
-					size: 40;
-					align: 0.8 0.5;
-				}
-				rel1 { relative: 0.462 0.5; to: "elm.image.time"; }
-				rel2 { relative: 0.538 0.5; to: "elm.image.time"; }
-				color: 0 0 0 255;
-			}
-		}		
-		part {
-			name: "elm.image.time.hour.focus";
-			type: IMAGE;
-			//ignore_flags: ON_HOLD;			
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.swallow.time.hour"; }
-				rel2 { relative: 1.0 1.0; to: "elm.swallow.time.hour"; }	
-				image {
-					normal: "00_calend_picker_day_press.png";
-				}		
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}
-		}		
-		part {
-			name: "elm.swallow.time.hour";
-			type: SWALLOW;
-			//ignore_flags: ON_HOLD;		
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				align: 0.5 0.5;
- 				fixed: 1 1;
-				rel1 { relative: 0.6 0.5; to: "elm.rect.time.hour.over"; }
-				rel2 { relative: 0.6 0.5; to: "elm.rect.time.hour.over"; }
-			}
-		}	
-		part {
-			name: "elm.image.time.min.focus";
-			type: IMAGE;
-			//ignore_flags: ON_HOLD;			
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.swallow.time.min"; }
-				rel2 { relative: 1.0 1.0; to: "elm.swallow.time.min"; }	
-				image {
-					normal: "00_calend_picker_day_press.png";
-				}		
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}			
-		}		
-		part {
-			name: "elm.swallow.time.min";
-			type: SWALLOW;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				align: 0.5 0.5;
- 				fixed: 1 1;
-				rel1 { relative: 0.4 0.5; to: "elm.rect.time.min.over"; } 
-				rel2 { relative: 0.4 0.5; to: "elm.rect.time.min.over"; }
-			}
-		}
-		part {
-			name: "elm.rect.time.hour.over";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				color: 0 0 0 0;
-				rel1 { relative: 0.0 0.0; to: "elm.image.time"; }
-				rel2 { relative: 0.502 1.0; to: "elm.image.time"; }
-			}
-		}		
-		part {
-			name: "elm.rect.time.min.over";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				color: 0 0 0 0;
-				rel1 { relative: 0.502 0.0; to: "elm.image.time"; }
-				rel2 { relative: 1.0 1.0; to: "elm.image.time"; }
-			}
-		}			
-		part {
-			name: "elm.rect.pad2";
-			type: RECT;
-           		scale: 1;
-			description {
-				state: "default" 0.0;
-				min: TIME_PADDING 0;
-				fixed: 1 1;
-				align: 0.0 0.5;
-				visible: 0;
-				rel1 { relative: 1.0 0.0; to: "elm.image.time"; }
-				rel2 { relative: 1.0 1.0; to: "elm.image.time"; }
-			}
-			description {
-				state: "hidden" 0.0;
-				inherit: "default" 0.0;
-				min: 0 0;
-			}
-		}
-		part {
-			name: "elm.image.ampm";
-			type: IMAGE;
-           		//ignore_flags: ON_HOLD;
-           		scale: 1;
-			description {
-				state: "default" 0.0;
-				rel1 { relative: 1.0 0.0; to: "elm.rect.pad2"; } 
-				rel2 { relative: 1.0 1.0; } 
-				image {
-					normal: "00_datepicker_button_normal.png";
-					border: 12 12 12 12;
-					border_scale: 1;
-				}
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				image {
-					normal: "00_datepicker_button_focus.png";
-					border: 12 12 12 12;
-					border_scale: 1;
-				}
-			}
-		}
-		part {
-			name: "elm.text.ampm";
-			type: TEXT;
-			//ignore_flags: ON_HOLD;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				text {
-					font: "SLP:style=Roman";
-					size: 40;
-					align: 0.5 0.5;
-				}
-				rel1 { relative: 0.0 0.5; to: "elm.image.ampm"; }
-				rel2 { relative: 1.0 0.5.; to: "elm.image.ampm"; }
-				color: 0 0 0 255;
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				color: 255 255 255 255;
-			}
-		}
-		part {
-			name: "elm.rect.time.ampm.over";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				color: 0 0 0 0;
-				rel1 { relative: 0.0 0.0; to: "elm.image.ampm"; }
-				rel2 { relative: 1.0 1.0; to: "elm.image.ampm"; }
-			}
-		}
-	}
-	programs {
-		program {
-			name: "hour_focus_in";
-			signal: "elm,state,hour,focus,in";
-			source: "elm";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.image.time.left.focus";
-			target: "elm.image.time.hour.focus";
-		}
-		program {
-			name: "hour_focus_out";
-			signal: "elm,state,hour,focus,out";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.image.time.hour.focus";
-			target: "elm.image.time.left.focus";
-		}	
-		program {
-			name: "min_focus_in";
-			signal: "elm,state,min,focus,in";
-			source: "elm";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.image.time.right.focus";
-			target: "elm.image.time.min.focus";
-		}
-		program {
-			name: "min_focus_out";
-			signal: "elm,state,min,focus,out";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.image.time.min.focus";
-			target: "elm.image.time.right.focus";
-		}			
-		program { 
-			name: "ampm_focus_in";
-			signal: "mouse,down,1";
-			source: "elm.rect.time.ampm.over";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.image.ampm";
-			target: "elm.text.ampm";
-		}
-		program { 
-			name: "ampm_focus_out";
-			signal: "mouse,up,1";
-			source: "elm.rect.time.ampm.over";
-			action: STATE_SET "default" 0.0;
-			target: "elm.image.ampm";
-			target: "elm.text.ampm";
-		}
-		program {
-			name: "24h_mode";
-			signal: "elm,state,mode,24h";
-			source: "elm";
-			action: STATE_SET "hidden" 0.0;
-			target: "elm.rect.pad2";
-			target: "elm.image.time";
-		}
-		program {
-			name: "12h_mode";
-			signal: "elm,state,mode,12h";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.rect.pad2";
-			target: "elm.image.time";
-		}		
-	}
+group {
+   name: "elm/datefield/time/default";
+
+   parts {
+      part {
+         name: "elm.rect.bg";
+         type: RECT;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            //min: 0 TOTAL_HEIGHT;
+            rel1 { relative: 0.0 0.0; }
+            rel2 { relative: 1.0 1.0; }
+         }
+      }
+      part {
+         name: "elm.rect.label";
+         type: RECT;
+         mouse_events: 0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 (TOTAL_HEIGHT-DATE_HEIGHT);
+            align: 0 0;
+            fixed: 0 1;
+            rel1 { relative: 0.0 0.0; }
+            rel2 { relative: 1.0 0.0; }
+         }
+      }
+      part {
+         name: "elm.image.time";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 DATE_HEIGHT;
+            align: 0 0;
+            rel1 { relative: 0.0 1.0; to_y: "elm.rect.label";}
+            rel2 { relative: 1.0 1.0; to_y: "elm.rect.bg";}
+            image {
+               normal: "00_picker_panel_bg.png";
+               border: 1 1 5 5;
+               border_scale: 1;
+            }
+         }
+      }
+      part {
+         name: "elm.rect.left.pad";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            visible: 0;
+            rel1 { relative: 0.0 0.0; to: "elm.image.time"; }
+            rel2 { relative: 0.214 1.0; to: "elm.image.time"; }
+         }
+      }
+      part {
+         name: "elm.image.time.hour";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0.0 0.0; to: "elm.rect.time.hour.over"; }
+            rel2 { relative: 1.0 1.0; to: "elm.rect.time.hour.over"; }
+            image {
+               normal: "00_timepicker_field_bg.png";
+               border: 1 1 10 10;
+               border_scale: 1;
+            }
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "00_timepicker_field_bg_focus.png";
+         }
+      }
+      part {
+         name: "elm.image.time.min";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0.0 0.0; to: "elm.rect.time.min.over"; }
+            rel2 { relative: 1.0 1.0; to: "elm.rect.time.min.over"; }
+            image {
+               normal: "00_timepicker_field_bg.png";
+               border: 1 1 10 10;
+               border_scale: 1;
+            }
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "00_timepicker_field_bg_focus.png";
+         }
+      }
+      part {
+         name: "elm.image.colon";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 0;
+            rel1 { relative: 1.0 0.0; to: "elm.rect.time.hour.over"; }
+            rel2 { relative: 0.0 1.0; to: "elm.rect.time.min.over"; }
+            image {
+               normal: "00_timepicker_colon.png";
+               border: 1 1 10 10;
+               border_scale: 1;
+            }
+         }
+      }
+      part {
+         name: "elm.swallow.time.hour";
+         type: SWALLOW;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            align: 0.5 0.5;
+             fixed: 1 1;
+            rel1 { relative: 0.5 0.5; to: "elm.rect.time.hour.over"; }
+            rel2 { relative: 0.5 0.5; to: "elm.rect.time.hour.over"; }
+         }
+      }
+      part {
+         name: "elm.swallow.time.min";
+         type: SWALLOW;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            align: 0.5 0.5;
+             fixed: 1 1;
+            rel1 { relative: 0.5 0.5; to: "elm.rect.time.min.over"; }
+            rel2 { relative: 0.5 0.5; to: "elm.rect.time.min.over"; }
+         }
+      }
+      part {
+         name: "elm.rect.time.hour.over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 { relative: 0.214 0.0; to: "elm.image.time"; }
+            rel2 { relative: 0.398 1.0; to: "elm.image.time"; }
+         }
+         description {
+            state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.214 0.0; to: "elm.image.time"; }
+            rel2 { relative: 0.48 1.0; to: "elm.image.time"; }
+         }
+      }
+      part {
+         name: "elm.rect.time.min.over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 { relative: 0.437 0.0; to: "elm.image.time"; }
+            rel2 { relative: 0.62 1.0; to: "elm.image.time"; }
+         }
+         description {
+            state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.5 0.0; to: "elm.image.time"; }
+            rel2 { relative: 0.785 1.0; to: "elm.image.time"; }
+         }
+      }
+      part {
+         name: "elm.text.hour";
+         type: TEXT;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            text {
+               font: "SLP:style=Medium";
+               size: 18;
+               align: 0.5 0.5;
+               text: "Hour";
+            }
+            rel1 { relative: 0.0 0.0; to_x: "elm.rect.time.hour.over"; to_y: "elm.rect.label"; }
+            rel2 { relative: 1.0 1.0; to_x: "elm.rect.time.hour.over"; to_y: "elm.rect.label"; }
+            color: 200 200 200 255;
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            color: 221 134 21 255;
+         }
+      }
+      part {
+         name: "elm.text.min";
+         type: TEXT;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            text {
+               font: "SLP:style=Medium";
+               size: 18;
+               align: 0.5 0.5;
+               text: "Minute";
+            }
+            rel1 { relative: 0.0 0.0; to_x: "elm.rect.time.min.over"; to_y: "elm.rect.label"; }
+            rel2 { relative: 1.0 1.0; to_x: "elm.rect.time.min.over"; to_y: "elm.rect.label"; }
+            color: 200 200 200 255;
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            color: 221 134 21 255;
+         }
+      }
+      part {
+         name: "elm.rect.ampm.pad";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 18 0;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            visible: 0;
+            rel1 { relative: 1.0 0.0; to: "elm.rect.time.min.over"; }
+            rel2 { relative: 1.0 1.0; to: "elm.rect.time.min.over"; }
+         }
+         description {
+            state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            min: 0 0;
+         }
+      }
+      part {
+         name: "elm.image.ampm";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 1.0 0.0; to: "elm.rect.ampm.pad"; }
+            rel2 { relative: 0.0 1.0; to: "elm.rect.right.pad"; }
+            image {
+               normal: "00_timepicker_field_bg.png";
+               border: 1 1 10 10;
+               border_scale: 1;
+            }
+         }
+      }
+      part {
+         name: "elm.text.ampm";
+         type: TEXT;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            text {
+               font: "SLP:style=Roman";
+               size: 24;
+               align: 0.5 0.5;
+            }
+            rel1 { relative: 0.0 0.5; to: "elm.image.ampm"; }
+            rel2 { relative: 1.0 0.5.; to: "elm.image.ampm"; }
+            color: 0 0 0 255;
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            color: 221 134 21 255;
+         }
+      }
+      part {
+         name: "elm.rect.time.ampm.over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 { relative: 0.0 0.0; to: "elm.image.ampm"; }
+            rel2 { relative: 1.0 1.0; to: "elm.image.ampm"; }
+         }
+      }
+      part {
+         name: "elm.rect.right.pad";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            visible: 0;
+            rel1 { relative: 0.785 0.0; to: "elm.image.time"; }
+            rel2 { relative: 1.0 1.0; to: "elm.image.time"; }
+         }
+      }
+   }
+   programs {
+      program {
+         name: "hour_focus_in";
+         signal: "elm,state,hour,focus,in";
+         source: "elm";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.image.time.hour";
+         target: "elm.text.hour";
+      }
+      program {
+         name: "hour_focus_out";
+         signal: "elm,state,hour,focus,out";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.image.time.hour";
+         target: "elm.text.hour";
+      }
+      program {
+         name: "min_focus_in";
+         signal: "elm,state,min,focus,in";
+         source: "elm";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.image.time.min";
+         target: "elm.text.min";
+      }
+      program {
+         name: "min_focus_out";
+         signal: "elm,state,min,focus,out";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.image.time.min";
+         target: "elm.text.min";
+      }
+      program {
+         name: "ampm_focus_in";
+         signal: "mouse,down,1";
+         source: "elm.rect.time.ampm.over";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.text.ampm";
+      }
+      program {
+         name: "ampm_focus_out";
+         signal: "mouse,up,1";
+         source: "elm.rect.time.ampm.over";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text.ampm";
+      }
+      program {
+         name: "24h_mode";
+         signal: "elm,state,mode,24h";
+         source: "elm";
+         action: STATE_SET "hidden" 0.0;
+         target: "elm.rect.ampm.pad";
+         target: "elm.rect.time.hour.over";
+         target: "elm.rect.time.min.over";
+      }
+      program {
+         name: "12h_mode";
+         signal: "elm,state,mode,12h";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.rect.ampm.pad";
+         target: "elm.rect.time.hour.over";
+         target: "elm.rect.time.min.over";
+      }
+   }
 }
 
 /////////// date mode ////////////
-group { 
-	name: "elm/datefield/date/default";
-	
-	parts {
-		part {
-			name: "elm.image.date";
-			type: IMAGE;
-           		//ignore_flags: ON_HOLD;
-           		scale: 1;
-			description {
-				state: "default" 0.0;
-				min: 0 DATE_HEIGHT;
-				rel1 { relative: 0.0 0.0; } 
-				rel2 { relative: 1.0 1.0; } 
-				image {
-					normal: "00_list_group_bg.png";
-					border: 12 12 12 12;
-					border_scale: 1;
-				}
-			}
-		}
-		part {
-			name: "elm.image.date.focus";
-			type: IMAGE;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.image.date"; }
-				rel2 { relative: 1.0 0.94; to: "elm.image.date"; }
-				image {
-					normal: "00_datepicker_editfield_whole.png";
-					border: 10 10 10 10;
-					border_scale: 1;
-				}				
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}
-		}
-		part {
-			name: "elm.rect.date.left.pad";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				color: 0 0 0 0;
-				rel1 { relative: 0.0 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.064 1.0; to: "elm.image.date"; }
-			}
-		}
-		part {
-			name: "elm.rect.date.right.pad";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				color: 0 0 0 0;
-				rel1 { relative: 0.938 0.0; to: "elm.image.date"; }
-				rel2 { relative: 1.0 1.0; to: "elm.image.date"; }
-			}
-		}				
-		part {
-			name: "elm.image.date.year.focus";
-			type: IMAGE;
-			//ignore_flags: ON_HOLD;			
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.swallow.date.year"; }
-				rel2 { relative: 1.0 1.0; to: "elm.swallow.date.year"; }	
-				image {
-					normal: "00_calend_picker_day_press.png";
-				}
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}
-		}		
-		part {
-			name: "elm.swallow.date.year";
-			type: SWALLOW;
-			//ignore_flags: ON_HOLD;			
-			scale: 1;
-			description {
-				state: "default" 0.0;
- 				align: 0.5 0.5;
- 				fixed: 1 1;
-				rel1 { relative: 0.5 0.5; to: "elm.rect.date.year.over"; }
-				rel2 { relative: 0.5 0.5; to: "elm.rect.date.year.over"; }
-			} 		
-		}
-		part {
-			name: "elm.image.date.month.focus";
-			type: IMAGE;
-			//ignore_flags: ON_HOLD;			
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.swallow.date.month"; }
-				rel2 { relative: 1.0 1.0; to: "elm.swallow.date.month"; }	
-				image {
-					normal: "00_calend_picker_day_press.png";
-				}		
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}
-		}			
-		part {
-			name: "elm.swallow.date.month";
-			type: SWALLOW;
-			//ignore_flags: ON_HOLD;	
-			scale: 1;
-			description {
-				state: "default" 0.0; 
-				align: 0.5 0.5;
- 				fixed: 1 1;
-				rel1 { relative: 0.5 0.5; to: "elm.rect.date.month.over"; }
-				rel2 { relative: 0.5 0.5; to: "elm.rect.date.month.over"; }
-			}	
-		}	
-		part {
-			name: "elm.text.date.comma";
-			type: TEXT;
-			//ignore_flags: ON_HOLD;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				text {
-					font: "SLP:style=Roman";
-					size: 32;
-					align: 0.54 0.5;
-				}
-				rel1 { relative: 0.791 0.5; to: "elm.rect.date.month.over"; }
-				rel2 { relative: 1.0 0.5; to: "elm.rect.date.month.over"; }
-				color: 0 0 0 255;
-			}
-		}		
-		part {
-			name: "elm.image.date.day.focus";
-			type: IMAGE;
-			//ignore_flags: ON_HOLD;			
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				visible: 0;
-				rel1 { relative: 0.0 0.0; to: "elm.swallow.date.day"; }
-				rel2 { relative: 1.0 1.0; to: "elm.swallow.date.day"; }	
-				image {
-					normal: "00_calend_picker_day_press.png";
-				}		
-			}
-			description {
-				state: "focus" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}			
-		}		
-		part {
-			name: "elm.swallow.date.day";
-			type: SWALLOW;
-			//ignore_flags: ON_HOLD;		
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				align: 0.5 0.5;
- 				fixed: 1 1;
-				rel1 { relative: 0.5 0.5; to: "elm.rect.date.day.over"; }
-				rel2 { relative: 0.5 0.5; to: "elm.rect.date.day.over"; }
-			}			
-		}
-		part {
-			name: "elm.rect.date.year.over";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;    //mmddyy
-				color: 0 0 0 0;
-				rel1 { relative: 0.596 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.938 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "yymmdd" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.064 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.407 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "yyddmm" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.064 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.407 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "mmyydd" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.362 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.704 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "ddyymm" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.298 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.64 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "ddmmyy" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.596 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.938 1.0; to: "elm.image.date"; }
-			}
-		}
-		part {
-			name: "elm.rect.date.month.over";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;    //mmddyy
-				color: 0 0 0 0;
-				rel1 { relative: 0.064 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.362 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "mmyydd" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.064 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.362 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "yymmdd" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.407 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.704 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "ddmmyy" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.298 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.596 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "ddyymm" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.64 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.938 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "yyddmm" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.64 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.938 1.0; to: "elm.image.date"; }
-			}			
-		}		
-		part {
-			name: "elm.rect.date.day.over";
-			type: RECT;
-			scale: 1;
-			description {
-				state: "default" 0.0;    //mmddyy
-				color: 0 0 0 0;
-				rel1 { relative: 0.362 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.596 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "ddmmyy" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.064 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.298 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "ddyymm" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.064 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.298 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "yyddmm" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.407 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.64 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "yymmdd" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.704 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.938 1.0; to: "elm.image.date"; }
-			}
-			description {
-				state: "mmyydd" 0.0;
-				inherit: "default" 0.0;
-				rel1 { relative: 0.704 0.0; to: "elm.image.date"; }
-				rel2 { relative: 0.938 1.0; to: "elm.image.date"; }
-			}
-		}	
-	}
-	programs {
-		program {
-			name: "year_focus_in";
-			signal: "elm,state,year,focus,in";
-			source: "elm";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.image.date.focus";
-			target: "elm.image.date.year.focus";
-		}
-		program {
-			name: "year_focus_out";
-			signal: "elm,state,year,focus,out";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.image.date.year.focus";
-			target: "elm.image.date.focus";
-		}
-		program {
-			name: "month_focus_in";
-			signal: "elm,state,month,focus,in";
-			source: "elm";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.image.date.focus";
-			target: "elm.image.date.month.focus";
-		}
-		program {
-			name: "month_focus_out";
-			signal: "elm,state,month,focus,out";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.image.date.month.focus";
-			target: "elm.image.date.focus";
-		}	
-		program {
-			name: "day_focus_in";
-			signal: "elm,state,day,focus,in";
-			source: "elm";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.image.date.focus";
-			target: "elm.image.date.day.focus";
-		}
-		program {
-			name: "day_focus_out";
-			signal: "elm,state,day,focus,out";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.image.date.day.focus";
-			target: "elm.image.date.focus";
-		}	
-		program {
-			name: "format_yyddmm";
-			signal: "elm,state,format,yyddmm";
-			source: "elm";
-			action: STATE_SET "yyddmm" 0.0;
-			target: "elm.rect.date.year.over";
-			target: "elm.rect.date.month.over";
-			target: "elm.rect.date.day.over";
-			target: "elm.text.date.comma";
-		}
-		program {
-			name: "format_yymmdd";
-			signal: "elm,state,format,yymmdd";
-			source: "elm";
-			action: STATE_SET "yymmdd" 0.0;
-			target: "elm.rect.date.year.over";
-			target: "elm.rect.date.month.over";
-			target: "elm.rect.date.day.over";
-			target: "elm.text.date.comma";
-		}
-		program {
-			name: "format_mmyydd";
-			signal: "elm,state,format,mmyydd";
-			source: "elm";
-			action: STATE_SET "mmyydd" 0.0;
-			target: "elm.rect.date.year.over";
-			target: "elm.rect.date.month.over";
-			target: "elm.rect.date.day.over";
-			target: "elm.text.date.comma";
-		}
-		program {
-			name: "format_ddyymm";
-			signal: "elm,state,format,ddyymm";
-			source: "elm";
-			action: STATE_SET "ddyymm" 0.0;
-			target: "elm.rect.date.year.over";
-			target: "elm.rect.date.month.over";
-			target: "elm.rect.date.day.over";
-			target: "elm.text.date.comma";
-		}
-		program {
-			name: "format_mmddyy";
-			signal: "elm,state,format,mmddyy";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.rect.date.year.over";
-			target: "elm.rect.date.month.over";
-			target: "elm.rect.date.day.over";
-			target: "elm.text.date.comma";
-		}		
-		program {
-			name: "format_ddmmyy";
-			signal: "elm,state,format,ddmmyy";
-			source: "elm";
-			action: STATE_SET "ddmmyy" 0.0;
-			target: "elm.rect.date.year.over";
-			target: "elm.rect.date.month.over";
-			target: "elm.rect.date.day.over";
-			target: "elm.text.date.comma";
-		}		
-	}
+group {
+   name: "elm/datefield/date/default";
+
+   parts {
+      part {
+         name: "elm.rect.bg";
+         type: RECT;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            rel1 { relative: 0.0 0.0; }
+            rel2 { relative: 1.0 1.0; }
+         }
+      }
+      part {
+         name: "elm.rect.label";
+         type: RECT;
+         mouse_events: 0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 (TOTAL_HEIGHT-DATE_HEIGHT);
+            align: 0 0;
+            fixed: 0 1;
+            rel1 { relative: 0.0 0.0; }
+            rel2 { relative: 1.0 0.0; }
+         }
+      }
+      part {
+         name: "elm.image.date";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 0 DATE_HEIGHT;
+            rel1 { relative: 0.0 1.0; to_y: "elm.rect.label"; }
+            rel2 { relative: 1.0 1.0; to_y: "elm.rect.bg"; }
+            image {
+               normal: "00_picker_panel_bg.png";
+               border: 1 1 5 5;
+               border_scale: 1;
+            }
+         }
+      }
+      part {
+         name: "elm.rect.date.left.pad";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 { relative: 0.0 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.167 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.rect.date.right.pad";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 { relative: 0.833 0.0; to: "elm.image.date"; }
+            rel2 { relative: 1.0 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.image.date.year";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0.0 0.0; to: "elm.rect.date.year.over"; }
+            rel2 { relative: 1.0 1.0; to: "elm.rect.date.year.over"; }
+            image {
+               normal: "00_timepicker_field_bg.png";
+               border: 1 1 10 10;
+               border_scale: 1;
+            }
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "00_timepicker_field_bg_focus.png";
+         }
+      }
+      part {
+         name: "elm.image.date.month";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0.0 0.0; to: "elm.rect.date.month.over"; }
+            rel2 { relative: 1.0 1.0; to: "elm.rect.date.month.over"; }
+            image {
+               normal: "00_timepicker_field_bg.png";
+               border: 1 1 10 10;
+               border_scale: 1;
+            }
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "00_timepicker_field_bg_focus.png";
+         }
+      }
+      part {
+         name: "elm.image.date.day";
+         type: IMAGE;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0.0 0.0; to: "elm.rect.date.day.over"; }
+            rel2 { relative: 1.0 1.0; to: "elm.rect.date.day.over"; }
+            image {
+               normal: "00_timepicker_field_bg.png";
+               border: 1 1 10 10;
+               border_scale: 1;
+            }
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "00_timepicker_field_bg_focus.png";
+         }
+      }
+      part {
+         name: "elm.swallow.date.year";
+         type: SWALLOW;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+             align: 0.5 0.5;
+             fixed: 1 1;
+            rel1 { relative: 0.5 0.5; to: "elm.rect.date.year.over"; }
+            rel2 { relative: 0.5 0.5; to: "elm.rect.date.year.over"; }
+         }
+      }
+      part {
+         name: "elm.swallow.date.month";
+         type: SWALLOW;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            align: 0.5 0.5;
+             fixed: 1 1;
+            rel1 { relative: 0.5 0.5; to: "elm.rect.date.month.over"; }
+            rel2 { relative: 0.5 0.5; to: "elm.rect.date.month.over"; }
+         }
+      }
+      part {
+         name: "elm.swallow.date.day";
+         type: SWALLOW;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            align: 0.5 0.5;
+             fixed: 1 1;
+            rel1 { relative: 0.5 0.5; to: "elm.rect.date.day.over"; }
+            rel2 { relative: 0.5 0.5; to: "elm.rect.date.day.over"; }
+         }
+      }
+      part {
+         name: "elm.rect.date.year.over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;    //mmddyy
+            color: 0 0 0 0;
+            rel1 { relative: 0.613 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.833 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "yymmdd" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.167 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.387 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "yyddmm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.167 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.387 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "mmyydd" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.4 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.62 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "ddyymm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.38 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.6 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "ddmmyy" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.613 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.833 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.rect.date.month.over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;    //mmddyy
+            color: 0 0 0 0;
+            rel1 { relative: 0.167 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.367 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "mmyydd" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.167 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.367 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "yymmdd" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.42 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.62 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "ddmmyy" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.38 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.58 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "ddyymm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.633 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.833 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "yyddmm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.633 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.833 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.rect.date.day.over";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;    //mmddyy
+            color: 0 0 0 0;
+            rel1 { relative: 0.4 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.58 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "ddmmyy" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.167 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.247 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "ddyymm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.167 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.247 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "yyddmm" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.42 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.60 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "yymmdd" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.653 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.833 1.0; to: "elm.image.date"; }
+         }
+         description {
+            state: "mmyydd" 0.0;
+            inherit: "default" 0.0;
+            rel1 { relative: 0.653 0.0; to: "elm.image.date"; }
+            rel2 { relative: 0.833 1.0; to: "elm.image.date"; }
+         }
+      }
+      part {
+         name: "elm.text.year";
+         type: TEXT;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            text {
+               font: "SLP:style=Medium";
+               size: 18;
+               align: 0.5 0.5;
+               text: "Year";
+            }
+            rel1 { relative: 0.0 0.0; to_x: "elm.rect.date.year.over"; to_y: "elm.rect.label"; }
+            rel2 { relative: 1.0 1.0; to_x: "elm.rect.date.year.over"; to_y: "elm.rect.label"; }
+            color: 200 200 200 255;
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            color: 221 134 21 255;
+         }
+      }
+      part {
+         name: "elm.text.month";
+         type: TEXT;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            text {
+               font: "SLP:style=Medium";
+               size: 18;
+               align: 0.5 0.5;
+               text: "Month";
+            }
+            rel1 { relative: 0.0 0.0; to_x: "elm.rect.date.month.over"; to_y: "elm.rect.label"; }
+            rel2 { relative: 1.0 1.0; to_x: "elm.rect.date.month.over"; to_y: "elm.rect.label"; }
+            color: 200 200 200 255;
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            color: 221 134 21 255;
+         }
+      }
+      part {
+         name: "elm.text.day";
+         type: TEXT;
+         //ignore_flags: ON_HOLD;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            text {
+               font: "SLP:style=Medium";
+               size: 18;
+               align: 0.5 0.5;
+               text: "Day";
+            }
+            rel1 { relative: 0.0 0.0; to_x: "elm.rect.date.day.over"; to_y: "elm.rect.label"; }
+            rel2 { relative: 1.0 1.0; to_x: "elm.rect.date.day.over"; to_y: "elm.rect.label"; }
+            color: 200 200 200 255;
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            color: 221 134 21 255;
+         }
+      }
+   }
+   programs {
+      program {
+         name: "year_focus_in";
+         signal: "elm,state,year,focus,in";
+         source: "elm";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.image.date.year";
+         target: "elm.text.year";
+      }
+      program {
+         name: "year_focus_out";
+         signal: "elm,state,year,focus,out";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.image.date.year";
+         target: "elm.text.year";
+      }
+      program {
+         name: "month_focus_in";
+         signal: "elm,state,month,focus,in";
+         source: "elm";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.image.date.month";
+         target: "elm.text.month";
+      }
+      program {
+         name: "month_focus_out";
+         signal: "elm,state,month,focus,out";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.image.date.month";
+         target: "elm.text.month";
+      }
+      program {
+         name: "day_focus_in";
+         signal: "elm,state,day,focus,in";
+         source: "elm";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.image.date.day";
+         target: "elm.text.day";
+      }
+      program {
+         name: "day_focus_out";
+         signal: "elm,state,day,focus,out";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.image.date.day";
+         target: "elm.text.day";
+      }
+      program {
+         name: "format_yyddmm";
+         signal: "elm,state,format,yyddmm";
+         source: "elm";
+         action: STATE_SET "yyddmm" 0.0;
+         target: "elm.rect.date.year.over";
+         target: "elm.rect.date.month.over";
+         target: "elm.rect.date.day.over";
+      }
+      program {
+         name: "format_yymmdd";
+         signal: "elm,state,format,yymmdd";
+         source: "elm";
+         action: STATE_SET "yymmdd" 0.0;
+         target: "elm.rect.date.year.over";
+         target: "elm.rect.date.month.over";
+         target: "elm.rect.date.day.over";
+      }
+      program {
+         name: "format_mmyydd";
+         signal: "elm,state,format,mmyydd";
+         source: "elm";
+         action: STATE_SET "mmyydd" 0.0;
+         target: "elm.rect.date.year.over";
+         target: "elm.rect.date.month.over";
+         target: "elm.rect.date.day.over";
+      }
+      program {
+         name: "format_ddyymm";
+         signal: "elm,state,format,ddyymm";
+         source: "elm";
+         action: STATE_SET "ddyymm" 0.0;
+         target: "elm.rect.date.year.over";
+         target: "elm.rect.date.month.over";
+         target: "elm.rect.date.day.over";
+      }
+      program {
+         name: "format_mmddyy";
+         signal: "elm,state,format,mmddyy";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.rect.date.year.over";
+         target: "elm.rect.date.month.over";
+         target: "elm.rect.date.day.over";
+      }
+      program {
+         name: "format_ddmmyy";
+         signal: "elm,state,format,ddmmyy";
+         source: "elm";
+         action: STATE_SET "ddmmyy" 0.0;
+         target: "elm.rect.date.year.over";
+         target: "elm.rect.date.month.over";
+         target: "elm.rect.date.day.over";
+      }
+   }
 }
 
 ///// datefield entry ///////
-group { 
-	name: "elm/entry/base-single/datefield";
-	data.item: "default_font_size" "40";
-	data.item: "min_font_size" "8";
-	data.item: "max_font_size" "60";
-	styles
-	{
-		style { 
-			name: "datefield_textblock_style";
-			base: "font=SLP:style=Roman font_size=40 align=0.5 color=#000000 wrap=none";		
-			tag:  "br" "\n";
-			tag:  "ps" "ps";
-			tag:  "tab" "\t";
-			tag:  "em" "+ font=SLP:style=Oblique";
-			tag:  "b" "+ font=SLP:style=Bold";
-			tag:  "link" "+ color=#800 underline=on underline_color=#8008";
-			tag:  "hilight" "+ font=SLP:style=Bold";
-		}
-		style { 
-			name: "datefield_textblock_focus_style";
-			base: "font=SLP:style=Roman font_size=40 align=0.5 color=#ffffff wrap=none";
-			tag:  "br" "\n";
-			tag:  "ps" "ps";
-			tag:  "tab" "\t";
-			tag:  "em" "+ font=SLP:style=Oblique";
-			tag:  "b" "+ font=SLP:style=Bold";
-			tag:  "link" "+ color=#800 underline=on underline_color=#8008";
-			tag:  "hilight" "+ font=SLP:style=Bold";
-		}		
-	}
-	parts {
-		part { 
-			name: "elm.text";
-			type: TEXTBLOCK;
-			mouse_events: 1;
-			scale: 1;
-			entry_mode: EDITABLE;
-			multiline: 0;
-			description { 
-				state: "default" 0.0;
-				text {
-					style: "datefield_textblock_style";
-					min: 1 1;
-					max: 0 1;
-				}
-			}
-			description { 
-				state: "focus" 0.0;
-				text {
-					style: "datefield_textblock_focus_style";
-					min: 1 1;
-					max: 0 1;
-				}
-			}
-		}
-	}
-	programs {
-		program { 
-			name: "focus";
-			signal: "load";
-			source: "";
-			action: FOCUS_SET;
-			target: "elm.text";
-		}
-		program { 
-			name: "focus_in";
-			signal: "elm,action,focus";
-			source: "elm";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.text";
-		}
-		program { 
-			name: "focus_out";
-			signal: "elm,action,unfocus";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.text";
-		}
-	}
+group {
+   name: "elm/entry/base-single/datefield";
+   data.item: "default_font_size" "40";
+   data.item: "min_font_size" "8";
+   data.item: "max_font_size" "60";
+   styles
+   {
+      style {
+         name: "datefield_textblock_style";
+         base: "font=SLP:style=Roman font_size=30 align=0.5 color=#000000 wrap=none";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font=SLP:style=Oblique";
+         tag:  "b" "+ font=SLP:style=Bold";
+         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+         tag:  "hilight" "+ font=SLP:style=Bold";
+      }
+      style {
+         name: "datefield_textblock_focus_style";
+         base: "font=SLP:style=Roman font_size=30 align=0.5 color=#dd8615 wrap=none";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font=SLP:style=Oblique";
+         tag:  "b" "+ font=SLP:style=Bold";
+         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+         tag:  "hilight" "+ font=SLP:style=Bold";
+      }
+   }
+   parts {
+      part {
+         name: "elm.text";
+         type: TEXTBLOCK;
+         mouse_events: 1;
+         scale: 1;
+         entry_mode: EDITABLE;
+         multiline: 0;
+         description {
+            state: "default" 0.0;
+            text {
+               style: "datefield_textblock_style";
+               min: 1 1;
+               max: 0 1;
+            }
+         }
+         description {
+            state: "focus" 0.0;
+            text {
+               style: "datefield_textblock_focus_style";
+               min: 1 1;
+               max: 0 1;
+            }
+         }
+      }
+   }
+   programs {
+      program {
+         name: "focus";
+         signal: "load";
+         source: "";
+         action: FOCUS_SET;
+         target: "elm.text";
+      }
+      program {
+         name: "focus_in";
+         signal: "elm,action,focus";
+         source: "elm";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.text";
+      }
+      program {
+         name: "focus_out";
+         signal: "elm,action,unfocus";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+   }
 }
 
-group { 
-	name: "elm/entry/base-single/datefield/hybrid";
-	data.item: "default_font_size" "32";
-	data.item: "min_font_size" "8";
-	data.item: "max_font_size" "60";
-	styles
-	{
-		style { 
-			name: "datefield_hybrid_textblock_style";
-			base: "font=SLP:style=Roman font_size=32 align=0.5 color=#000000 wrap=none";		
-			tag:  "br" "\n";
-			tag:  "ps" "ps";
-			tag:  "tab" "\t";
-			tag:  "em" "+ font=SLP:style=Oblique";
-			tag:  "b" "+ font=SLP:style=Bold";
-			tag:  "link" "+ color=#800 underline=on underline_color=#8008";
-			tag:  "hilight" "+ font=SLP:style=Bold";
-		}
-		style { 
-			name: "datefield_hybrid_textblock_focus_style";
-			base: "font=SLP:style=Roman font_size=32 align=0.5 color=#ffffff wrap=none";
-			tag:  "br" "\n";
-			tag:  "ps" "ps";
-			tag:  "tab" "\t";
-			tag:  "em" "+ font=SLP:style=Oblique";
-			tag:  "b" "+ font=SLP:style=Bold";
-			tag:  "link" "+ color=#800 underline=on underline_color=#8008";
-			tag:  "hilight" "+ font=SLP:style=Bold";
-		}		
-	}
-	parts {
-		part { 
-			name: "elm.text";
-			type: TEXTBLOCK;
-			mouse_events: 1;
-			scale: 1;
-			entry_mode: EDITABLE;
-			multiline: 0;
-			description { 
-				state: "default" 0.0;
-				text {
-					style: "datefield_hybrid_textblock_style";
-					min: 1 1;
-					max: 0 1;
-				}
-			}
-			description { 
-				state: "focus" 0.0;
-				text {
-					style: "datefield_hybrid_textblock_focus_style";
-					min: 1 1;
-					max: 0 1;
-				}
-			}
-		}
-	}
-	programs {
-		program { 
-			name: "focus";
-			signal: "load";
-			source: "";
-			action: FOCUS_SET;
-			target: "elm.text";
-		}
-		program { 
-			name: "focus_in";
-			signal: "elm,action,focus";
-			source: "elm";
-			action: STATE_SET "focus" 0.0;
-			target: "elm.text";
-		}
-		program { 
-			name: "focus_out";
-			signal: "elm,action,unfocus";
-			source: "elm";
-			action: STATE_SET "default" 0.0;
-			target: "elm.text";
-		}
-	}
+group {
+   name: "elm/entry/base-single/datefield/hybrid";
+   data.item: "default_font_size" "32";
+   data.item: "min_font_size" "8";
+   data.item: "max_font_size" "60";
+   styles
+   {
+      style {
+         name: "datefield_hybrid_textblock_style";
+         base: "font=SLP:style=Roman font_size=30 align=0.5 color=#000000 wrap=none";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font=SLP:style=Oblique";
+         tag:  "b" "+ font=SLP:style=Bold";
+         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+         tag:  "hilight" "+ font=SLP:style=Bold";
+      }
+      style {
+         name: "datefield_hybrid_textblock_focus_style";
+         base: "font=SLP:style=Roman font_size=30 align=0.5 color=#dd8615 wrap=none";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font=SLP:style=Oblique";
+         tag:  "b" "+ font=SLP:style=Bold";
+         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+         tag:  "hilight" "+ font=SLP:style=Bold";
+      }
+   }
+   parts {
+      part {
+         name: "elm.text";
+         type: TEXTBLOCK;
+         mouse_events: 1;
+         scale: 1;
+         entry_mode: EDITABLE;
+         multiline: 0;
+         description {
+            state: "default" 0.0;
+            text {
+               style: "datefield_hybrid_textblock_style";
+               min: 1 1;
+               max: 0 1;
+            }
+         }
+         description {
+            state: "focus" 0.0;
+            text {
+               style: "datefield_hybrid_textblock_focus_style";
+               min: 1 1;
+               max: 0 1;
+            }
+         }
+      }
+   }
+   programs {
+      program {
+         name: "focus";
+         signal: "load";
+         source: "";
+         action: FOCUS_SET;
+         target: "elm.text";
+      }
+      program {
+         name: "focus_in";
+         signal: "elm,action,focus";
+         source: "elm";
+         action: STATE_SET "focus" 0.0;
+         target: "elm.text";
+      }
+      program {
+         name: "focus_out";
+         signal: "elm,action,unfocus";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+   }
 }
