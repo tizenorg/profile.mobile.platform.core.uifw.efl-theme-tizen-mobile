@@ -16,18 +16,15 @@ install_themes:
 	
 install: install_themes
 
-copy_edc: 
-	cp themes/nbeat.edc themes/nbeat-blue.edc
-	cp themes/nbeat.edc themes/nbeat-purple.edc
-	cp themes/nbeat.edc themes/nbeat-green.edc
+copy_edc:
 	cp themes/nbeat.edc themes/nbeat-black.edc
 
 nbeat:
-	cd themes && make $@ 
+	cd themes && make $@
 
-nbeat-blue nbeat-purple nbeat-green nbeat-black: 
+nbeat-black:
 	cp themes/nbeat.edc themes/$@.edc
-	cd themes && make $@ 
+	cd themes && make $@
 	rm themes/nbeat-*.edc
 
 clean:

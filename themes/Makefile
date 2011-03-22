@@ -2,7 +2,7 @@ PREFIX ?= /usr
 INSTALL=install -c
 themedir=$(DESTDIR)$(PREFIX)/share/elementary/themes
 
-all: nbeat nbeat-blue nbeat-purple nbeat-green nbeat-black
+all: nbeat nbeat-black
 	echo $(escaped_prefix)
 
 .SUFFIXES: .edc .edj
@@ -13,9 +13,6 @@ all: nbeat nbeat-blue nbeat-purple nbeat-green nbeat-black
 	rm ./inc/tmp-inc.edc
 
 nbeat: nbeat.edj
-nbeat-blue: nbeat-blue.edj
-nbeat-purple: nbeat-purple.edj
-nbeat-green: nbeat-green.edj
 nbeat-black: nbeat-black.edj
 
 clean:
