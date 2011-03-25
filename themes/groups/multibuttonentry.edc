@@ -24,11 +24,17 @@
  */
 
 ///////////////////////////////////////////////////////////////////////////////////////
-#define MBE_PAD_W   12
-#define MBE_PAD_H   16
+#define MBE_PAD_W   10
+#define MBE_PAD_H   15
 
    group {
       name: "elm/multibuttonentry/base/default";
+      data.item: "closed_button_type" "image"; /* image, label, default : label */
+      data.item: "closed_height" "70";
+      data.item: "box_inner_top_padding" "21";
+      data.item: "box_inner_bottom_padding" "21";
+      data.item: "box_inner_left_padding" "10";
+      data.item: "box_inner_right_padding" "10";
       parts {
          part {
             name: "elm.base";
@@ -92,11 +98,10 @@
             scale: 1;
             description {
                state: "default" 0.0;
-               min: 3 50;
-               max: 3 50;
                fixed: 1 1;
                align: 0.5 0.5;
                color: 0 0 0 0;
+               visible: 0;
             }
          }
       }
@@ -372,6 +377,80 @@
                   min: 1 1;
                }
             }
+         }
+      }
+   }
+
+   group {
+      name: "elm/multibuttonentry/closedbutton/default";
+      images {
+         image: "00_mbe_btn_circle_bg_normal.png" COMP;
+         image: "00_mbe_btn_circle_bg_press.png" COMP;
+         image: "00_mbe_btn_expand_closed.png" COMP;
+         image: "00_mbe_btn_expand_closed_press.png" COMP;
+      }
+      data.item: "closed_button_height" "40";
+      data.item: "closed_button_width" "40";
+
+      parts {
+         part {
+            name: "closed_button_bg";
+            scale: 1;
+            mouse_events: 0;
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               align: 0.5 0.5;
+               min: 40 40;
+               visible: 1;
+               image.normal: "00_mbe_btn_circle_bg_normal.png";
+               rel1 { relative: 0.0 0.0; }
+               rel2 { relative: 1.0 1.0; }
+            }
+            description {
+               state: "clicked" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_mbe_btn_circle_bg_press.png";
+            }
+         }
+         part {
+            name: "closed_button";
+            scale: 1;
+            mouse_events: 1;
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               align: 0.5 0.5;
+               min: 40 40;
+               visible: 1;
+               image.normal: "00_mbe_btn_expand_closed.png";
+               rel1 { relative: 0.0 0.0; }
+               rel2 { relative: 1.0 1.0; }
+            }
+            description {
+               state: "clicked" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_mbe_btn_expand_closed_press.png";
+            }
+         }
+      }
+
+      programs {
+         program {
+            name: "button_click";
+            signal: "mouse,down,1";
+            source: "closed_button";
+            action: STATE_SET "clicked" 0.0;
+            target: "closed_button_bg";
+            target: "closed_button";
+         }
+         program {
+            name: "button_unclick";
+            signal: "mouse,up,1";
+            source: "closed_button";
+            action: STATE_SET "default" 0.0;
+            target: "closed_button_bg";
+            target: "closed_button";
          }
       }
    }
