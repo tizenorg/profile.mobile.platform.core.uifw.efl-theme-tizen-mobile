@@ -96,11 +96,15 @@ group {
        part { name: "elm.rect.pada";
           mouse_events: 0;
           description { state: "default" 0.0;
-             min: 67 0;
+             min: 82 0;
              fixed: 1 0;
              align: 0.0 0.5;
              rel1 { relative: 0.0 0.0; to: "navigationitem"; }
              rel2 { relative: 0.0 1.0; to: "navigationitem"; }
+          }
+          description { state: "visible" 0.0;
+             inherit: default 0.0;
+             min: 122 0;
           }
        }
        part { name: "elm.rect.padb";
@@ -138,6 +142,32 @@ group {
               rel2 { to: "elm.rect.padb"; relative: 0.0 1.0; }
            }
        }
+      part {
+         name: "elm.swallow.icon";
+         type: SWALLOW;
+         clip_to: "clip_title";
+         scale: 1;
+         description { state: "default" 0.0;
+            max: 40 40;
+            rel1 { relative: 0.0 0.0; to_x: "padding_before_text";to_y: "navigationitem"; }
+            rel2 { relative: 0.0 1.0; to_x: "padding_before_text";to_y: "navigationitem"; }
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            align: 1.0 0.5;
+         }
+      }
+      part {
+         name: "padding_before_text";
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            rel1 { relative: 0.0 0.0; to_x: "elm.text"; to_y: "navigationitem"; }
+            rel2 { relative: 0.0 1.0; to_x: "elm.text"; to_y: "navigationitem";}
+            fixed: 1 0;
+            min: 1 0;
+         }
+      }
        part {
           name: "elm.swallow.content";
           type: SWALLOW;
@@ -251,13 +281,19 @@ group {
          transition: LINEAR 0.2;
       }
       program {
+         name: "extended_titlearea,noanimate";
+         signal: "elm,state,show,noanimate,title";
+         source: "elm";
+         action: STATE_SET "extended" 0.0;
+         target: "base";
+         target: "elm.swallow.title";
+      }
+      program {
          name: "show_extended";
          signal: "elm,state,show,extended";
          source: "elm";
          action: STATE_SET "extended" 0.0;
          target: "naviarrow";
-         target: "elm.swallow.title";
-         target: "base";
       }
       program {
          name: "hide_extended";
@@ -265,8 +301,6 @@ group {
          source: "elm";
          action: STATE_SET "default" 0.0;
          target: "naviarrow";
-         target: "elm.swallow.title";
-         target: "base";
       }
       program {
          name: "default_titlearea";
@@ -298,6 +332,20 @@ group {
          source: "elm";
          action: STATE_SET "default" 0.0;
          target: "elm.rect.blocker";
+      }
+      program {
+         name: "show_icon";
+         signal: "elm,state,icon,visible";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         target: "elm.rect.pada";
+      }
+      program {
+         name: "hide_icon";
+         signal: "elm,state,icon,hidden";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.rect.pada";
       }
    } /* end of programs */
 } /* end of group "navigationbar" */
