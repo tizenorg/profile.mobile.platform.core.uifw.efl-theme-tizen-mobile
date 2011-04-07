@@ -25,7 +25,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////
 #define MBE_PAD_W   10
-#define MBE_PAD_H   15
+#define MBE_PAD_H   13
 
    group {
       name: "elm/multibuttonentry/base/default";
@@ -35,6 +35,8 @@
       data.item: "box_inner_bottom_padding" "21";
       data.item: "box_inner_left_padding" "10";
       data.item: "box_inner_right_padding" "10";
+      data.item: "button" "rect"; /*rect,image default : image*/
+
       parts {
          part {
             name: "elm.base";
@@ -273,6 +275,161 @@
                rel1 { relative: 1.0 1.0; to_x:left.inner.padding; to_y:top.padding; }
                rel2 { relative: 0.0 0.0; to_x:right.inner.padding; to_y:bottom.padding; }
                align: 0.0 0.5;
+            }
+         }
+      }
+
+      programs {
+         program {
+            name: "clicked";
+            signal: "mouse,clicked,1";
+            source: "elm.bg";
+            action: SIGNAL_EMIT "clicked" "elm";
+         }
+         program {
+            name: "default";
+            signal: "default";
+            action: STATE_SET "default" 0.0;
+            target: "elm.bg";
+         }
+         program {
+            name: "focused";
+            signal: "focused";
+            action: STATE_SET "focused" 0.0;
+            target: "elm.bg";
+         }
+      }
+   }
+
+///////////////////////////////////////////////////////////////////////////////////////
+   group {
+      name: "elm/multibuttonentry/rect_btn/default";
+      parts {
+         part {
+            name: "elm.base";
+            type: RECT;
+            mouse_events: 1;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min: 0 44;
+               max: 5000 44;
+               fixed: 1 1;
+               color: 0 0 0 0;
+            }
+         }
+//----------------------------------------------------padding
+         part{
+            name: "top.padding";
+            type: RECT;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min : 0 8;
+               fixed: 0 1;
+               rel1 { relative: 0.0 0.0;to:elm.base; }
+               rel2 { relative: 1.0 0.0;to:elm.base; }
+               color: 0 0 0 0;
+               align: 0 0;
+            }
+         }
+         part{
+           name: "bottom.padding";
+           type: RECT;
+           scale: 1;
+           description {
+              state: "default" 0.0;
+              min : 0 8;
+              fixed: 0 1;
+              rel1 { relative: 0.0 1.0;to:elm.base; }
+              rel2 { relative: 1.0 1.0;to:elm.base; }
+              color: 0 0 0 0;
+              align: 0 1;
+           }
+         }
+         part {
+            name: "left.padding";
+            type: RECT;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min : 0 0;
+               fixed: 1 0;
+               rel1 { relative: 0.0 0.0; to: "elm.base"; }
+               rel2 { relative: 0.0 1.0; to: "elm.base"; }
+               color: 0 0 0 0;
+               align: 0 0;
+            }
+         }
+         part {
+            name: "left.inner.padding";
+            type: RECT;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min : 10 0;
+               fixed: 1 0;
+               rel1 { relative: 1.0 0.0; to_x:"left.padding"; to_y:"elm.base";  }
+               rel2 { relative: 1.0 1.0; to_x:"left.padding"; to_y:"elm.base";  }
+               color: 0 0 0 0;
+               align: 0 0;
+            }
+         }
+         part {
+            name: "right.padding";
+            type: RECT;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min : 10 0;
+               fixed: 1 0;
+               rel1 { relative: 1.0 0.0; to: "elm.base"; }
+               rel2 { relative: 1.0 1.0; to: "elm.base"; }
+               color: 0 0 0 0;
+               align: 1 0;
+            }
+         }
+         part {
+            name: "right.inner.padding";
+            type: RECT;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min : 10 0;
+               fixed: 1 0;
+               rel1 { relative: 0.0 0.0; to_x:right.padding; to_y:elm.base;  }
+               rel2 { relative: 0.0 1.0; to_x:right.padding; to_y:elm.base;  }
+               color: 0 0 0 0;
+               align: 1 0;
+            }
+         }
+//---------------------------------------------------- contents
+         part {
+            name: "elm.bg";
+            type: RECT;
+            mouse_events: 1;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               rel1 { relative: 1.0 1.0; to_x:"left.padding";to_y:"top.padding";}
+               rel2 { relative: 0.0 0.0; to_x:"right.padding";to_y:"bottom.padding";}
+               color: 221 134 21 255;
+            }
+            description {
+               state: "focused" 0.0;
+               inherit: "default" 0.0;
+               color: 100 50 0 255;
+            }
+         }
+         part {
+            name: "elm.label";
+            type: SWALLOW;
+            mouse_events: 1;
+            scale:1;
+            description {
+               state: "default" 0.0;
+               rel1 { relative: 1.0 1.0; to_x:"left.inner.padding"; to_y:"top.padding"; }
+               rel2 { relative: 0.0 0.0; to_x:"right.inner.padding"; to_y:"bottom.padding";offset:0 -4;}
             }
          }
       }
