@@ -317,6 +317,18 @@
             action: STATE_SET "default" 0.0;
             target: "disclip";
          }
+         program { name: "go_editing";
+            signal: "elm,state,editing";
+            source: "elm";
+            action: STATE_SET "editing" 0.0;
+            target: "elm.padding.right";
+         }
+         program { name: "go_viewing";
+            signal: "elm,state,viewing";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.padding.right";
+         }
       }
    }
 
@@ -333,6 +345,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
+      data.item: "renames" "elm.edit.rename";
       images {
          image: "00_list_bar_press_1x80.png" COMP;
       }
@@ -371,6 +384,34 @@
                inherit: "default" 0.0;
                color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
             }
+            description { state: "rename_enabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+         part { name: "elm.edit.rename";
+            clip_to: "disclip";
+            type: SWALLOW;
+            mouse_events: 1;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 1.0  0.5;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+               }
+               rel2 {
+                  relative: 0.0  0.5;
+                  offset:   0   0;
+                  to_x: "elm.padding.right";
+               }
+            }
+            description { state: "rename_enabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
          }
          BEAT_GENLIST_PART_DISCLIP
       }
@@ -407,6 +448,7 @@
             action: STATE_SET "default" 0.0;
             target: "disclip";
          }
+         BEAT_GENLIST_PROGRAM_RENAME
       }
    }
 
@@ -702,6 +744,7 @@
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
       data.item: "icons" "elm.icon";
+      data.item: "renames" "elm.edit.rename";
       images {
          image: "00_list_bar_press_1x80.png" COMP;
       }
@@ -783,6 +826,36 @@
                inherit: "default" 0.0;
                color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
             }
+            description { state: "rename_enabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+         part { name: "elm.edit.rename";
+            clip_to: "disclip";
+            type: SWALLOW;
+            mouse_events: 1;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon.left";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+            description { state: "rename_enabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
          }
        BEAT_GENLIST_PART_DISCLIP
       }
@@ -814,6 +887,7 @@
             action: STATE_SET "default" 0.0;
             target: "disclip";
          }
+         BEAT_GENLIST_PROGRAM_RENAME
       }
    }
 
@@ -5167,6 +5241,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text.1 elm.text.2";
+      data.item: "renames" "elm.edit.rename";
       images {
          image: "00_list_bar_press_1x80.png" COMP;
       }
@@ -5211,6 +5286,10 @@
                inherit: "default" 0.0;
                color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
             }
+            description { state: "rename_enabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
          }
          part { name: "elm.text.2";
             clip_to: "disclip";
@@ -5241,6 +5320,33 @@
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
                color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.edit.rename";
+            clip_to: "disclip";
+            type: SWALLOW;
+            mouse_events: 1;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               min: 0 38;
+               fixed: 0 1;
+               align: 0 1;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+         }
+            description { state: "rename_enabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
             }
          }
          BEAT_GENLIST_PART_DISCLIP
@@ -5279,6 +5385,20 @@
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "disclip";
+         }
+         program { name: "rename_enabled";
+            signal: "elm,state,rename,enabled";
+            source: "elm";
+            action: STATE_SET "rename_enabled" 0.0;
+            target: "elm.text.1";
+            target: "elm.edit.rename";
+         }
+         program { name: "rename_disabled";
+            signal: "elm,state,rename,disabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text.1";
+            target: "elm.edit.rename";
          }
       }
    }
