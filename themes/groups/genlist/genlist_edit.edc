@@ -1,5 +1,5 @@
 /*
- *  Beat-theme
+ *  NBeat-theme
  *
  * Copyright (c) 2000 - 2010 Samsung Electronics Co., Ltd.
  *
@@ -27,101 +27,52 @@
  * vim:ts=3
  */        
 
-   #define EDIT_ICON_WIDTH 26
-   #define EDIT_ICON_HEIGHT 26
-   #define GENLIST_EDIT_CHECKBOX_WIDTH    EDIT_ICON_WIDTH
-   #define GENLIST_EDIT_CHECKBOX_HEIGHT   EDIT_ICON_HEIGHT
+   group { name: "elm/genlist/item/edit_default/default";
+      alias: "elm/genlist/item_odd/edit_default/default";
+      alias: "elm/genlist/item_compress/edit_default/default";
+      alias: "elm/genlist/item_compress_odd/edit_default/default";
 
-   group { name: "elm/genlist/item/edit_control/default";
-      alias: "elm/genlist/item_odd/edit_control/default";
-      alias: "elm/genlist/item_compress/edit_control/default";
-      alias: "elm/genlist/item_compress_odd/edit_control/default";
-
-      data.item: "reorder" "reorder_icon";
-      data.item: "insert" "insert_icon";
-      data.item: "delete" "select_icon";
-      data.item: "del_confirm" "elm.icon.del_confirm";
-      data.item: "icon_width" 50;
-      data.item: "del_button_style" "custom/red";
-      data.item: "icons" "elm.swallow.end";
-      data.item: "rename" "elm.swallow.edit_field_1line elm.swallow.edit_field_2line";
+      data.item: "edit_icons" "elm.edit.icon.1 elm.edit.icon.2";
       
       images {
-         image: "00_check_bg.png" COMP;
-         image: "00_check_checking.png" COMP;
          image: "01_list_reorder_bg_above.png" COMP;
          image: "01_list_reorder_bg_below.png" COMP;
-         image: "00_list_group_edit_field_middle.png" COMP;
-         image: "00_reorder_group_list_bg.png" COMP;
-         image: "00_list_body_bg.png" COMP;
       }
       parts {
          part { name: "base";
             type: RECT;
             repeat_events: 1;
-            scale: 1; 
-            description { state: "default" 0.0; 
-               min: 0 70; 
+            scale: 1;
+            description { state: "default" 0.0;
                color: 0 0 0 0;
             }
          }
          BEAT_GENLIST_PART_PADDING_TOP( 0 )
          BEAT_GENLIST_PART_PADDING_BOTTOM( 0 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
 
-         part { name: "elm.padding.left";
+         part { name: "elm.padding.reorder";
             type: RECT;
             scale: 1;
             description { state: "default" 0.0;
-               min: 0 0;
+               min: 10 0;
                fixed: 1 0;
                visible: 0;
                rel2.relative: 0.0 1.0;
+               align: 1.0 0.0;
+            }
+            description { state: "reorder" 0.0;
+               inherit: "default" 0.0;
                align: 0.0 0.0;
             }
-            description { state: "reorder" 0.0;
-               inherit: "default" 0.0;
-               min: 20 0;
-               fixed: 1 0;
-            }
          }
-
-         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
-
-         part { name: "reorder_left_image";
-            clip_to: "disclip";
-            mouse_events: 1;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 15 0;
-               fixed: 1 0;
-               rel1 {
-                  relative: 1.0 1.0;
-                  to_x: "elm.padding.left";
-                  to_y: "elm.padding.top";
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  to_x: "elm.padding.left";
-                  to_y: "elm.padding.bottom";
-               }
-               image.normal: "00_list_body_bg.png";
-            }
-            description { state: "reorder" 0.0;
-               inherit: "default" 0.0;
-               min: 15 0;
-               fixed: 1 0;
-               image.border: 0 0 13 13;
-               image.normal: "00_reorder_group_list_bg.png";
-            }
-         }
-
          part { name: "elm.edit_bg";
             type: RECT;
             scale: 1;
             description { state: "default" 0.0;
                rel1 {
                   relative: 1.0 1.0;
-                  to_x: "reorder_left_image";
+                  to_x: "elm.padding.reorder";
                   to_y: "elm.padding.top";
                }
                rel2 {
@@ -129,80 +80,65 @@
                   to_y: "elm.padding.bottom";
                }
              color: GENLIST_PART_BG_COLOR_INC;
-            }
-         }
+           }
+        }
 
-         part { name: "check_bg";
+        part { name: "elm.padding.left";
+           type: RECT;
+           scale: 1;
+           description { state: "default" 0.0;
+              min: 10 0;
+              fixed: 1 0;
+              visible: 0;
+              rel1 {
+                 relative: 1.0 0.0;
+                 to_x: "elm.padding.reorder";
+              }
+              rel2.to_x: "elm.padding.reorder";
+              rel2.relative: 0.0  1.0;
+              align: 0.0 0.0;
+           }
+        }
+ 
+        part { name: "elm.edit.icon.1";
             clip_to: "disclip";
-            mouse_events: 1;
+            type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
-               min: 0 26;
                fixed: 1 1;
-               align: 0.0 0.5;
+               align: 1.0 0.5;
                rel1 {
-                  relative: 1.0 0.5;
-                  to_x: "reorder_left_image";
-                  to_y: "base";
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
                }
                rel2 {
-                  relative: 1.0 0.5;
-                  to_x: "reorder_left_image";
-                  to_y: "base";
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
                }
-               image.normal: "00_check_bg.png";
             }
-            description { state: "enabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               min: 26 26;
-
+          description { state: "enabled" 0.0;
+             inherit: "default" 0.0;
+               align: 0.0 0.5;
             }
          }
 
-         part { name: "check_checking";
-            clip_to: "disclip";
-            mouse_events: 1;
-            scale: 1;
-            description { state: "default" 0.0;
-               visible: 0;
-               min: 26 26;
-               fixed: 1 1;
-               align: 0.0 0.5;
-               rel1 {
-                  relative: 1.0 0.5;
-                  to_x: "reorder_left_image";
-                  to_y: "base";
-               }
-               rel2 {
-                  relative: 1.0 0.5;
-                  to_x: "reorder_left_image";
-                  to_y: "base";
-               }
-               image.normal: "00_check_checking.png";
-            }
-            description { state: "on_uncheck" 0.0;
-               inherit: "default" 0.0;
-               visible: 0;
-            }
-            description { state: "on_check" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }            
-         }
-
-         part { name: "check_bg_touch_area";
+         part { name: "elm.padding.icon1.right";
             type: RECT;
-            mouse_events: 1;
             scale: 1;
             description { state: "default" 0.0;
-               min: (GENLIST_EDIT_CHECKBOX_WIDTH+10) 0;
+               min: 10 0;
                fixed: 1 0;
-               align: 0 0.5;
-               rel1 { relative: 0 0; to_x: "check_bg"; }
-               rel2 { relative: 0 1; to_x: "check_bg"; }
-               color: 0 0 0 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.edit.icon.1";
+               }
+               rel2.to_x: "elm.edit.icon.1";
+               align: 0.0 0.0;
             }
          }
 
@@ -214,84 +150,72 @@
             description { state: "default" 0.0;
                rel1 {
                   relative: 1.0 1.0;
-                  to_x: "check_bg";
+                  to_x: "elm.padding.icon1.right";
                   to_y: "elm.padding.top";
                }
                rel2 {
                   relative: 0.2 0.0;
-                  to_x: "elm.swallow.end";
+                  to_x: "elm.edit.icon.2";
                   to_y: "elm.padding.bottom";
+               }
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+            description { state: "renamed" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.3 0.0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon2.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "original_edc";
+               }
+               rel2.to_x: "original_edc";
+               align: 0.0 0.0;
+            }
+         }
+
+       part { name: "elm.edit.icon.2";
+            clip_to: "disclip";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               fixed: 1 0;
+               align: 0.0 0.5;
+               visible: 1;
+               rel1 {
+                  relative: 1.0  0.0;
+                  offset:   -10    4;
+               }
+               rel2 {
+                  relative: 1.0  1.0;
+                  offset:   -10   -5;
                }
             }
           description { state: "disabled" 0.0;
              inherit: "default" 0.0;
              visible: 0;
           }
-        }
-
-       part { name: "elm.swallow.end";
-          type: SWALLOW;
-          scale: 1;
-          description { state: "default" 0.0;
-             fixed: 1 0;
-             align: 1.0 0.5;
-             visible: 1;
-             rel1.to_x: "elm.padding.right";
-             rel2 {
-                relative: 0.0  1.0;
-                to_x: "elm.padding.right";
-             }
-          }
-          description { state: "disable" 0.0;
-             inherit: "default" 0.0;
-             visible: 0;
-          }
-       }
-
-       part { name: "elm.swallow.edit_field_bg";
-         type: IMAGE;
-	 mouse_events: 1;
-         scale: 1;
-         description { state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            rel1 {
-              relative: 1.0 0.0;
-              to_x: "check_bg";
-              offset: 0 1;
-            }
-            rel2 {
-              relative: 1.0 1.0;
-              offset: -1 -6;
-            }
-            image.border: 13 13 9 9;
-            image.normal: "00_list_group_edit_field_middle.png";
-         }
-         description { state: "enabled" 0.0;
-             inherit: "default" 0.0;
-             visible: 1;
-             color: 255 255 255 255;
-          }
-       }
-
-       part { name: "elm.swallow.edit_field_1line";
-         type: SWALLOW;
-         mouse_events: 1;
-         scale: 1;
-         description { state: "default" 0.0;
-            visible: 0;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "check_bg";
-               offset: 0 1;
-            }
-            rel2 {
-               relative: 0.98 1.0;
-            }
-          }
           description { state: "enabled" 0.0;
              inherit: "default" 0.0;
-             visible: 1;
+               align: 1.0 0.5;
           }
        }
 
@@ -303,10 +227,10 @@
              min: 0 0;
              fixed: 0 1;
              visible: 1;
-             color: GENLIST_EDIT_PART_LINE_INC;
+             color: GENLIST_PART_BOTTOM_LINE_INC;
              rel1 {
                 relative: 0.0 1.0;
-                to_x: "check_bg";
+                to_x: "elm.edit_bg";
                 offset: 0 -1;
              }
           }
@@ -316,7 +240,7 @@
               visible: 0;
           }
           description {
-              state: "reorder" 0.0;
+              state: "enabled" 0.0;
               inherit: "default" 0.0;
               min: 0 5;
               fixed: 0 1;
@@ -354,110 +278,86 @@
              visible: 1;
           }
        }
-
        BEAT_GENLIST_PART_DISCLIP
       }
       programs {
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+
+         // edit mode enable signal
+         program { name: "emode_enabled_effect";
+            signal: "elm,state,emode_enabled_effect";
+            source: "elm";
+            action: STATE_SET "enabled" 0.0;
+            transition: DECELERATE 0.7;
+            target: "elm.edit.icon.1";
+            target: "elm.edit.icon.2";
+            target: "bottom_line";
+         }
+         program { name: "emode_disabled_effect";
+            signal: "elm,state,emode_disabled_effect";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.7;
+            target: "elm.edit.icon.1";
+            target: "elm.edit.icon.2";
+            target: "bottom_line";
+         }
+         program { name: "emode_enabled";
+            signal: "elm,state,emode_enabled";
+            source: "elm";
+            action: STATE_SET "enabled" 0.0;
+            target: "elm.edit.icon.1";
+            target: "elm.edit.icon.2";
+            target: "bottom_line";
+         }
+         program { name: "emode_disabled";
+            signal: "elm,state,emode_disabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.edit.icon.1";
+            target: "elm.edit.icon.2";
+            target: "bottom_line";
+         }
 
          // reorder signal
-         program { name: "reorder_enable";
-            signal: "elm,state,reorder_enable";
+         program { name: "reorder_enabled";
+            signal: "elm,state,reorder_enabled";
             source: "elm";
             action: STATE_SET "reorder" 0.0;
-            target: "reorder_left_image";
-            target: "elm.padding.left";
-            target: "bottom_line";
+            target: "elm.padding.reorder";
          }
-         program { name: "reorder_disable";
-            signal: "elm,state,reorder_disable";
+         program { name: "reorder_disabled";
+            signal: "elm,state,reorder_disabled";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "reorder_left_image";
-            target: "elm.padding.left";
-            target: "bottom_line";
-         }
-         program { name: "reorder_enable_effect";
-            signal: "elm,state,reorder_enable_effect";
-            source: "elm";
-            action: STATE_SET "reorder" 0.0;
-            target: "reorder_left_image";
-            after: "reorder_enable_padding_effect";
-         }
-         program { name: "reorder_disable_effect";
-            signal: "elm,state,reorder_disable_effect";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "reorder_left_image";
-            after: "reorder_disable_padding_effect";
-         }
-         program { name: "reorder_enable_padding_effect";
-            source: "elm";
-            action: STATE_SET "reorder" 0.0;
-            transition: DECELERATE 0.5;
-            target: "elm.padding.left";
-            target: "bottom_line";
-         }
-         program { name: "reorder_disable_padding_effect";
-            signal: "elm,state,reorder_disable";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            transition: DECELERATE 0.5;
-            target: "elm.padding.left";
-            target: "bottom_line";
+            target: "elm.padding.reorder";
          }
 
-         // checkbox
-         program {
-            name:    "on_select";
-            signal:  "mouse,clicked,1";
-            source:  "check_bg_touch_area";
-            action:  SIGNAL_EMIT "elm,action,item,select" "elm";
+         program { name: "reorder_enabled_effect";
+            signal: "elm,state,reorder_enabled_effect";
+            source: "elm";
+            action: STATE_SET "reorder" 0.0;
+            transition: DECELERATE 0.7;
+            target: "elm.padding.reorder";
          }
-         program {
-            name:    "enable_select_mode";
-            signal:  "elm,state,sel,enable";
-            source:  "elm";
-            action:  STATE_SET "enabled" 0.0;
-            target:  "check_bg";
+         program { name: "reorder_disabled_effect";
+            signal: "elm,state,reorder_disabled_effect";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.7;
+            target: "elm.padding.reorder";
          }
-         program {
-            name:    "disable_select_mode";
-            signal:  "elm,state,sel,disable";
-            source:  "elm";
-            action:  STATE_SET "default" 0.0;
-            target:  "check_bg";
-         }
-         program {
-            name:    "enable_select_effect_mode";
-            signal:  "elm,state,sel,enable_effect";
-            source:  "elm";
-            action:  STATE_SET "enabled" 0.0;
-            transition: DECELERATE 0.5;
-            target:  "check_bg";
-         }
-         program {
-            name:    "disable_select_effect_mode";
-            signal:  "elm,state,sel,disable_effect";
-            source:  "elm";
-            action:  STATE_SET "default" 0.0;
-            transition: DECELERATE 0.5;
-            target:  "check_bg";
-         }
-         program {
-            name:    "enable_delete";
-            signal:  "elm,state,sel_uncheck";
-            source:  "elm";
-            action:  STATE_SET "on_uncheck" 0.0;
-            target:  "check_checking";
-         }
-         program {
-            name:    "select_icon_check_mode";
-            signal:  "elm,state,sel_check";
-            source:  "elm";
-            action:  STATE_SET "on_check" 0.0;
-            target:  "check_checking";
-         }
-
         // reorder glow
         program {
             name:    "show_reorder_glow";
@@ -475,51 +375,43 @@
             target:  "reorder_glow_above";
             target:  "reorder_glow_below";
         }
-
         // rename
         program {
             name:    "enable_rename_mode";
-            signal:  "elm,state,rename,enable";
+            signal:  "elm,state,rename,enabled";
             source:  "elm";
-            action:  STATE_SET "enabled" 0.0;
-            transition: DECELERATE 0.3;
-            target:  "elm.swallow.edit_field_bg";
-            target:  "elm.swallow.edit_field_1line";
+            action:  STATE_SET "disabled" 0.0;
+            target:  "elm.edit.icon.2";
+            after:   "enable_rename_mode_next";
+        }
+        program {
+            name:    "enable_rename_mode_next";
+            action:  STATE_SET "renamed" 0.0;
+            transition: DECELERATE 0.5;
+            target:  "original_edc";
         }
         program {
             name:    "disable_rename_mode";
-            signal:  "elm,state,rename,disable";
+            signal:  "elm,state,rename,disabled";
             source:  "elm";
             action:  STATE_SET "default" 0.0;
-            transition: DECELERATE 0.3;
-            target:  "elm.swallow.edit_field_bg";
-            target:  "elm.swallow.edit_field_1line";
+            transition: DECELERATE 0.5;
+            target:  "original_edc";
+            target:  "elm.edit.icon.2";
         }
       }
    }
 
-   group { name: "elm/genlist/item/edit_control_transparency/default";
-      alias: "elm/genlist/item_odd/edit_control_transparency/default";
-      alias: "elm/genlist/item_compress/edit_control_transparency/default";
-      alias: "elm/genlist/item_compress_odd/edit_control_transparency/default";
+   group { name: "elm/genlist/item/edit_default_transparency/default";
+      alias: "elm/genlist/item_odd/edit_default_transparency/default";
+      alias: "elm/genlist/item_compress/edit_default_transparency/default";
+      alias: "elm/genlist/item_compress_odd/edit_default_transparency/default";
 
-      data.item: "reorder" "reorder_icon";
-      data.item: "insert" "insert_icon";
-      data.item: "delete" "select_icon";
-      data.item: "del_confirm" "elm.icon.del_confirm";
-      data.item: "icon_width" 50;
-      data.item: "del_button_style" "custom/red";
-      data.item: "icons" "elm.swallow.end";
-      data.item: "rename" "elm.swallow.edit_field_1line elm.swallow.edit_field_2line";
-
+      data.item: "edit_icons" "elm.edit.icon.1 elm.edit.icon.2";
+      
       images {
-         image: "00_check_bg.png" COMP;
-         image: "00_check_checking.png" COMP;
          image: "01_list_reorder_bg_above.png" COMP;
          image: "01_list_reorder_bg_below.png" COMP;
-         image: "00_list_group_edit_field_middle.png" COMP;
-         image: "00_reorder_group_list_bg.png" COMP;
-         image: "00_list_body_bg.png" COMP;
       }
       parts {
          part { name: "base";
@@ -527,68 +419,35 @@
             repeat_events: 1;
             scale: 1;
             description { state: "default" 0.0;
-               min: 0 70;
                color: 0 0 0 0;
             }
          }
          BEAT_GENLIST_PART_PADDING_TOP( 0 )
          BEAT_GENLIST_PART_PADDING_BOTTOM( 0 )
+         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
 
-         part { name: "elm.padding.left";
+         part { name: "elm.padding.reorder";
             type: RECT;
             scale: 1;
             description { state: "default" 0.0;
-               min: 0 0;
+               min: 10 0;
                fixed: 1 0;
                visible: 0;
                rel2.relative: 0.0 1.0;
+               align: 1.0 0.0;
+            }
+            description { state: "reorder" 0.0;
+               inherit: "default" 0.0;
                align: 0.0 0.0;
             }
-            description { state: "reorder" 0.0;
-               inherit: "default" 0.0;
-               min: 20 0;
-               fixed: 1 0;
-            }
          }
-
-         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
-
-         part { name: "reorder_left_image";
-            clip_to: "disclip";
-            mouse_events: 1;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 15 0;
-               fixed: 1 0;
-               visible: 0;
-               rel1 {
-                  relative: 1.0 1.0;
-                  to_x: "elm.padding.left";
-                  to_y: "elm.padding.top";
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  to_x: "elm.padding.left";
-                  to_y: "elm.padding.bottom";
-               }
-               image.normal: "00_list_body_bg.png";
-            }
-            description { state: "reorder" 0.0;
-               inherit: "default" 0.0;
-               min: 15 0;
-               fixed: 1 0;
-               image.border: 0 0 13 13;
-               image.normal: "00_reorder_group_list_bg.png";
-            }
-         }
-
          part { name: "elm.edit_bg";
             type: RECT;
             scale: 1;
             description { state: "default" 0.0;
                rel1 {
                   relative: 1.0 1.0;
-                  to_x: "reorder_left_image";
+                  to_x: "elm.padding.reorder";
                   to_y: "elm.padding.top";
                }
                rel2 {
@@ -596,80 +455,65 @@
                   to_y: "elm.padding.bottom";
                }
              color: 0 0 0 0;
-            }
-         }
+           }
+        }
 
-         part { name: "check_bg";
+        part { name: "elm.padding.left";
+           type: RECT;
+           scale: 1;
+           description { state: "default" 0.0;
+              min: 10 0;
+              fixed: 1 0;
+              visible: 0;
+              rel1 {
+                 relative: 1.0 0.0;
+                 to_x: "elm.padding.reorder";
+              }
+              rel2.to_x: "elm.padding.reorder";
+              rel2.relative: 0.0  1.0;
+              align: 0.0 0.0;
+           }
+        }
+
+        part { name: "elm.edit.icon.1";
             clip_to: "disclip";
-            mouse_events: 1;
+            type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
-               min: 0 26;
                fixed: 1 1;
-               align: 0.0 0.5;
+               align: 1.0 0.5;
                rel1 {
-                  relative: 1.0 0.5;
-                  to_x: "reorder_left_image";
-                  to_y: "base";
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
                }
                rel2 {
-                  relative: 1.0 0.5;
-                  to_x: "reorder_left_image";
-                  to_y: "base";
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
                }
-               image.normal: "00_check_bg.png";
             }
-            description { state: "enabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               min: 26 26;
-
+          description { state: "enabled" 0.0;
+             inherit: "default" 0.0;
+               align: 0.0 0.5;
             }
          }
 
-         part { name: "check_checking";
-            clip_to: "disclip";
-            mouse_events: 1;
-            scale: 1;
-            description { state: "default" 0.0;
-               visible: 0;
-               min: 26 26;
-               fixed: 1 1;
-               align: 0.0 0.5;
-               rel1 {
-                  relative: 1.0 0.5;
-                  to_x: "reorder_left_image";
-                  to_y: "base";
-               }
-               rel2 {
-                  relative: 1.0 0.5;
-                  to_x: "reorder_left_image";
-                  to_y: "base";
-               }
-               image.normal: "00_check_checking.png";
-            }
-            description { state: "on_uncheck" 0.0;
-               inherit: "default" 0.0;
-               visible: 0;
-            }
-            description { state: "on_check" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-
-         part { name: "check_bg_touch_area";
+         part { name: "elm.padding.icon1.right";
             type: RECT;
-            mouse_events: 1;
             scale: 1;
             description { state: "default" 0.0;
-               min: (GENLIST_EDIT_CHECKBOX_WIDTH+10) 0;
+               min: 10 0;
                fixed: 1 0;
-               align: 0 0.5;
-               rel1 { relative: 0 0; to_x: "check_bg"; }
-               rel2 { relative: 0 1; to_x: "check_bg"; }
-               color: 0 0 0 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.edit.icon.1";
+               }
+               rel2.to_x: "elm.edit.icon.1";
+               align: 0.0 0.0;
             }
          }
 
@@ -681,84 +525,72 @@
             description { state: "default" 0.0;
                rel1 {
                   relative: 1.0 1.0;
-                  to_x: "check_bg";
+                  to_x: "elm.padding.icon1.right";
                   to_y: "elm.padding.top";
                }
                rel2 {
                   relative: 0.2 0.0;
-                  to_x: "elm.swallow.end";
+                  to_x: "elm.edit.icon.2";
                   to_y: "elm.padding.bottom";
+               }
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+            description { state: "renamed" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.3 0.0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+         }
+         part { name: "elm.padding.icon2.left";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "original_edc";
+               }
+               rel2.to_x: "original_edc";
+               align: 0.0 0.0;
+            }
+         }
+
+       part { name: "elm.edit.icon.2";
+            clip_to: "disclip";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               fixed: 1 0;
+               align: 0.0 0.5;
+               visible: 1;
+               rel1 {
+                  relative: 1.0  0.0;
+                  offset:   -10    4;
+               }
+               rel2 {
+                  relative: 1.0  1.0;
+                  offset:   -10   -5;
                }
             }
           description { state: "disabled" 0.0;
              inherit: "default" 0.0;
              visible: 0;
           }
-        }
-
-       part { name: "elm.swallow.end";
-          type: SWALLOW;
-          scale: 1;
-          description { state: "default" 0.0;
-             fixed: 1 0;
-             align: 1.0 0.5;
-             visible: 1;
-             rel1.to_x: "elm.padding.right";
-             rel2 {
-                relative: 0.0  1.0;
-                to_x: "elm.padding.right";
-             }
-          }
-          description { state: "disable" 0.0;
-             inherit: "default" 0.0;
-             visible: 0;
-          }
-       }
-
-       part { name: "elm.swallow.edit_field_bg";
-         type: IMAGE;
-	 mouse_events: 1;
-         scale: 1;
-         description { state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            rel1 {
-              relative: 1.0 0.0;
-              to_x: "check_bg";
-              offset: 0 1;
-            }
-            rel2 {
-              relative: 1.0 1.0;
-              offset: -1 -6;
-            }
-            image.border: 13 13 9 9;
-            image.normal: "00_list_group_edit_field_middle.png";
-         }
-         description { state: "enabled" 0.0;
-             inherit: "default" 0.0;
-             visible: 1;
-             color: 255 255 255 255;
-          }
-       }
-
-       part { name: "elm.swallow.edit_field_1line";
-         type: SWALLOW;
-         mouse_events: 1;
-         scale: 1;
-         description { state: "default" 0.0;
-            visible: 0;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "check_bg";
-               offset: 0 1;
-            }
-            rel2 {
-               relative: 0.98 1.0;
-            }
-          }
           description { state: "enabled" 0.0;
              inherit: "default" 0.0;
-             visible: 1;
+               align: 1.0 0.5;
           }
        }
 
@@ -769,11 +601,11 @@
           description { state: "default" 0.0;
              min: 0 0;
              fixed: 0 1;
-             visible: 0;
-             color: GENLIST_EDIT_PART_LINE_INC;
+             visible: 1;
+             color: 0 0 0 0;
              rel1 {
                 relative: 0.0 1.0;
-                to_x: "check_bg";
+                to_x: "elm.edit_bg";
                 offset: 0 -1;
              }
           }
@@ -783,7 +615,7 @@
               visible: 0;
           }
           description {
-              state: "reorder" 0.0;
+              state: "enabled" 0.0;
               inherit: "default" 0.0;
               min: 0 5;
               fixed: 0 1;
@@ -821,110 +653,86 @@
              visible: 1;
           }
        }
-
        BEAT_GENLIST_PART_DISCLIP
       }
       programs {
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+
+         // edit mode enable signal
+         program { name: "emode_enabled_effect";
+            signal: "elm,state,emode_enabled_effect";
+            source: "elm";
+            action: STATE_SET "enabled" 0.0;
+            transition: DECELERATE 0.7;
+            target: "elm.edit.icon.1";
+            target: "elm.edit.icon.2";
+            target: "bottom_line";
+         }
+         program { name: "emode_disabled_effect";
+            signal: "elm,state,emode_disabled_effect";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.7;
+            target: "elm.edit.icon.1";
+            target: "elm.edit.icon.2";
+            target: "bottom_line";
+         }
+         program { name: "emode_enabled";
+            signal: "elm,state,emode_enabled";
+            source: "elm";
+            action: STATE_SET "enabled" 0.0;
+            target: "elm.edit.icon.1";
+            target: "elm.edit.icon.2";
+            target: "bottom_line";
+         }
+         program { name: "emode_disabled";
+            signal: "elm,state,emode_disabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.edit.icon.1";
+            target: "elm.edit.icon.2";
+            target: "bottom_line";
+         }
 
          // reorder signal
-         program { name: "reorder_enable";
-            signal: "elm,state,reorder_enable";
+         program { name: "reorder_enabled";
+            signal: "elm,state,reorder_enabled";
             source: "elm";
             action: STATE_SET "reorder" 0.0;
-            target: "reorder_left_image";
-            target: "elm.padding.left";
-            target: "bottom_line";
+            target: "elm.padding.reorder";
          }
-         program { name: "reorder_disable";
-            signal: "elm,state,reorder_disable";
+         program { name: "reorder_disabled";
+            signal: "elm,state,reorder_disabled";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "reorder_left_image";
-            target: "elm.padding.left";
-            target: "bottom_line";
-         }
-         program { name: "reorder_enable_effect";
-            signal: "elm,state,reorder_enable_effect";
-            source: "elm";
-            action: STATE_SET "reorder" 0.0;
-            target: "reorder_left_image";
-            after: "reorder_enable_padding_effect";
-         }
-         program { name: "reorder_disable_effect";
-            signal: "elm,state,reorder_disable_effect";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "reorder_left_image";
-            after: "reorder_disable_padding_effect";
-         }
-         program { name: "reorder_enable_padding_effect";
-            source: "elm";
-            action: STATE_SET "reorder" 0.0;
-            transition: DECELERATE 0.5;
-            target: "elm.padding.left";
-            target: "bottom_line";
-         }
-         program { name: "reorder_disable_padding_effect";
-            signal: "elm,state,reorder_disable";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            transition: DECELERATE 0.5;
-            target: "elm.padding.left";
-            target: "bottom_line";
+            target: "elm.padding.reorder";
          }
 
-         // checkbox
-         program {
-            name:    "on_select";
-            signal:  "mouse,clicked,1";
-            source:  "check_bg_touch_area";
-            action:  SIGNAL_EMIT "elm,action,item,select" "elm";
+         program { name: "reorder_enabled_effect";
+            signal: "elm,state,reorder_enabled_effect";
+            source: "elm";
+            action: STATE_SET "reorder" 0.0;
+            transition: DECELERATE 0.7;
+            target: "elm.padding.reorder";
          }
-         program {
-            name:    "enable_select_mode";
-            signal:  "elm,state,sel,enable";
-            source:  "elm";
-            action:  STATE_SET "enabled" 0.0;
-            target:  "check_bg";
+         program { name: "reorder_disabled_effect";
+            signal: "elm,state,reorder_disabled_effect";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.7;
+            target: "elm.padding.reorder";
          }
-         program {
-            name:    "disable_select_mode";
-            signal:  "elm,state,sel,disable";
-            source:  "elm";
-            action:  STATE_SET "default" 0.0;
-            target:  "check_bg";
-         }
-         program {
-            name:    "enable_select_effect_mode";
-            signal:  "elm,state,sel,enable_effect";
-            source:  "elm";
-            action:  STATE_SET "enabled" 0.0;
-            transition: DECELERATE 0.5;
-            target:  "check_bg";
-         }
-         program {
-            name:    "disable_select_effect_mode";
-            signal:  "elm,state,sel,disable_effect";
-            source:  "elm";
-            action:  STATE_SET "default" 0.0;
-            transition: DECELERATE 0.5;
-            target:  "check_bg";
-         }
-         program {
-            name:    "enable_delete";
-            signal:  "elm,state,sel_uncheck";
-            source:  "elm";
-            action:  STATE_SET "on_uncheck" 0.0;
-            target:  "check_checking";
-         }
-         program {
-            name:    "select_icon_check_mode";
-            signal:  "elm,state,sel_check";
-            source:  "elm";
-            action:  STATE_SET "on_check" 0.0;
-            target:  "check_checking";
-         }
-
         // reorder glow
         program {
             name:    "show_reorder_glow";
@@ -942,30 +750,34 @@
             target:  "reorder_glow_above";
             target:  "reorder_glow_below";
         }
-
         // rename
         program {
             name:    "enable_rename_mode";
-            signal:  "elm,state,rename,enable";
+            signal:  "elm,state,rename,enabled";
             source:  "elm";
-            action:  STATE_SET "enabled" 0.0;
-            transition: DECELERATE 0.3;
-            target:  "elm.swallow.edit_field_bg";
-            target:  "elm.swallow.edit_field_1line";
+            action:  STATE_SET "disabled" 0.0;
+            target:  "elm.edit.icon.2";
+            after:   "enable_rename_mode_next";
+        }
+        program {
+            name:    "enable_rename_mode_next";
+            action:  STATE_SET "renamed" 0.0;
+            transition: DECELERATE 0.5;
+            target:  "original_edc";
         }
         program {
             name:    "disable_rename_mode";
-            signal:  "elm,state,rename,disable";
+            signal:  "elm,state,rename,disabled";
             source:  "elm";
             action:  STATE_SET "default" 0.0;
-            transition: DECELERATE 0.3;
-            target:  "elm.swallow.edit_field_bg";
-            target:  "elm.swallow.edit_field_1line";
+            transition: DECELERATE 0.5;
+            target:  "original_edc";
+            target:  "elm.edit.icon.2";
         }
       }
    }
 
-   group { name: "elm/genlist/item/select_all/default";
+  group { name: "elm/genlist/item/select_all/default";
       alias: "elm/genlist/item_odd/select_all/default";
       alias: "elm/genlist/item_compress/select_all/default";
       alias: "elm/genlist/item_compress_odd/select_all/default";
@@ -973,7 +785,10 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-
+      data.item: "icons" "elm.icon";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
       parts {
          part { name: "base";
             type: RECT;
@@ -981,35 +796,60 @@
             scale: 1;
             description { state: "default" 0.0;
                min: 0 70;
-               color: GENLIST_PART_BG_COLOR_INC;
+               color: 239 237 230 255;
             }
          }
-
          part { name: "bg";
             type: RECT;
             clip_to: "disclip";
             repeat_events: 0;
             mouse_events: 0;
-            description { state: "default" 0.0;
-               color: GENLIST_PART_SELECT_ALL_BG_COLOR_INC; 
+            description { state: "default" 0.0; 
+               color: 239 237 230 255;
             }
          }
-
          BEAT_GENLIST_PART_BG_IMAGE
          BEAT_GENLIST_PART_BOTTOM_LINE
-         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
+         BEAT_GENLIST_PART_PADDING_TOP( 15 )
+         BEAT_GENLIST_PART_PADDING_BOTTOM( 15 )
+         BEAT_GENLIST_PART_PADDING_LEFT( 15 )
          BEAT_GENLIST_PART_PADDING_RIGHT( 15 )
-         part { name: "elm.swallow.end";
+
+         part { name: "elm.padding.icon.right";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 15 0;
+               fixed: 1 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "elm.icon";
+               }
+               rel2.to_x: "elm.icon";
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.icon";
             clip_to: "disclip";
             type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
-               fixed: 1 0;
-               align: 1.0 0.5;
-               rel1.to_x: "elm.padding.right";
+               min: 50 50;
+               max: 50 50;
+               fixed: 1 1;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.top";
+               }
                rel2 {
-                  relative: 0.0  1.0;
-                  to_x: "elm.padding.right";
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.left";
+                  to_y: "elm.padding.bottom";
                }
             }
          }
@@ -1019,15 +859,18 @@
             mouse_events: 0;
             scale: 1;
             description { state: "default" 0.0;
+               align: 0.0 0.0;
                rel1 {
-                  relative: 1.0  0.0;
-                  offset: 20 0;
-                  to_x: "check_bg";
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.icon.right";
+                  to_y: "elm.padding.top";
                }
                rel2 {
-                  to_x: "elm.swallow.end";
-                  relative: 0.0  1.0;
-                  offset:   20   0;
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
                }
                color: GENLIST_PART_TEXT_COLOR_INC;
                text {
@@ -1035,103 +878,42 @@
                   size: 32;
                   min: 0 1;
                   align: 0.0 0.5;
-                  text: "Select All";
                }
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: 225 225 225 255;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
             }
          }
-         part { name: "check_bg";
-            clip_to: "disclip";
-            mouse_events: 1;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 26 26;
-               fixed: 1 1;
-               align: 0.0 0.5;
-               rel1 {
-                  relative: 1.0 0.5;
-                  to_x: "elm.padding.left";
-                  to_y: "base";
-               }
-               rel2 {
-                  relative: 1.0 0.5;
-                  to_x: "elm.padding.left";
-                  to_y: "base";
-               }
-               image.normal: "00_check_bg.png";
-            }
-         }
-
-         part { name: "check_checking";
-            clip_to: "disclip";
-            mouse_events: 1;
-            scale: 1;
-            description { state: "default" 0.0;
-               visible: 0;
-               min: 26 26;
-               fixed: 1 1;
-               align: 0.0 0.5;
-               rel1 {
-                  relative: 1.0 0.5;
-                  to_x: "elm.padding.left";
-                  to_y: "base";
-               }
-               rel2 {
-                  relative: 1.0 0.5;
-                  to_x: "elm.padding.left";
-                  to_y: "base";
-               }
-               image.normal: "00_check_checking.png";
-            }
-            description { state: "on_uncheck" 0.0;
-               inherit: "default" 0.0;
-               visible: 0;
-            }
-            description { state: "on_check" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-
-         part { name: "check_bg_touch_area";
-            type: RECT;
-            mouse_events: 1;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: (GENLIST_EDIT_CHECKBOX_WIDTH+10) 0;
-               fixed: 1 0;
-               align: 0 0.5;
-               rel1 { relative: 0 0; to_x: "check_bg"; }
-               rel2 { relative: 0 1; to_x: "check_bg"; }
-               color: 0 0 0 0;
-            }
-         }
-
-         BEAT_GENLIST_PART_DISCLIP
+       BEAT_GENLIST_PART_DISCLIP
       }
       programs {
-        program {
-           name:    "enable_select_check";
-           signal:  "elm,state,sel_check";
-           source:  "elm";
-           action:  STATE_SET "on_check" 0.0;
-           target:  "check_checking";
-        }   
-        program {
-           name:    "enable_select_uncheck";
-           signal:  "elm,state,sel_uncheck";
-           source:  "elm";
-           action:  STATE_SET "on_uncheck" 0.0;
-           target:  "check_checking";
-        }
-         program {
-            name:    "on_mouse_click";
-            signal:  "mouse,click,1";
-            source:  "check_bg_touch_area";
-            action:  SIGNAL_EMIT "elm,action,select,click" "elm";
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
          }
       }
    }
