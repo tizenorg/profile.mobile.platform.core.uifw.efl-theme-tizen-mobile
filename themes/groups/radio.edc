@@ -38,15 +38,6 @@
          tag: "whitecolor" "+ color=#ffffff";
          tag: "tab" "\t";
       }
-      style { name: "radio_label_textblock_disabled_style";
-         base: "font=SLP:style=Medium font_size=14 color=#888888 color3=#000000 wrap=char";
-         tag: "br" "\n";
-         tag: "ps" "ps";
-         tag: "hilight" "+ font=SLP:style=Bold";
-         tag: "b" "+ font=SLP:style=Bold";
-         tag: "whitecolor" "+ color=#ffffff";
-         tag: "tab" "\t";
-      }
    }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -177,11 +168,18 @@
                   style: "radio_label_textblock_style"; \
                   min: 0 0; \
                } \
+               color: RADIO_DEFAULT_TEXT_NORMAL_COLOR_INC; \
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
                visible: 1; \
                text.min: 1 1; \
+            } \
+            description { state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
+               text.min: 1 1; \
+               color: RADIO_DEFAULT_TEXT_PRESSED_COLOR_INC; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
@@ -189,10 +187,8 @@
             description { state: "disabled_visible" 0.0; \
                inherit: "default" 0.0; \
                visible: 1; \
-               text { \
-                  style: "radio_label_textblock_disabled_style"; \
-                  min: 1 1; \
-               } \
+               text.min: 1 1; \
+               color: RADIO_DEFAULT_TEXT_DISABLED_COLOR_INC; \
             } \
          } \
          part { name: "over1"; \
@@ -236,14 +232,17 @@
          program { name: "bg_radio_normal"; \
             script { \
             new st[31]; \
-               new Float:vl; \
-               get_state(PART:"radio", st, 30, vl); \
-               if(get_int(radio_state) == RADIO_STATE_VISIBLE) \
-                 set_state(PART:"radio", "visible", 0.0); \
-               else if(get_int(radio_state) == RADIO_STATE_DEFAULT) \
-                 set_state(PART:"radio", "default", 0.0); \
-               else \
-                 set_state(PART:"radio", "disabled_visible", 0.0); \
+            new Float:vl; \
+            get_state(PART:"radio", st, 30, vl); \
+            if(get_int(radio_state) == RADIO_STATE_VISIBLE) \
+              set_state(PART:"radio", "visible", 0.0); \
+            else if(get_int(radio_state) == RADIO_STATE_DEFAULT) \
+              set_state(PART:"radio", "default", 0.0); \
+            else \
+              set_state(PART:"radio", "disabled_visible", 0.0); \
+            get_state(PART:"elm.text", st, 30, vl); \
+            if (!strcmp(st, "pressed")) \
+              set_state(PART:"elm.text", "visible", 0.0); \
             } \
          } \
          program { name: "mouse,out"; \
@@ -265,6 +264,9 @@
                get_state(PART:"radio", st, 30, vl); \
                if (!strcmp(st, "default")) \
                  set_state(PART:"radio", "pressed", 0.0); \
+               get_state(PART:"elm.text", st, 30, vl); \
+               if (!strcmp(st, "visible")) \
+                 set_state(PART:"elm.text", "pressed", 0.0); \
             } \
          } \
          program { name: "radio_on"; \
