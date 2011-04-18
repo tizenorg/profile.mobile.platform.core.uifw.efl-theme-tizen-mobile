@@ -1,0 +1,149 @@
+/*
+ *  Beat-theme
+
+ * Copyright (c) 2000 - 2010 Samsung Electronics Co., Ltd.
+
+ * Contact: Seokjae Jeong <seok.j.jeong@samsung.com>, Myoungwoon Roy Kim <Myoungwoon.kim@samsung.com>, Jeonghyun Yun <jh0506.yun@samsung.com>, Jaehwan Kim <jae.hwan.kim@samsung.com>,
+ *		Chuneon Park <chuneon.park@samsung.com>, Juyung Seo <juyung.seo@samsung.com>, Woohyun Jung <wh0705.jung@samsung.com>, Myungjae Lee <mjae.lee@samsung.com>, Hyoyoung Chang <hyoyoung.chang@samsung.com>, Shinwoo Kim <cinoo.kim@samsung.com>
+ *		Hyunsil Park <hyunsil.park@samsung.com>, Sohyun Kim <anna1014.kim@samsung.com>, Seunggyun Kim <sgyun.kim@samsung.com>
+
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
+ */
+
+///////////////////////////////////////////////////////////////////////////////////////
+//
+// diskselector
+//
+///////////////////////////////////////////////////////////////////////////////////////
+group { name: "elm/diskselector/base/extended/timepicker";
+
+	parts {
+		part { name: "bg";
+			type: RECT;
+			mouse_events: 0;
+			description { state: "default" 0.0;
+				color: 0 0 0 0;
+			}
+		}
+		part { name: "elm.swallow.content";
+			type: SWALLOW;
+			description { state: "default" 0.0;
+				rel1.to: "bg";
+				rel2.to: "bg";
+			}
+		}
+	}
+}
+
+group { name: "elm/diskselector/item/extended/timepicker";
+
+	data {
+		item: "len_threshold" "14";
+		item: "display_item_num" "8";
+		item: "min_height" "66";
+	}
+
+	parts {
+		part {
+			name: "elm.text";
+			type: TEXT;
+			mouse_events: 0;
+			scale: 1;
+			description {
+				state: "default" 0.0;
+				min: 32 66;
+				max: 32 66;
+				fixed: 1 1;
+				align: 0 0;
+				color: 231 173 95 255;
+				visible: 1;
+				text {
+					font: FONT_ROM;
+					size: 24;
+					align: 0.5 0.5;
+					min: 0 1;
+				}
+			}
+
+			description {
+				state: "selected" 0.0;
+				min: 32 66;
+				max: 32 66;
+				fixed: 1 1;
+				align: 0 0;
+				color: 255 255 255 255;
+				visible: 1;
+				text {
+					font: FONT_ROM;
+					size: 24;
+					align: 0.5 0.5;
+					min: 0 1;
+				}
+			}
+
+			description { state: "show" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+			description { state: "default_small" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				text.size: 10;
+			}
+			description { state: "left_side" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+			description { state: "right_side" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+		}
+
+		part {
+			name: "over1";
+			mouse_events: 1;
+			repeat_events: 1;
+			ignore_flags: ON_HOLD;
+			description {
+				state: "default" 0.0;
+			}
+		}
+	}
+
+	programs {
+		program {
+			name: "elm,state,selected";
+			signal: "elm,state,selected";
+			source: "elm";
+			action: STATE_SET "selected" 0.0;
+			target: "elm.text";
+		}
+		program {
+			name: "elm,state,default";
+			signal: "elm,state,default";
+			source: "elm";
+			action: STATE_SET "default" 0.0;
+			target: "elm.text";
+		}
+		program {
+			name: "item_click";
+			signal: "mouse,clicked,1";
+			source: "over1";
+			action: SIGNAL_EMIT "elm,action,click" "";
+		}
+	}
+}
