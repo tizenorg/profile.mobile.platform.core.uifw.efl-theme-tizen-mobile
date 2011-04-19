@@ -26,18 +26,6 @@
 #define CHECK_STATE_VISIBLE 1
 #define CHECK_STATE_DISABLED_VISIBLE 2
 #define CHECK_STATE_DISABLED 3
-   styles {
-      style { name: "check_label_textblock_disabled_style";
-         base: "font=SLP:style=Roman _ font_size=24 color=#888888 color3=#000000 wrap=char";
-         tag: "br" "\n";
-         tag: "ps" "ps";
-         tag: "hilight" "+ font=SLP:style=Bold";
-         tag: "b" "+ font=SLP:style=Bold";
-         tag: "whitecolor" "+ color=#ffffff";
-         tag: "tab" "\t";
-      }
-   }
-
 ///////////////////////////////////////////////////////////////////////////////////////
 #define CHECK_STYLE_DEFAULT(style_name, min_width, min_height) \
    group { name: "elm/check/base/"style_name; \
@@ -167,11 +155,18 @@
                   style: "check_label_textblock_style"; \
                   min: 0 0; \
                } \
+               color: CHECK_DEFAULT_TEXT_NORMAL_COLOR_INC; \
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
                visible: 1; \
                text.min: 1 1; \
+            } \
+            description { state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
+               text.min: 1 1; \
+               color: CHECK_DEFAULT_TEXT_PRESSED_COLOR_INC; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
@@ -179,10 +174,8 @@
             description { state: "disabled_visible" 0.0; \
                inherit: "default" 0.0; \
                visible: 1; \
-               text {  \
-                  style: "check_label_textblock_disabled_style"; \
-                  min: 1 1; \
-               } \
+               text.min: 1 1; \
+               color: CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC; \
             } \
          } \
          part { name: "events1"; \
@@ -221,6 +214,8 @@
             signal: "mouse,up,1"; \
             source: "events2"; \
             script { \
+               new st[31]; \
+               new Float:vl; \
                if(get_int(check_state) == CHECK_STATE_VISIBLE) \
                  set_state(PART:"check", "visible", 0.0); \
                else if(get_int(check_state) == CHECK_STATE_DEFAULT)\
@@ -228,6 +223,9 @@
                else \
                  set_state(PART:"check", "disabled_visible", 0.0); \
                set_state(PART:"bg", "default", 0.0); \
+               get_state(PART:"elm.text", st, 30, vl); \
+               if (!strcmp(st, "pressed")) \
+                 set_state(PART:"elm.text", "visible", 0.0); \
             } \
          } \
          program { name: "pressed"; \
@@ -242,6 +240,9 @@
                else \
                  set_state(PART:"check", "default", 0.0); \
                set_state(PART:"bg", "pressed", 0.0); \
+               get_state(PART:"elm.text", st, 30, vl); \
+               if (!strcmp(st, "visible")) \
+                 set_state(PART:"elm.text", "pressed", 0.0); \
             } \
          } \
          program { name: "mouse,out"; \
@@ -515,6 +516,7 @@ CHECK_STYLE_DEFAULT("default/extended", 60, 75)
                   style: "check_label_textblock_style";
                   min: 0 0;
                }
+               color: CHECK_DEFAULT_TEXT_NORMAL_COLOR_INC;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -527,10 +529,8 @@ CHECK_STYLE_DEFAULT("default/extended", 60, 75)
             description { state: "disabled_visible" 0.0;
                inherit: "default" 0.0;
                visible: 1;
-               text {
-                  style: "check_label_textblock_disabled_style";
-                  min: 1 1;
-               }
+               text.min: 1 1;
+               color: CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC;
             }
          }
          part { name: "events1";
@@ -893,6 +893,7 @@ CHECK_STYLE_DEFAULT("default/extended", 60, 75)
                   style: "check_label_textblock_style";
                   min: 0 0;
                }
+               color: CHECK_DEFAULT_TEXT_NORMAL_COLOR_INC;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -905,10 +906,8 @@ CHECK_STYLE_DEFAULT("default/extended", 60, 75)
             description { state: "disabled_visible" 0.0;
                inherit: "default" 0.0;
                visible: 1;
-               text {
-                  style: "check_label_textblock_disabled_style";
-                  min: 1 1;
-               }
+               text.min: 1 1;
+               color: CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC;
             }
          }
          part { name: "events";
@@ -1173,6 +1172,7 @@ CHECK_STYLE_DEFAULT("default/extended", 60, 75)
                  style: "check_label_textblock_style"; \
                  min: 0 0; \
                } \
+               color: CHECK_DEFAULT_TEXT_NORMAL_COLOR_INC; \
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
@@ -1185,10 +1185,8 @@ CHECK_STYLE_DEFAULT("default/extended", 60, 75)
             description { state: "disabled_visible" 0.0; \
                inherit: "default" 0.0; \
                visible: 1; \
-               text { \
-                 style: "check_label_textblock_disabled_style"; \
-                 min: 1 1; \
-               } \
+               text.min: 1 1; \
+               color: CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC; \
             } \
          } \
          part { name: "events"; \
@@ -1512,6 +1510,7 @@ CHECK_STYLE_FAVORITE("favorite/extended", 60, 75)
                   style: "check_label_textblock_style";
                   min: 0 0;
                }
+               color: CHECK_DEFAULT_TEXT_NORMAL_COLOR_INC;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -1524,10 +1523,8 @@ CHECK_STYLE_FAVORITE("favorite/extended", 60, 75)
             description { state: "disabled_visible" 0.0;
                inherit: "default" 0.0;
                visible: 1;
-               text {
-                  style: "check_label_textblock_disabled_style";
-                  min: 1 1;
-               }
+               text.min: 1 1;
+               color: CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC;
             }
          }
          part { name: "events1";
@@ -1964,6 +1961,7 @@ CHECK_STYLE_FAVORITE("favorite/extended", 60, 75)
                   style: "check_label_textblock_style";
                   min: 0 0;
                }
+               color: CHECK_DEFAULT_TEXT_NORMAL_COLOR_INC;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -1976,10 +1974,8 @@ CHECK_STYLE_FAVORITE("favorite/extended", 60, 75)
             description { state: "disabled_visible" 0.0;
                inherit: "default" 0.0;
                visible: 1;
-               text {
-                  style: "check_label_textblock_disabled_style";
-                  min: 1 1;
-               }
+               text.min: 1 1;
+               color: CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC;
             }
          }
          part { name: "events1";
@@ -2382,6 +2378,7 @@ CHECK_STYLE_FAVORITE("favorite/extended", 60, 75)
                   style: "check_label_textblock_style";
                   min: 0 0;
                }
+               color: CHECK_DEFAULT_TEXT_NORMAL_COLOR_INC;
             }
             description {
                state: "visible" 0.0;
@@ -2397,10 +2394,8 @@ CHECK_STYLE_FAVORITE("favorite/extended", 60, 75)
                state: "disabled_visible" 0.0;
                inherit: "default" 0.0;
                visible: 1;
-               text {
-                  style: "check_label_textblock_disabled_style";
-                  min: 1 1;
-               }
+               text.min: 1 1;
+               color: CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC;
             }
          }
          part {
