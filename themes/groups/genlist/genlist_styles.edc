@@ -445,52 +445,23 @@
          BEAT_GENLIST_PART_PADDING_LEFT( 10 )
          BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
 
-         part { name: "elm.text.1";
-            clip_to: "disclip";
-            type: TEXT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               rel1 {
-                  relative: 1.0  0.0;
-                  offset: 0 0;
-                  to_x: "elm.padding.left";
-               }
-               rel2 {
-                  relative: 0.0  1.0;
-                  offset:   0   0;
-                  to_x: "elm.padding.right";
-               }
-               color: GENLIST_PART_TEXT_COLOR_INC;
-               text {
-                  font: "SLP:style=Roman";
-                  size: 28;
-                  min: 0 1;
-                  align: 0.0 0.5;
-               }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
-            }
-            BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
-         }
          part { name: "elm.text.2";
             clip_to: "disclip";
             type: TEXT;
             mouse_events: 0;
             scale: 1;
             description { state: "default" 0.0;
+               min: 98 0;
+               fixed: 1 0;
                rel1 {
-                  relative: 1.0  0.0;
-                  offset: 0 0;
-                  to_x: "elm.padding.left";
+                  relative: 0.0  0.0;
+                  to_x: "elm.padding.right";
                }
                rel2 {
                   relative: 0.0  1.0;
-                  offset:   0   0;
                   to_x: "elm.padding.right";
                }
+               align: 1.0 0.5;
                color: GENLIST_PART_SUB_TEXT_COLOR_INC;
                text {
                   font: "SLP:style=Medium";
@@ -505,7 +476,117 @@
             }
             BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
          }
-         BEAT_GENLIST_PART_RENAME
+
+         part { name: "elm.padding.text2.left";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 0.0 0.0;
+                   to_x: "elm.text.2";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.text.2";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
+
+         part { name: "vertical_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.text2.left";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.text2.left";
+               }
+               align: 1.0 0.5;
+            }
+         }
+
+         part { name: "elm.padding.text1.right";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 0.0 0.0;
+                   to_x: "vertical_line";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "vertical_line";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
+
+         part { name: "elm.text.1";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0  0.0;
+                  to_x: "elm.padding.left";
+               }
+               rel2 {
+                  relative: 0.0  1.0;
+                  to_x: "elm.padding.text1.right";
+               }
+               align: 0.0 0.5;
+               color: GENLIST_PART_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Roman";
+                  size: 28;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+            BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
+         }
+         part { name: "elm.edit.rename";
+            clip_to: "disclip";
+            type: SWALLOW;
+            mouse_events: 1;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 1.0  0.0;
+                  to_x: "elm.padding.left";
+               }
+               rel2 {
+                  relative: 0.0  1.0;
+                  to_x: "elm.padding.text1.right";
+               }
+            }
+            description { state: "rename_enabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
          BEAT_GENLIST_PART_DISCLIP
       }
       programs {
@@ -546,173 +627,6 @@
          BEAT_GENLIST_PROGRAM_RENAME_2TEXT
       }
    }
-
-/*
-   group { name: "elm/genlist/item/2text.4/default";
-      alias: "elm/genlist/item_odd/2text.4/default";
-      alias: "elm/genlist/item_compress/2text.4/default";
-      alias: "elm/genlist/item_compress_odd/2text.4/default";
-
-      data.item: "stacking" "above";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text.1 elm.text.2";
-      images {
-         image: "00_list_bar_press_1x80.png" COMP;
-      }
-      parts {
-         BEAT_GENLIST_PART_BASE( 70 )
-         BEAT_GENLIST_PART_BG_IMAGE
-         BEAT_GENLIST_PART_BOTTOM_LINE
-         BEAT_GENLIST_PART_PADDING_LEFT( 10 )
-         BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
-
-         part { name: "elm.separator";
-            type: RECT;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 1 0;
-               fixed: 1 0;
-               visible: 1;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to_x: "elm.padding.text1.right";
-               }
-               rel2.to_x: "elm.padding.text1.right";
-               align: 0.0 0.0;
-               color: GENLIST_PART_BOTTOM_LINE_INC;
-            }
-         }
-         part { name: "elm.padding.text1.right";
-            type: RECT;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 10 0;
-               fixed: 1 0;
-               visible: 0;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to_x: "elm.text.1";
-               }
-               rel2.to_x: "elm.text.1";
-               align: 0.0 0.0;
-            }
-         }
-         part { name: "elm.padding.text2.left";
-            type: RECT;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 10 0;
-               fixed: 1 0;
-               visible: 0;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to_x: "elm.separator";
-               }
-               rel2.to_x: "elm.separator";
-               align: 1.0 0.0;
-            }
-         }
-         part { name: "elm.text.1";
-            clip_to: "disclip";
-            type: TEXT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 0 0;
-               fixed: 1 0;
-               align: 0 0;
-               rel1 {
-                  relative: 1.0  0.0;
-                  offset: 0 0;
-                  to_x: "elm.padding.left";
-               }
-               rel2 {
-                  relative: 1.0  1.0;
-                  offset:   0   0;
-                  to_x: "elm.padding.left";
-               }
-               color: GENLIST_PART_TEXT_COLOR_INC;
-               text {
-                  font: "SLP:style=Roman";
-                  size: 28;
-                  min: 1 1;
-                  align: 0.0 0.5;
-               }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
-            }
-         }
-         part { name: "elm.text.2";
-            clip_to: "disclip";
-            type: TEXT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               rel1 {
-                  relative: 1.0  0.0;
-                  offset: 0 0;
-                  to_x: "elm.padding.text2.left";
-               }
-               rel2 {
-                  relative: 0.0  1.0;
-                  offset:   0   0;
-                  to_x: "elm.padding.right";
-               }
-               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
-               text {
-                  font: "SLP:style=Medium";
-                  size: 20;
-                  min: 0 1;
-                  align: 0.0 0.5;
-               }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
-            }
-         }
-         BEAT_GENLIST_PART_DISCLIP
-      }
-      programs {
-         // signal: elm,state,%s,active
-         //   a "check" item named %s went active
-         // signal: elm,state,%s,passive
-         //   a "check" item named %s went passive
-         // default is passive
-         program { name: "go_active";
-            signal: "elm,state,selected";
-            source: "elm";
-            action: STATE_SET "selected" 0.0;
-            target: "bg_image";
-            target: "elm.text.1";
-            target: "elm.text.2";
-         }
-         program { name: "go_passive";
-            signal: "elm,state,unselected";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "bg_image";
-            target: "elm.text.1";
-            target: "elm.text.2";
-            transition: LINEAR 0.1;
-         }
-         program { name: "go_disabled";
-            signal: "elm,state,disabled";
-            source: "elm";
-            action: STATE_SET "disabled" 0.0;
-            target: "disclip";
-         }
-         program { name: "go_enabled";
-            signal: "elm,state,enabled";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "disclip";
-         }
-      }
-   }
-*/
 
    group { name: "elm/genlist/item/1text.1icon/default";
       alias: "elm/genlist/item_odd/1text.1icon/default";
@@ -2156,6 +2070,96 @@
             }
             BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
          }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 98 0;
+               fixed: 1 0;
+               rel1 {
+                  relative: 0.0  0.0;
+                  to_x: "elm.padding.right";
+               }
+               rel2 {
+                  relative: 0.0  1.0;
+                  to_x: "elm.padding.right";
+               }
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               align: 1.0 0.5;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 1.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+            BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
+         }
+         part { name: "elm.padding.text2.left";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 0.0 0.0;
+                   to_x: "elm.text.2";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.text.2";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
+
+         part { name: "vertical_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.text2.left";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.text2.left";
+               }
+               align: 1.0 0.5;
+            }
+         }
+
+         part { name: "elm.padding.text1.right";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 0.0 0.0;
+                   to_x: "vertical_line";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "vertical_line";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
+
          part { name: "elm.text.1";
             clip_to: "disclip";
             type: TEXT;
@@ -2165,14 +2169,12 @@
                align: 0.0 0.0;
                rel1 {
                   relative: 1.0 1.0;
-                  offset: 0 0;
                   to_x: "elm.padding.icon.right";
                   to_y: "elm.padding.top";
                }
                rel2 {
                   relative: 0.0 0.0;
-                  offset: 0 0;
-                  to_x: "elm.padding.right";
+                  to_x: "elm.padding.text1.right";
                   to_y: "elm.padding.bottom";
                }
                color: GENLIST_PART_TEXT_COLOR_INC;
@@ -2189,38 +2191,29 @@
             }
             BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
          }
-         part { name: "elm.text.2";
+       part { name: "elm.edit.rename";
             clip_to: "disclip";
-            type: TEXT;
-            mouse_events: 0;
+            type: SWALLOW;
+            mouse_events: 1;
             scale: 1;
             description { state: "default" 0.0;
+               visible: 0;
+               fixed: 1 1;
                rel1 {
                   relative: 1.0  0.0;
-                  offset: 0 0;
-                  to_x: "elm.padding.left";
+                  to_x: "elm.padding.icon.right";
                }
                rel2 {
                   relative: 0.0  1.0;
-                  offset:   0   0;
-                  to_x: "elm.padding.right";
-               }
-               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
-               text {
-                  font: "SLP:style=Medium";
-                  size: 20;
-                  min: 0 1;
-                  align: 1.0 0.5;
+                  to_x: "elm.padding.text1.right";
                }
             }
-            description { state: "selected" 0.0;
+            description { state: "rename_enabled" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+               visible: 1;
             }
-            BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
          }
-       BEAT_GENLIST_PART_RENAME
-       BEAT_GENLIST_PART_DISCLIP
+         BEAT_GENLIST_PART_DISCLIP
       }
       programs {
          program { name: "go_active";
@@ -2742,6 +2735,97 @@
          BEAT_GENLIST_PART_PADDING_LEFT( 10 )
          BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
 
+         part { name: "elm.text.3";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 98 30;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.bottom";
+               }
+               align: 1.0 1.0;
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 1.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+            BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
+         }
+         part { name: "elm.padding.text3.left";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 0.0 0.0;
+                   to_x: "elm.text.3";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.text.3";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
+
+         part { name: "vertical_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.text3.left";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.text3.left";
+               }
+               align: 1.0 0.5;
+            }
+         }
+
+         part { name: "elm.padding.text2.right";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 0.0 0.0;
+                   to_x: "vertical_line";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "vertical_line";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
          part { name: "elm.padding.icon.left";
             type: RECT;
             scale: 1;
@@ -2768,15 +2852,13 @@
                align: 1.0 0.5;
                rel1 {
                   relative: 0.0 1.0;
-                  offset: 0 0;
                   to_x: "elm.padding.right";
                   to_y: "elm.padding.top";
                }
                rel2 {
-                  relative: 0.0 1.0;
-                  offset: 0 0;
+                  relative: 0.0 0.0;
                   to_x: "elm.padding.right";
-                  to_y: "elm.text.1";
+                  to_y: "elm.text.3";
                }
             }
             BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
@@ -2787,20 +2869,17 @@
             mouse_events: 0;
             scale: 1;
             description { state: "default" 0.0;
-               min: 0 38;
-               fixed: 0 1;
-               align: 0 0;
                rel1 {
                   relative: 1.0 1.0;
                   to_x: "elm.padding.left";
                   to_y: "elm.padding.top";
                }
                rel2 {
-                  relative: 0.0 1.0;
-                  offset: 0 0;
+                  relative: 0.0 0.0;
                   to_x: "elm.padding.icon.left";
-                  to_y: "elm.padding.top";
+                  to_y: "elm.text.3";
                }
+               align: 0.0 0.5;
                color: GENLIST_PART_TEXT_COLOR_INC;
                text {
                   font: "SLP:style=Roman";
@@ -2828,47 +2907,16 @@
                }
                rel2 {
                   relative: 0.0 0.0;
-                  offset: 0 0;
-                  to_x: "elm.padding.icon.left";
+                  to_x: "elm.padding.text2.right";
                   to_y: "elm.padding.bottom";
                }
+               align: 0.0 0.5;
                color: GENLIST_PART_SUB_TEXT_COLOR_INC;
                text {
                   font: "SLP:style=Medium";
                   size: 20;
                   min: 0 1;
                   align: 0.0 0.5;
-               }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
-            }
-            BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
-         }
-         part { name: "elm.text.3";
-            clip_to: "disclip";
-            type: TEXT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               rel1 {
-                  relative: 1.0 1.0;
-                  to_x: "elm.padding.left";
-                  to_y: "elm.text.1";
-               }
-               rel2 {
-                  relative: 0.0 0.0;
-                  offset: 0 0;
-                  to_x: "elm.padding.right";
-                  to_y: "elm.padding.bottom";
-               }
-               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
-               text {
-                  font: "SLP:style=Medium";
-                  size: 20;
-                  min: 0 1;
-                  align: 1.0 0.5;
                }
             }
             description { state: "selected" 0.0;
@@ -3561,15 +3609,103 @@
             }
             BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
          }
+         part { name: "elm.text.3";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 98 38;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               align: 1.0 0.0;
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 1.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+            BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
+         }
+         part { name: "elm.padding.text3.left";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 0.0 0.0;
+                   to_x: "elm.text.3";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.text.3";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
+
+         part { name: "vertical_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.text3.left";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.text3.left";
+               }
+               align: 1.0 0.5;
+            }
+         }
+
+         part { name: "elm.padding.text1.right";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 0.0 0.0;
+                   to_x: "vertical_line";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "vertical_line";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
          part { name: "elm.text.1";
             clip_to: "disclip";
             type: TEXT;
             mouse_events: 0;
             scale: 1;
             description { state: "default" 0.0;
-               min: 0 38;
-               fixed: 0 1;
-               align: 0 0;
                rel1 {
                   relative: 1.0 1.0;
                   to_x: "elm.padding.icon.right";
@@ -3578,9 +3714,10 @@
                rel2 {
                   relative: 0.0 1.0;
                   offset: 0 0;
-                  to_x: "elm.padding.right";
-                  to_y: "elm.padding.top";
+                  to_x: "elm.padding.text1.right";
+                  to_y: "elm.text.3";
                }
+               align: 0.0 0.5;
                color: GENLIST_PART_TEXT_COLOR_INC;
                text {
                   font: "SLP:style=Roman";
@@ -3618,37 +3755,6 @@
                   size: 20;
                   min: 0 1;
                   align: 0.0 0.5;
-               }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
-            }
-            BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
-         }
-         part { name: "elm.text.3";
-            clip_to: "disclip";
-            type: TEXT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               rel1 {
-                  relative: 1.0 1.0;
-                  to_x: "elm.padding.left";
-                  to_y: "elm.padding.top";
-               }
-               rel2 {
-                  relative: 0.0 1.0;
-                  offset: 0 0;
-                  to_x: "elm.padding.right";
-                  to_y: "elm.text.1";
-               }
-               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
-               text {
-                  font: "SLP:style=Medium";
-                  size: 20;
-                  min: 0 1;
-                  align: 1.0 0.5;
                }
             }
             description { state: "selected" 0.0;
@@ -5220,15 +5326,105 @@
          BEAT_GENLIST_PART_PADDING_LEFT( 10 )
          BEAT_GENLIST_PART_PADDING_RIGHT( 10 )
 
+         part { name: "elm.text.3";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 98 38;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.right";
+                  to_y: "elm.padding.top";
+               }
+               align: 1.0 0.0;
+               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 1.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+            BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
+         }
+
+         part { name: "elm.padding.text3.left";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 0.0 0.0;
+                   to_x: "elm.text.3";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.text.3";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
+
+         part { name: "vertical_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.text3.left";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.text3.left";
+               }
+               align: 1.0 0.5;
+            }
+         }
+
+         part { name: "elm.padding.text1.right";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 0.0 0.0;
+                   to_x: "vertical_line";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "vertical_line";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
+
          part { name: "elm.text.1";
             clip_to: "disclip";
             type: TEXT;
             mouse_events: 0;
             scale: 1;
             description { state: "default" 0.0;
-               min: 0 38;
-               fixed: 0 1;
-               align: 0 0;
                rel1 {
                   relative: 1.0 1.0;
                   to_x: "elm.padding.left";
@@ -5236,10 +5432,10 @@
                }
                rel2 {
                   relative: 0.0 1.0;
-                  offset: 0 0;
-                  to_x: "elm.padding.right";
-                  to_y: "elm.padding.top";
+                  to_x: "elm.padding.text1.right";
+                  to_y: "elm.text.3";
                }
+               align: 0.0 0.5;
                color: GENLIST_PART_TEXT_COLOR_INC;
                text {
                   font: "SLP:style=Roman";
@@ -5285,39 +5481,28 @@
             }
             BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
          }
-         part { name: "elm.text.3";
+         part { name: "elm.edit.rename";
             clip_to: "disclip";
-            type: TEXT;
-            mouse_events: 0;
+            type: SWALLOW;
+            mouse_events: 1;
             scale: 1;
             description { state: "default" 0.0;
-               align: 1 1;
+               visible: 0;
+               fixed: 1 1;
                rel1 {
-                  relative: 1.0 1.0;
+                  relative: 1.0  0.0;
                   to_x: "elm.padding.left";
-                  to_y: "elm.padding.top";
                }
                rel2 {
-                  relative: 0.0 1.0;
-                  offset: 0 0;
-                  to_x: "elm.padding.right";
-                  to_y: "elm.text.1";
-               }
-               color: GENLIST_PART_SUB_TEXT_COLOR_INC;
-               text {
-                  font: "SLP:style=Medium";
-                  size: 20;
-                  min: 0 1;
-                  align: 1.0 0.5;
+                  relative: 0.0  1.0;
+                  to_x: "elm.padding.text1.right";
                }
             }
-            description { state: "selected" 0.0;
+            description { state: "rename_enabled" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+               visible: 1;
             }
-            BEAT_GENLIST_DESCRIPTION_RENAME_ENABLED
          }
-         BEAT_GENLIST_PART_RENAME
          BEAT_GENLIST_PART_DISCLIP
       }
       programs {
@@ -7788,6 +7973,94 @@
                }
             }
          }
+         part { name: "elm.text.2";
+            clip_to: "disclip";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 98 0;
+               fixed: 1 0;
+               rel1 {
+                  relative: 0.0  0.0;
+                  to_x: "elm.padding.right";
+               }
+               rel2 {
+                  relative: 0.0  1.0;
+                  to_x: "elm.padding.right";
+               }
+               align: 1.0 0.5;
+               color: 226 144 1 255;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 20;
+                  min: 0 1;
+                  align: 1.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
+            }
+         }
+         part { name: "elm.padding.text2.left";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 0.0 0.0;
+                   to_x: "elm.text.2";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.text.2";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
+
+         part { name: "vertical_line";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 1 0;
+               fixed: 1 0;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.padding.text2.left";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "elm.padding.text2.left";
+               }
+               align: 1.0 0.5;
+            }
+         }
+
+         part { name: "elm.padding.text1.right";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               fixed: 1 0;
+               rel1 {
+                   relative: 0.0 0.0;
+                   to_x: "vertical_line";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "vertical_line";
+               }
+               visible: 0;
+               align: 1.0 0.5;
+            }
+         }
          part { name: "elm.text.1";
             clip_to: "disclip";
             type: TEXT;
@@ -7801,7 +8074,7 @@
                }
                rel2 {
                   relative: 0.0 1.0;
-                  to_x: "elm.padding.right";
+                  to_x: "elm.padding.text1.right";
                }
                color: GENLIST_PART_TEXT_COLOR_INC;
                text {
@@ -7809,33 +8082,6 @@
                   size: 28;
                   min: 0 1;
                   align: 0.0 0.5;
-               }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: GENLIST_PART_TEXT_SELECTED_COLOR_INC;
-            }
-         }
-         part { name: "elm.text.2";
-            clip_to: "disclip";
-            type: TEXT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               rel1 {
-                  relative: 1.0  0.0;
-                  to_x: "elm.padding.left";
-               }
-               rel2 {
-                  relative: 0.0  1.0;
-                  to_x: "elm.padding.right";
-               }
-               color: 226 144 1 255;
-               text {
-                  font: "SLP:style=Medium";
-                  size: 20;
-                  min: 0 1;
-                  align: 1.0 0.5;
                }
             }
             description { state: "selected" 0.0;
