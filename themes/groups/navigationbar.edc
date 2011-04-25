@@ -24,10 +24,10 @@
  */
 
 #define NAVIBAR_PADDING 5
-#define NAVIBAR_TITLE_ITEM_H 67  //TODO: SHOULD BE 64
+#define NAVIBAR_TITLE_ITEM_H 65
 #define NAVIBAR_TITLE_ITEM_W 0
 #define NAVIBAR_TITLE_ITEM_MAX_W 112
-#define NAVIBAR_EXTENDED_FNBTN_TOP_HEIGHT 110
+#define NAVIBAR_EXTENDED_FNBTN_TOP_HEIGHT 115
 #define NAVIBAR_EXTENDED_H 115
 #define NAVIBAR_TITLE_SEPARATOR_H 5
 #define NAVIBAR_TITLE_SEPARATOR_SHADOW_H 5
@@ -42,13 +42,14 @@ group {
    images {
       image: "00_winset_control_top_arrow.png" COMP;
       image: "navibar_item_separator.png" COMP;
+      image: "navibar_item_separator_shadow.png" COMP;
    }
    parts {
         part { name: "base";
            mouse_events: 0;
            repeat_events: 1;
            description { state: "default" 0.0;
-              min: 1 (NAVI_BAR_H + NAVIBAR_TITLE_SEPARATOR_SHADOW_H);
+              min: 1 NAVI_BAR_H;
               align: 0.0 0.0;
               fixed: 1 1;
               rel2.relative: 1.0 0.0;
@@ -59,7 +60,7 @@ group {
            }
            description { state: "extended" 0.0;
               inherit: "default" 0.0;
-              min: 1 (NAVIBAR_EXTENDED_H + NAVIBAR_TITLE_SEPARATOR_SHADOW_H);
+              min: 1 NAVIBAR_EXTENDED_H;
            }
        }
        part { name: "clip_title";
@@ -198,7 +199,7 @@ group {
           scale: 1;
           description { state: "default" 0.0;
              align: 0.0 0.0;
-             rel1 { relative: 0.0 1.0; to_y: "base"; offset: 0 -NAVIBAR_TITLE_SEPARATOR_SHADOW_H; }
+             rel1 { relative: 0.0 1.0; to_y: "base"; }
              rel2 { relative: 1.0 1.0; }
           }
           description { state: "top" 0.0;
@@ -209,16 +210,33 @@ group {
        part { name: "navigationitem_separator";
           type: IMAGE;
           mouse_events: 0;
+          scale: 1;
           description { state: "default" 0.0;
-             min: 1 (NAVIBAR_TITLE_SEPARATOR_H + NAVIBAR_TITLE_SEPARATOR_SHADOW_H);
-             fixed: 0 1;
+             min: 1 NAVIBAR_TITLE_SEPARATOR_H;
              align: 0.5 1;
              rel1 { to: "navigationitem"; relative: 0 1; }
              rel2 { to: "base"; relative: 1 1; }
              image { normal: "navibar_item_separator.png";
-                border: 0 0 1 5;
-                border_scale: 1;
+                border: 0 0 1 0;
              }
+          }
+       }
+       part { name: "navigationitem_separator_shadow";
+          type: IMAGE;
+          mouse_events: 0;
+          scale: 1;
+          description { state: "default" 0.0;
+             min: 1 NAVIBAR_TITLE_SEPARATOR_SHADOW_H;
+             fixed: 0 1;
+             align: 0.5 0;
+             color: 255 255 255 0;
+             rel1 { to: "navigationitem_separator"; relative: 0 1; }
+             rel2 { to: "navigationitem_separator"; relative: 1 1; }
+             image { normal: "navibar_item_separator_shadow.png"; }
+          }
+          description { state: "extended" 0.0;
+             inherit: "default" 0.0;
+             color: 255 255 255 255;
           }
        }
        part { name: "naviarrow";
@@ -250,7 +268,7 @@ group {
              min: 0 NAVIBAR_TITLE_ITEM_H;
              max: 999999 NAVIBAR_TITLE_ITEM_H;
              fixed: 0 1;
-             align: 0.5 0;
+             align: 0.5 0.5;
              rel1 { to: "navigationitem_separator"; }
              rel2 { to: "navigationitem_separator"; }
              visible: 0;
@@ -302,6 +320,7 @@ group {
          action: STATE_SET "extended" 0.0;
          target: "base";
          target: "elm.swallow.title";
+         target: "navigationitem_separator_shadow";
          transition: LINEAR 0.2;
       }
       program {
@@ -311,6 +330,7 @@ group {
          action: STATE_SET "extended" 0.0;
          target: "base";
          target: "elm.swallow.title";
+         target: "navigationitem_separator_shadow";
       }
       program {
          name: "show_extended";
@@ -333,6 +353,7 @@ group {
          action: STATE_SET "default" 0.0;
          target: "base";
          target: "elm.swallow.title";
+         target: "navigationitem_separator_shadow";
          transition: LINEAR 0.2;
       }
       program {
@@ -342,6 +363,7 @@ group {
          action: STATE_SET "default" 0.0;
          target: "base";
          target: "elm.swallow.title";
+         target: "navigationitem_separator_shadow";
       }
       program {
          name: "enable_rect";
