@@ -29,6 +29,15 @@
 //################################################################
 
 group { name: "elm/segment_control/base/default";
+#define SEGMENT_TYPE_SINGLE 1
+#define SEGMENT_TYPE_LEFT 2
+#define SEGMENT_TYPE_MIDDLE 3
+#define SEGMENT_TYPE_RIGHT 4
+#define SEGMENT_STATE_NORMAL 1
+#define SEGMENT_STATE_PRESSED 2
+#define SEGMENT_STATE_SELECTED 3
+#define SEGMENT_STATUS_ENABLED 0
+#define SEGMENT_STATUS_DISABLED 1
    parts {
       part { name: "bg";
          type: RECT;
@@ -42,17 +51,6 @@ group { name: "elm/segment_control/base/default";
       }
    }
 }
-
-#define SEGMENT_TYPE_SINGLE 1
-#define SEGMENT_TYPE_LEFT 2
-#define SEGMENT_TYPE_MIDDLE 3
-#define SEGMENT_TYPE_RIGHT 4
-#define SEGMENT_STATE_NORMAL 1
-#define SEGMENT_STATE_PRESSED 2
-#define SEGMENT_STATE_SELECTED 3
-#define SEGMENT_STATUS_ENABLED 0
-#define SEGMENT_STATUS_DISABLED 1
-
 group { name: "elm/segment_control/item/default";
    data.item: "label.wrap.part" "label.bg";
 
@@ -240,8 +238,15 @@ group { name: "elm/segment_control/item/default";
          description { state: "default" 0.0;
             visible: 1;
             fixed: 1 0;
-            rel1 {relative: 1.0 1.0; to_x: "padding_left"; to_y: "padding_top"; }
-            rel2 {relative: 1.0 1.0; to: "elm.swallow.icon"; }
+            rel1 {
+               to_x: "padding_left";
+               to_y: "padding_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "elm.swallow.icon";
+               relative: 1.0 1.0;
+            }
             align: 0.0 0.5;
             color: 0 0 0 0;
          }
@@ -252,8 +257,14 @@ group { name: "elm/segment_control/item/default";
          mouse_events: 0;
          description { state: "default" 0.0; //when only icon or no icon is there
             align: 0.0 0.0;
-            rel1 { relative: 1.0 0.0; to: "icon.bg"; }
-            rel2 { relative: 1.0 1.0; to: "icon.bg"; }
+            rel1 {
+               to: "icon.bg";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "icon.bg";
+               relative: 1.0 1.0;
+            }
             fixed: 1 0;
             min: 0 0;
             color: 0 0 0 0;
@@ -262,12 +273,8 @@ group { name: "elm/segment_control/item/default";
             inherit: "default" 0.0;
          }
          description { state: "visible" 0.0; //when icon is visible
-            align: 0.0 0.0;
-            rel1 { relative: 1.0 0.0; to: "icon.bg"; }
-            rel2 { relative: 1.0 1.0; to: "icon.bg"; }
-            fixed: 1 0;
+            inherit: "default" 0.0;
             min: 2 0;
-            color: 0 0 0 0;
          }
       }
       part { name: "elm.swallow.icon";
@@ -276,8 +283,15 @@ group { name: "elm/segment_control/item/default";
          description { state: "default" 0.0;
             visible: 0;
             align: 0.0 0.5;
-            rel1 {relative: 1.0 1.0; to_x: "padding_left"; to_y: "padding_top"; }
-            rel2 {relative: 0.0 0.0; to_y: "padding_bottom"; }
+            rel1 {
+               to_x: "padding_left";
+               to_y: "padding_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to_y: "padding_bottom";
+               relative: 0.0 0.0;
+            }
             fixed: 1 0;
             aspect: 1.0 1.0;
             aspect_preference: BOTH;
@@ -285,39 +299,67 @@ group { name: "elm/segment_control/item/default";
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            rel2 {relative: 0.3 0.0; to_y: "padding_bottom"; }
+            rel2 {
+               to_y: "padding_bottom";
+               relative: 0.3 0.0;
+            }
          }
-         description { state: "icononly" 0.0;;
+         description { state: "icononly" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            rel2 {relative: 0.0 0.0; to_x: "padding_right"; to_y: "padding_bottom"; }
+            rel2 {
+               to_x: "padding_right";
+               to_y: "padding_bottom";
+               relative: 0.0 0.0;
+            }
             align: 0.5 0.5;
          }
       }
-      part { name: "label.bg";
-         repeat_events: 1;
-         scale: 1;
-         description { state: "default" 0.0;
-            rel1 { relative: 1.0 1.0; to_x: "padding_icon_text"; to_y: "padding_top"; }
-            rel2 { relative: 0.0 0.0; to_x: "padding_right"; to_y: "padding_bottom"; }
-         }
-      }
-      part { name: "elm.swallow.label";
-         type: SWALLOW;
+      part { name: "elm.text";
+         type: TEXT;
          mouse_events: 0;
          scale: 1;
-         clip_to: "label.bg";
-         description { state: "default" 0.0;
+         description {
+            state: "default" 0.0;
             visible: 0;
             fixed: 1 1;
             min: 1 1;
-            align: 0.0 0.5;
-            rel1 { relative: 1.0 1.0; to_x: "padding_icon_text";}
-            rel2 { relative: 0.0 0.0; to_x: "padding_right";}
+            rel1 {
+               to_x: "padding_icon_text";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to_x: "padding_right";
+               relative: 0.0 0.0;
+            }
+            color: SEGMENT_CONTROL_ITEM_TITLE_TEXT_COLOR_NORMAL_INC;
+            text {
+               font: "SLP";
+               ellipsis: 0.0;
+               fit: 1 1;
+               size: 18;
+               size_range: 12 36;
+               min: 0 1;
+            }
          }
-         description { state: "visible" 0.0;
+         description { state: "normal" 0.0;
             inherit: "default" 0.0;
             visible: 1;
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: SEGMENT_CONTROL_ITEM_TITLE_TEXT_COLOR_PRESSED_INC;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: SEGMENT_CONTROL_ITEM_TITLE_TEXT_COLOR_SELECTED_INC;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: SEGMENT_CONTROL_ITEM_TITLE_TEXT_COLOR_DISABLED_INC;
          }
       }
       part { name: "disabler";
@@ -388,6 +430,7 @@ group { name: "elm/segment_control/item/default";
                    set_state(PART:"segment", "default_middle", 0.0);
                  else if(type == SEGMENT_TYPE_RIGHT)
                    set_state(PART:"segment", "default_right", 0.0);
+                 set_state(PART:"elm.text", "normal", 0.0);
               }
             else if(state == SEGMENT_STATE_PRESSED)
               {
@@ -399,6 +442,7 @@ group { name: "elm/segment_control/item/default";
                    set_state(PART:"segment", "pressed_middle", 0.0);
                  else if(type == SEGMENT_TYPE_RIGHT)
                    set_state(PART:"segment", "pressed_right", 0.0);
+                 set_state(PART:"elm.text", "pressed", 0.0);
               }
             else if(state == SEGMENT_STATE_SELECTED)
               {
@@ -410,6 +454,7 @@ group { name: "elm/segment_control/item/default";
                    set_state(PART:"segment", "selected_middle", 0.0);
                  else if(type == SEGMENT_TYPE_RIGHT)
                    set_state(PART:"segment", "selected_right", 0.0);
+                 set_state(PART:"elm.text", "selected", 0.0);
               }
             if(disabled == SEGMENT_STATUS_DISABLED)
               {
@@ -421,6 +466,7 @@ group { name: "elm/segment_control/item/default";
                    set_state(PART:"disabler", "disabled_middle", 0.0);
                  else if(type == SEGMENT_TYPE_RIGHT)
                    set_state(PART:"disabler", "disabled_right", 0.0);
+                 set_state(PART:"elm.text", "disabled", 0.0);
               }
          }
       }
@@ -429,7 +475,6 @@ group { name: "elm/segment_control/item/default";
          signal: "elm,type,segment,single";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_type, SEGMENT_TYPE_SINGLE);
             update_state();
          }
@@ -439,7 +484,6 @@ group { name: "elm/segment_control/item/default";
          signal: "elm,type,segment,left";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_type, SEGMENT_TYPE_LEFT);
             update_state();
          }
@@ -449,7 +493,6 @@ group { name: "elm/segment_control/item/default";
          signal: "elm,type,segment,middle";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_type, SEGMENT_TYPE_MIDDLE);
             update_state();
          }
@@ -459,7 +502,6 @@ group { name: "elm/segment_control/item/default";
          signal: "elm,type,segment,right";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_type, SEGMENT_TYPE_RIGHT);
             update_state();
          }
@@ -469,7 +511,6 @@ group { name: "elm/segment_control/item/default";
          signal: "elm,state,segment,normal";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_state, SEGMENT_STATE_NORMAL);
             update_state();
          }
@@ -479,7 +520,6 @@ group { name: "elm/segment_control/item/default";
          signal: "elm,state,segment,pressed";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_state, SEGMENT_STATE_PRESSED);
             update_state();
          }
@@ -489,7 +529,6 @@ group { name: "elm/segment_control/item/default";
          signal: "elm,state,segment,selected";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_state, SEGMENT_STATE_SELECTED);
             update_state();
          }
@@ -516,16 +555,17 @@ group { name: "elm/segment_control/item/default";
          script {
             new st[31];
             new Float:vl;
-            new st1[31];
-            new Float:vl1;
             get_state(PART:"elm.swallow.icon", st, 30, vl);
-            get_state(PART:"elm.swallow.label", st1, 30, vl1);
             if (!strcmp(st, "icononly"))
               {
                  set_state(PART:"elm.swallow.icon", "visible", 0.0);
                  set_state(PART:"padding_icon_text", "visible", 0.0);
               }
-            set_state(PART:"elm.swallow.label", "visible", 0.0);
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strcmp(st, "selected"))
+               set_state(PART:"elm.text", "selected", 0.0);
+            else
+               set_state(PART:"elm.text", "normal", 0.0);
          }
       }
       program { name: "text_hide";
@@ -540,7 +580,7 @@ group { name: "elm/segment_control/item/default";
                  set_state(PART:"elm.swallow.icon", "icononly", 0.0);
                  set_state(PART:"padding_icon_text", "icononly", 0.0);
               }
-            set_state(PART:"elm.swallow.label", "default", 0.0);
+            set_state(PART:"elm.text", "default", 0.0);
          }
       }
       program { name: "icon_show";
@@ -549,8 +589,8 @@ group { name: "elm/segment_control/item/default";
          script {
             new st[31];
             new Float:vl;
-            get_state(PART:"elm.swallow.label", st, 30, vl);
-            if (!strcmp(st, "normal"))
+            get_state(PART:"elm.text", st, 30, vl);
+            if ((!strcmp(st, "normal")) || (!strcmp(st, "selected")))
               {
                  set_state(PART:"elm.swallow.icon", "visible", 0.0);
                  set_state(PART:"padding_icon_text", "visible", 0.0);
@@ -571,204 +611,6 @@ group { name: "elm/segment_control/item/default";
    }
 }
 
-group { name: "elm/label/base/default/segment_normal";
-   data.item: "default_font_size" "24";
-   data.item: "min_font_size" "16";
-   data.item: "max_font_size" "24";
-   styles{
-      style { name: "seg_text_style_normal";
-         base: "font=SLP:style=Medium font_size=18\
-         align=center \
-         color=#f4d4aeff wrap=char";
-         tag:  "br" "\n";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-      style { name: "seg_text_style_pressed";
-         base: "font=SLP:style=Medium font_size=18\
-         align=center \
-         color=#000000ff wrap=char";
-         tag:  "br" "\n";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-      style { name: "seg_text_style_selected";
-         base: "font=SLP:style=Medium font_size=18\
-         align=center color=#000000ff \
-         wrap=char";
-         tag:  "br" "\n";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-      style { name: "seg_text_style_disabled";
-         base: "font=SLP:style=Medium font_size=18\
-         align=center color=#f4d4aeff \
-         wrap=char";
-         tag:  "br" "\n";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-   }
-   parts {
-      part { name: "label.swallow.background";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-         }
-      }
-      part { name: "label.text.clip";
-         type: RECT;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1 { relative: 0 0; to: "label.swallow.background"; }
-            rel2 { relative: 1 1; to: "label.swallow.background"; }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "label.text.clip";
-         description { state: "default" 0.0;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-            align: 0.0 0.5;
-            text {
-               style: "seg_text_style_normal";
-               align: 0.0 0.5;
-               min: 1 0;
-            }
-         }
-      }
-   }
-}
-
-group { name: "elm/label/base/default/segment_selected";
-   data.item: "default_font_size" "24";
-   data.item: "min_font_size" "16";
-   data.item: "max_font_size" "24";
-   parts {
-      part { name: "label.swallow.background";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-         }
-      }
-      part { name: "label.text.clip";
-         type: RECT;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1 { relative: 0 0; to: "label.swallow.background"; }
-            rel2 { relative: 1 1; to: "label.swallow.background"; }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "label.text.clip";
-         description { state: "default" 0.0;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-            align: 0.0 0.5;
-            text {
-               style: "seg_text_style_selected";
-               align: 0.0 0.5;
-               min: 1 0;
-            }
-         }
-      }
-   }
-}
-group { name: "elm/label/base/default/segment_pressed";
-   data.item: "default_font_size" "24";
-   data.item: "min_font_size" "16";
-   data.item: "max_font_size" "24";
-   parts {
-      part { name: "label.swallow.background";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-         }
-      }
-      part { name: "label.text.clip";
-         type: RECT;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1 { relative: 0 0; to: "label.swallow.background"; }
-            rel2 { relative: 1 1; to: "label.swallow.background"; }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "label.text.clip";
-         description { state: "default" 0.0;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-            align: 0.0 0.5;
-            text {
-               style: "seg_text_style_pressed";
-               align: 0.0 0.5;
-               min: 1 0;
-            }
-         }
-      }
-   }
-}
-
-group { name: "elm/label/base/default/segment_disabled";
-   data.item: "default_font_size" "24";
-   data.item: "min_font_size" "16";
-   data.item: "max_font_size" "24";
-   parts {
-      part { name: "label.swallow.background";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-         }
-      }
-      part { name: "label.text.clip";
-         type: RECT;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1 { relative: 0 0; to: "label.swallow.background"; }
-            rel2 { relative: 1 1; to: "label.swallow.background"; }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "label.text.clip";
-         description { state: "default" 0.0;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-            align: 0.0 0.5;
-            text {
-               style: "seg_text_style_disabled";
-               align: 0.0 0.5;
-               min: 1 0;
-            }
-         }
-      }
-   }
-}
-
-
 group { name: "elm/segment_control/base/body_style";
    parts {
       part { name: "bg";
@@ -787,7 +629,6 @@ group { name: "elm/segment_control/base/body_style";
 }
 
 group { name: "elm/segment_control/item/body_style";
-   data.item: "label.wrap.part" "label.bg";
 
    images {
       image: "00_winset_btn_sge_normal.png" COMP;
@@ -973,8 +814,15 @@ group { name: "elm/segment_control/item/body_style";
          description { state: "default" 0.0;
             visible: 1;
             fixed: 1 0;
-            rel1 {relative: 1.0 1.0; to_x: "padding_left"; to_y: "padding_top"; }
-            rel2 {relative: 1.0 1.0; to: "elm.swallow.icon"; }
+            rel1 {
+               to_x: "padding_left";
+               to_y: "padding_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "elm.swallow.icon";
+               relative: 1.0 1.0;
+            }
             align: 0.0 0.5;
             color: 0 0 0 0;
          }
@@ -985,8 +833,14 @@ group { name: "elm/segment_control/item/body_style";
          mouse_events: 0;
          description { state: "default" 0.0; //when only icon or no icon is there
             align: 0.0 0.0;
-            rel1 { relative: 1.0 0.0; to: "icon.bg"; }
-            rel2 { relative: 1.0 1.0; to: "icon.bg"; }
+            rel1 {
+               to: "icon.bg";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "icon.bg";
+               relative: 1.0 1.0;
+            }
             fixed: 1 0;
             min: 0 0;
             color: 0 0 0 0;
@@ -995,12 +849,8 @@ group { name: "elm/segment_control/item/body_style";
             inherit: "default" 0.0;
          }
          description { state: "visible" 0.0; //when icon is visible
-            align: 0.0 0.0;
-            rel1 { relative: 1.0 0.0; to: "icon.bg"; }
-            rel2 { relative: 1.0 1.0; to: "icon.bg"; }
-            fixed: 1 0;
+            inherit: "default" 0.0;
             min: 2 0;
-            color: 0 0 0 0;
          }
       }
       part { name: "elm.swallow.icon";
@@ -1009,8 +859,15 @@ group { name: "elm/segment_control/item/body_style";
          description { state: "default" 0.0;
             visible: 0;
             align: 0.0 0.5;
-            rel1 {relative: 1.0 1.0; to_x: "padding_left"; to_y: "padding_top"; }
-            rel2 {relative: 0.0 0.0; to_y: "padding_bottom"; }
+            rel1 {
+               to_x: "padding_left";
+               to_y: "padding_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to_y: "padding_bottom";
+               relative: 0.0 0.0;
+            }
             fixed: 1 0;
             aspect: 1.0 1.0;
             aspect_preference: BOTH;
@@ -1018,39 +875,67 @@ group { name: "elm/segment_control/item/body_style";
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            rel2 {relative: 0.3 0.0; to_y: "padding_bottom"; }
+            rel2 {
+               to_y: "padding_bottom";
+               relative: 0.3 0.0;
+            }
          }
-         description { state: "icononly" 0.0;;
+         description { state: "icononly" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            rel2 {relative: 0.0 0.0; to_x: "padding_right"; to_y: "padding_bottom"; }
+            rel2 {
+               to_x: "padding_right";
+               to_y: "padding_bottom";
+               relative: 0.0 0.0;
+            }
             align: 0.5 0.5;
          }
       }
-      part { name: "label.bg";
-         repeat_events: 1;
-         scale: 1;
-         description { state: "default" 0.0;
-            rel1 { relative: 1.0 1.0; to_x: "padding_icon_text"; to_y: "padding_top"; }
-            rel2 { relative: 0.0 0.0; to_x: "padding_right"; to_y: "padding_bottom"; }
-         }
-      }
-      part { name: "elm.swallow.label";
-         type: SWALLOW;
+      part { name: "elm.text";
+         type: TEXT;
          mouse_events: 0;
          scale: 1;
-         clip_to: "label.bg";
-         description { state: "default" 0.0;
+         description {
+            state: "default" 0.0;
             visible: 0;
             fixed: 1 1;
             min: 1 1;
-            align: 0.0 0.5;
-            rel1 { relative: 1.0 1.0; to_x: "padding_icon_text";}
-            rel2 { relative: 0.0 0.0; to_x: "padding_right";}
+            rel1 {
+               to_x: "padding_icon_text";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to_x: "padding_right";
+               relative: 0.0 0.0;
+            }
+            color: SEGMENT_CONTROL_BODY_STYLE_ITEM_TITLE_TEXT_COLOR_NORMAL_INC;
+            text {
+               font: "SLP";
+               ellipsis: 0.0;
+               fit: 1 1;
+               size: 18;
+               size_range: 12 36;
+               min: 0 1;
+            }
          }
-         description { state: "visible" 0.0;
+         description { state: "normal" 0.0;
             inherit: "default" 0.0;
             visible: 1;
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: SEGMENT_CONTROL_BODY_STYLE_ITEM_TITLE_TEXT_COLOR_PRESSED_INC;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: SEGMENT_CONTROL_BODY_STYLE_ITEM_TITLE_TEXT_COLOR_SELECTED_INC;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: SEGMENT_CONTROL_BODY_STYLE_ITEM_TITLE_TEXT_COLOR_DISABLED_INC;
          }
       }
       part { name: "disabler";
@@ -1121,6 +1006,7 @@ group { name: "elm/segment_control/item/body_style";
                    set_state(PART:"segment", "default_middle", 0.0);
                  else if(type == SEGMENT_TYPE_RIGHT)
                    set_state(PART:"segment", "default_right", 0.0);
+                 set_state(PART:"elm.text", "normal", 0.0);
               }
             else if(state == SEGMENT_STATE_PRESSED)
               {
@@ -1132,6 +1018,7 @@ group { name: "elm/segment_control/item/body_style";
                    set_state(PART:"segment", "pressed_middle", 0.0);
                  else if(type == SEGMENT_TYPE_RIGHT)
                    set_state(PART:"segment", "pressed_right", 0.0);
+                 set_state(PART:"elm.text", "pressed", 0.0);
               }
             else if(state == SEGMENT_STATE_SELECTED)
               {
@@ -1143,6 +1030,7 @@ group { name: "elm/segment_control/item/body_style";
                    set_state(PART:"segment", "selected_middle", 0.0);
                  else if(type == SEGMENT_TYPE_RIGHT)
                    set_state(PART:"segment", "selected_right", 0.0);
+                 set_state(PART:"elm.text", "selected", 0.0);
               }
             if(disabled == SEGMENT_STATUS_DISABLED)
               {
@@ -1154,6 +1042,7 @@ group { name: "elm/segment_control/item/body_style";
                    set_state(PART:"disabler", "disabled_middle", 0.0);
                  else if(type == SEGMENT_TYPE_RIGHT)
                    set_state(PART:"disabler", "disabled_right", 0.0);
+                 set_state(PART:"elm.text", "disabled", 0.0);
               }
          }
       }
@@ -1162,7 +1051,6 @@ group { name: "elm/segment_control/item/body_style";
          signal: "elm,type,segment,single";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_type, SEGMENT_TYPE_SINGLE);
             update_state();
          }
@@ -1172,7 +1060,6 @@ group { name: "elm/segment_control/item/body_style";
          signal: "elm,type,segment,left";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_type, SEGMENT_TYPE_LEFT);
             update_state();
          }
@@ -1182,7 +1069,6 @@ group { name: "elm/segment_control/item/body_style";
          signal: "elm,type,segment,middle";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_type, SEGMENT_TYPE_MIDDLE);
             update_state();
          }
@@ -1192,7 +1078,6 @@ group { name: "elm/segment_control/item/body_style";
          signal: "elm,type,segment,right";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_type, SEGMENT_TYPE_RIGHT);
             update_state();
          }
@@ -1202,7 +1087,6 @@ group { name: "elm/segment_control/item/body_style";
          signal: "elm,state,segment,normal";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_state, SEGMENT_STATE_NORMAL);
             update_state();
          }
@@ -1212,7 +1096,6 @@ group { name: "elm/segment_control/item/body_style";
          signal: "elm,state,segment,pressed";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_state, SEGMENT_STATE_PRESSED);
             update_state();
          }
@@ -1222,7 +1105,6 @@ group { name: "elm/segment_control/item/body_style";
          signal: "elm,state,segment,selected";
          source: "elm";
          script {
-            set_int(seg_status, SEGMENT_STATUS_ENABLED);
             set_int(seg_state, SEGMENT_STATE_SELECTED);
             update_state();
          }
@@ -1249,16 +1131,17 @@ group { name: "elm/segment_control/item/body_style";
          script {
             new st[31];
             new Float:vl;
-            new st1[31];
-            new Float:vl1;
             get_state(PART:"elm.swallow.icon", st, 30, vl);
-            get_state(PART:"elm.swallow.label", st1, 30, vl1);
             if (!strcmp(st, "icononly"))
               {
                  set_state(PART:"elm.swallow.icon", "visible", 0.0);
                  set_state(PART:"padding_icon_text", "visible", 0.0);
               }
-            set_state(PART:"elm.swallow.label", "visible", 0.0);
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strcmp(st, "selected"))
+               set_state(PART:"elm.text", "selected", 0.0);
+            else
+               set_state(PART:"elm.text", "normal", 0.0);
          }
       }
       program { name: "text_hide";
@@ -1273,7 +1156,7 @@ group { name: "elm/segment_control/item/body_style";
                  set_state(PART:"elm.swallow.icon", "icononly", 0.0);
                  set_state(PART:"padding_icon_text", "icononly", 0.0);
               }
-            set_state(PART:"elm.swallow.label", "default", 0.0);
+            set_state(PART:"elm.text", "default", 0.0);
          }
       }
       program { name: "icon_show";
@@ -1282,8 +1165,8 @@ group { name: "elm/segment_control/item/body_style";
          script {
             new st[31];
             new Float:vl;
-            get_state(PART:"elm.swallow.label", st, 30, vl);
-            if (!strcmp(st, "normal"))
+            get_state(PART:"elm.text", st, 30, vl);
+            if ((!strcmp(st, "normal")) || (!strcmp(st, "selected")))
               {
                  set_state(PART:"elm.swallow.icon", "visible", 0.0);
                  set_state(PART:"padding_icon_text", "visible", 0.0);
@@ -1302,204 +1185,6 @@ group { name: "elm/segment_control/item/body_style";
          target: "elm.swallow.icon";
       }
    }
-}
-
-group { name: "elm/label/base/body_style/segment_normal";
-   data.item: "default_font_size" "24";
-   data.item: "min_font_size" "16";
-   data.item: "max_font_size" "24";
-   styles{
-      style { name: "seg_text_body_style_normal";
-         base: "font=SLP:style=Medium font_size=18\
-         align=center \
-         color=#000000ff wrap=char";
-         tag:  "br" "\n";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-      style { name: "seg_text_body_style_pressed";
-         base: "font=SLP:style=Medium font_size=18\
-         align=center \
-         color=#f4d4aeff wrap=char";
-         tag:  "br" "\n";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-      style { name: "seg_text_body_style_selected";
-         base: "font=SLP:style=Medium font_size=18\
-         align=center color=#f4d4aeff \
-         wrap=char";
-         tag:  "br" "\n";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-      style { name: "seg_text_body_style_disabled";
-         base: "font=SLP:style=Medium font_size=18\
-         align=center color=#f4d4aeff \
-         wrap=char";
-         tag:  "br" "\n";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-   }
-   parts {
-      part { name: "label.swallow.background";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-         }
-      }
-      part { name: "label.text.clip";
-         type: RECT;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1 { relative: 0 0; to: "label.swallow.background"; }
-            rel2 { relative: 1 1; to: "label.swallow.background"; }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "label.text.clip";
-         description { state: "default" 0.0;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-            align: 0.0 0.5;
-            text {
-               style: "seg_text_body_style_normal";
-               align: 0.0 0.5;
-               min: 1 0;
-            }
-         }
-      }
-   }
-}
-
-group { name: "elm/label/base/body_style/segment_selected";
-   data.item: "default_font_size" "24";
-   data.item: "min_font_size" "16";
-   data.item: "max_font_size" "24";
-   parts {
-      part { name: "label.swallow.background";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-         }
-      }
-      part { name: "label.text.clip";
-         type: RECT;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1 { relative: 0 0; to: "label.swallow.background"; }
-            rel2 { relative: 1 1; to: "label.swallow.background"; }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "label.text.clip";
-         description { state: "default" 0.0;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-            align: 0.0 0.5;
-            text {
-               style: "seg_text_body_style_selected";
-               align: 0.0 0.5;
-               min: 1 0;
-            }
-         }
-      }
-   }
-}
-group { name: "elm/label/base/body_style/segment_pressed";
-   data.item: "default_font_size" "24";
-   data.item: "min_font_size" "16";
-   data.item: "max_font_size" "24";
-   parts {
-      part { name: "label.swallow.background";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-         }
-      }
-      part { name: "label.text.clip";
-         type: RECT;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1 { relative: 0 0; to: "label.swallow.background"; }
-            rel2 { relative: 1 1; to: "label.swallow.background"; }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "label.text.clip";
-         description { state: "default" 0.0;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-            align: 0.5 0.5;
-            text {
-               style: "seg_text_body_style_pressed";
-               align: 0.5 0.5;
-               min: 1 0;
-            }
-         }
-      }
-   }
-}
-
-group { name: "elm/label/base/body_style/segment_disabled";
-   data.item: "default_font_size" "24";
-   data.item: "min_font_size" "16";
-   data.item: "max_font_size" "24";
-   parts {
-      part { name: "label.swallow.background";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-         }
-      }
-      part { name: "label.text.clip";
-         type: RECT;
-         description { state: "default" 0.0;
-            visible: 1;
-            rel1 { relative: 0 0; to: "label.swallow.background"; }
-            rel2 { relative: 1 1; to: "label.swallow.background"; }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         mouse_events: 0;
-         scale: 1;
-         clip_to: "label.text.clip";
-         description { state: "default" 0.0;
-            rel1.relative, 0.0 0.0;
-            rel2.relative, 1.0 1.0;
-            align: 0.0 0.5;
-            text {
-               style: "seg_text_body_style_disabled";
-               align: 0.0 0.5;
-               min: 1 0;
-            }
-         }
-      }
-   }
-}
 #undef SEGMENT_TYPE_SINGLE
 #undef SEGMENT_TYPE_LEFT
 #undef SEGMENT_TYPE_MIDDLE
@@ -1509,3 +1194,4 @@ group { name: "elm/label/base/body_style/segment_disabled";
 #undef SEGMENT_STATE_SELECTED
 #undef SEGMENT_STATUS_ENABLED
 #undef SEGMENT_STATUS_DISABLED
+}
