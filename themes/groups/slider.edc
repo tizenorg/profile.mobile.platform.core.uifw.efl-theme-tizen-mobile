@@ -24,26 +24,14 @@
  */
 
    group { name: "elm/slider/horizontal/default";
+           alias: "elm/slider/horizontal/disabled";
       images {
          image: "00_winset_list_progress_bg.png" COMP;
          image: "00_winset_list_progress_bar.png" COMP;
          image: "00_slider_bar_press.png" COMP;
-         image: "00_slider_handle.png" COMP;
-         image: "00_slider_handle_press.png" COMP;
-         image: "00_slider_handle_dim.png" COMP;
-         image: "00_slider_popup_bg.png" COMP;
       }
       script {
-         public value_hide = 0;
          public invert_on = 0;
-         public set_value_show() {
-            set_int(value_hide, 0);
-            set_state(PART:"elm.indicator", "default", 0.0);
-         }
-         public set_value_hide() {
-            set_int(value_hide, 1);
-            set_state(PART:"elm.indicator", "hide", 0.0);
-         }
          public set_invert_on() {
             set_state(PART:"level", "inverted", 0.0);
             set_state(PART:"level2", "inverted", 0.0);
@@ -55,31 +43,16 @@
             set_int(invert_on, 0);
          }
          public thumb_down() {
-            if(get_int(value_hide) == 1) {
-               set_state(PART:"elm.indicator", "hide", 0.0);
-               set_state(PART:"button0", "visible", 0.0);
-               set_state(PART:"popup", "default", 0.0);
-            } else {
-               set_state(PART:"elm.indicator", "visible", 0.0);
-               set_state(PART:"button0", "visible", 0.0);
-               set_state(PART:"popup", "visible", 0.0);
-            }
             if(get_int(invert_on) == 0)
                set_state(PART:"level", "pressed", 0.0);
             else if(get_int(invert_on) == 1)
                set_state(PART:"level2", "pressed", 0.0);
             }
          public thumb_up() {
-            if(get_int(value_hide) == 1)
-               set_state(PART:"elm.indicator", "hide", 0.0);
-            else
-               set_state(PART:"elm.indicator", "default", 0.0);
             if(get_int(invert_on) == 0)
                set_state(PART:"level", "default", 0.0);
             else if(get_int(invert_on) == 1)
                set_state(PART:"level2", "inverted", 0.0);
-            set_state(PART:"button0", "default", 0.0);
-            set_state(PART:"popup", "default", 0.0);
             }
          }
          parts {
@@ -346,7 +319,8 @@
                }
             }
             part { name: "elm.dragable.slider";
-               type: RECT;
+               type: GROUP;
+               source: "elm/slider/horizontal/indicator/default";
                mouse_events: 1;
                scale: 1;
                dragable {
@@ -366,101 +340,6 @@
                      to_x: "bg";
                   }
                   color: 0 0 0 0;
-               }
-            }
-            part { name: "button0";
-               mouse_events: 0;
-               scale: 1;
-               description { state: "default" 0.0;
-                  fixed: 1 1;
-                  min: 36 36;
-                  max: 36 36;
-                  rel1.to: "elm.dragable.slider";
-                  rel2.to: "elm.dragable.slider";
-                  image {
-                     normal: "00_slider_handle.png";
-                     border: 3 3 3 3;
-                     border_scale: 1;
-                  }
-               }
-               description { state: "visible" 0.0;
-                  inherit: "default" 0.0;
-                  image {
-                     normal: "00_slider_handle_press.png";
-                  }
-               }
-               description { state: "disabled" 0.0;
-                  inherit: "default" 0.0;
-                  image {
-                     normal: "00_slider_handle_dim.png";
-                  }
-               }
-            }
-            part { name: "popup";
-               mouse_events: 0;
-               scale: 1;
-               description { state: "default" 0.0;
-                  rel1 {
-                     to: "button0";
-                     relative: -0.4 -1.8;
-                  }
-                  rel2 {
-                     to: "button0";
-                     relative: 1.5 0.1;
-                  }
-                  image {
-                     normal: "00_slider_popup_bg.png";
-                     border: 5 5 4 8;
-                     border_scale: 1;
-                  }
-                  visible: 0;
-               }
-               description { state: "visible" 0.0;
-                  inherit: "default" 0.0;
-                  visible: 1;
-               }
-            }
-            part { name: "elm.indicator";
-               type: TEXT;
-               mouse_events: 0;
-   //          effect: SOFT_SHADOW;
-               scale: 1;
-               description { state: "default" 0.0;
-                  visible: 1;
-                  fixed: 1 1;
-                  align: 0.5 0.5;
-                  rel1 {
-                     to: "button0";
-                     relative: 0.0 0;
-                     offset: 0 0;
-                  }
-                  rel2 {
-                     to: "button0";
-                     relative: 1.0 1.0;
-                     offset: -2 -2;
-                  }
-                  color: 217 147 26 255;
-                  text {
-                     font: "SLP:style=Medium";
-                     size: 24;
-                     min: 1 1;
-                     align: 0.5 0.5;
-                  }
-               }
-               description { state: "visible" 0.0;
-                  inherit: "default" 0.0;
-                  visible: 1;
-                  color: 217 147 26 255;
-                  text.size: 40;
-                  rel1.to: "popup";
-                  rel2 {
-                     to: "popup";
-                     offset: -2 -10;
-                  }
-               }
-               description { state: "hide" 0.0;
-                  inherit: "default" 0.0;
-                  visible: 0;
                }
             }
             part { name: "disabler";
@@ -547,20 +426,6 @@
                set_invert_off();
             }
          }
-         program { name: "set_val_show";
-            signal: "elm,state,val,show";
-            source: "elm";
-            script {
-               set_value_show();
-            }
-         }
-         program { name: "set_val_hide";
-            signal: "elm,state,val,hide";
-            source: "elm";
-            script {
-               set_value_hide();
-            }
-         }
          program { name: "val_show";
             signal: "mouse,down,*";
             source: "elm.dragable.slider";
@@ -580,13 +445,200 @@
             source: "elm";
             action:  STATE_SET "disabled" 0.0;
             target: "disabler";
-            target: "button0";
          }
          program { name: "slider_enable";
             signal: "elm,state,enabled";
             source: "elm";
             action:  STATE_SET "default" 0.0;
             target: "disabler";
+         }
+      }
+   }
+
+   group { name: "elm/slider/horizontal/indicator/default";
+           alias: "elm/slider/horizontal/indicator/disabled";
+           alias: "elm/slider/vertical/indicator/default";
+           alias: "elm/slider/vertical/indicator/disabled";
+      images {
+         image: "00_slider_handle.png" COMP;
+         image: "00_slider_handle_press.png" COMP;
+         image: "00_slider_handle_dim.png" COMP;
+         image: "00_slider_popup_bg.png" COMP;
+      }
+      script {
+         public value_hide = 0;
+         public set_value_show() {
+            set_int(value_hide, 0);
+            set_state(PART:"elm.indicator", "default", 0.0);
+         }
+         public set_value_hide() {
+            set_int(value_hide, 1);
+            set_state(PART:"elm.indicator", "hide", 0.0);
+         }
+         public thumb_down() {
+            if(get_int(value_hide) == 1) {
+               set_state(PART:"elm.indicator", "hide", 0.0);
+               set_state(PART:"button0", "drag_state", 0.0);
+               set_state(PART:"popup", "default", 0.0);
+            } else {
+               set_state(PART:"elm.indicator", "drag_state", 0.0);
+               set_state(PART:"button0", "drag_state", 0.0);
+               set_state(PART:"popup", "drag_state", 0.0);
+            }
+         }
+         public thumb_up() {
+            if(get_int(value_hide) == 1)
+               set_state(PART:"elm.indicator", "hide", 0.0);
+            else
+               set_state(PART:"elm.indicator", "default", 0.0);
+            set_state(PART:"button0", "default", 0.0);
+            set_state(PART:"popup", "default", 0.0);
+            }
+         }
+      parts {
+         part { name: "button_events";
+            type: RECT;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               min: 36 36;
+               aspect: 1.0 1.0;
+               aspect_preference: VERTICAL;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "button0";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               min: 36 36;
+               max: 36 36;
+               image {
+                  normal: "00_slider_handle.png";
+                  border: 3 3 3 3;
+                  border_scale: 1;
+               }
+            }
+            description { state: "drag_state" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "00_slider_handle_press.png";
+               }
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "00_slider_handle_dim.png";
+               }
+            }
+         }
+         part { name: "popup";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  to: "button0";
+                  relative: -0.4 -1.8;
+               }
+               rel2 {
+                  to: "button0";
+                  relative: 1.5 0.1;
+               }
+               image {
+                  normal: "00_slider_popup_bg.png";
+                  border: 5 5 4 8;
+                  border_scale: 1;
+               }
+               visible: 0;
+            }
+            description { state: "drag_state" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "elm.indicator";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 1;
+               fixed: 1 1;
+               align: 0.5 0.5;
+               rel1 {
+                  to: "button0";
+                  relative: 0.0 0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "button0";
+                  relative: 1.0 1.0;
+                  offset: -2 -2;
+               }
+               color: 217 147 26 255;
+               text {
+                  font: "SLP:style=Medium";
+                  size: 24;
+                  min: 1 1;
+                  align: 0.5 0.5;
+               }
+            }
+            description { state: "drag_state" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 217 147 26 255;
+               text.size: 40;
+               rel1.to: "popup";
+               rel2 {
+                  to: "popup";
+                  offset: -2 -10;
+               }
+            }
+            description { state: "hide" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+             }
+         }
+      }
+      programs {
+         program { name: "set_val_show";
+            signal: "elm,state,val,show";
+            source: "elm";
+            script {
+               set_value_show();
+            }
+         }
+         program { name: "set_val_hide";
+            signal: "elm,state,val,hide";
+            source: "elm";
+            script {
+               set_value_hide();
+            }
+         }
+         program { name: "val_show";
+            signal: "mouse,down,*";
+            source: "button_events";
+            script {
+               thumb_down();
+            }
+         }
+         program { name: "val_hide";
+            signal: "mouse,up,*";
+            source: "button_events";
+            script {
+               thumb_up();
+            }
+         }
+         program { name: "slider_disable";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action:  STATE_SET "disabled" 0.0;
+            target: "button0";
+         }
+         program { name: "slider_enable";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action:  STATE_SET "default" 0.0;
             target: "button0";
          }
       }
