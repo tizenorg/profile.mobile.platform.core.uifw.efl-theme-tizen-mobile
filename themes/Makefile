@@ -1,6 +1,9 @@
 PREFIX ?= /usr
 INSTALL=install -c
 themedir=$(DESTDIR)$(PREFIX)/share/elementary/themes
+EDJE_FLAGS_VERBOSE_ =
+EDJE_FLAGS_VERBOSE_0 =
+EDJE_FLAGS_VERBOSE_1 = -v
 
 all: nbeat nbeat-black
 	echo $(escaped_prefix)
@@ -9,7 +12,7 @@ all: nbeat nbeat-black
 .edc.edj:
 	cp ./inc/$(@:.edj=-inc.edc) ./inc/tmp-inc.edc
 	#edje_cc -v -id ./images/$(@:.edj=) -sd ./sounds -fd ../objects $(@:.edj=.edc) # commented -sd ./sounds
-	edje_cc -v -id ./images/$(@:.edj=) -fd ../objects $(@:.edj=.edc)
+	edje_cc $(EDJE_FLAGS_$(V)) -id ./images/$(@:.edj=) -fd ../objects $(@:.edj=.edc)
 	rm ./inc/tmp-inc.edc
 
 nbeat: nbeat.edj
