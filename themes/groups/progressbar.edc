@@ -3348,6 +3348,166 @@
       }
    }
 
+   group { name: "elm/progressbar/horizontal/list_process_small";
+      images {
+         image: "00_winset_list_process_01_20x20.png" COMP;
+         image: "00_winset_list_process_02_20x20.png" COMP;
+         image: "00_winset_list_process_03_20x20.png" COMP;
+         image: "00_winset_list_process_04_20x20.png" COMP;
+         image: "00_winset_list_process_05_20x20.png" COMP;
+         image: "00_winset_list_process_06_20x20.png" COMP;
+         image: "00_winset_list_process_07_20x20.png" COMP;
+         image: "00_winset_list_process_08_20x20.png" COMP;
+         image: "00_winset_list_process_09_20x20.png" COMP;
+         image: "00_winset_list_process_10_20x20.png" COMP;
+         image: "00_winset_list_process_11_20x20.png" COMP;
+         image: "00_winset_list_process_12_20x20.png" COMP;
+         image: "00_winset_list_process_13_20x20.png" COMP;
+         image: "00_winset_list_process_14_20x20.png" COMP;
+         image: "00_winset_list_process_15_20x20.png" COMP;
+         image: "00_winset_list_process_16_20x20.png" COMP;
+         image: "00_winset_list_process_17_20x20.png" COMP;
+         image: "00_winset_list_process_18_20x20.png" COMP;
+         image: "00_winset_list_process_19_20x20.png" COMP;
+         image: "00_winset_list_process_20_20x20.png" COMP;
+         image: "00_winset_list_process_21_20x20.png" COMP;
+         image: "00_winset_list_process_22_20x20.png" COMP;
+         image: "00_winset_list_process_23_20x20.png" COMP;
+         image: "00_winset_list_process_24_20x20.png" COMP;
+         image: "00_winset_list_process_25_20x20.png" COMP;
+         image: "00_winset_list_process_26_20x20.png" COMP;
+         image: "00_winset_list_process_27_20x20.png" COMP;
+         image: "00_winset_list_process_28_20x20.png" COMP;
+         image: "00_winset_list_process_29_20x20.png" COMP;
+         image: "00_winset_list_process_30_20x20.png" COMP;
+      }
+      parts {
+         part { name: "elm.background.progressbar";
+            mouse_events: 0;
+            scale: 1;
+            type: RECT;
+            description {
+               state: "default" 0.0;
+            }
+         }
+         part { name: "elm.swallow.bar";
+            mouse_events: 0;
+            scale: 1;
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               min: 0 0;
+               max: 0 0;
+               visible: 0;
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 0;
+               max: 0 0;
+               visible: 0;
+            }
+         }
+         part { name: "background";
+            mouse_events: 0;
+            scale: 1;
+            clip_to: "elm.background.progressbar";
+            description {
+               state: "default" 0.0;
+               min: 22 22;
+               max: 22 22;
+               visible: 1;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image {
+                  normal: "00_winset_list_process_01.png";
+               }
+            }
+            description { state: "pulse" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "00_winset_list_process_01.png";
+               }
+            }
+            PROGRESS_BG_DESC( list, 01 )
+            PROGRESS_BG_DESC( list, 02 )
+            PROGRESS_BG_DESC( list, 03 )
+            PROGRESS_BG_DESC( list, 04 )
+            PROGRESS_BG_DESC( list, 05 )
+            PROGRESS_BG_DESC( list, 06 )
+            PROGRESS_BG_DESC( list, 07 )
+            PROGRESS_BG_DESC( list, 08 )
+            PROGRESS_BG_DESC( list, 09 )
+            PROGRESS_BG_DESC( list, 10 )
+            PROGRESS_BG_DESC( list, 11 )
+            PROGRESS_BG_DESC( list, 12 )
+            PROGRESS_BG_DESC( list, 13 )
+            PROGRESS_BG_DESC( list, 14 )
+            PROGRESS_BG_DESC( list, 15 )
+            PROGRESS_BG_DESC( list, 16 )
+            PROGRESS_BG_DESC( list, 17 )
+            PROGRESS_BG_DESC( list, 18 )
+            PROGRESS_BG_DESC( list, 19 )
+            PROGRESS_BG_DESC( list, 20 )
+            PROGRESS_BG_DESC( list, 21 )
+            PROGRESS_BG_DESC( list, 22 )
+            PROGRESS_BG_DESC( list, 23 )
+            PROGRESS_BG_DESC( list, 24 )
+            PROGRESS_BG_DESC( list, 25 )
+            PROGRESS_BG_DESC( list, 26 )
+            PROGRESS_BG_DESC( list, 27 )
+            PROGRESS_BG_DESC( list, 28 )
+            PROGRESS_BG_DESC( list, 29 )
+            PROGRESS_BG_DESC( list, 30 )
+         }
+      }
+      script {
+         public pulse_state;
+      }
+      programs {
+         program { name: "continue_pulse";
+            script {
+               new Float:state;
+               state = get_float(pulse_state);
+               set_state(PART:"background", "pulse", state);
+               state += 0.01;
+               if( state > 0.30 )
+                  state = 0.01;
+               set_float(pulse_state, state);
+            }
+               after: "delay";
+         }
+         program { name: "delay";
+            action: STATE_SET "pulse" 0.10;
+            target: "background";
+            in: PROGRESSING_DELAY 0.0;
+            after: "continue_pulse";
+         }
+         program { name: "start_pulse";
+            signal: "elm,state,pulse,start";
+            source: "elm";
+            script {
+               set_float(pulse_state, 0.0);
+            }
+            after: "continue_pulse";
+         }
+         program { name: "stop_pulse";
+            signal: "elm,state,pulse,stop";
+            source: "elm";
+            action: ACTION_STOP;
+            target: "continue_pulse";
+            target: "delay";
+            target: "start_pulse";
+            after: "init_pulse";
+         }
+         program { name: "init_pulse";
+            action: STATE_SET "default" 0.0;
+            target: "background";
+         }
+      }
+   }
+
    group { name: "elm/progressbar/horizontal/toolbar_process";
       images {
          image: "00_winset_toolbar_process_01.png" COMP;
