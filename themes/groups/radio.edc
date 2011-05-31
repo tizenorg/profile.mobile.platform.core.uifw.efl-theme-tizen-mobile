@@ -39,18 +39,13 @@
          tag: "tab" "\t";
       }
    }
+////////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////////////
 #define RADIO_STYLE_DEFAULT(style_name, min_width, min_height) \
    group { name: "elm/radio/base/"style_name; \
       images { \
          image: "00_button_radio_normal1.png" COMP; \
          image: "00_button_radio_normal2.png" COMP; \
-         image: "00_button_radio_press1.png" COMP; \
-         image: "00_button_radio_press2.png" COMP; \
-      } \
-      script { \
-         public radio_state = RADIO_STATE_DEFAULT; \
       } \
       parts { \
          part { name: "back_bg"; \
@@ -99,16 +94,6 @@
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "00_button_radio_normal1.png"; \
-               color: 255 255 255 255; \
-            } \
-            description { state: "pressed" 0.0; \
-               inherit: "default" 0.0; \
-               image.normal: "00_button_radio_press2.png"; \
-               color: 255 255 255 255; \
-            } \
-            description { state: "pressed_visible" 0.0; \
-               inherit: "default" 0.0; \
-               image.normal: "00_button_radio_press1.png"; \
                color: 255 255 255 255; \
             } \
             description { state: "disabled" 0.0; \
@@ -175,12 +160,6 @@
                visible: 1; \
                text.min: 1 1; \
             } \
-            description { state: "pressed" 0.0; \
-               inherit: "default" 0.0; \
-               visible: 1; \
-               text.min: 1 1; \
-               color: RADIO_DEFAULT_TEXT_PRESSED_COLOR_INC; \
-            } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
             } \
@@ -224,56 +203,10 @@
             source: "over1"; \
             action: SIGNAL_EMIT "elm,action,radio,toggle" ""; \
          } \
-         program { name: "mouse_up"; \
-            signal: "mouse,up,1"; \
-            source: "over2"; \
-            after: "bg_radio_normal"; \
-         } \
-         program { name: "bg_radio_normal"; \
-            script { \
-            new st[31]; \
-            new Float:vl; \
-            get_state(PART:"radio", st, 30, vl); \
-            if(get_int(radio_state) == RADIO_STATE_VISIBLE) \
-              set_state(PART:"radio", "visible", 0.0); \
-            else if(get_int(radio_state) == RADIO_STATE_DEFAULT) \
-              set_state(PART:"radio", "default", 0.0); \
-            else \
-              set_state(PART:"radio", "disabled_visible", 0.0); \
-            get_state(PART:"elm.text", st, 30, vl); \
-            if (!strcmp(st, "pressed")) \
-              set_state(PART:"elm.text", "visible", 0.0); \
-            } \
-         } \
-         program { name: "mouse,out"; \
-            signal: "mouse,out"; \
-            source: "over2"; \
-            script { \
-               if(get_int(radio_state) == RADIO_STATE_VISIBLE) \
-                 set_state(PART:"radio", "visible", 0.0); \
-               else \
-                 set_state(PART:"radio", "default", 0.0); \
-            } \
-         } \
-         program { name: "pressed"; \
-            signal: "mouse,down,1"; \
-            source: "over2"; \
-            script { \
-               new st[31]; \
-               new Float:vl; \
-               get_state(PART:"radio", st, 30, vl); \
-               if (!strcmp(st, "default")) \
-                 set_state(PART:"radio", "pressed", 0.0); \
-               get_state(PART:"elm.text", st, 30, vl); \
-               if (!strcmp(st, "visible")) \
-                 set_state(PART:"elm.text", "pressed", 0.0); \
-            } \
-         } \
          program { name: "radio_on"; \
             signal: "elm,state,radio,on"; \
             source: "elm"; \
             script { \
-               set_int(radio_state, RADIO_STATE_VISIBLE); \
                set_state(PART:"radio", "visible", 0.0); \
             } \
          } \
@@ -281,7 +214,6 @@
             signal: "elm,state,radio,off"; \
             source: "elm"; \
             script { \
-               set_int(radio_state, RADIO_STATE_DEFAULT); \
                set_state(PART:"radio", "default", 0.0); \
             } \
          } \
@@ -334,12 +266,10 @@
                if (!strcmp(st, "visible")) \
                { \
                   set_state(PART:"radio", "disabled_visible", 0.0); \
-                  set_int(radio_state, RADIO_STATE_DISABLED_VISIBLE); \
                 } \
                else \
                { \
                   set_state(PART:"radio", "disabled", 0.0); \
-                  set_int(radio_state, RADIO_STATE_DISABLED); \
                } \
             } \
          } \
@@ -368,12 +298,10 @@
                if (!strcmp(st, "disabled_visible")) \
                { \
                   set_state(PART:"radio", "visible", 0.0); \
-                  set_int(radio_state, RADIO_STATE_VISIBLE); \
                } \
                else \
                { \
                   set_state(PART:"radio", "default", 0.0); \
-                  set_int(radio_state, RADIO_STATE_DEFAULT); \
                } \
             } \
          } \
@@ -385,6 +313,8 @@ RADIO_STYLE_DEFAULT("default", 26, 26)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 RADIO_STYLE_DEFAULT("default/extended", 50, 50)
+
+///////////////////////////////////////////////////////////////////////////////////////
 
 #undef RADIO_STATE_DEFAULT
 #undef RADIO_STATE_VISIBLE
