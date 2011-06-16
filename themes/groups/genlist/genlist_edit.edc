@@ -1282,6 +1282,239 @@
       }
    }
 
+   /* this group is only for 2text.1icon.2 */
+   group { name: "elm/genlist/item/dialogue/edit/contact.2/default";
+      alias: "elm/genlist/item_odd/dialogue/edit/contact.2/default";
+      alias: "elm/genlist/item_compress/dialogue/edit/contact.2/default";
+      alias: "elm/genlist/item_compress_odd/dialogue/edit/contact.2/default";
+
+      data.item: "edit_icons" "elm.edit.icon";
+
+      parts {
+         part { name: "base";
+            type: RECT;
+            repeat_events: 1;
+            scale: 1;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         GENLIST_PART_PADDING_TOP( 0 )
+         GENLIST_PART_PADDING_BOTTOM( 0 )
+         GENLIST_PART_PADDING_RIGHT( 10 )
+
+         part { name: "elm.edit_bg";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  to_y: "elm.padding.bottom";
+               }
+               color: GENLIST_PART_BG_COLOR_INC;
+           }
+        }
+         part { name: "original_edc";
+            clip_to: "disclip";
+            type: SWALLOW;
+            mouse_events: 1;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to_y: "elm.padding.top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  to_x: "elm.base.icon";
+                  to_y: "elm.padding.bottom";
+               }
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+            description { state: "renamed" 0.0;
+               inherit: "default" 0.0;
+            }
+         }
+       part { name: "vertical_line";
+          type: RECT;
+          clip_to: "disclip";
+          mouse_events: 0;
+          description { state: "default" 0.0;
+             min: 1 0;
+             fixed: 1 0;
+             align: 0.5 0.5;
+             color: GENLIST_PART_BOTTOM_LINE_INC;
+             rel1 {
+                relative: 1.0 0.12;
+                to_x: "original_edc";
+                offset: -1 0;
+             }
+             rel2 {
+                relative: 1.0 0.89;
+                to_x: "original_edc";
+             }
+          }
+          description {
+              state: "hide" 0.0;
+              inherit: "default" 0.0;
+              visible: 0;
+          }
+       }
+       part { name: "bottom_line";
+          type: RECT;
+          clip_to: "disclip";
+          mouse_events: 0;
+          description { state: "default" 0.0;
+             min: 0 1;
+             fixed: 0 1;
+             color: GENLIST_PART_BOTTOM_LINE_INC;
+             rel1 {
+                relative: 0.0 1.0;
+                to_x: "elm.edit_bg";
+                offset: 0 -1;
+             }
+          }
+          description {
+              state: "hide" 0.0;
+              inherit: "default" 0.0;
+              visible: 0;
+          }
+       }
+       part { name: "elm.base.icon";
+          type: RECT;
+          scale: 1;
+          description { state: "default" 0.0;
+             min: 56 0;
+             fixed: 1 0;
+             color: 242 238 233 255;
+             rel1 {
+                relative: 1.0 0.0;
+                offset: 0 -1;
+             }
+             align: 0.0 0.5;
+          }
+          description { state: "enabled" 0.0;
+             inherit: "default" 0.0;
+             align: 1.0 0.5;
+          }
+       }
+       part { name: "elm.padding.icon.bottom";
+           type: RECT;
+           scale: 1;
+           description { state: "default" 0.0;
+              min: 0 25;
+              fixed: 0 1;
+              align: 0.5 1.0;
+              visible: 0;
+              rel1 {
+                 relative: 0.0 1.0;
+                 to_x: "elm.base.icon";
+              }
+              rel2.to_x: "elm.base.icon";
+           }
+       }
+       part { name: "elm.edit.icon";
+          clip_to: "disclip";
+          type: SWALLOW;
+          description { state: "default" 0.0;
+             align: 0.0 1.0;
+             rel1 {
+                relative: 1.0  0.0;
+                to_y: "elm.padding.icon.bottom";
+             }
+             rel2 {
+                relative: 1.0  0.0;
+                to_y: "elm.padding.icon.bottom";
+             }
+          }
+          description { state: "disabled" 0.0;
+             inherit: "default" 0.0;
+             visible: 0;
+          }
+          description { state: "enabled" 0.0;
+             inherit: "default" 0.0;
+               align: 1.0 1.0;
+          }
+       }
+       GENLIST_PART_DISCLIP
+      }
+      programs {
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+
+         // edit mode enable signal
+         program { name: "emode_enabled_effect";
+            signal: "elm,state,emode_enabled_effect";
+            source: "elm";
+            action: STATE_SET "enabled" 0.0;
+            transition: DECELERATE 0.7;
+            target: "elm.base.icon";
+            target: "elm.edit.icon";
+         }
+         program { name: "emode_disabled_effect";
+            signal: "elm,state,emode_disabled_effect";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.7;
+            target: "elm.base.icon";
+            target: "elm.edit.icon";
+         }
+         program { name: "emode_enabled";
+            signal: "elm,state,emode_enabled";
+            source: "elm";
+            action: STATE_SET "enabled" 0.0;
+            target: "elm.base.icon";
+            target: "elm.edit.icon";
+         }
+         program { name: "emode_disabled";
+            signal: "elm,state,emode_disabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.base.icon";
+            target: "elm.edit.icon";
+         }
+        // rename
+        program {
+            name:    "enable_rename_mode";
+            signal:  "elm,state,rename,enabled";
+            source:  "elm";
+            after:   "enable_rename_mode_next";
+        }
+        program {
+            name:    "enable_rename_mode_next";
+            action:  STATE_SET "renamed" 0.0;
+            transition: DECELERATE 0.5;
+            target:  "original_edc";
+        }
+        program {
+            name:    "disable_rename_mode";
+            signal:  "elm,state,rename,disabled";
+            source:  "elm";
+            action:  STATE_SET "default" 0.0;
+            transition: DECELERATE 0.5;
+            target:  "original_edc";
+            target:  "elm.edit.icon";
+        }
+      }
+   }
+
   group { name: "elm/genlist/item/select_all/default";
       alias: "elm/genlist/item_odd/select_all/default";
       alias: "elm/genlist/item_compress/select_all/default";
