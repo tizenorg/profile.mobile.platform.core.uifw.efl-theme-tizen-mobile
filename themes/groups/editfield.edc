@@ -27,6 +27,65 @@ group { name: "elm/editfield/base/default";
    images {
       image: "00_field_btn_delete.png" COMP;
    }
+   styles {
+      style { name: "editfield_content_singleline_style";
+         base: "font=SLP:style=Roman font_size=32 color=#000000 wrap=mixed ellipsis=1";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font=SLP:style=Oblique";
+         tag:  "b" "+ font=SLP:style=Bold";
+         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+         tag:  "hilight" "+ font=SLP:style=Bold";
+      }
+      style { name: "editfield_content_password_style";
+         base: "font=SLP:style=Roman font_size=24 color=#000000 wrap=none ellipsis=1";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font=SLP:style=Oblique";
+         tag:  "b" "+ font=SLP:style=Bold";
+         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+         tag:  "hilight" "+ font=SLP:style=Bold";
+      }
+   }
+   script {
+      public single_line = 0;
+      public password_mode = 0;
+
+      public set_multi_line() {
+         set_int(single_line, 0);
+      }
+      public set_single_line() {
+         set_int(single_line, 1);
+      }
+      public set_password() {
+         set_int(password_mode, 1);
+      }
+      public unset_password() {
+         set_int(password_mode, 0);
+      }
+      public no_edit() {
+         if(get_int(single_line) == 1) {
+            if(get_int(password_mode) == 0) {
+               set_state(PART:"elm.content.text", "single_no_edit", 0.0);
+               set_state(PART:"elm.content.password", "default", 0.0);
+            }
+            else {
+               set_state(PART:"elm.content.text", "default", 0.0);
+               set_state(PART:"elm.content.password", "single_no_edit", 0.0);
+            }
+            set_state(PART:"elm.swallow.content", "single_no_edit", 0.0);
+         }
+         else if(get_int(single_line) == 0) {
+            set_state(PART:"elm.content.text", "default", 0.0);
+            set_state(PART:"elm.content.password", "default", 0.0);
+            set_state(PART:"elm.swallow.content", "default", 0.0);
+         }
+         set_state(PART:"over", "default", 0.0);
+         set_state(PART:"top2", "default", 0.0);
+      }
+   }
    parts {
       part {
          name: "base";
@@ -261,6 +320,65 @@ group { name: "elm/editfield/base/default";
          }
       }
       part {
+         name: "elm.content.text";
+         type: TEXTBLOCK;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            color: 0 0 0 255;
+            text {
+               style: "editfield_content_singleline_style";
+               min: 0 0;
+               max: 0 1;
+            }
+         }
+         description {
+            state: "single_no_edit" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description {
+            state: "edit" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part {
+         name: "elm.content.password";
+         type: TEXTBLOCK;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         entry_mode: PASSWORD;
+         multiline: 0;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            color: 0 0 0 255;
+            text {
+               style: "editfield_content_password_style";
+               repch: "*";
+               min: 0 0;
+               max: 0 1;
+            }
+         }
+         description {
+            state: "single_no_edit" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description {
+            state: "edit" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part {
          name: "elm.swallow.content";
          type: SWALLOW;
          scale: 1;
@@ -279,6 +397,11 @@ group { name: "elm/editfield/base/default";
                to_y: "bottom1";
             }
             align: 0.0 0.5;
+         }
+         description {
+            state: "single_no_edit" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
          }
       }
       part {
@@ -384,10 +507,45 @@ group { name: "elm/editfield/base/default";
          target: "eraser";
       }
       program {
+         name: "multiline_set";
+         signal: "elm,state,text,multiline";
+         source: "elm";
+         script {
+            set_multi_line();
+         }
+      }
+      program {
+         name: "singleline_set";
+         signal: "elm,state,text,singleline";
+         source: "elm";
+         script {
+            set_single_line();
+         }
+      }
+      program {
+         name: "password_set";
+         signal: "elm,state,password,set";
+         source: "elm";
+         script {
+            set_password();
+         }
+      }
+      program {
+         name: "password_unset";
+         signal: "elm,state,password,unset";
+         source: "elm";
+         script {
+            unset_password();
+         }
+      }
+      program {
          name: "editing";
          signal: "elm,state,over,hide";
          source: "elm";
          action: STATE_SET "edit" 0.0;
+         target: "elm.swallow.content";
+         target: "elm.content.password";
+         target: "elm.content.text";
          target: "over";
          target: "top2";
       }
@@ -395,9 +553,9 @@ group { name: "elm/editfield/base/default";
          name: "no_editing";
          signal: "elm,state,over,show";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "over";
-         target: "top2";
+         script {
+            no_edit();
+         }
       }
       program {
          name: "label_show";
