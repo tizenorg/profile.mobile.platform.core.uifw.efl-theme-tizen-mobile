@@ -81,6 +81,11 @@
                }
              color: GENLIST_PART_BG_COLOR_INC;
            }
+           description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: GENLIST_PART_BG_SELECTED_COLOR_INC;
+           }
         }
 
         part { name: "elm.padding.left";
@@ -281,6 +286,19 @@
        GENLIST_PART_DISCLIP
       }
       programs {
+         program { name:    "go_active";
+            signal:  "elm,state,selected";
+            source:  "elm";
+            action: STATE_SET "selected" 0.0;
+            target:  "elm.edit_bg";
+         }
+         program { name:    "go_passive";
+            signal:  "elm,state,unselected";
+            source:  "elm";
+            action: STATE_SET "default" 0.0;
+            transition: LINEAR 0.1;
+            target:  "elm.edit_bg";
+         }
          program { name: "go_disabled";
             signal: "elm,state,disabled";
             source: "elm";
@@ -293,7 +311,6 @@
             action: STATE_SET "default" 0.0;
             target: "disclip";
          }
-
          // edit mode enable signal
          program { name: "emode_enabled_effect";
             signal: "elm,state,emode_enabled_effect";
