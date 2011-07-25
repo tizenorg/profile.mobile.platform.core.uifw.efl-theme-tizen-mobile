@@ -197,9 +197,41 @@ group {
 }
 group {
    name: "elm/check/base/dayselector/sun_first_sun";
+   alias: "elm/check/base/dayselector/default_sun";
    images {
       image: "00_alarm_repeat_button_normal_01.png" COMP;
       image: "00_alarm_repeat_button_press_01.png" COMP;
+   }
+   script {
+      public check_is_on = 0;
+      public text_show = 1;
+      public checkon() {
+         set_state(PART:"check", "visible", 0.0);
+         if(get_int(text_show) == 1)
+           set_state(PART:"elm.text", "checked", 0.0);
+         else if(get_int(text_show) == 0)
+            set_state(PART:"elm.text", "hide", 0.0);
+         set_int(check_is_on, 1);
+      }
+      public checkoff() {
+         set_state(PART:"check", "default", 0.0);
+         if(get_int(text_show) == 1)
+           set_state(PART:"elm.text", "default", 0.0);
+         else if(get_int(text_show) == 0)
+            set_state(PART:"elm.text", "hide", 0.0);
+         set_int(check_is_on, 0);
+      }
+      public show_check_text() {
+         if(get_int(check_is_on) == 1)
+            set_state(PART:"elm.text", "checked", 0.0);
+         else if(get_int(check_is_on) == 0)
+            set_state(PART:"elm.text", "default", 0.0);
+         set_int(text_show, 1);
+      }
+      public hide_check_text() {
+         set_state(PART:"elm.text", "hide", 0.0);
+         set_int(text_show, 0);
+      }
    }
    parts {
       part {
@@ -312,41 +344,33 @@ group {
          name: "check_on";
          signal: "elm,state,check,on";
          source: "elm";
-         after: "checkon";
-      }
-      program {
-         name: "checkon";
          script {
-            set_state(PART:"check", "visible", 0.0);
-            set_state(PART:"elm.text", "checked", 0.0);
+            checkon();
          }
       }
       program {
          name: "check_off";
          signal: "elm,state,check,off";
          source: "elm";
-         after:"checkoff";
-      }
-      program {
-         name: "checkoff";
          script {
-            set_state(PART:"check", "default", 0.0);
-            set_state(PART:"elm.text", "default", 0.0);
+            checkoff();
          }
       }
       program {
          name: "text_show";
          signal: "elm,state,text,visible";
          source: "elm";
-         action:  STATE_SET "default" 0.0;
-         target: "elm.text";
+         script {
+            show_check_text();
+         }
        }
       program {
          name: "text_hide";
          signal: "elm,state,text,hidden";
          source: "elm";
-         action:  STATE_SET "hide" 0.0;
-         target: "elm.text";
+         script {
+            hide_check_text();
+         }
       }
    }
 }
@@ -355,6 +379,37 @@ group {
    images {
       image: "00_alarm_repeat_button_normal_01.png" COMP;
       image: "00_alarm_repeat_button_press_01.png" COMP;
+   }
+   script {
+      public check_is_on = 0;
+      public text_show = 1;
+      public checkon() {
+         set_state(PART:"check", "visible", 0.0);
+         if(get_int(text_show) == 1)
+           set_state(PART:"elm.text", "checked", 0.0);
+         else if(get_int(text_show) == 0)
+            set_state(PART:"elm.text", "hide", 0.0);
+         set_int(check_is_on, 1);
+      }
+      public checkoff() {
+         set_state(PART:"check", "default", 0.0);
+         if(get_int(text_show) == 1)
+           set_state(PART:"elm.text", "default", 0.0);
+         else if(get_int(text_show) == 0)
+            set_state(PART:"elm.text", "hide", 0.0);
+         set_int(check_is_on, 0);
+      }
+      public show_check_text() {
+         if(get_int(check_is_on) == 1)
+            set_state(PART:"elm.text", "checked", 0.0);
+         else if(get_int(check_is_on) == 0)
+            set_state(PART:"elm.text", "default", 0.0);
+         set_int(text_show, 1);
+      }
+      public hide_check_text() {
+         set_state(PART:"elm.text", "hide", 0.0);
+         set_int(text_show, 0);
+      }
    }
    parts {
       part {
@@ -467,41 +522,33 @@ group {
          name: "check_on";
          signal: "elm,state,check,on";
          source: "elm";
-         after: "checkon";
-      }
-      program {
-         name: "checkon";
          script {
-            set_state(PART:"check", "visible", 0.0);
-            set_state(PART:"elm.text", "checked", 0.0);
+            checkon();
          }
       }
       program {
          name: "check_off";
          signal: "elm,state,check,off";
          source: "elm";
-         after:"checkoff";
-      }
-      program {
-         name: "checkoff";
          script {
-            set_state(PART:"check", "default", 0.0);
-            set_state(PART:"elm.text", "default", 0.0);
+            checkoff();
          }
       }
       program {
          name: "text_show";
          signal: "elm,state,text,visible";
          source: "elm";
-         action:  STATE_SET "default" 0.0;
-         target: "elm.text";
+         script {
+            show_check_text();
+         }
        }
       program {
          name: "text_hide";
          signal: "elm,state,text,hidden";
          source: "elm";
-         action:  STATE_SET "hide" 0.0;
-         target: "elm.text";
+         script {
+            hide_check_text();
+         }
       }
    }
 }
@@ -511,6 +558,11 @@ group {
    alias: "elm/check/base/dayselector/sun_first_wed";
    alias: "elm/check/base/dayselector/sun_first_thu";
    alias: "elm/check/base/dayselector/sun_first_fri";
+   alias: "elm/check/base/dayselector/default_mon";
+   alias: "elm/check/base/dayselector/default_tue";
+   alias: "elm/check/base/dayselector/default_wed";
+   alias: "elm/check/base/dayselector/default_thu";
+   alias: "elm/check/base/dayselector/default_fri";
    alias: "elm/check/base/dayselector/mon_first_tue";
    alias: "elm/check/base/dayselector/mon_first_wed";
    alias: "elm/check/base/dayselector/mon_first_thu";
@@ -518,6 +570,37 @@ group {
    images {
       image: "00_alarm_repeat_button_normal_02.png" COMP;
       image: "00_alarm_repeat_button_press_02.png" COMP;
+   }
+   script {
+      public check_is_on = 0;
+      public text_show = 1;
+      public checkon() {
+         set_state(PART:"check", "visible", 0.0);
+         if(get_int(text_show) == 1)
+           set_state(PART:"elm.text", "checked", 0.0);
+         else if(get_int(text_show) == 0)
+            set_state(PART:"elm.text", "hide", 0.0);
+         set_int(check_is_on, 1);
+      }
+      public checkoff() {
+         set_state(PART:"check", "default", 0.0);
+         if(get_int(text_show) == 1)
+           set_state(PART:"elm.text", "default", 0.0);
+         else if(get_int(text_show) == 0)
+            set_state(PART:"elm.text", "hide", 0.0);
+         set_int(check_is_on, 0);
+      }
+      public show_check_text() {
+         if(get_int(check_is_on) == 1)
+            set_state(PART:"elm.text", "checked", 0.0);
+         else if(get_int(check_is_on) == 0)
+            set_state(PART:"elm.text", "default", 0.0);
+         set_int(text_show, 1);
+      }
+      public hide_check_text() {
+         set_state(PART:"elm.text", "hide", 0.0);
+         set_int(text_show, 0);
+      }
    }
    parts {
       part {
@@ -630,41 +713,33 @@ group {
          name: "check_on";
          signal: "elm,state,check,on";
          source: "elm";
-         after: "checkon";
-      }
-      program {
-         name: "checkon";
          script {
-            set_state(PART:"check", "visible", 0.0);
-            set_state(PART:"elm.text", "checked", 0.0);
+            checkon();
          }
       }
       program {
          name: "check_off";
          signal: "elm,state,check,off";
          source: "elm";
-         after:"checkoff";
-      }
-      program {
-         name: "checkoff";
          script {
-            set_state(PART:"check", "default", 0.0);
-            set_state(PART:"elm.text", "default", 0.0);
+            checkoff();
          }
       }
       program {
          name: "text_show";
          signal: "elm,state,text,visible";
          source: "elm";
-         action:  STATE_SET "default" 0.0;
-         target: "elm.text";
+         script {
+            show_check_text();
+         }
        }
       program {
          name: "text_hide";
          signal: "elm,state,text,hidden";
          source: "elm";
-         action:  STATE_SET "hide" 0.0;
-         target: "elm.text";
+         script {
+            hide_check_text();
+         }
       }
    }
 }
@@ -675,6 +750,37 @@ group {
       image: "00_alarm_repeat_button_normal_02.png" COMP;
       image: "00_alarm_repeat_button_press_02.png" COMP;
    }
+   script {
+      public check_is_on = 0;
+      public text_show = 1;
+      public checkon() {
+         set_state(PART:"check", "visible", 0.0);
+         if(get_int(text_show) == 1)
+           set_state(PART:"elm.text", "checked", 0.0);
+         else if(get_int(text_show) == 0)
+            set_state(PART:"elm.text", "hide", 0.0);
+         set_int(check_is_on, 1);
+      }
+      public checkoff() {
+         set_state(PART:"check", "default", 0.0);
+         if(get_int(text_show) == 1)
+           set_state(PART:"elm.text", "default", 0.0);
+         else if(get_int(text_show) == 0)
+            set_state(PART:"elm.text", "hide", 0.0);
+         set_int(check_is_on, 0);
+      }
+      public show_check_text() {
+         if(get_int(check_is_on) == 1)
+            set_state(PART:"elm.text", "checked", 0.0);
+         else if(get_int(check_is_on) == 0)
+            set_state(PART:"elm.text", "default", 0.0);
+         set_int(text_show, 1);
+      }
+      public hide_check_text() {
+         set_state(PART:"elm.text", "hide", 0.0);
+         set_int(text_show, 0);
+      }
+   }
    parts {
       part {
          name: "bg";
@@ -786,50 +892,74 @@ group {
          name: "check_on";
          signal: "elm,state,check,on";
          source: "elm";
-         after: "checkon";
-      }
-      program {
-         name: "checkon";
          script {
-            set_state(PART:"check", "visible", 0.0);
-            set_state(PART:"elm.text", "checked", 0.0);
+            checkon();
          }
       }
       program {
          name: "check_off";
          signal: "elm,state,check,off";
          source: "elm";
-         after:"checkoff";
-      }
-      program {
-         name: "checkoff";
          script {
-            set_state(PART:"check", "default", 0.0);
-            set_state(PART:"elm.text", "default", 0.0);
+            checkoff();
          }
       }
       program {
          name: "text_show";
          signal: "elm,state,text,visible";
          source: "elm";
-         action:  STATE_SET "default" 0.0;
-         target: "elm.text";
+         script {
+            show_check_text();
+         }
        }
       program {
          name: "text_hide";
          signal: "elm,state,text,hidden";
          source: "elm";
-         action:  STATE_SET "hide" 0.0;
-         target: "elm.text";
+         script {
+            hide_check_text();
+         }
       }
    }
 }
 
 group {
    name: "elm/check/base/dayselector/sun_first_sat";
+   alias: "elm/check/base/dayselector/default_sat";
    images {
       image: "00_alarm_repeat_button_normal_03.png" COMP;
       image: "00_alarm_repeat_button_press_03.png" COMP;
+   }
+   script {
+      public check_is_on = 0;
+      public text_show = 1;
+      public checkon() {
+         set_state(PART:"check", "visible", 0.0);
+         if(get_int(text_show) == 1)
+           set_state(PART:"elm.text", "checked", 0.0);
+         else if(get_int(text_show) == 0)
+            set_state(PART:"elm.text", "hide", 0.0);
+         set_int(check_is_on, 1);
+      }
+      public checkoff() {
+         set_state(PART:"check", "default", 0.0);
+         if(get_int(text_show) == 1)
+           set_state(PART:"elm.text", "default", 0.0);
+         else if(get_int(text_show) == 0)
+            set_state(PART:"elm.text", "hide", 0.0);
+         set_int(check_is_on, 0);
+      }
+      public show_check_text() {
+         if(get_int(check_is_on) == 1)
+            set_state(PART:"elm.text", "checked", 0.0);
+         else if(get_int(check_is_on) == 0)
+            set_state(PART:"elm.text", "default", 0.0);
+         set_int(text_show, 1);
+      }
+      public hide_check_text() {
+         set_state(PART:"elm.text", "hide", 0.0);
+         set_int(text_show, 0);
+      }
    }
    parts {
       part {
@@ -942,41 +1072,33 @@ group {
          name: "check_on";
          signal: "elm,state,check,on";
          source: "elm";
-         after: "checkon";
-      }
-      program {
-         name: "checkon";
          script {
-            set_state(PART:"check", "visible", 0.0);
-            set_state(PART:"elm.text", "checked", 0.0);
+            checkon();
          }
       }
       program {
          name: "check_off";
          signal: "elm,state,check,off";
          source: "elm";
-         after:"checkoff";
-      }
-      program {
-         name: "checkoff";
          script {
-            set_state(PART:"check", "default", 0.0);
-            set_state(PART:"elm.text", "default", 0.0);
+            checkoff();
          }
       }
       program {
          name: "text_show";
          signal: "elm,state,text,visible";
          source: "elm";
-         action:  STATE_SET "default" 0.0;
-         target: "elm.text";
+         script {
+            show_check_text();
+         }
        }
       program {
          name: "text_hide";
          signal: "elm,state,text,hidden";
          source: "elm";
-         action:  STATE_SET "hide" 0.0;
-         target: "elm.text";
+         script {
+            hide_check_text();
+         }
       }
    }
 }
@@ -986,6 +1108,37 @@ group {
    images {
       image: "00_alarm_repeat_button_normal_03.png" COMP;
       image: "00_alarm_repeat_button_press_03.png" COMP;
+   }
+   script {
+      public check_is_on = 0;
+      public text_show = 1;
+      public checkon() {
+         set_state(PART:"check", "visible", 0.0);
+         if(get_int(text_show) == 1)
+           set_state(PART:"elm.text", "checked", 0.0);
+         else if(get_int(text_show) == 0)
+            set_state(PART:"elm.text", "hide", 0.0);
+         set_int(check_is_on, 1);
+      }
+      public checkoff() {
+         set_state(PART:"check", "default", 0.0);
+         if(get_int(text_show) == 1)
+           set_state(PART:"elm.text", "default", 0.0);
+         else if(get_int(text_show) == 0)
+            set_state(PART:"elm.text", "hide", 0.0);
+         set_int(check_is_on, 0);
+      }
+      public show_check_text() {
+         if(get_int(check_is_on) == 1)
+            set_state(PART:"elm.text", "checked", 0.0);
+         else if(get_int(check_is_on) == 0)
+            set_state(PART:"elm.text", "default", 0.0);
+         set_int(text_show, 1);
+      }
+      public hide_check_text() {
+         set_state(PART:"elm.text", "hide", 0.0);
+         set_int(text_show, 0);
+      }
    }
    parts {
       part {
@@ -1098,41 +1251,33 @@ group {
          name: "check_on";
          signal: "elm,state,check,on";
          source: "elm";
-         after: "checkon";
-      }
-      program {
-         name: "checkon";
          script {
-            set_state(PART:"check", "visible", 0.0);
-            set_state(PART:"elm.text", "checked", 0.0);
+            checkon();
          }
       }
       program {
          name: "check_off";
          signal: "elm,state,check,off";
          source: "elm";
-         after:"checkoff";
-      }
-      program {
-         name: "checkoff";
          script {
-            set_state(PART:"check", "default", 0.0);
-            set_state(PART:"elm.text", "default", 0.0);
+            checkoff();
          }
       }
       program {
          name: "text_show";
          signal: "elm,state,text,visible";
          source: "elm";
-         action:  STATE_SET "default" 0.0;
-         target: "elm.text";
+         script {
+            show_check_text();
+         }
        }
       program {
          name: "text_hide";
          signal: "elm,state,text,hidden";
          source: "elm";
-         action:  STATE_SET "hide" 0.0;
-         target: "elm.text";
+         script {
+            hide_check_text();
+         }
       }
    }
 }
