@@ -2744,7 +2744,6 @@ group { name: "elm/entry/base-password/popup";
 
 group { name: "elm/entry/base/font_color_black";
    alias: "elm/entry/base-mixedwrap/font_color_black";
-   alias: "elm/entry/base-noedit/font_color_black";
    alias: "elm/entry/base/font_color_black/default";
    alias: "elm/entry/base/font_color_black/lighting";
    alias: "elm/entry/base/font_color_black/multiline";
@@ -2801,6 +2800,76 @@ group { name: "elm/entry/base/font_color_black";
          mouse_events: 1;
          scale: 1;
          entry_mode: EDITABLE;
+         select_mode: BLOCK_HANDLE;
+         //cursor_mode: BEFORE;
+         multiline: 1;
+         source: "elm/entry/selection/default"; // selection under
+         source2: ENTRY_BLOCK_HANDLE_SOURCE2; // block handle
+         source3: ENTRY_BLOCK_HANDLE_SOURCE3; // block handle
+         source4: "elm/entry/cursor/default"; // cursorover
+         source5: "elm/entry/anchor/default"; // anchor under
+         //source6: "X"; // anchor over
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            text {
+               style: "font_color_black_textblock_style";
+               min: 0 1;
+            }
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text {
+               style: "font_color_black_textblock_disabled_style";
+               min: 0 1;
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "focus";
+         signal: "load";
+         source: "";
+         action: FOCUS_SET;
+         target: "elm.text";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "elm.text";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+   }
+}
+
+group { name: "elm/entry/base-noedit/font_color_black";
+   data.item: "default_font_size" "24";
+   data.item: "min_font_size" "8";
+   data.item: "max_font_size" "60";
+   data {
+      item: context_menu_orientation "horizontal";
+   }
+   parts {
+      part { name: "entry.swallow.background";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            visible: 1;
+            rel1 { relative: 0 0; to: "elm.text"; }
+            rel2 { relative: 1 1; to: "elm.text"; }
+         }
+      }
+   }
+   parts {
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         mouse_events: 1;
+         scale: 1;
+         entry_mode: PLAIN;
          select_mode: BLOCK_HANDLE;
          //cursor_mode: BEFORE;
          multiline: 1;
@@ -3056,6 +3125,73 @@ group { name: "elm/entry/base-single/font_color_black";
    }
 }
 
+group { name: "elm/entry/base-single-noedit/font_color_black";
+   data.item: "default_font_size" "24";
+   data.item: "min_font_size" "8";
+   data.item: "max_font_size" "60";
+   data {
+      item: context_menu_orientation "horizontal";
+   }
+   parts {
+      part { name: "entry.swallow.background";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            visible: 1;
+            rel1 { relative: 0 0; to: "elm.text"; }
+            rel2 { relative: 1 1; to: "elm.text"; }
+         }
+      }
+   }
+   parts {
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         mouse_events: 1;
+         scale: 1;
+         entry_mode: PLAIN;
+         select_mode: BLOCK_HANDLE;
+         //cursor_mode: BEFORE;
+         multiline: 0;
+         source: "elm/entry/selection/default"; // selection under
+         source2: ENTRY_BLOCK_HANDLE_SOURCE2; // block handle
+         source3: ENTRY_BLOCK_HANDLE_SOURCE3; // block handle
+         source4: "elm/entry/cursor/default"; // cursorover
+         source5: "elm/entry/anchor/default"; // anchor under
+         description { state: "default" 0.0;
+            text {
+               style: "font_color_black_single_textblock_style";
+               min: 1 1;
+               max: 0 1;
+            }
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text {
+               style: "font_color_black_single_textblock_disabled_style";
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "focus";
+         signal: "load";
+         source: "";
+         action: FOCUS_SET;
+         target: "elm.text";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "elm.text";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+   }
+}
 group { name: "elm/entry/base-password/font_color_black";
    alias: "elm/entry/base-password/editfield/font_color_black";
    data.item: "default_font_size" "24";
