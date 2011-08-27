@@ -27,7 +27,7 @@
       alias: "elm/tickernoti/1line/default";
       alias: "elm/tickernoti/base/info";
       data {
-         item: "height" 27;
+         item: "height" TICKERNOTI_INFO_BG_MIN_HEIGHT_INC;
       }
       parts {
          part { name: "base";
@@ -35,7 +35,8 @@
             type: RECT;
             scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
+               align: 0.5 0.0;
+               min: 0 TICKERNOTI_INFO_BG_MIN_HEIGHT_INC;
                rel1 {
                   relative: 0.0 0.0;
                }
@@ -48,16 +49,16 @@
             mouse_events: 1;
             type: RECT;
             scale: 1;
+            clip_to: "base";
             description { state: "default" 0.0;
                visible: 1;
-               min: 0 27;
                align: 0.5 0.0;
                rel1 {
-                  relative: 0.0 2.0;
+                  relative: 0.0 1.0;
                   to: "base";
                }
                rel2 {
-                  relative: 1.0 3.0;
+                  relative: 1.0 2.0;
                   to: "base";
                }
                color: 0 0 0 0;
@@ -76,23 +77,44 @@
             }
          }
          part {
-            name: "padding_icon";
+            name: "padding_left_top";
             type: RECT;
             scale: 1;
             mouse_events: 0;
             description {
                state: "default" 0.0;
                visible: 0;
-               min: 5 0;
-               fixed: 1 0;
+               min: TICKERNOTI_INFO_BG_PADDING_LEFT_TOP_INC;
+               fixed: 1 1;
                align: 0.0 0.0;
                rel1 {
                   relative: 0.0 0.0;
-                  to:"bg";
+                  to: "bg";
                }
                rel2 {
-                  relative: 0.0 1.0;
-                  to:"bg";
+                  relative: 0.0 0.0;
+                  to: "bg";
+               }
+            }
+         }
+         part {
+            name: "padding_right_bottom";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               min: TICKERNOTI_INFO_BG_PADDING_RIGHT_BOTTOM_INC;
+               fixed: 1 1;
+               align: 1.0 1.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to: "bg";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to: "bg";
                }
             }
          }
@@ -103,37 +125,41 @@
             mouse_events: 0;
             description {
                state: "default" 0.0;
-               min: 26 0;
                fixed: 1 0;
                align: 0.0 0.0;
                rel1 {
-                  relative: 1.0 0.0;
-                  to:"padding_icon";
+                  relative: 1.0 1.0;
+                  to: "padding_left_top";
                }
                rel2 {
-                  relative: 1.0 1.0;
-                  to:"padding_icon";
+                  relative: 1.0 0.0;
+                  to_x: "padding_left_top";
+                  to_y: "padding_right_bottom";
                }
+               aspect: 1.0 1.0;
+               aspect_preference: VERTICAL;
             }
          }
          part {
-            name: "padding_text";
+            name: "padding_icon_right";
             type: RECT;
             scale: 1;
             mouse_events: 0;
             description {
                state: "default" 0.0;
                visible: 0;
-               min: 10 0;
+               min: TICKERNOTI_BG_PADDING_AFTER_ICON_INC;
                fixed: 1 0;
                align: 0.0 0.0;
                rel1 {
-                  relative: 1.0 0.0;
-                  to:"icon";
+                  relative: 1.0 1.0;
+                  to_x: "icon";
+                  to_y: "padding_left_top";
                }
                rel2 {
-                  relative: 1.0 1.0;
-                  to:"icon";
+                  relative: 1.0 0.0;
+                  to_x: "icon";
+                  to_y: "padding_right_bottom";
                }
             }
          }
@@ -146,21 +172,21 @@
                state: "default" 0.0;
                rel1 {
                   relative: 1.0 0.0;
-                  to:"padding_text";
+                  to: "padding_icon_right";
                }
                rel2 {
                   relative: 1.0 1.0;
-                  to:"bg";
+                  to: "bg";
                }
                color: SELECTION_INFO_TEXT_COLOR_INC;
                text {
                   font: "SLP:style=Roman";
-                  size: 18;
+                  size: TICKERNOTI_INFO_TEXT_FONT_SIZE_INC;
                   align: 0.0 0.5;
                }
             }
          }
-      } 
+      }
       programs {
          program {
             name: "effect_show";
@@ -187,11 +213,11 @@
       }
    }
    group {
-      name: "elm/tickernoti/base/2line/default";
+      name: "elm/tickernoti/base/default";
+      alias: "elm/tickernoti/base/2line/default";
       alias: "elm/tickernoti/2line/default";
-      alias: "elm/tickernoti/base/default";
       data {
-         item: "height" 55;
+         item: "height" TICKERNOTI_DEFAULT_BG_MIN_HEIGHT_INC;
       }
       images {
          image: "00_winset_notification_bg.png" COMP;
@@ -199,19 +225,21 @@
       styles {
          style {
             name: "style_text";
-            base: "font=SLP:style=Roman font_size=22 wrap=char color=#f4f4f4 wrap=char ellipsis=1.0";
+            base: "font=SLP:style=Roman font_size=TICKERNOTI_DEFAULT_TEXT_FONT_SIZE_INC wrap=char color=#f4f4f4 wrap=char ellipsis=1.0";
             tag: "br" "\n";
             tag: "ps" "ps";
             tag: "b" "+ font=SLP:style=Bold";
          }
       }
       parts {
-         part { name: "bg";
+         part {
+            name: "bg";
             mouse_events: 0;
             type: RECT;
             scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
+               align: 0.5 0.0;
+               min: 0 TICKERNOTI_DEFAULT_BG_MIN_HEIGHT_INC;
                rel1 {
                   relative: 0.0 0.0;
                }
@@ -220,20 +248,22 @@
                }
             }
          }
-         part { name: "bg_2line";
+         part {
+            name: "bg_2line";
             mouse_events: 1;
             type: RECT;
+            clip_to: "bg";
             scale: 1;
             description { state: "default" 0.0;
                visible: 1;
-               min: 0 55;
+               align: 0.5 0.0;
                rel1 {
                   relative: 0.0 -1.0;
-                  to:"bg";
+                  to: "bg";
                }
                rel2 {
                   relative: 1.0 0.0;
-                  to:"bg";
+                  to: "bg";
                }
                color: 0 0 0 0;
             }
@@ -241,15 +271,16 @@
                inherit: "default" 0.0;
                rel1 {
                   relative: 0.0 0.0;
-                  to:"bg";
+                  to: "bg";
                }
                rel2 {
                   relative: 1.0 1.0;
-                  to:"bg";
+                  to: "bg";
                }
             }
          }
-         part { name: "bg_2line_img";
+         part {
+            name: "bg_2line_img";
             mouse_events: 0;
             type: IMAGE;
             scale: 1;
@@ -257,102 +288,58 @@
                visible: 1;
                rel1 {
                   relative: 0.0 0.0;
-                  to:"bg_2line";
+                  to: "bg_2line";
                }
                rel2 {
                   relative: 1.0 1.0;
-                  to:"bg_2line";
+                  to: "bg_2line";
                }
                image.normal: "00_winset_notification_bg.png";
             }
          }
          part {
-            name: "padding_top";
+            name: "padding_left_top";
             type: RECT;
             scale: 1;
             mouse_events: 0;
             description {
                state: "default" 0.0;
                visible: 0;
-               min: 0 5;
-               fixed: 0 1;
-               align: 0.0 0.0;
-               rel1 {
-                  relative: 0.0 0.0;
-                  to:"bg_2line";
-               }
-               rel2 {
-                  relative: 1.0 0.0;
-                  to:"bg_2line";
-               }
-            }
-         }
-         part {
-            name: "padding_bottom";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               visible: 0;
-               min: 0 10;
-               fixed: 0 1;
-               align: 0.0 1.0;
-               rel1 {
-                  relative: 0.0 1.0;
-                  to:"bg_2line";
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  to:"bg_2line";
-               }
-            }
-         }
-         part {
-            name: "padding_right";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               visible: 0;
-               min: 10 0;
-               fixed: 1 0;
-               align: 1.0 0.0;
-               rel1 {
-                  relative: 1.0 1.0;
-                  to_x:"bg_2line";
-                  to_y:"padding_top";
-               }
-               rel2 {
-                  relative: 1.0 0.0;
-                  to_x:"bg_2line";
-                  to_y:"padding_bottom";
-               }
-            }
-         }
-         /* Icon */
-         part {
-            name: "padding_icon_top_left";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               visible: 0;
-               min: 10 5;
+               min: TICKERNOTI_DEFAULT_BG_PADDING_LEFT_TOP_INC;
                fixed: 1 1;
                align: 0.0 0.0;
                rel1 {
-                  relative: 0.0 1.0;
-                  to:"padding_top";
+                  relative: 0.0 0.0;
+                  to: "bg_2line";
                }
                rel2 {
-                  relative: 0.0 1.0;
-                  to:"padding_top";
+                  relative: 0.0 0.0;
+                  to: "bg_2line";
                }
             }
          }
+         part {
+            name: "padding_right_bottom";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               min: TICKERNOTI_DEFAULT_BG_PADDING_RIGHT_BOTTOM_INC;
+               fixed: 1 1;
+               align: 1.0 1.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to: "bg_2line";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to: "bg_2line";
+               }
+            }
+         }
+         // Icon
          part {
             name: "icon";
             type: SWALLOW;
@@ -360,19 +347,16 @@
             mouse_events: 1;
             description {
                state: "default" 0.0;
-               min: 40 40;
-               max: 40 40;
-               fixed: 1 1;
+               fixed: 1 0;
                align: 0.0 0.0;
                rel1 {
                   relative: 1.0 1.0;
-                  to_x:"padding_icon_top_left";
-                  to_y:"padding_top";
+                  to: "padding_left_top";
                }
                rel2 {
                   relative: 1.0 0.0;
-                  to_x:"padding_icon_top_left";
-                  to_y:"padding_bottom";
+                  to_x: "padding_left_top";
+                  to_y: "padding_right_bottom";
                }
                aspect: 1.0 1.0;
                aspect_preference: VERTICAL;
@@ -386,61 +370,61 @@
             description {
                state: "default" 0.0;
                visible: 0;
-               min: 10 0;
+               min: TICKERNOTI_DEFAULT_PADDING_AFTER_ICON_INC;
                fixed: 1 0;
                align: 0.0 0.0;
                rel1 {
                   relative: 1.0 1.0;
-                  to_x:"icon";
-                  to_y:"padding_top";
+                  to_x: "icon";
+                  to_y: "padding_left_top";
                }
                rel2 {
                   relative: 1.0 0.0;
-                  to_x:"icon";
-                  to_y:"padding_bottom";
+                  to_x: "icon";
+                  to_y: "padding_right_bottom";
                }
             }
          }
-         /* Button */
+         // Button
          part {
             name: "button";
             type: SWALLOW;
             scale: 1;
             mouse_events: 1;
-            description {
-               state: "default" 0.0;
-               min: 50 34;
-               max: 150 34;
+            description { state: "default" 0.0;
+               min: TICKERNOTI_DEFAULT_BUTTON_MIN_INC;
+               max: TICKERNOTI_DEFAULT_BUTTON_MAX_INC;
                fixed: 1 1;
                align: 1.0 0.5;
                rel1 {
                   relative: 0.0 0.0;
-                  to:"padding_right";
+                  to_x: "padding_right_bottom";
+                  to_y: "padding_left_top";
                }
                rel2 {
-                  relative: 0.0 1.0;
-                  to:"padding_right";
+                  relative: 0.0 0.0;
+                  to: "padding_right_bottom";
                }
             }
          }
          part {
-            name: "button_left";
+            name: "padding_button_left";
             type: RECT;
             scale: 1;
             mouse_events: 0;
             description {
                state: "default" 0.0;
                visible: 0;
-               min: 5 0;
+               min: TICKERNOTI_DEFAULT_PADDING_BEFORE_BUTTON_INC;
                fixed: 1 0;
                align: 0.0 0.0;
                rel1 {
                   relative: 0.0 0.0;
-                  to:"button";
+                  to: "button";
                }
                rel2 {
                   relative: 0.0 1.0;
-                  to:"button";
+                  to: "button";
                }
             }
          }
@@ -456,12 +440,12 @@
                align: 0.0 0.5;
                rel1 {
                   relative: 1.0 0.0;
-                  to:"padding_icon_right";
+                  to: "padding_icon_right";
                }
                rel2 {
                   relative: 0.0 0.0;
-                  to_x:"button_left";
-                  to_y:"padding_bottom";
+                  to_x: "padding_button_left";
+                  to_y: "padding_right_bottom";
                }
             }
          }
@@ -474,11 +458,11 @@
                state: "default" 0.0;
                rel1 {
                   relative: 0.0 0.0;
-                  to:"text_rect";
+                  to: "text_rect";
                }
                rel2 {
                   relative: 1.0 1.0;
-                  to:"text_rect";
+                  to: "text_rect";
                }
                color: 255 255 255 255;
                align: 0.0 0.5;
@@ -487,7 +471,7 @@
                }
             }
          }
-      } 
+      }
       programs {
          program {
             name: "effect_show";
