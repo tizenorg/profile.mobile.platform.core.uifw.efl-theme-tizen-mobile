@@ -398,6 +398,118 @@
       }
    }
 
+   group { name: "elm/genlist/item/1text.2/default";
+      alias: "elm/genlist/item_odd/1text.2/default";
+      alias: "elm/genlist/item_compress/1text.2/default";
+      alias: "elm/genlist/item_compress_odd/1text.2/default";
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      data.item: "labels" "elm.text";
+      data.item: "renames" "elm.edit.rename";
+      images {
+         image: "00_list_bar_press_1x80.png" COMP;
+      }
+      styles {
+        style { name: "genlist_default_textblock_style";
+          base: "font=SLP:style=Roman font_size="GENLIST_FONT_STYLE_28_INC" color="GENLIST_PART_MULTILINE_TEXT_STYLE_COLOR_INC" text_class=list_item ellipsis=1.0";
+        }
+        style { name: "genlist_default_textblock_selected_style";
+          base: "font=SLP:style=Roman font_size="GENLIST_FONT_STYLE_28_INC" color="GENLIST_PART_MULTILINE_TEXT_STYLE_SELECTED_COLOR_INC" text_class=list_item ellipsis=1.0";
+        }
+      }
+      parts {
+         GENLIST_PART_BASE( GENLIST_HEIGHT_71_INC )
+         GENLIST_PART_BG_IMAGE
+         GENLIST_PART_BOTTOM_LINE
+         GENLIST_PART_PADDING_LEFT( GENLIST_PADDING_10_INC )
+         GENLIST_PART_PADDING_RIGHT( GENLIST_PADDING_10_INC )
+         part { name: "temp_center_line"; //temporary
+            clip_to: "disclip";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.5;
+                  to: "base";
+               }
+               rel2 {
+                  relative: 1.0 0.5;
+                  to: "base";
+               }
+            }
+         }
+         part { name: "elm.text";
+            clip_to: "disclip";
+            type: TEXTBLOCK;
+            mouse_events: 0;
+            scale: 1;
+            multiline: 0;
+            description { state: "default" 0.0;
+               fixed: 0 1;
+               rel1 {
+                  relative: 1.0 0.5;
+                  to_x: "elm.padding.left";
+                  to_y: "temp_center_line";
+               }
+               rel2 {
+                  relative: 0.0 0.5;
+                  to_x: "elm.padding.right";
+                  to_y: "temp_center_line";
+               }
+               align: 0.0 0.5;
+               text {
+                  style: "genlist_default_textblock_style";
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               text.style: "genlist_default_textblock_selected_style";
+            }
+            GENLIST_DESCRIPTION_INVISIBLE_SELECTED
+            GENLIST_DESCRIPTION_RENAME_ENABLED
+         }
+         GENLIST_PART_RENAME
+         GENLIST_PART_DISCLIP
+      }
+      programs {
+         // signal: elm,state,%s,active
+         //   a "check" item named %s went active
+         // signal: elm,state,%s,passive
+         //   a "check" item named %s went passive
+         // default is passive
+         program { name: "go_active";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            GENLIST_PROGRAM_SCRIPT_RENAME_SELECT_1TEXT
+         }
+         program { name: "go_passive";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg_image";
+            target: "elm.text";
+            transition: LINEAR 0.1;
+         }
+         program { name: "go_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disclip";
+         }
+         program { name: "go_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disclip";
+         }
+         GENLIST_PROGRAM_RENAME_1TEXT
+      }
+   }
+
    group { name: "elm/genlist/item/2text/default";
       alias: "elm/genlist/item_odd/2text/default";
       alias: "elm/genlist/item_compress/2text/default";
