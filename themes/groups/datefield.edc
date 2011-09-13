@@ -22,22 +22,201 @@
  */
 
 images {
-   image: "00_picker_panel_bg.png" COMP;
-   image: "00_timepicker_field_bg.png" COMP;
-   image: "00_timepicker_field_bg_focus.png" COMP;
-   image: "00_timepicker_colon.png" COMP;
-   image: "00_timepicker_number_bg.png" COMP;
-   image: "00_timepicker_tail.png" COMP;
+   image: "00_button_01_normal.png" COMP;
 }
 
-/////// time and date mode ////////
-group {
-   name: "elm/datefield/dateandtime/default";
-   alias: "elm/datefield/base/default";
+#define ITEM(_pos,_after) \
+   part {\
+      name: "item"#_pos".bg";\
+      scale: 1;\
+      mouse_events: 0;\
+      description {\
+         state: "default" 0.0;\
+         visible: 0;\
+         fixed: 1 1;\
+         rel1 { to: "item"#_pos; relative: 0.0 0.0; }\
+         rel2 { to: "item"#_pos; relative: 1.0 1.0; }\
+         image {\
+            normal: "00_button_01_normal.png";\
+            border: 3 3 3 3;\
+            border_scale: 1;\
+         }\
+      }\
+      description { state: "visible" 0.0;\
+         inherit: "default" 0.0;\
+         visible: 1;\
+         min: DATEFIELD_ITEM_BG_SIZE_INC;\
+         max: DATEFIELD_ITEM_BG_SIZE_INC;\
+      }\
+   }\
+   part {\
+      name: "item"#_pos; \
+      type: TEXT; \
+      scale: 1;\
+      mouse_events: 0;\
+      clip_to: "clipper";\
+      description { state: "default" 0.0; \
+         visible: 0;\
+         min: 0 0;\
+         align: 0.0 0.5;\
+         fixed: 1 0;\
+         rel1 { relative: 1.0 0.0; to: "separator"#_pos; }\
+         rel2 { relative: 1.0 1.0; to: "separator"#_pos; }\
+         color: DATEFIELD_TEXT_NORMAL_COLOR_INC;\
+         text {\
+            font: "SLP:style=Roman";\
+            size: DATEFIELD_TEXT_FONT_SIZE_INC;\
+            min:  1 0;\
+            align: 0.5 0.5;\
+         }\
+      }\
+      description { state: "visible" 0.0;\
+         inherit: "default" 0.0;\
+         visible: 1;\
+         min: DATEFIELD_ITEM_MIN_SIZE_INC;\
+      }\
+      description { state: "focused" 0.0;\
+         inherit: "default" 0.0;\
+         visible: 1;\
+         min: DATEFIELD_ITEM_MIN_SIZE_INC;\
+         color: DATEFIELD_TEXT_SELECTED_COLOR_INC;\
+      }\
+   }\
+   part {\
+      name: "item"#_pos".over";\
+      type: RECT;\
+      scale: 1;\
+      description {\
+         state: "default" 0.0;\
+         visible: 0;\
+         fixed: 1 1;\
+         rel1 { relative: 0.5 0.0; to: "separator"#_pos; }\
+         rel2 { relative: 0.5 1.0; to: "separator"#_pos; }\
+         align: 0.5 0.5;\
+         color: 0 0 0 0;\
+      }\
+      description { state: "visible" 0.0;\
+         inherit: "default" 0.0;\
+         visible: 1;\
+         rel1 { relative: 0.6 0.0; to: "separator"#_pos; }\
+         rel2 { relative: 0.4 1.0; to: "separator"#_after; }\
+      }\
+   }\
+   programs{\
+      program {\
+         name: "item_"#_pos"focused";\
+         signal: "item"#_pos",focus,in";\
+         source: "elm";\
+         action: STATE_SET "focused" 0.0;\
+         target: "item"#_pos;\
+      }\
+      program {\
+         name: "item_"#_pos"unfocused";\
+         signal: "item"#_pos",focus,out";\
+         source: "elm";\
+         action: STATE_SET "visible" 0.0;\
+         target: "item"#_pos;\
+      }\
+      program {\
+         name: "item_"#_pos"enabled";\
+         signal: "item"#_pos",enable";\
+         source: "elm";\
+         action: STATE_SET "visible" 0.0;\
+         target: "item"#_pos;\
+         target: "item"#_pos".over";\
+      }\
+      program {\
+         name: "item_"#_pos"disabled";\
+         signal: "item"#_pos",disable";\
+         source: "elm";\
+         action: STATE_SET "default" 0.0;\
+         target: "item"#_pos;\
+         target: "item"#_pos".over";\
+         target: "item"#_pos".bg";\
+      }\
+      program {\
+         name: "item_"#_pos"isampm";\
+         signal: "item"#_pos",style,ampm";\
+         source: "elm";\
+         action: STATE_SET "visible" 0.0;\
+         target: "item"#_pos".bg";\
+         after: "separator"#_pos"expanded"; \
+      }\
+      program {\
+         name: "item_"#_pos"isnotampm";\
+         signal: "item"#_pos",style,default";\
+         source: "elm";\
+         action: STATE_SET "default" 0.0;\
+         target: "item"#_pos".bg";\
+         after: "separator"#_pos"normal"; \
+      }\
+      program {\
+         name: "separator"#_pos"expanded";\
+         action: STATE_SET "visible_expanded" 0.0;\
+         target: "separator"#_pos;\
+      }\
+      program {\
+         name: "separator"#_pos"normal";\
+         action: STATE_SET "visible" 0.0;\
+         target: "separator"#_pos;\
+      }\
+    }
 
+#define SEPARATOR(_after,_pos, minw, extminw ) \
+   part {\
+      name: "separator"#_pos; \
+      type: TEXT;\
+      scale: 1;\
+      description {\
+         state: "default" 0.0;\
+         visible: 0;\
+         min: 0 0;\
+         align: 0.0 0.5;\
+         fixed: 1 0;\
+         rel1 { relative: 1.0 0.0; to: "item"#_after; }\
+         rel2 { relative: 1.0 1.0; to: "item"#_after; }\
+         color: DATEFIELD_SEPARATOR_TEXT_COLOR_INC;\
+         text {\
+            font: "SLP:style=Roman";\
+            size: DATEFIELD_TEXT_FONT_SIZE_INC;\
+            min:  1 0;\
+            align: 0.2 0.5;\
+         }\
+      }\
+      description { state: "visible" 0.0;\
+         inherit: "default" 0.0;\
+         visible: 1;\
+         min: minw DATEFIELD_SEPARATOR_MIN_HEIGHT_INC;\
+      }\
+      description { state: "visible_expanded" 0.0;\
+         inherit: "default" 0.0;\
+         visible: 1;\
+         min: extminw DATEFIELD_SEPARATOR_MIN_HEIGHT_INC;\
+      }\
+   }\
+   programs {\
+      program {\
+         name: "separator"#_pos",enabled";\
+         signal: "item"#_after",enable";\
+         source: "elm";\
+         action: STATE_SET "visible" 0.0;\
+         target: "separator"#_pos;\
+      }\
+      program {\
+         name: "separator"#_pos",disabled";\
+         signal: "item"#_after",disable";\
+         source: "elm";\
+         action: STATE_SET "default" 0.0;\
+         target: "separator"#_pos;\
+      }\
+   }
+
+
+group {
+   name: "elm/datefield/base/default";
    parts {
       part {
-         name: "elm.rect.bg";
+         name: "bg";
          type: RECT;
          scale: 1;
          description {
@@ -48,1942 +227,80 @@ group {
          }
       }
       part {
-         name: "elm.rect.date";
+         name: "separator0";
          type: RECT;
          scale: 1;
          description {
             state: "default" 0.0;
             visible: 0;
-            min: DATEFIELD_DATE_MIN_WIDTH_INC DATEFIELD_HEIGHT_INC;
+            min: DATEFIELD_SEPARATOR_MIN_WIDTH_INC DATEFIELD_SEPARATOR_MIN_HEIGHT_INC;
             align: 0.0 0.5;
             fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.bg"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.bg"; }
+            rel1 { relative: 0.0 0.0; to: "bg"; }
+            rel2 { relative: 0.0 1.0; to: "bg"; }
          }
-      }
-      part {
-         name: "elm.rect.time";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            min: DATEFIELD_TIME_MIN_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.time.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.time.pad"; }
-         }
-      }
-      part {
-         name: "elm.rect.date.left.pad";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            min: 10 DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.date"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.date"; }
-         }
-      }
-      part {
-         name: "elm.rect.date.right.pad";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            min: 10 DATEFIELD_HEIGHT_INC;
-            align: 1.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.time"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.time"; }
-         }
-      }
-      part {
-         name: "elm.text.date.year";
-         type: TEXT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.date.year.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.year.over"; }
-            color: DATEFIELD_TEXT_NORMAL_COLOR_INC;
-            text {
-               font: "SLP:style=Roman";
-               size: DATEFIELD_TEXT_SIZE_INC;
-               min:  0 0;
-               align: 0.5 0.5;
-               max: 1 0;
-            }
-         }
-         description { state: "focused" 0.0;
+         description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            color: DATEFIELD_TEXT_SELECTED_COLOR_INC;
          }
-      }
-      part {
-         name: "elm.text.date.month";
-         type: TEXT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.5 0.5;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.date.month.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.month.over"; }
-            color: DATEFIELD_TEXT_NORMAL_COLOR_INC;
-            text {
-               font: "SLP:style=Roman";
-               size: DATEFIELD_TEXT_SIZE_INC;
-               min:  0 0;
-               align: 0.5 0.5;
-               max: 1 0;
-            }
-         }
-         description { state: "focused" 0.0;
+         description { state: "visible_expanded" 0.0;
             inherit: "default" 0.0;
-            color: DATEFIELD_TEXT_SELECTED_COLOR_INC;
          }
       }
+      SEPARATOR(0,1, DATEFIELD_SEPARATOR_MIN_WIDTH_INC, DATEFIELD_SEPARATOR_EXTENDED_MIN_WIDTH_INC)
+      ITEM(0,1)
+      SEPARATOR(1,2, DATEFIELD_SEPARATOR_MIN_WIDTH_INC, DATEFIELD_SEPARATOR_EXTENDED_MIN_WIDTH_INC)
+      ITEM(1,2)
+      SEPARATOR(2,3, DATEFIELD_SEPARATOR_MIN_WIDTH_INC, DATEFIELD_SEPARATOR_EXTENDED_MIN_WIDTH_INC)
+      ITEM(2,3)
+      SEPARATOR(3,4, DATEFIELD_SEPARATOR_MIN_WIDTH_INC, DATEFIELD_SEPARATOR_EXTENDED_MIN_WIDTH_INC)
+      ITEM(3,4)
+      SEPARATOR(4,5, DATEFIELD_SEPARATOR_MIN_WIDTH_INC, DATEFIELD_SEPARATOR_MIN_WIDTH_INC)
+      ITEM(4,5)
+      SEPARATOR(5,6, DATEFIELD_SEPARATOR_MIN_WIDTH_INC, DATEFIELD_SEPARATOR_EXTENDED_MIN_WIDTH_INC)
+      ITEM(5,6)
       part {
-         name: "elm.text.date.day";
-         type: TEXT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.5 0.5;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.date.day.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.day.over"; }
-            color: DATEFIELD_TEXT_NORMAL_COLOR_INC;
-            text {
-               font: "SLP:style=Roman";
-               size: DATEFIELD_TEXT_SIZE_INC;
-               min:  0 0;
-               align: 0.5 0.5;
-               max: 1 0;
-            }
-         }
-         description { state: "focused" 0.0;
-            inherit: "default" 0.0;
-            color: DATEFIELD_TEXT_SELECTED_COLOR_INC;
-         }
-      }
-      part {
-         name: "elm.rect.date.year.over";
+         name: "clipper";
          type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;    //mmddyy
+         description { state: "default" 0.0;
+            rel1 { relative: 0.0 0.0; to: "separator0"; }
+            rel2 { relative: 1.0 1.0; to: "separator6"; }
+            color: 255 255 255 255;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 127;
+         }
+      }
+      part {
+         name: "disabler";
+         type: RECT;
+         description { state: "default" 0.0;
             color: 0 0 0 0;
-            min: DATEFIELD_YEAR_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding2"; }
-         }
-         description {
-            state: "yymmdd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.left.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.left.pad"; }
-         }
-         description {
-            state: "yyddmm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.left.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.left.pad"; }
-         }
-         description {
-            state: "mmyydd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding1"; }
-         }
-         description {
-            state: "ddyymm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding1"; }
-         }
-         description {
-            state: "ddmmyy" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding2"; }
-         }
-      }
-      part {
-         name: "elm.rect.date.month.over";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;    //mmddyy
-            color: 0 0 0 0;
-            min: DATEFIELD_MONTH_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.left.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.left.pad"; }
-         }
-         description {
-            state: "mmyydd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.left.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.left.pad"; }
-         }
-         description {
-            state: "yymmdd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding1"; }
-         }
-         description {
-            state: "ddmmyy" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding1"; }
-         }
-         description {
-            state: "ddyymm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding2"; }
-         }
-         description {
-            state: "yyddmm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding2"; }
-         }
-      }
-      part {
-         name: "elm.rect.date.day.over";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;    //mmddyy
-            color: 0 0 0 0;
-            min: DATEFIELD_DAY_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding1"; }
-         }
-         description {
-            state: "ddmmyy" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.left.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.left.pad"; }
-         }
-         description {
-            state: "ddyymm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.left.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.left.pad"; }
-         }
-         description {
-            state: "yyddmm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding1"; }
-         }
-         description {
-            state: "yymmdd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding2"; }
-         }
-         description {
-            state: "mmyydd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding2"; }
-         }
-      }
-      part {
-         name: "elm.rect.date.padding1";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;    //mmddyy
             visible: 0;
-            min: 20 DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.month.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.month.over"; }
          }
-         description {
-            state: "ddmmyy" 0.0;
+         description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.day.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.day.over"; }
-         }
-         description {
-            state: "ddyymm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.day.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.day.over"; }
-         }
-         description {
-            state: "yyddmm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.year.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.year.over"; }
-         }
-         description {
-            state: "yymmdd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.year.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.year.over"; }
-         }
-         description {
-            state: "mmyydd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.month.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.month.over"; }
-         }
-      }
-      part {
-         name: "elm.rect.date.padding2";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;    //mmddyy
-            visible: 0;
-            min: 20 DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.day.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.day.over"; }
-         }
-         description {
-            state: "ddmmyy" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.month.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.month.over"; }
-         }
-         description {
-            state: "ddyymm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.year.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.year.over"; }
-         }
-         description {
-            state: "yyddmm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.day.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.day.over"; }
-         }
-         description {
-            state: "yymmdd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.month.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.month.over"; }
-         }
-         description {
-            state: "mmyydd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.year.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.year.over"; }
-         }
-      }
-      part {
-         name: "elm.rect.date.time.pad";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            min: 44 0;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date"; }
-         }
-      }
-      part {
-         name: "elm.image.colon";
-         type: IMAGE;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: DATEFIELD_TIME_COLON_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.time.hour.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.time.hour.over"; }
-            image {
-               normal: "00_timepicker_colon.png";
-               border: 0 0 6 6;
-               border_scale: 1;
-            }
-         }
-      }
-      part {
-         name: "elm.text.time.hour";
-         type: TEXT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.5 0.5;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.time.hour.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.time.hour.over"; }
-            color: DATEFIELD_TEXT_NORMAL_COLOR_INC;
-            text {
-               font: "SLP:style=Roman";
-               size: DATEFIELD_TEXT_SIZE_INC;
-               min:  0 0;
-               align: 0.5 0.5;
-               max: 1 0;
-            }
-         }
-         description { state: "focused" 0.0;
-            inherit: "default" 0.0;
-            color: DATEFIELD_TEXT_SELECTED_COLOR_INC;
-         }
-      }
-      part {
-         name: "elm.text.time.min";
-         type: TEXT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.5 0.5;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.time.min.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.time.min.over"; }
-            color: DATEFIELD_TEXT_NORMAL_COLOR_INC;
-            text {
-               font: "SLP:style=Roman";
-               size: DATEFIELD_TEXT_SIZE_INC;
-               min:  0 0;
-               align: 0.5 0.5;
-               max: 1 0;
-            }
-         }
-         description { state: "focused" 0.0;
-            inherit: "default" 0.0;
-            color: DATEFIELD_TEXT_SELECTED_COLOR_INC;
-         }
-      }
-      part {
-         name: "elm.rect.time.hour.over";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            color: 0 0 0 0;
-            min: DATEFIELD_HOUR_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.time"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.time"; }
-         }
-      }
-      part {
-         name: "elm.rect.time.min.over";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            color: 0 0 0 0;
-            min: DATEFIELD_MIN_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.image.colon"; }
-            rel2 { relative: 1.0 1.0; to: "elm.image.colon"; }
-         }
-      }
-      part {
-         name: "elm.rect.ampm.pad";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            min: 30 DATEFIELD_HEIGHT_INC;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.time.min.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.time.min.over"; }
-         }
-         description {
-            state: "noampm" 0.0;
-            inherit: "default" 0.0;
-            min: 0 0;
-         }
-      }
-      part {
-         name: "elm.rect.ampm";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            color: 0 0 0 0;
-            min: DATEFIELD_AMPM_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.ampm.pad";}
-            rel2 { relative: 1.0 1.0; to: "elm.rect.ampm.pad";}
-         }
-         description {
-            state: "noampm" 0.0;
-            inherit: "default" 0.0;
-            min: 0 0;
-         }
-      }
-      part {
-         name: "elm.swallow.time.ampm";
-         type: SWALLOW;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            fixed: 0 1;
-            rel1 { relative: 0.0 0.5; to: "elm.rect.ampm"; }
-            rel2 { relative: 1.0 0.5; to: "elm.rect.ampm"; }
-         }
-         description {
-            state: "noampm" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
+            visible: 1;
          }
       }
    }
    programs {
       program {
-         name: "format_yyddmm";
-         signal: "elm,state,format,yyddmm";
+         name: "disble_datefield";
+         signal: "elm,state,disabled";
          source: "elm";
-         action: STATE_SET "yyddmm" 0.0;
-         target: "elm.rect.date.year.over";
-         target: "elm.rect.date.month.over";
-         target: "elm.rect.date.day.over";
-         target: "elm.rect.date.padding1";
-         target: "elm.rect.date.padding2";
+         action: STATE_SET "visible" 0.0;
+         target: "disabler";
+         target: "clipper";
       }
       program {
-         name: "format_yymmdd";
-         signal: "elm,state,format,yymmdd";
-         source: "elm";
-         action: STATE_SET "yymmdd" 0.0;
-         target: "elm.rect.date.year.over";
-         target: "elm.rect.date.month.over";
-         target: "elm.rect.date.day.over";
-         target: "elm.rect.date.padding1";
-         target: "elm.rect.date.padding2";
-      }
-      program {
-         name: "format_mmyydd";
-         signal: "elm,state,format,mmyydd";
-         source: "elm";
-         action: STATE_SET "mmyydd" 0.0;
-         target: "elm.rect.date.year.over";
-         target: "elm.rect.date.month.over";
-         target: "elm.rect.date.day.over";
-         target: "elm.rect.date.padding1";
-         target: "elm.rect.date.padding2";
-      }
-      program {
-         name: "format_ddyymm";
-         signal: "elm,state,format,ddyymm";
-         source: "elm";
-         action: STATE_SET "ddyymm" 0.0;
-         target: "elm.rect.date.year.over";
-         target: "elm.rect.date.month.over";
-         target: "elm.rect.date.day.over";
-         target: "elm.rect.date.padding1";
-         target: "elm.rect.date.padding2";
-      }
-      program {
-         name: "format_mmddyy";
-         signal: "elm,state,format,mmddyy";
+         name: "enable_datefield";
+         signal: "elm,state,enabled";
          source: "elm";
          action: STATE_SET "default" 0.0;
-         target: "elm.rect.date.year.over";
-         target: "elm.rect.date.month.over";
-         target: "elm.rect.date.day.over";
-         target: "elm.rect.date.padding1";
-         target: "elm.rect.date.padding2";
-      }
-      program {
-         name: "format_ddmmyy";
-         signal: "elm,state,format,ddmmyy";
-         source: "elm";
-         action: STATE_SET "ddmmyy" 0.0;
-         target: "elm.rect.date.year.over";
-         target: "elm.rect.date.month.over";
-         target: "elm.rect.date.day.over";
-         target: "elm.rect.date.padding1";
-         target: "elm.rect.date.padding2";
-      }
-      program {
-         name: "24h_mode";
-         signal: "elm,state,mode,24h";
-         source: "elm";
-         action: STATE_SET "noampm" 0.0;
-         target: "elm.rect.ampm.pad";
-         target: "elm.rect.ampm";
-         target: "elm.swallow.time.ampm";
-      }
-      program {
-         name: "12h_mode";
-         signal: "elm,state,mode,12h";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.rect.ampm.pad";
-         target: "elm.rect.ampm";
-         target: "elm.swallow.time.ampm";
-      }
-      program {
-         name: "day_focused";
-         signal: "elm,state,day,focus,in";
-         source: "elm";
-         action: STATE_SET "focused" 0.0;
-         target: "elm.text.date.day";
-      }
-      program {
-         name: "day_unfocused";
-         signal: "elm,state,day,focus,out";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.date.day";
-      }
-      program {
-         name: "month_focused";
-         signal: "elm,state,month,focus,in";
-         source: "elm";
-         action: STATE_SET "focused" 0.0;
-         target: "elm.text.date.month";
-      }
-      program {
-         name: "month_unfocused";
-         signal: "elm,state,month,focus,out";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.date.month";
-      }
-      program {
-         name: "year_focused";
-         signal: "elm,state,year,focus,in";
-         source: "elm";
-         action: STATE_SET "focused" 0.0;
-         target: "elm.text.date.year";
-      }
-      program {
-         name: "year_unfocused";
-         signal: "elm,state,year,focus,out";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.date.year";
-      }
-      program {
-         name: "hour_focused";
-         signal: "elm,state,hour,focus,in";
-         source: "elm";
-         action: STATE_SET "focused" 0.0;
-         target: "elm.text.time.hour";
-      }
-      program {
-         name: "min_focused";
-         signal: "elm,state,min,focus,in";
-         source: "elm";
-         action: STATE_SET "focused" 0.0;
-         target: "elm.text.time.min";
-      }
-      program {
-         name: "hour_unfocused";
-         signal: "elm,state,hour,focus,out";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.time.hour";
-      }
-      program {
-         name: "min_unfocused";
-         signal: "elm,state,min,focus,out";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.time.min";
+         target: "disabler";
+         target: "clipper";
       }
    }
-}
+}//end group
 
-//////////// time mode /////////////
-group {
-   name: "elm/datefield/time/default";
-
-   parts {
-      part {
-         name: "elm.rect.bg";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      }
-      part {
-         name: "elm.rect.time";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            align: 0.5 0.5;
-            min: DATEFIELD_TIME_MIN_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.bg";}
-            rel2 { relative: 1.0 1.0; to: "elm.rect.bg";}
-         }
-      }
-      part {
-         name: "elm.rect.left.pad";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.5;
-            visible: 0;
-            min: 20 DATEFIELD_HEIGHT_INC;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.time"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.time"; }
-         }
-      }
-      part {
-         name: "elm.image.colon";
-         type: IMAGE;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: DATEFIELD_TIME_COLON_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.time.hour.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.time.hour.over"; }
-            image {
-               normal: "00_timepicker_colon.png";
-               border: 0 0 6 6;
-               border_scale: 1;
-            }
-         }
-      }
-      part {
-         name: "elm.text.time.hour";
-         type: TEXT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.5 0.5;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.time.hour.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.time.hour.over"; }
-            color: DATEFIELD_TEXT_NORMAL_COLOR_INC;
-            text {
-               font: "SLP:style=Roman";
-               size: DATEFIELD_TEXT_SIZE_INC;
-               min:  0 0;
-               align: 0.5 0.5;
-               max: 1 0;
-            }
-         }
-         description { state: "focused" 0.0;
-            inherit: "default" 0.0;
-            color: DATEFIELD_TEXT_SELECTED_COLOR_INC;
-         }
-      }
-      part {
-         name: "elm.text.time.min";
-         type: TEXT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.5 0.5;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.time.min.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.time.min.over"; }
-            color: DATEFIELD_TEXT_NORMAL_COLOR_INC;
-            text {
-               font: "SLP:style=Roman";
-               size: DATEFIELD_TEXT_SIZE_INC;
-               min:  0 0;
-               align: 0.5 0.5;
-               max: 1 0;
-            }
-         }
-         description { state: "focused" 0.0;
-            inherit: "default" 0.0;
-            color: DATEFIELD_TEXT_SELECTED_COLOR_INC;
-         }
-      }
-      part {
-         name: "elm.rect.time.hour.over";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            color: 0 0 0 0;
-            min: DATEFIELD_HOUR_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.left.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.left.pad"; }
-         }
-      }
-      part {
-         name: "elm.rect.time.min.over";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            color: 0 0 0 0;;
-            min: DATEFIELD_MIN_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.image.colon"; }
-            rel2 { relative: 1.0 1.0; to: "elm.image.colon"; }
-         }
-      }
-      part {
-         name: "elm.rect.ampm.pad";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            min: 30 DATEFIELD_HEIGHT_INC;
-            fixed: 1 0;
-            align: 0.0 0.5;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.time.min.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.time.min.over"; }
-         }
-         description {
-            state: "noampm" 0.0;
-            inherit: "default" 0.0;
-            min: 0 0;
-         }
-      }
-      part {
-         name: "elm.rect.ampm";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            color: 0 0 0 0;
-            min: DATEFIELD_AMPM_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.ampm.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.ampm.pad"; }
-         }
-         description {
-            state: "noampm" 0.0;
-            inherit: "default" 0.0;
-            min: 0 0;
-         }
-      }
-      part {
-         name: "elm.swallow.time.ampm";
-         type: SWALLOW;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            fixed: 1 1;
-            min: DATEFIELD_AMPM_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            rel1 { relative: 0.5 0.5; to: "elm.rect.ampm"; }
-            rel2 { relative: 0.5 0.5; to: "elm.rect.ampm"; }
-         }
-         description {
-            state: "noampm" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
-         }
-      }
-      part {
-         name: "elm.rect.right.pad";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.5;
-            visible: 0;
-            min: 20 DATEFIELD_HEIGHT_INC;
-            fixed: 1 0;
-            color: 0 0 255 255;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.ampm"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.ampm"; }
-         }
-      }
-   }
-   programs {
-      program {
-         name: "24h_mode";
-         signal: "elm,state,mode,24h";
-         source: "elm";
-         action: STATE_SET "noampm" 0.0;
-         target: "elm.rect.ampm.pad";
-         target: "elm.rect.ampm";
-         target: "elm.swallow.time.ampm";
-      }
-      program {
-         name: "12h_mode";
-         signal: "elm,state,mode,12h";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.rect.ampm.pad";
-         target: "elm.rect.ampm";
-         target: "elm.swallow.time.ampm";
-      }
-      program {
-         name: "hour_focused";
-         signal: "elm,state,hour,focus,in";
-         source: "elm";
-         action: STATE_SET "focused" 0.0;
-         target: "elm.text.time.hour";
-      }
-      program {
-         name: "min_focused";
-         signal: "elm,state,min,focus,in";
-         source: "elm";
-         action: STATE_SET "focused" 0.0;
-         target: "elm.text.time.min";
-      }
-      program {
-         name: "hour_unfocused";
-         signal: "elm,state,hour,focus,out";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.time.hour";
-      }
-      program {
-         name: "min_unfocused";
-         signal: "elm,state,min,focus,out";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.time.min";
-      }
-   }
-}
-
-/////////// date mode ////////////
-group {
-   name: "elm/datefield/date/default";
-
-   parts {
-      part {
-         name: "elm.rect.bg";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            rel1 { relative: 0.0 0.0; }
-            rel2 { relative: 1.0 1.0; }
-         }
-      }
-      part {
-         name: "elm.rect.date";
-         type: IMAGE;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            min: DATEFIELD_DATE_MIN_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.5 0.5;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.bg"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.bg"; }
-         }
-      }
-      part {
-         name: "elm.rect.date.left.pad";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            min: 20 DATEFIELD_HEIGHT_INC;
-            fixed: 1 0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.date"; }
-            rel2 { relative: 0.0 1.0; to: "elm.rect.date"; }
-         }
-      }
-      part {
-         name: "elm.text.date.year";
-         type: TEXT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-             align: 0.5 0.5;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.date.year.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.year.over"; }
-            color: DATEFIELD_TEXT_NORMAL_COLOR_INC;
-            text {
-               font: "SLP:style=Roman";
-               size: DATEFIELD_TEXT_SIZE_INC;
-               min: 0 0;
-               max: 1 0;
-            }
-         }
-         description { state: "focused" 0.0;
-            inherit: "default" 0.0;
-            color: DATEFIELD_TEXT_SELECTED_COLOR_INC;
-         }
-      }
-      part {
-         name: "elm.text.date.month";
-         type: TEXT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.date.month.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.month.over"; }
-            color: DATEFIELD_TEXT_NORMAL_COLOR_INC;
-            text {
-               font: "SLP:style=Roman";
-               size: DATEFIELD_TEXT_SIZE_INC;
-               min: 0 0;
-               max: 1 0;
-            }
-         }
-         description { state: "focused" 0.0;
-            inherit: "default" 0.0;
-            color: DATEFIELD_TEXT_SELECTED_COLOR_INC;
-         }
-      }
-      part {
-         name: "elm.text.date.day";
-         type: TEXT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.date.day.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.day.over"; }
-            color: DATEFIELD_TEXT_NORMAL_COLOR_INC;
-            text {
-               font: "SLP:style=Roman";
-               size: DATEFIELD_TEXT_SIZE_INC;
-               min: 0 0;
-               max: 1 0;
-            }
-         }
-         description { state: "focused" 0.0;
-            inherit: "default" 0.0;
-            color: DATEFIELD_TEXT_SELECTED_COLOR_INC;
-         }
-      }
-      part {
-         name: "elm.rect.date.year.over";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;    //mmddyy
-            color: 0 0 0 0;
-            min: DATEFIELD_YEAR_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding2"; }
-         }
-         description {
-            state: "yymmdd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.left.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.left.pad"; }
-         }
-         description {
-            state: "yyddmm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.left.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.left.pad"; }
-         }
-         description {
-            state: "mmyydd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding1"; }
-         }
-         description {
-            state: "ddyymm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding1"; }
-         }
-         description {
-            state: "ddmmyy" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding2"; }
-         }
-      }
-      part {
-         name: "elm.rect.date.month.over";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;    //mmddyy
-            color: 0 0 0 0;
-            min: DATEFIELD_MONTH_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.left.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.left.pad"; }
-         }
-         description {
-            state: "mmyydd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.left.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.left.pad"; }
-         }
-         description {
-            state: "yymmdd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding1"; }
-         }
-         description {
-            state: "ddmmyy" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding1"; }
-         }
-         description {
-            state: "ddyymm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding2"; }
-         }
-         description {
-            state: "yyddmm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding2"; }
-         }
-      }
-      part {
-         name: "elm.rect.date.day.over";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;    //mmddyy
-            color: 0 0 0 0;
-            min: DATEFIELD_DAY_WIDTH_INC DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding1"; }
-         }
-         description {
-            state: "ddmmyy" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.left.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.left.pad"; }
-         }
-         description {
-            state: "ddyymm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.left.pad"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.left.pad"; }
-         }
-         description {
-            state: "yyddmm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding1"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding1"; }
-         }
-         description {
-            state: "yymmdd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding2"; }
-         }
-         description {
-            state: "mmyydd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.padding2"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.padding2"; }
-         }
-      }
-      part {
-         name: "elm.rect.date.padding1";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;    //mmddyy
-            visible: 0;
-            min: 20 DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.month.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.month.over"; }
-         }
-         description {
-            state: "ddmmyy" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.day.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.day.over"; }
-         }
-         description {
-            state: "ddyymm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.day.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.day.over"; }
-         }
-         description {
-            state: "yyddmm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.year.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.year.over"; }
-         }
-         description {
-            state: "yymmdd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.year.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.year.over"; }
-         }
-         description {
-            state: "mmyydd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.month.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.month.over"; }
-         }
-      }
-      part {
-         name: "elm.rect.date.padding2";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;    //mmddyy
-            visible: 0;
-            min: 20 DATEFIELD_HEIGHT_INC;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.day.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.day.over"; }
-         }
-         description {
-            state: "ddmmyy" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.month.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.month.over"; }
-         }
-         description {
-            state: "ddyymm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.year.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.year.over"; }
-         }
-         description {
-            state: "yyddmm" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.day.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.day.over"; }
-         }
-         description {
-            state: "yymmdd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.month.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.month.over"; }
-         }
-         description {
-            state: "mmyydd" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date.year.over"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date.year.over"; }
-         }
-      }
-      part {
-         name: "elm.rect.date.right.pad";
-         type: RECT;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            min: 20 DATEFIELD_HEIGHT_INC;
-            fixed: 1 0;
-            align: 1 0;
-            rel1 { relative: 1.0 0.0; to: "elm.rect.date"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.date"; }
-         }
-      }
-   }
-   programs {
-      program {
-         name: "format_yyddmm";
-         signal: "elm,state,format,yyddmm";
-         source: "elm";
-         action: STATE_SET "yyddmm" 0.0;
-         target: "elm.rect.date.year.over";
-         target: "elm.rect.date.month.over";
-         target: "elm.rect.date.day.over";
-         target: "elm.rect.date.padding1";
-         target: "elm.rect.date.padding2";
-      }
-      program {
-         name: "format_yymmdd";
-         signal: "elm,state,format,yymmdd";
-         source: "elm";
-         action: STATE_SET "yymmdd" 0.0;
-         target: "elm.rect.date.year.over";
-         target: "elm.rect.date.month.over";
-         target: "elm.rect.date.day.over";
-         target: "elm.rect.date.padding1";
-         target: "elm.rect.date.padding2";
-      }
-      program {
-         name: "format_mmyydd";
-         signal: "elm,state,format,mmyydd";
-         source: "elm";
-         action: STATE_SET "mmyydd" 0.0;
-         target: "elm.rect.date.year.over";
-         target: "elm.rect.date.month.over";
-         target: "elm.rect.date.day.over";
-         target: "elm.rect.date.padding1";
-         target: "elm.rect.date.padding2";
-      }
-      program {
-         name: "format_ddyymm";
-         signal: "elm,state,format,ddyymm";
-         source: "elm";
-         action: STATE_SET "ddyymm" 0.0;
-         target: "elm.rect.date.year.over";
-         target: "elm.rect.date.month.over";
-         target: "elm.rect.date.day.over";
-         target: "elm.rect.date.padding1";
-         target: "elm.rect.date.padding2";
-      }
-      program {
-         name: "format_mmddyy";
-         signal: "elm,state,format,mmddyy";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.rect.date.year.over";
-         target: "elm.rect.date.month.over";
-         target: "elm.rect.date.day.over";
-         target: "elm.rect.date.padding1";
-         target: "elm.rect.date.padding2";
-      }
-      program {
-         name: "format_ddmmyy";
-         signal: "elm,state,format,ddmmyy";
-         source: "elm";
-         action: STATE_SET "ddmmyy" 0.0;
-         target: "elm.rect.date.year.over";
-         target: "elm.rect.date.month.over";
-         target: "elm.rect.date.day.over";
-         target: "elm.rect.date.padding1";
-         target: "elm.rect.date.padding2";
-      }
-      program {
-         name: "day_focused";
-         signal: "elm,state,day,focus,in";
-         source: "elm";
-         action: STATE_SET "focused" 0.0;
-         target: "elm.text.date.day";
-      }
-      program {
-         name: "day_unfocused";
-         signal: "elm,state,day,focus,out";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.date.day";
-      }
-      program {
-         name: "month_focused";
-         signal: "elm,state,month,focus,in";
-         source: "elm";
-         action: STATE_SET "focused" 0.0;
-         target: "elm.text.date.month";
-      }
-      program {
-         name: "month_unfocused";
-         signal: "elm,state,month,focus,out";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.date.month";
-      }
-      program {
-         name: "year_focused";
-         signal: "elm,state,year,focus,in";
-         source: "elm";
-         action: STATE_SET "focused" 0.0;
-         target: "elm.text.date.year";
-      }
-      program {
-         name: "year_unfocused";
-         signal: "elm,state,year,focus,out";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.date.year";
-      }
-   }
-}
-
-///// datefield entry ///////
-group {
-   name: "elm/entry/base-single/datefield";
-   alias: "elm/entry/base-single/datefield/default";
-   data.item: "default_font_size" "40";
-   data.item: "min_font_size" "8";
-   data.item: "max_font_size" "60";
-   styles
-   {
-      style {
-         name: "datefield_textblock_style";
-         base: "font=SLP:style=Roman font_size=30 align=0.5 color=#000000 wrap=none";
-         tag:  "br" "\n";
-         tag:  "ps" "ps";
-         tag:  "tab" "\t";
-         tag:  "em" "+ font=SLP:style=Oblique";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-      }
-      style {
-         name: "datefield_textblock_focus_style";
-         base: "font=SLP:style=Roman font_size=30 align=0.5 color=#dd8615 wrap=none";
-         tag:  "br" "\n";
-         tag:  "ps" "ps";
-         tag:  "tab" "\t";
-         tag:  "em" "+ font=SLP:style=Oblique";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-      }
-   }
-   parts {
-      part {
-         name: "elm.text";
-         type: TEXTBLOCK;
-         mouse_events: 1;
-         scale: 1;
-         entry_mode: EDITABLE;
-         multiline: 0;
-         description {
-            state: "default" 0.0;
-            text {
-               style: "datefield_textblock_style";
-               min: 1 1;
-               max: 0 1;
-            }
-         }
-         description {
-            state: "focus" 0.0;
-            text {
-               style: "datefield_textblock_focus_style";
-               min: 1 1;
-               max: 0 1;
-            }
-         }
-      }
-   }
-   programs {
-      program {
-         name: "focus";
-         signal: "load";
-         source: "";
-         action: FOCUS_SET;
-         target: "elm.text";
-      }
-      program {
-         name: "focus_in";
-         signal: "elm,action,focus";
-         source: "elm";
-         action: STATE_SET "focus" 0.0;
-         target: "elm.text";
-      }
-      program {
-         name: "focus_out";
-         signal: "elm,action,unfocus";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text";
-      }
-   }
-}
-
-group {
-   name: "elm/entry/base-single/datefield/hybrid";
-   alias: "elm/entry/base-single/datefield/hybrid/default";
-   data.item: "default_font_size" "32";
-   data.item: "min_font_size" "8";
-   data.item: "max_font_size" "60";
-   styles
-   {
-      style {
-         name: "datefield_hybrid_textblock_style";
-         base: "font=SLP:style=Roman font_size=30 align=0.5 color=#000000 wrap=none";
-         tag:  "br" "\n";
-         tag:  "ps" "ps";
-         tag:  "tab" "\t";
-         tag:  "em" "+ font=SLP:style=Oblique";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-      }
-      style {
-         name: "datefield_hybrid_textblock_focus_style";
-         base: "font=SLP:style=Roman font_size=30 align=0.5 color=#dd8615 wrap=none";
-         tag:  "br" "\n";
-         tag:  "ps" "ps";
-         tag:  "tab" "\t";
-         tag:  "em" "+ font=SLP:style=Oblique";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-      }
-   }
-   parts {
-      part {
-         name: "elm.text";
-         type: TEXTBLOCK;
-         mouse_events: 1;
-         scale: 1;
-         entry_mode: EDITABLE;
-         multiline: 0;
-         description {
-            state: "default" 0.0;
-            text {
-               style: "datefield_hybrid_textblock_style";
-               min: 1 1;
-               max: 0 1;
-            }
-         }
-         description {
-            state: "focus" 0.0;
-            text {
-               style: "datefield_hybrid_textblock_focus_style";
-               min: 1 1;
-               max: 0 1;
-            }
-         }
-      }
-   }
-   programs {
-      program {
-         name: "focus";
-         signal: "load";
-         source: "";
-         action: FOCUS_SET;
-         target: "elm.text";
-      }
-      program {
-         name: "focus_in";
-         signal: "elm,action,focus";
-         source: "elm";
-         action: STATE_SET "focus" 0.0;
-         target: "elm.text";
-      }
-      program {
-         name: "focus_out";
-         signal: "elm,action,unfocus";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text";
-      }
-   }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-   group { name: "elm/button/base/datefield.ampm/default";
-      images {
-         image: "00_button_01_normal.png" COMP;
-      }
-      script {
-         public button_state = 0; //0:enabled, 1: disabled
-      }
-      parts {
-         part { name: "button_image";
-            mouse_events: 1;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 16 DATEFIELD_HEIGHT_INC;
-               image {
-                  normal: "00_button_01_normal.png";
-                  border: 2 2 10 10;
-                  border_scale: 1;
-               }
-            }
-            description { state: "clicked" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "00_button_01_normal.png";
-            }
-            description { state: "disabled" 0.0;
-               inherit:  "default" 0.0;
-            }
-            description { state: "focused" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "00_button_01_normal.png";
-            }
-         }
-         part {
-            name: "padding_left";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               align: 0.0 0.0;
-               rel1.relative: 0.0 0.0;
-               rel2.relative: 0.0 1.0;
-               min: 5 5;
-               fixed: 1 0;
-               visible: 0;
-            }
-         }
-         part {
-            name: "padding_right";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               align: 1.0 0.0;
-               rel1.relative: 1.0 0.0;
-               rel2.relative: 1.0 1.0;
-               min: 5 5;
-               fixed: 1 0;
-               visible: 0;
-            }
-         }
-         part {
-            name: "padding_top";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               align: 0.0 0.0;
-               rel1.relative: 0.0 0.0;
-               rel2.relative: 1.0 0.0;
-               min: 5 5;
-               fixed: 0 1;
-               visible: 0;
-            }
-         }
-         part {
-            name: "padding_bottom";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               align: 1.0 1.0;
-               rel1.relative: 0.0 1.0;
-               rel2.relative: 1.0 1.0;
-               min: 5 5;
-               fixed: 0 1;
-               visible: 0;
-            }
-         }
-         part {
-            name: "padding_icon_text";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description { state: "default" 0.0; //when only icon or no icon is there
-               align: 0.0 0.0;
-               rel1 { relative: 1.0 0.0; to: "elm.swallow.content"; }
-               rel2 { relative: 1.0 1.0; to: "elm.swallow.content"; }
-               fixed: 1 0;
-               min: 0 0;
-               visible: 0;
-            }
-            description { state: "icononly" 0.0;
-               inherit: "default" 0.0;
-            }
-            description { state: "visible" 0.0; //when icon is visible
-               align: 0.0 0.0;
-               rel1 { relative: 1.0 0.0; to: "elm.swallow.content"; }
-               rel2 { relative: 1.0 1.0; to: "elm.swallow.content"; }
-               fixed: 1 0;
-               min: 5 0;
-               visible: 0;
-            }
-         }
-         part { name: "elm.swallow.content";
-            type: SWALLOW;
-            scale: 1;
-            description { state: "default" 0.0;
-               visible: 0;
-               align: 0.0 0.5;
-               rel1 {relative: 1.0 1.0; to_x: "padding_left"; to_y: "padding_top"; }
-               rel2 {relative: 1.0 0.0; to_x: "padding_left"; to_y: "padding_bottom"; }
-               fixed: 1 0;
-            }
-            description { state: "visible" 0.0;
-               fixed: 1 0;
-               visible: 1;
-               align: 0.0 0.5;
-               rel1 {relative: 1.0 1.0; to_x: "padding_left"; to_y: "padding_top"; }
-               rel2 {relative: 1.0 0.0; to_x: "padding_left"; to_y: "padding_bottom"; }
-               aspect: 1.0 1.0;
-               aspect_preference: VERTICAL;
-            }
-            description { state: "icononly" 0.0;;
-               visible: 1;
-               min: 40 40;
-               rel1 {relative: 1.0 1.0; to_x: "padding_left"; to_y: "padding_top"; }
-               rel2 {relative: 0.0 0.0; to_x: "padding_right"; to_y: "padding_bottom"; }
-               aspect: 1.0 1.0;
-               aspect_preference: VERTICAL;
-            }
-         }
-         part { name: "elm.text";
-            type: TEXT;
-            //effect: SHADOW;
-            mouse_events:  0;
-            scale: 1;
-            description { state: "default" 0.0;
-               visible: 0;
-               rel1 { relative: 1.0 1.0; to_x: "padding_icon_text"; to_y: "padding_top"; }
-               rel2 { relative: 0.0 0.0; to_x: "padding_right"; to_y:"padding_bottom"; }
-               color: DATEFIELD_TEXT_NORMAL_COLOR_INC;
-               color2: 255 255 255 255;
-               text {
-                  font: "SLP:style=Roman";
-                  size: DATEFIELD_TEXT_SIZE_INC;
-                  min:  0 0;
-                  max: 1 0;
-               }
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               min: 64 30;
-            }
-            description { state: "clicked" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               min: 0 0;
-               color: DATEFIELD_TEXT_SELECTED_COLOR_INC;
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               color: 0 0 0 128;
-               color3: 0 0 0 0;
-            }
-            description { state: "disabled_visible" 0.0;
-               inherit: "default" 0.0;
-               color: 0 0 0 128;
-               color3: 0 0 0 0;
-               visible: 1;
-               min: 64 30;
-            }
-            description { state: "focused" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               min: 0 0;
-               color: DATEFIELD_TEXT_SELECTED_COLOR_INC;
-            }
-         }
-         part { name: "over2";
-            type: RECT;
-            mouse_events: 1;
-            repeat_events: 1;
-            ignore_flags: ON_HOLD;
-            description { state: "default" 0.0;
-               color: 0 0 0 0;
-            }
-            description { state: "disabled" 0.0;
-               inherit:  "default" 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "over3";
-            type: RECT;
-            mouse_events: 1;
-            repeat_events: 1;
-            description { state: "default" 0.0;
-               color: 0 0 0 0;
-            }
-            description { state: "clicked" 0.0;
-               inherit:  "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "disabler";
-            type: RECT;
-            description { state: "default" 0.0;
-               color: 0 0 0 0;
-               visible: 0;
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-      }
-      programs {
-         program { name: "button_click";
-            signal: "mouse,down,1";
-            source: "over2";
-            action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_click_anim";
-         }
-         program { name: "button_click_anim";
-            action: STATE_SET "clicked" 0.0;
-            target: "button_image";
-            after: "text_clicked";
-         }
-         program { name: "text_clicked";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "visible"))
-                  set_state(PART:"elm.text", "clicked", 0.0);
-            }
-         }
-         program { name: "button_unpress";
-            action: SIGNAL_EMIT "elm,action,unpress" "";
-         }
-         program { name: "button_mouseout_clicked";
-            signal: "mouse,up,1";
-            source: "over3";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.swallow.content", st, 30, vl);
-               if (strcmp(st, "icononly"))
-               {
-                  emit("elm,action,default,text,set", "");
-                  set_state(PART:"elm.text", "visible", 0.0);
-               }
-               if(get_int(button_state) !=1)
-                  set_state(PART:"button_image", "default", 0.0);
-            }
-            after: button_unpress;
-         }
-         program { name: "button_click2";
-            signal: "mouse,down,1";
-            source: "over3";
-            action: STATE_SET "clicked" 0.0;
-            target: "over3";
-         }
-         program { name: "button_unclick2";
-            signal: "mouse,clicked,1";
-            source: "over3";
-            action: STATE_SET "default" 0.0;
-            target: "over3";
-         }
-         program { name: "button_unclick3";
-            signal: "mouse,clicked,1";
-            source: "over2";
-            action: SIGNAL_EMIT "elm,action,click" "";
-         }
-         program { name: "text_show";
-            signal: "elm,state,text,visible";
-            source: "elm";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.swallow.content", st, 30, vl);
-               if (!strcmp(st, "icononly"))
-               {
-                  set_state(PART:"elm.swallow.content", "visible", 0.0);
-                  set_state(PART:"padding_icon_text", "visible", 0.0);
-               }
-               if(get_int(button_state) !=1)
-                 set_state(PART:"elm.text", "visible", 0.0);
-               else
-                 set_state(PART:"elm.text", "disabled_visible", 0.0);
-            }
-         }
-         program { name: "text_hide";
-            signal: "elm,state,text,hidden";
-            source: "elm";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.swallow.content", st, 30, vl);
-               if (!strcmp(st, "visible"))
-               {
-                  set_state(PART:"elm.swallow.content", "icononly", 0.0);
-                  set_state(PART:"padding_icon_text", "icononly", 0.0);
-               }
-               set_state(PART:"elm.text", "default", 0.0);
-            }
-         }
-         program { name: "icon_show";
-            signal: "elm,state,icon,visible";
-            source: "elm";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "visible"))
-               {
-                  set_state(PART:"elm.swallow.content", "visible", 0.0);
-                  set_state(PART:"padding_icon_text", "visible", 0.0);
-               }
-               else
-               {
-                  set_state(PART:"elm.swallow.content", "icononly", 0.0);
-                  set_state(PART:"padding_icon_text", "icononly", 0.0);
-               }
-            }
-         }
-         program { name: "icon_hide";
-            signal: "elm,state,icon,hidden";
-            source: "elm";
-            action:  STATE_SET "default" 0.0;
-            target: "elm.swallow.content";
-         }
-         program { name: "disable";
-            signal: "elm,state,disabled";
-            source: "elm";
-            action: STATE_SET "disabled" 0.0;
-            target: "button_image";
-            target: "over2";
-            target: "disabler";
-            after: "disable_text";
-         }
-         program { name: "disable_text";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "visible"))
-                  set_state(PART:"elm.text", "disabled_visible", 0.0);
-               else
-                  set_state(PART:"elm.text", "disabled", 0.0);
-               set_int(button_state, 1);
-            }
-         }
-         program { name: "enable";
-            signal: "elm,state,enabled";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "button_image";
-            target: "over2";
-            target: "disabler";
-            after: "enable_text";
-         }
-         program { name: "enable_text";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "disabled_visible"))
-                  set_state(PART:"elm.text", "visible", 0.0);
-               else
-                  set_state(PART:"elm.text", "default", 0.0);
-               set_int(button_state, 0);
-            }
-         }
-         program { name: "focused";
-            //signal: "elm,action,focus";
-            //source: "elm";
-            action: STATE_SET "focused" 0.0;
-            target: "button_image";
-            target: "elm.text";
-         }
-         program { name: "unfocused";
-            //signal: "elm,action,unfocus";
-            //source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "button_image";
-            after: "unfocus_text";
-         }
-         program { name: "unfocus_text";
-            action: STATE_SET "visible" 0.0;
-            target: "elm.text";
-         }
-      }
-   }
