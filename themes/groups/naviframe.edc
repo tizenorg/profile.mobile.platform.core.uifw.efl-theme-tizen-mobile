@@ -33,7 +33,7 @@
          }
       }
    }
-  group { name:"elm/naviframe/item/basic/default";
+   group { name:"elm/naviframe/item/basic/default";
       images {
          image: "naviframe_optionheader.png" COMP;
          image: "naviframe_optionheader_arrow.png" COMP;
@@ -408,6 +408,22 @@
             target: "elm.swallow.optionheader";
             transition: LINEAR 0.2;
          }
+         program { name: "optionheader_instant_open";
+            signal: "elm,state,optionheader,instant_open";
+            source: "";
+            action: STATE_SET "show" 0.0;
+            target: "optionheader_clip";
+            target: "optionheader_shadow";
+            target: "elm.swallow.optionheader";
+         }
+         program { name: "optionheader_instant_close";
+            signal: "elm,state,optionheader,instant_close";
+            source: "";
+            action: STATE_SET "default" 0.0;
+            target: "optionheader_clip";
+            target: "optionheader_shadow";
+            target: "elm.swallow.optionheader";
+         }
          program { name: "show_finished";
             action: SIGNAL_EMIT "elm,action,show,finished" "";
          }
@@ -417,11 +433,13 @@
          program { name: "popped_finished";
             action: SIGNAL_EMIT "elm,action,popped,finished" "";
          }
+         program { name: "title_clicked_signal";
+            action: SIGNAL_EMIT "elm,action,title,clicked" "";
+         }
          program {
             name: "title_clicked";
             signal: "mouse,clicked,1";
             source: "click_event_area";
-            action: SIGNAL_EMIT "elm,action,clicked" "elm";
             script {
                if (get_int(oh_show) == 1) {
                   if (get_int(oh_close) == 1) {
@@ -433,6 +451,7 @@
                   }
                }//if
             }//script
+            after: "title_clicked_signal";
          }
       }
    }
@@ -812,6 +831,22 @@
             target: "elm.swallow.optionheader";
             transition: LINEAR 0.2;
          }
+         program { name: "optionheader_instant_open";
+            signal: "elm,state,optionheader,instant_open";
+            source: "";
+            action: STATE_SET "show" 0.0;
+            target: "optionheader_clip";
+            target: "optionheader_shadow";
+            target: "elm.swallow.optionheader";
+         }
+         program { name: "optionheader_instant_close";
+            signal: "elm,state,optionheader,instant_close";
+            source: "";
+            action: STATE_SET "default" 0.0;
+            target: "optionheader_clip";
+            target: "optionheader_shadow";
+            target: "elm.swallow.optionheader";
+         }
          program { name: "show_finished";
             action: SIGNAL_EMIT "elm,action,show,finished" "";
          }
@@ -821,11 +856,13 @@
          program { name: "popped_finished";
             action: SIGNAL_EMIT "elm,action,popped,finished" "";
          }
+         program { name: "title_clicked_signal";
+            action: SIGNAL_EMIT "elm,action,title,clicked" "";
+         }
          program {
             name: "title_clicked";
             signal: "mouse,clicked,1";
             source: "click_event_area";
-            action: SIGNAL_EMIT "elm,action,clicked" "elm";
             script {
                if (get_int(oh_show) == 1) {
                   if (get_int(oh_close) == 1) {
@@ -837,6 +874,7 @@
                   }
                }//if
             }//script
+            after: "title_clicked_signal";
          }
       }
    }
@@ -1157,24 +1195,67 @@
          program { name: "optionheader_show";
             signal: "elm,state,elm.swallow.optionheader,show";
             source: "elm";
-            action: STATE_SET "show" 0.0;
-            target: "optionheader_clip";
-            target: "optionheader_arrow";
-            target: "optionheader_shadow";
+            script {
+               set_state(PART:"optionheader_clip", "show", 0.0);
+               set_state(PART:"optionheader_shadow", "show", 0.0);
+               set_state(PART:"optionheader_arrow", "show", 0.0);
+               set_state(PART:"elm.swallow.optionheader", "show", 0.0);
+               set_int(oh_show, 1);
+               emit("elm,state,optionheader_arrow,show", "");
+            }
          }
          program { name: "optionheader_hide";
             signal: "elm,state,elm.swallow.optionheader,hide";
             source: "elm";
+            script {
+               set_state(PART:"optionheader_clip", "default", 0.0);
+               set_state(PART:"optionheader_arrow", "default", 0.0);
+               set_state(PART:"optionheader_shadow", "default", 0.0);
+               set_state(PART:"elm.swallow.optionheader", "default", 0.0);
+               set_int(oh_show, 0);
+            }
+         }
+         program { name: "optionheader_open";
+            signal: "elm,state,optionheader,open";
+            source: "";
+            action: STATE_SET "show" 0.0;
+            target: "optionheader_clip";
+            target: "optionheader_shadow";
+            target: "elm.swallow.optionheader";
+            transition: LINEAR 0.2;
+         }
+         program { name: "optionheader_close";
+            signal: "elm,state,optionheader,close";
+            source: "";
             action: STATE_SET "default" 0.0;
             target: "optionheader_clip";
-            target: "optionheader_arrow";
             target: "optionheader_shadow";
+            target: "elm.swallow.optionheader";
+            transition: LINEAR 0.2;
+         }
+         program { name: "optionheader_instant_open";
+            signal: "elm,state,optionheader,instant_open";
+            source: "";
+            action: STATE_SET "show" 0.0;
+            target: "optionheader_clip";
+            target: "optionheader_shadow";
+            target: "elm.swallow.optionheader";
+         }
+         program { name: "optionheader_instant_close";
+            signal: "elm,state,optionheader,instant_close";
+            source: "";
+            action: STATE_SET "default" 0.0;
+            target: "optionheader_clip";
+            target: "optionheader_shadow";
+            target: "elm.swallow.optionheader";
+         }
+         program { name: "title_clicked_signal";
+            action: SIGNAL_EMIT "elm,action,title,clicked" "";
          }
          program {
             name: "title_clicked";
             signal: "mouse,clicked,1";
             source: "click_event_area";
-            action: SIGNAL_EMIT "elm,action,clicked" "elm";
             script {
                if (get_int(oh_show) == 1) {
                   if (get_int(oh_close) == 1) {
@@ -1186,6 +1267,7 @@
                   }
                }//if
             }//script
+            after: "title_clicked_signal";
          }
          program { name: "show_finished";
             action: SIGNAL_EMIT "elm,action,show,finished" "";
