@@ -5,7 +5,7 @@ EDJE_FLAGS_VERBOSE_ =
 EDJE_FLAGS_VERBOSE_0 =
 EDJE_FLAGS_VERBOSE_1 = -v
 
-all: nbeat nbeat-black nbeat-hd
+all: nbeat nbeat-black nbeat-hd nbeat-black-hd
 	echo $(escaped_prefix)
 
 .SUFFIXES: .edc .edj
@@ -18,6 +18,7 @@ all: nbeat nbeat-black nbeat-hd
 nbeat: nbeat.edj
 nbeat-black: nbeat-black.edj
 nbeat-hd: nbeat-hd.edj
+nbeat-black-hd: nbeat-black-hd.edj
 
 clean:
 	rm -f *.edj

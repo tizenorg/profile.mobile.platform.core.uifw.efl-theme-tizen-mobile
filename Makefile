@@ -19,6 +19,7 @@ install: install_themes
 copy_edc:
 	cp themes/nbeat.edc themes/nbeat-black.edc
 	cp themes/nbeat.edc themes/nbeat-hd.edc
+	cp themes/nbeat.edc themes/nbeat-black-hd.edc
 
 nbeat:
 	cd themes && make $@
@@ -29,6 +30,11 @@ nbeat-black:
 	rm themes/nbeat-*.edc
 
 nbeat-hd:
+	cp themes/nbeat.edc themes/$@.edc
+	cd themes && make $@
+	rm themes/nbeat-*.edc
+
+nbeat-black-hd:
 	cp themes/nbeat.edc themes/$@.edc
 	cd themes && make $@
 	rm themes/nbeat-*.edc
