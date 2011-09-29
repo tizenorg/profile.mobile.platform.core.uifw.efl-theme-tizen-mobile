@@ -762,7 +762,7 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                   size: CHECK_ONOFF_ON_FONT_SIZE_INC;
                   fit: 1 1;
                   align: 0.2 0.5;
-                  size_range: 12 18;
+                  size_range: 12 CHECK_ONOFF_ON_FONT_SIZE_INC;
                   min: 0 0;
                }
             }
@@ -778,7 +778,7 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                   size: 16;
                   align: 0.2 0.5;
                   fit: 1 1;
-                  size_range: 12 18;
+                  size_range: 12 CHECK_ONOFF_ON_FONT_SIZE_INC;
                   min: 0 0;
                }
             }
@@ -799,7 +799,7 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                   size: CHECK_ONOFF_OFF_FONT_SIZE_INC;
                   fit: 1 1;
                   align: 0.2 0.5;
-                  size_range: 12 18;
+                  size_range: 12 CHECK_ONOFF_OFF_FONT_SIZE_INC;
                   min: 0 0;
                }
             }
@@ -814,7 +814,7 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                   size: 16;
                   align: 0.2 0.5;
                   fit: 1 1;
-                  size_range: 12 18;
+                  size_range: 12 CHECK_ONOFF_OFF_FONT_SIZE_INC;
                   min: 0 0;
                }
             }
@@ -1309,32 +1309,37 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
 ////////////////////////////////////////////////////////////////////////////////
    group { name: "elm/check/base/delete";
       images {
-         image: "00_button_delete.png" COMP;
-         image: "00_button_delete_press.png" COMP;
-         image: "00_button_delete_dim.png" COMP;
-         image: "00_button_delete_text.png" COMP;
-         image: "00_button_delete_text_press.png" COMP;
+         image: "00_button_icon_minus.png" COMP;
+         image: "00_button_icon_minus_press.png" COMP;
+         image: "00_button_edit.png" COMP;
+         image: "00_button_edit_press.png" COMP;
+         image: "00_button_edit_dim.png" COMP;
       }
       script {
          public button_state = 0; //0:enabled, 1: disabled
       }
       parts {
-         part {
-            name: "bg";
-            mouse_events: 1;
+         part { name: "bg1";
             scale: 1;
-            type: IMAGE;
             description { state: "default" 0.0;
                align: 1.0 0.5;
-               min: 40 40;
-               max: 40 40;
-               rel1.relative: 1.0 0.0;
-               fixed: 1 0;
-               image.normal: "00_button_delete.png";
+               rel1 {
+                  to: "bg2";
+               }
+               rel2 {
+                  to: "bg2";
+               }
+               image {
+                  normal: "00_button_edit.png";
+                  border: CHECK_STYLE_DELETE_BUTTON_BG_EXPAND_BORDER_INC;
+                  border_scale: 1;
+               }
             }
             description { state: "clicked" 0.0;
                inherit: "default" 0.0;
-               image.normal: "00_button_delete_press.png";
+               image {
+                  normal: "00_button_edit_press.png";
+               }
             }
             description { state: "intermediate" 0.0;
                inherit: "default" 0.0;
@@ -1346,106 +1351,132 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
             }
             description { state: "disabled" 0.0;
                inherit: "default" 0.0;
-               image.normal: "00_button_delete_dim.png";
+               image {
+                  normal: "00_button_edit_dim.png";
+               }
             }
          }
-         part {
-            name: "clipper";
+         part { name: "bg2";
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               min: CHECK_STYLE_DELETE_BUTTON_BG_IMAGE_MIN_MAX_WIDTH_INC;
+               max: CHECK_STYLE_DELETE_BUTTON_BG_IMAGE_MIN_MAX_WIDTH_INC;
+               rel1 {
+                  relative: 1.0 0.0;
+               }
+               fixed: 1 0;
+               image {
+                  normal: "00_button_icon_minus.png";
+               }
+            }
+            description { state: "clicked" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "00_button_icon_minus_press.png";
+               }
+            }
+            description { state: "intermediate" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+            description { state: "on" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "00_button_icon_minus.png";
+               }
+            }
+         }
+         part { name: "clipper";
             type: RECT;
             mouse_events: 0;
             scale: 1;
             description { state: "default" 0.0;
                align: 1.0 0.5;
-               min: 40 40;
-               max: 40 40;
+               min: CHECK_STYLE_DELETE_BUTTON_BG_IMAGE_MIN_MAX_WIDTH_INC;
+               max: CHECK_STYLE_DELETE_BUTTON_BG_IMAGE_MIN_MAX_WIDTH_INC;
                color: 255 255 255 255;
             }
             description { state: "on" 0.0;
                align: 1.0 0.5;
-               min: 117 40;
-               max: 117 40;
+               min: CHECK_STYLE_DELETE_BUTTON_BG_EXPAND_IMAGE_MIN_MAX_WIDTH_INC;
+               max: CHECK_STYLE_DELETE_BUTTON_BG_EXPAND_IMAGE_MIN_MAX_WIDTH_INC;
                color: 255 255 255 255;
             }
          }
-         part {
-            name: "bg_expand";
+         part { name: "bg_expand";
             mouse_events: 0;
             scale: 1;
-            type: IMAGE;
             clip_to: "clipper";
             description { state: "default" 0.0;
                align: 0.0 0.5;
-               min: 117 40;
-               max: 117 40;
-               image.normal: "00_button_delete_text.png";
-               image.border: 32 16 0 0;
-               image.border_scale: 1;
-               rel1 { relative: 1 0; to_x: "bg"; }
-               rel2 { relative: 1 1; to_x: "bg"; }
+               min: CHECK_STYLE_DELETE_BUTTON_BG_EXPAND_IMAGE_MIN_MAX_WIDTH_INC;
+               max: CHECK_STYLE_DELETE_BUTTON_BG_EXPAND_IMAGE_MIN_MAX_WIDTH_INC;
+               image {
+                  normal: "00_button_edit.png";
+                  border: CHECK_STYLE_DELETE_BUTTON_BG_EXPAND_BORDER_INC;
+                  border_scale: 1;
+               }
+               rel1 {
+                  relative: 1 0; 
+                  to_x: "bg2"; 
+               }
+               rel2 {
+                  to_x: "bg2";
+               }
                fixed: 1 0;
             }
             description { state: "clicked" 0.0;
+               inherit: "default" 0.0;
                align: 1.0 0.5;
-               min: 117 40;
-               max: 117 40;
-               image.normal: "00_button_delete_text.png";
-               image.border: 32 16 0 0;
-               image.border_scale: 1;
-               rel1 { relative: 1 0; to_x: "bg"; }
-               rel2 { relative: 1 1; to_x: "bg"; }
-               fixed: 1 0;
-               image.normal: "00_button_delete_text_press.png";
+               image {
+                  normal: "00_button_edit_press.png";
+               }
             }
             description { state: "intermediate" 0.0;
-               align: 0.0 0.5;
-               min: 117 40;
-               max: 117 40;
-               image.normal: "00_button_delete_text.png";
-               image.border: 32 16 0 0;
-               image.border_scale: 1;
-               rel1 { relative: 0 0; to_x: "bg"; }
-               rel2 { relative: 0 1; to_x: "bg"; }
-               fixed: 1 0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: 0 0;
+                  to_x: "bg2";
+               }
+               rel2 {
+                  relative: 0 1;
+                  to_x: "bg2";
+               }
             }
             description { state: "on" 0.0;
+               inherit: "default" 0.0;
                align: 1.0 0.5;
-               min: 117 40;
-               max: 117 40;
-               image.normal: "00_button_delete_text.png";
-               image.border: 32 16 0 0;
-               image.border_scale: 1;
-               rel1 { relative: 1 0; to_x: "bg"; }
-               rel2 { relative: 1 1; to_x: "bg"; }
-               fixed: 1 0;
             }
          }
          part { name: "check";
             type: TEXT;
             mouse_events: 0;
-            scale:1;
+            scale: 1;
             description { state: "default" 0.0;
                visible: 0;
-               align: 0.8 0.5;
+               align: 1.0 0.5;
                min: 0 0;
                text {
                   font: "SLP:style=Medium";
-                  size: 20;
+                  size: CHECK_STYLE_DELETE_BUTTON_TEXT_FONT_SIZE_INC;
                   min: 0 0;
-                  align: 0.5 0.5;
                   text: "";
                }
             }
             description { state: "visible" 0.0;
-               visible: 1;
-               align: 0.8 0.5;
-               min: 75 40;
-               max: 75 40;
+               align: 1.0 0.5;
+               min: CHECK_STYLE_DELETE_BUTTON_BG_EXPAND_IMAGE_MIN_MAX_WIDTH_INC;
+               max: CHECK_STYLE_DELETE_BUTTON_BG_EXPAND_IMAGE_MIN_MAX_WIDTH_INC;
                color: CHECK_DELETE_TEXT_DELETE_NORMAL_COLOR_INC;
                text {
                   font: "SLP:style=Medium";
-                  size: 20;
+                  size: CHECK_STYLE_DELETE_BUTTON_TEXT_FONT_SIZE_INC;
                   min: 1 0;
-                  align: 0.0 0.5;
                   text: "Delete";
                }
             }
@@ -1461,12 +1492,16 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
                visible: 0;
                color: 255 255 255 255;
                align: 0.0 0.5;
-               rel1.to_x: "bg";
-               rel1.relative: 1.0 0.0;
-               rel1.offset: 1 1;
-               rel2.to_x: "bg";
-               rel2.relative: 1.0 1.0;
-               rel2.offset: 2 -2;
+               rel1 {
+                  to_x: "bg2";
+                  relative: 1.0 0.0;
+                  offset: 1 1;
+               }
+               rel2 {
+                  to_x: "bg2";
+                  relative: 1.0 1.0;
+                  offset: 2 -2;
+               }
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -1494,8 +1529,15 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
             description { state: "default" 0.0;
                visible: 0;
                fixed: 1 1;
-               rel1 { relative: 1.0 0.5; offset: 1 1; to_x: "elm.swallow.content"; }
-               rel2 { relative: 1.0 0.5; offset: -2 -2; }
+               rel1 {
+                  relative: 1.0 0.5;
+                  offset: 1 1;
+                  to_x: "elm.swallow.content";
+               }
+               rel2 {
+                  relative: 1.0 0.5;
+                  offset: -2 -2;
+               }
                color: 255 255 255 255;
                align: 0.0 0.5;
                text {
@@ -1524,14 +1566,22 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
             ignore_flags: ON_HOLD;
             description { state: "default" 0.0;
                color: 0 0 0 0;
-               rel1.to: "bg";
-               rel2.to_x: "elm.text";
+               rel1 {
+                  to: "bg2";
+               }
+               rel2 {
+                  to_x: "elm.text";
+               }
                align: 0.0 0.5;
             }
             description { state: "visible" 0.0;
                color: 0 0 0 0;
-               rel1.to: "bg_expand";
-               rel2.to_x: "elm.text";
+               rel1 {
+                  to: "bg_expand";
+               }
+               rel2 {
+                  to_x: "elm.text";
+               }
                align: 0.0 0.5;
             }
          }
@@ -1540,21 +1590,31 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
             repeat_events: 1;
             description { state: "default" 0.0;
                color: 0 0 0 0;
-               rel1.to: "bg";
-               rel2.to_x: "elm.text";
+               rel1 {
+                  to: "bg2";
+               }
+               rel2 {
+                  to_x: "elm.text";
+               }
                align: 0.0 0.5;
             }
             description { state: "visible" 0.0;
                color: 0 0 0 0;
-               rel1.to: "bg_expand";
-               rel2.to_x: "elm.text";
+               rel1 {
+                  to: "bg_expand";
+               }
+               rel2 {
+                  to_x: "elm.text";
+               }
                align: 0.0 0.5;
             }
          }
          part { name: "disabler";
             type: RECT;
             description { state: "default" 0.0;
-               rel2.to_x: "elm.text";
+               rel2 {
+                  to_x: "elm.text";
+               }
                color: 0 0 0 0;
                visible: 0;
             }
@@ -1573,7 +1633,7 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
                new Float:vl;
                get_state(PART:"check", st, 30, vl);
                if (!strcmp(st, "visible_pressed"))
-                  set_state(PART:"check", "visible", 0.0);
+                 set_state(PART:"check", "visible", 0.0);
             }
             after: "toggle";
          }
@@ -1586,9 +1646,9 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
             script {
                new st[31];
                new Float:vl;
-               get_state(PART:"bg", st, 30, vl);
+               get_state(PART:"bg2", st, 30, vl);
                if (!strcmp(st, "on")) {
-                  emit("elm,action,check,toggle", "");
+                 emit("elm,action,check,toggle", "");
                }
             }
          }
@@ -1600,12 +1660,14 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
                new Float:vl;
                get_state(PART:"check", st, 30, vl);
                if (!strcmp(st, "visible"))
-               {
-                  set_state(PART:"bg_expand", "clicked", 0.0);
-                  set_state(PART:"check", "visible_pressed", 0.0);
+                 {
+                    set_state(PART:"bg_expand", "clicked", 0.0);
+                    set_state(PART:"check", "visible_pressed", 0.0);
+                 }
+               else {
+                  set_state(PART:"bg2", "clicked", 0.0);
+                  set_state(PART:"bg1", "clicked", 0.0);
                }
-               else
-                  set_state(PART:"bg", "clicked", 0.0);
             }
          }
          program { name: "check_normal";
@@ -1616,13 +1678,15 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
                new Float:vl;
                get_state(PART:"check", st, 30, vl);
                if (!strcmp(st, "visible_pressed"))
-               {
-                  set_state(PART:"bg_expand", "on", 0.0);
-                  set_state(PART:"check", "visible", 0.0);
-               }
+                 {
+                    set_state(PART:"bg_expand", "on", 0.0);
+                    set_state(PART:"check", "visible", 0.0);
+                 }
                get_state(PART:"bg_expand", st, 30, vl);
-               if (!strcmp(st, "default"))
-                  set_state(PART:"bg", "default", 0.0);
+               if (!strcmp(st, "default")) {
+                  set_state(PART:"bg2", "default", 0.0);
+                  set_state(PART:"bg1", "default", 0.0);
+               }
             }
          }
          program { name: "check_on";
@@ -1633,20 +1697,22 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
             after: "start_expand";
          }
          program { name: "start_expand";
-            action:  STATE_SET "intermediate" 0.0;
-            target: "bg";
+            action: STATE_SET "intermediate" 0.0;
+            target: "bg2";
+            target: "bg1";
             target: "bg_expand";
             after: "expand";
          }
          program { name: "expand";
             action: STATE_SET "on" 0.0;
             target: "bg_expand";
-            target: "bg";
+            target: "bg2";
+            target: "bg1";
             transition: ACCELERATE 0.1;
             after: "check_visible";
          }
          program { name: "check_visible";
-            action:  STATE_SET "visible" 0.0;
+            action: STATE_SET "visible" 0.0;
             target: "check";
             target: "events1";
             target: "events2";
@@ -1654,27 +1720,31 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
          program { name: "check_off";
             signal: "elm,state,check,off";
             source: "elm";
-            action:  STATE_SET "default" 0.0;
+            action: STATE_SET "default" 0.0;
             target: "check";
             after: "contract";
          }
          program { name: "contract";
-            action:  STATE_SET "intermediate" 0.0;
+            action: STATE_SET "intermediate" 0.0;
             target: "bg_expand";
             transition: ACCELERATE 0.1;
             after: "normal_bg";
          }
          program { name: "normal_bg";
             script {
-               if(get_int(button_state) !=1)
-                  set_state(PART:"bg", "default", 0.0);
-               else
-                  set_state(PART:"bg", "disabled", 0.0);
+               if (get_int(button_state) !=1) {
+                 set_state(PART:"bg2", "default", 0.0);
+                 set_state(PART:"bg1", "default", 0.0);
+               }
+               else {
+                 set_state(PART:"bg2", "disabled", 0.0);
+                 set_state(PART:"bg1", "disabled", 0.0);
+               }
             }
             after: "bg_default";
          }
          program { name: "bg_default";
-            action:  STATE_SET "default" 0.0;
+            action: STATE_SET "default" 0.0;
             target: "bg_expand";
             target: "clipper";
             target: "events1";
@@ -1683,25 +1753,25 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
          program { name: "text_show";
             signal: "elm,state,text,visible";
             source: "elm";
-            action:  STATE_SET "visible" 0.0;
+            action: STATE_SET "visible" 0.0;
             target: "elm.text";
          }
          program { name: "text_hide";
             signal: "elm,state,text,hidden";
             source: "elm";
-            action:  STATE_SET "default" 0.0;
+            action: STATE_SET "default" 0.0;
             target: "elm.text";
          }
          program { name: "icon_show";
             signal: "elm,state,icon,visible";
             source: "elm";
-            action:  STATE_SET "visible" 0.0;
+            action: STATE_SET "visible" 0.0;
             target: "elm.swallow.content";
          }
          program { name: "icon_hide";
             signal: "elm,state,icon,hidden";
             source: "elm";
-            action:  STATE_SET "default" 0.0;
+            action: STATE_SET "default" 0.0;
             target: "elm.swallow.content";
          }
          program { name: "disable";
@@ -1709,7 +1779,8 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
             source: "elm";
             action: STATE_SET "disabled" 0.0;
             target: "disabler";
-            target: "bg";
+            target: "bg2";
+            target: "bg1";
             after: "disable_text";
          }
          program { name: "disable_text";
@@ -1718,14 +1789,14 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
                new Float:vl;
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "visible"))
-                  set_state(PART:"elm.text", "disabled_visible", 0.0);
+                 set_state(PART:"elm.text", "disabled_visible", 0.0);
                else
-                  set_state(PART:"elm.text", "disabled", 0.0);
+                 set_state(PART:"elm.text", "disabled", 0.0);
                get_state(PART:"elm.swallow.content", st, 30, vl);
                if (!strcmp(st, "visible"))
-                  set_state(PART:"elm.swallow.content", "disabled_visible", 0.0);
+                 set_state(PART:"elm.swallow.content", "disabled_visible", 0.0);
                else
-                  set_state(PART:"elm.swallow.content", "disabled", 0.0);
+                 set_state(PART:"elm.swallow.content", "disabled", 0.0);
                set_int(button_state, 1);
             }
          }
@@ -1734,7 +1805,8 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "disabler";
-            target: "bg";
+            target: "bg2";
+            target: "bg1";
             after: "enable_text";
          }
          program { name: "enable_text";
@@ -1743,474 +1815,14 @@ CHECK_STYLE_FAVORITE("favorite/extended", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE
                new Float:vl;
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "disabled_visible"))
-                  set_state(PART:"elm.text", "visible", 0.0);
+                 set_state(PART:"elm.text", "visible", 0.0);
                else
-                  set_state(PART:"elm.text", "default", 0.0);
-
+                 set_state(PART:"elm.text", "default", 0.0);
                get_state(PART:"elm.swallow.content", st, 30, vl);
                if (!strcmp(st, "visible"))
-                  set_state(PART:"elm.swallow.content", "visible", 0.0);
+                 set_state(PART:"elm.swallow.content", "visible", 0.0);
                else
-                  set_state(PART:"elm.swallow.content", "default", 0.0);
-               set_int(button_state, 0);
-            }
-         }
-      }
-   }
-
-   group { name: "elm/check/base/delete/extended";
-      images {
-         image: "00_button_delete.png" COMP;
-         image: "00_button_delete_press.png" COMP;
-         image: "00_button_delete_dim.png" COMP;
-         image: "00_button_delete_text.png" COMP;
-         image: "00_button_delete_text_press.png" COMP;
-      }
-      script {
-         public button_state = 0; //0:enabled, 1: disabled
-      }
-      parts {
-         part {
-            name: "bg";
-            mouse_events: 1;
-            scale: 1;
-            type: IMAGE;
-            description { state: "default" 0.0;
-               align: 1.0 0.5;
-               min: 40 40;
-               max: 40 40;
-               rel1.relative: 1.0 0.0;
-               fixed: 1 0;
-               image.normal: "00_button_delete.png";
-            }
-            description { state: "clicked" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "00_button_delete_press.png";
-            }
-            description { state: "intermediate" 0.0;
-               inherit: "default" 0.0;
-               visible: 0;
-            }
-            description { state: "on" 0.0;
-               inherit: "default" 0.0;
-               visible: 0;
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "00_button_delete_dim.png";
-            }
-         }
-         part {
-            name: "clipper";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               align: 1.0 0.5;
-               min: 40 40;
-               max: 40 40;
-               color: 255 255 255 255;
-            }
-            description { state: "on" 0.0;
-               align: 1.0 0.5;
-               min: 117 40;
-               max: 117 40;
-               color: 255 255 255 255;
-            }
-         }
-         part {
-            name: "bg_expand";
-            mouse_events: 0;
-            scale: 1;
-            type: IMAGE;
-            clip_to: "clipper";
-            description { state: "default" 0.0;
-               align: 0.0 0.5;
-               min: 117 40;
-               max: 117 40;
-               image.normal: "00_button_delete_text.png";
-               image.border: 32 16 0 0;
-               image.border_scale: 1;
-               rel1 { relative: 1 0; to_x: "bg"; }
-               rel2 { relative: 1 1; to_x: "bg"; }
-               fixed: 1 0;
-            }
-            description { state: "clicked" 0.0;
-               align: 1.0 0.5;
-               min: 117 40;
-               max: 117 40;
-               image.normal: "00_button_delete_text.png";
-               image.border: 32 16 0 0;
-               image.border_scale: 1;
-               rel1 { relative: 1 0; to_x: "bg"; }
-               rel2 { relative: 1 1; to_x: "bg"; }
-               fixed: 1 0;
-               image.normal: "00_button_delete_text_press.png";
-            }
-            description { state: "intermediate" 0.0;
-               align: 0.0 0.5;
-               min: 117 40;
-               max: 117 40;
-               image.normal: "00_button_delete_text.png";
-               image.border: 32 16 0 0;
-               image.border_scale: 1;
-               rel1 { relative: 0 0; to_x: "bg"; }
-               rel2 { relative: 0 1; to_x: "bg"; }
-               fixed: 1 0;
-            }
-            description { state: "on" 0.0;
-               align: 1.0 0.5;
-               min: 117 40;
-               max: 117 40;
-               image.normal: "00_button_delete_text.png";
-               image.border: 32 16 0 0;
-               image.border_scale: 1;
-               rel1 { relative: 1 0; to_x: "bg"; }
-               rel2 { relative: 1 1; to_x: "bg"; }
-               fixed: 1 0;
-            }
-         }
-         part { name: "check";
-            type: TEXT;
-            mouse_events: 0;
-            scale:1;
-            description { state: "default" 0.0;
-               visible: 0;
-               align: 0.8 0.5;
-               min: 0 0;
-               text {
-                  font: "SLP:style=Medium";
-                  size: 20;
-                  min: 0 0;
-                  align: 0.5 0.5;
-                  text: "";
-               }
-            }
-            description { state: "visible" 0.0;
-               visible: 1;
-               align: 0.8 0.5;
-               min: 75 40;
-               max: 75 40;
-               color: CHECK_DELETE_TEXT_DELETE_NORMAL_COLOR_INC;
-               text {
-                  font: "SLP:style=Medium";
-                  size: 20;
-                  min: 1 0;
-                  align: 0.0 0.5;
-                  text: "Delete";
-               }
-            }
-            description { state: "visible_pressed" 0.0;
-               inherit: "visible" 0.0;
-               color: CHECK_DELETE_TEXT_DELETE_PRESS_COLOR_INC;
-            }
-         }
-         part { name: "elm.swallow.content";
-            type: SWALLOW;
-            description { state: "default" 0.0;
-               fixed: 1 0;
-               visible: 0;
-               color: 255 255 255 255;
-               align: 0.0 0.5;
-               rel1.to_x: "bg";
-               rel1.relative: 1.0 0.0;
-               rel1.offset: 1 1;
-               rel2.to_x: "bg";
-               rel2.relative: 1.0 1.0;
-               rel2.offset: 2 -2;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               fixed: 1 1;
-               visible: 1;
-               aspect: 1.0 1.0;
-               aspect_preference: VERTICAL;
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               color: 128 128 128 128;
-            }
-            description { state: "disabled_visible" 0.0;
-               inherit: "default" 0.0;
-               color: 128 128 128 128;
-               fixed: 1 1;
-               visible: 1;
-               aspect: 1.0 1.0;
-            }
-         }
-         part { name: "elm.text";
-            type: TEXTBLOCK;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               visible: 0;
-               fixed: 1 1;
-               rel1 { relative: 1.0 0.5; offset: 1 1; to_x: "elm.swallow.content"; }
-               rel2 { relative: 1.0 0.5; offset: -2 -2; }
-               color: 255 255 255 255;
-               align: 0.0 0.5;
-               text {
-                  style: "check_label_textblock_style";
-                  min: 0 0;
-               }
-               color: CHECK_DEFAULT_TEXT_NORMAL_COLOR_INC;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               text.min: 1 1;
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-            }
-            description { state: "disabled_visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               text.min: 1 1;
-               color: CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC;
-            }
-         }
-         part { name: "events1";
-            type: RECT;
-            ignore_flags: ON_HOLD;
-            description { state: "default" 0.0;
-               color: 0 0 0 0;
-               rel1.to: "bg";
-               rel2.to_x: "elm.text";
-               align: 0.0 0.5;
-               fixed: 1 0;
-               min: 60 75;
-            }
-            description { state: "visible" 0.0;
-               color: 0 0 0 0;
-               rel1.to: "bg_expand";
-               rel2.to_x: "elm.text";
-               align: 0.0 0.5;
-               fixed: 1 0;
-               min: 60 75;
-            }
-         }
-         part { name: "events2";
-            type: RECT;
-            repeat_events: 1;
-            description { state: "default" 0.0;
-               color: 0 0 0 0;
-               rel1.to: "bg";
-               rel2.to_x: "elm.text";
-               align: 0.0 0.5;
-               fixed: 1 0;
-               min: 60 75;
-            }
-            description { state: "visible" 0.0;
-               color: 0 0 0 0;
-               rel1.to: "bg_expand";
-               rel2.to_x: "elm.text";
-               align: 0.0 0.5;
-               fixed: 1 0;
-               min: 60 75;
-            }
-         }
-         part { name: "disabler";
-            type: RECT;
-            description { state: "default" 0.0;
-               rel2.to_x: "elm.text";
-               color: 0 0 0 0;
-               visible: 0;
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-      }
-      programs {
-         program { name: "click";
-            signal: "mouse,clicked,1";
-            source: "events1";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"check", st, 30, vl);
-               if (!strcmp(st, "visible_pressed"))
-                  set_state(PART:"check", "visible", 0.0);
-            }
-            after: "toggle";
-         }
-         program { name: "toggle";
-            action: SIGNAL_EMIT "elm,action,check,toggle" "";
-         }
-         program { name: "unfocused";
-            signal: "elm,action,unfocus";
-            source: "elm";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"bg", st, 30, vl);
-               if (!strcmp(st, "on")) {
-                  emit("elm,action,check,toggle", "");
-               }
-            }
-         }
-         program { name: "click_down";
-            signal: "mouse,down,1";
-            source: "events2";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"check", st, 30, vl);
-               if (!strcmp(st, "visible"))
-               {
-                  set_state(PART:"bg_expand", "clicked", 0.0);
-                  set_state(PART:"check", "visible_pressed", 0.0);
-               }
-               else
-                  set_state(PART:"bg", "clicked", 0.0);
-            }
-         }
-         program { name: "check_normal";
-            signal: "mouse,up,1";
-            source: "events2";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"check", st, 30, vl);
-               if (!strcmp(st, "visible_pressed"))
-               {
-                  set_state(PART:"bg_expand", "on", 0.0);
-                  set_state(PART:"check", "visible", 0.0);
-               }
-               get_state(PART:"bg_expand", st, 30, vl);
-               if (!strcmp(st, "default"))
-                  set_state(PART:"bg", "default", 0.0);
-            }
-         }
-         program { name: "check_on";
-            signal: "elm,state,check,on";
-            source: "elm";
-            action: STATE_SET "on" 0.0;
-            target: "clipper";
-            after: "start_expand";
-         }
-         program { name: "start_expand";
-            action:  STATE_SET "intermediate" 0.0;
-            target: "bg";
-            target: "bg_expand";
-            after: "expand";
-         }
-         program { name: "expand";
-            action: STATE_SET "on" 0.0;
-            target: "bg_expand";
-            target: "bg";
-            transition: ACCELERATE 0.1;
-            after: "check_visible";
-         }
-         program { name: "check_visible";
-            action:  STATE_SET "visible" 0.0;
-            target: "check";
-            target: "events1";
-            target: "events2";
-         }
-         program { name: "check_off";
-            signal: "elm,state,check,off";
-            source: "elm";
-            action:  STATE_SET "default" 0.0;
-            target: "check";
-            after: "contract";
-         }
-         program { name: "contract";
-            action:  STATE_SET "intermediate" 0.0;
-            target: "bg_expand";
-            transition: ACCELERATE 0.1;
-            after: "normal_bg";
-         }
-         program { name: "normal_bg";
-            script {
-               if(get_int(button_state) !=1)
-                  set_state(PART:"bg", "default", 0.0);
-               else
-                  set_state(PART:"bg", "disabled", 0.0);
-            }
-            after: "bg_default";
-         }
-         program { name: "bg_default";
-            action:  STATE_SET "default" 0.0;
-            target: "bg_expand";
-            target: "clipper";
-            target: "events1";
-            target: "events2";
-         }
-         program { name: "text_show";
-            signal: "elm,state,text,visible";
-            source: "elm";
-            action:  STATE_SET "visible" 0.0;
-            target: "elm.text";
-         }
-         program { name: "text_hide";
-            signal: "elm,state,text,hidden";
-            source: "elm";
-            action:  STATE_SET "default" 0.0;
-            target: "elm.text";
-         }
-         program { name: "icon_show";
-            signal: "elm,state,icon,visible";
-            source: "elm";
-            action:  STATE_SET "visible" 0.0;
-            target: "elm.swallow.content";
-         }
-         program { name: "icon_hide";
-            signal: "elm,state,icon,hidden";
-            source: "elm";
-            action:  STATE_SET "default" 0.0;
-            target: "elm.swallow.content";
-         }
-         program { name: "disable";
-            signal: "elm,state,disabled";
-            source: "elm";
-            action: STATE_SET "disabled" 0.0;
-            target: "disabler";
-            target: "bg";
-            after: "disable_text";
-         }
-         program { name: "disable_text";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "visible"))
-                  set_state(PART:"elm.text", "disabled_visible", 0.0);
-               else
-                  set_state(PART:"elm.text", "disabled", 0.0);
-               get_state(PART:"elm.swallow.content", st, 30, vl);
-               if (!strcmp(st, "visible"))
-                  set_state(PART:"elm.swallow.content", "disabled_visible", 0.0);
-               else
-                  set_state(PART:"elm.swallow.content", "disabled", 0.0);
-               set_int(button_state, 1);
-            }
-         }
-         program { name: "enable";
-            signal: "elm,state,enabled";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "disabler";
-            target: "bg";
-            after: "enable_text";
-         }
-         program { name: "enable_text";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "disabled_visible"))
-                  set_state(PART:"elm.text", "visible", 0.0);
-               else
-                  set_state(PART:"elm.text", "default", 0.0);
-
-               get_state(PART:"elm.swallow.content", st, 30, vl);
-               if (!strcmp(st, "visible"))
-                  set_state(PART:"elm.swallow.content", "visible", 0.0);
-               else
-                  set_state(PART:"elm.swallow.content", "default", 0.0);
+                 set_state(PART:"elm.swallow.content", "default", 0.0);
                set_int(button_state, 0);
             }
          }
