@@ -108,13 +108,17 @@ group { name: "elm/diskselector/item/datefield/default";
            inherit: "default" 0.0;
            visible: 1;
         }
+        description { state: "mouse_down" 0.0;
+           inherit: "default" 0.0;
+           color: DISKSELECTOR_DF_FONT_MOUSE_DOWN_COLOR_INC;
+           visible: 1;
+        }
      }
 
      part {
         name: "over1";
         mouse_events: 1;
         repeat_events: 1;
-        ignore_flags: ON_HOLD;
         description {
            state: "default" 0.0;
         }
@@ -141,6 +145,32 @@ group { name: "elm/diskselector/item/datefield/default";
          signal: "mouse,clicked,1";
          source: "over1";
          action: SIGNAL_EMIT "elm,action,click" "";
+      }
+      program {
+         name: "item_mouse_down";
+         signal: "mouse,down,1";
+         source: "over1";
+         script {
+            new st[30];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl)
+            if (strncmp(st, "selected", 8)) {
+               set_state(PART:"elm.text", "mouse_down", 0.0);
+            }
+         }
+      }
+      program {
+         name: "item_mouse_up";
+         signal: "mouse,up,1";
+         source: "over1";
+         script {
+            new st[30];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl)
+            if (!strncmp(st, "mouse_down", 10)) {
+               set_state(PART:"elm.text", "default", 0.0);
+            }
+         }
       }
    }
 }
