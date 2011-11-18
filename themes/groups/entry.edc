@@ -1657,34 +1657,44 @@ group { name: "elm/entry/base-password/popup";
 		script {
 			public handler_ontop;
 			public handler_pressed;
+			public handler_focused;
 		}
 		programs {
 			program { name: "focused";
 				signal: "elm,action,focus";
 				source: "elm";
-				action: STATE_SET "show" 0.0;
-				target: "handle";
-				target: "bg";
-				after: "unpressed";
+				script {
+					set_int(handler_focused, 1);
+				}
 			}
 			program { name: "unfocused";
 				signal: "elm,action,unfocus";
 				source: "elm";
-				action: STATE_SET "default" 0.0;
-				target: "handle";
-				target: "bg";
+				script {
+					set_int(handler_focused, 0);
+				       	set_state(PART:"handle", "default", 0.0);
+				}
 			}
 			program { name: "top";
 	    		signal: "elm,state,top";
 				source: "elm";
 				script {
 					new pressed;
+					new focused;
 					pressed = get_int(handler_pressed);
+					focused = get_int(handler_focused);
 					set_int(handler_ontop, 1);
-					if (pressed)
-						set_state(PART:"handle", "top_press", 0.0);
-					else
-						set_state(PART:"handle", "top", 0.0);
+                                        if (focused)
+                                        {
+                                             if (pressed)
+                                               set_state(PART:"handle", "top_press", 0.0);
+                                             else
+                                               set_state(PART:"handle", "top", 0.0);
+                                        }
+                                        else
+                                        {
+                                             set_state(PART:"handle", "default", 0.0);
+                                        }
 				}
 			}
 			program { name: "bottom";
@@ -1692,12 +1702,21 @@ group { name: "elm/entry/base-password/popup";
 				source: "elm";
 				script {
 					new pressed;
+					new focused;
 					pressed = get_int(handler_pressed);
+					focused = get_int(handler_focused);
 					set_int(handler_ontop, 0);
-					if (pressed)
-						set_state(PART:"handle", "press", 0.0);
-					else
-						set_state(PART:"handle", "show", 0.0);
+                                        if (focused)
+                                        {
+                                             if (pressed)
+                                               set_state(PART:"handle", "press", 0.0);
+                                             else
+                                               set_state(PART:"handle", "show", 0.0);
+                                        }
+                                        else
+                                        {
+                                             set_state(PART:"handle", "default", 0.0);
+                                        }
 				}
 			}
 			program { name: "pressed";
@@ -1794,32 +1813,44 @@ group { name: "elm/entry/base-password/popup";
 		script {
 			public handler_ontop;
 			public handler_pressed;
+			public handler_focused;
 		}
 		programs {
 			program { name: "focused";
 				signal: "elm,action,focus";
 				source: "elm";
-				action: STATE_SET "show" 0.0;
-				target: "handle";
-				after: "unpressed";
+				script {
+					set_int(handler_focused, 1);
+				}
 			}
 			program { name: "unfocused";
 				signal: "elm,action,unfocus";
 				source: "elm";
-				action: STATE_SET "default" 0.0;
-				target: "handle";
+				script {
+					set_int(handler_focused, 0);
+				       	set_state(PART:"handle", "default", 0.0);
+				}
 			}
 			program { name: "top";
 	    		signal: "elm,state,top";
 				source: "elm";
 				script {
 					new pressed;
+					new focused;
 					pressed = get_int(handler_pressed);
-					set_int(handler_ontop, 1);
-					if (pressed)
-						set_state(PART:"handle", "top_press", 0.0);
-					else
-						set_state(PART:"handle", "top", 0.0);
+					focused = get_int(handler_focused);
+                                        set_int(handler_ontop, 1);
+                                        if (focused)
+                                        {
+                                             if (pressed)
+                                               set_state(PART:"handle", "top_press", 0.0);
+                                             else
+                                               set_state(PART:"handle", "top", 0.0);
+                                        }
+                                        else
+                                        {
+                                             set_state(PART:"handle", "default", 0.0);
+                                        }
 				}
 			}
 			program { name: "bottom";
@@ -1827,12 +1858,21 @@ group { name: "elm/entry/base-password/popup";
 				source: "elm";
 				script {
 					new pressed;
+					new focused;
 					pressed = get_int(handler_pressed);
+					focused = get_int(handler_focused);
 					set_int(handler_ontop, 0);
-					if (pressed)
-						set_state(PART:"handle", "press", 0.0);
-					else
-						set_state(PART:"handle", "show", 0.0);
+                                        if (focused)
+                                        {
+                                             if (pressed)
+                                               set_state(PART:"handle", "press", 0.0);
+                                             else
+                                               set_state(PART:"handle", "show", 0.0);
+                                        }
+                                        else
+                                        {
+                                             set_state(PART:"handle", "default", 0.0);
+                                        }
 				}
 			}
 			program { name: "pressed";
