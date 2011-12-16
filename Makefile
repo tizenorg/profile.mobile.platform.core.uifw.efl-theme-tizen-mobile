@@ -9,7 +9,7 @@ all: themes
 
 themes: copy_edc	
 	cd themes && make
-	rm themes/nbeat-*.edc
+	rm themes/tizen-*.edc
 
 install_themes:
 	cd themes && make install
@@ -17,30 +17,30 @@ install_themes:
 install: install_themes
 
 copy_edc:
-	cp themes/nbeat.edc themes/nbeat-black.edc
-	cp themes/nbeat.edc themes/nbeat-hd.edc
-	cp themes/nbeat.edc themes/nbeat-black-hd.edc
+	cp themes/tizen.edc themes/tizen-black.edc
+	cp themes/tizen.edc themes/tizen-hd.edc
+	cp themes/tizen.edc themes/tizen-black-hd.edc
 
-nbeat:
+tizen:
 	cd themes && make $@
 
-nbeat-black:
-	cp themes/nbeat.edc themes/$@.edc
+tizen-black:
+	cp themes/tizen.edc themes/$@.edc
 	cd themes && make $@
-	rm themes/nbeat-*.edc
+	rm themes/tizen-*.edc
 
-nbeat-hd:
-	cp themes/nbeat.edc themes/$@.edc
+tizen-hd:
+	cp themes/tizen.edc themes/$@.edc
 	cd themes && make $@
-	rm themes/nbeat-*.edc
+	rm themes/tizen-*.edc
 
-nbeat-black-hd:
-	cp themes/nbeat.edc themes/$@.edc
+tizen-black-hd:
+	cp themes/tizen.edc themes/$@.edc
 	cd themes && make $@
-	rm themes/nbeat-*.edc
+	rm themes/tizen-*.edc
 
 clean:
 	rm -rf themes/*.edj
-	rm -rf themes/nbeat-*.edc
+	rm -rf themes/tizen-*.edc
 
 distclean: clean

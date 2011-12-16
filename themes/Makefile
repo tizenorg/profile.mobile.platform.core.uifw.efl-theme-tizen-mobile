@@ -5,7 +5,7 @@ EDJE_FLAGS_VERBOSE_ =
 EDJE_FLAGS_VERBOSE_0 =
 EDJE_FLAGS_VERBOSE_1 = -v
 
-all: nbeat nbeat-black nbeat-hd nbeat-black-hd
+all: tizen tizen-black tizen-hd tizen-black-hd
 	echo $(escaped_prefix)
 
 .SUFFIXES: .edc .edj
@@ -15,16 +15,16 @@ all: nbeat nbeat-black nbeat-hd nbeat-black-hd
 	edje_cc $(EDJE_FLAGS_$(V)) -id ./images/$(@:.edj=) -fd ../objects $(@:.edj=.edc)
 	rm ./inc/tmp-inc.edc
 
-nbeat: nbeat.edj
-nbeat-black: nbeat-black.edj
-nbeat-hd: nbeat-hd.edj
-nbeat-black-hd: nbeat-black-hd.edj
+tizen: tizen.edj
+tizen-black: tizen-black.edj
+tizen-hd: tizen-hd.edj
+tizen-black-hd: tizen-black-hd.edj
 
 clean:
 	rm -f *.edj
 
 install:
 	mkdir -p $(themedir)
-	$(INSTALL) nbeat*.edj $(themedir)
+	$(INSTALL) tizen*.edj $(themedir)
 
 distclean: clean
