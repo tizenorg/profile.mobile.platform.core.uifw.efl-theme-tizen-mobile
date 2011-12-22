@@ -2147,9 +2147,9 @@ group { name: "elm/entry/base-password/popup";
 	    source5: "elm/entry/anchor/default"; // anchor under
 //	    source6: "X"; // anchor over
 	    description { state: "default" 0.0;
-	       fixed: 1 0;
+               fixed: 1 0;
                align: 0.0 0.0;
-               rel1 { relative: 1.0 1.0; to: "elm.rect.left.pad"; to_y: "elm.rect.top.pad"; }
+               rel1 { relative: 1.0 1.0; to_x: "elm.rect.left.pad"; to_y: "elm.rect.top.pad"; }
                rel2 { relative: 1.0 0.0; to_y: "elm.rect.bottom.pad"; }
 	       text {
 		  style: "entry_textblock_style";
@@ -2236,6 +2236,19 @@ group { name: "elm/entry/base-password/popup";
            }
          }
          part {
+           name: "elm.rect.topleft.pad";
+           type: RECT;
+           scale: 1;
+           description {
+              state: "default" 0.0;
+              min: ENTRY_BUBBLE_CALLERID_PAD ENTRY_BUBBLE_CALLERID_PAD;
+              max: ENTRY_BUBBLE_CALLERID_PAD ENTRY_BUBBLE_CALLERID_PAD;
+              fixed: 1 1;
+              align: 0.0 0.0;
+              visible: 0;
+           }
+         }
+         part {
            name: "elm.rect.bottom.pad";
            type: RECT;
            scale: 1;
@@ -2298,6 +2311,40 @@ group { name: "elm/entry/base-password/popup";
               rel2 { relative: 0.0 1.0; to_x: "elm.rect.right.pad"; to_y: "elm.rect.top.pad"; }
            }
          }
+         part {
+            name: "elm.swallow.callerid";
+            type: SWALLOW;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min: ENTRY_BUBBLE_CALLERID_WIDTH ENTRY_BUBBLE_CALLERID_HEIGHT;
+               max: ENTRY_BUBBLE_CALLERID_WIDTH ENTRY_BUBBLE_CALLERID_HEIGHT;
+               fixed: 1 1;
+               align: 0.0 0.0;
+               visible: 0;
+               rel1 { relative: 1.0 1.0; to: "elm.rect.topleft.pad"; to_y: "elm.rect.topleft.pad"; }
+               rel2 { relative: 1.0 0.0; to_y: "elm.rect.bottom.pad"; }
+            }
+            description { state: "callerid_on" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part {
+            name: "elm.rect.callerid.pad";
+            type: RECT;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min: ENTRY_BUBBLE_CALLERID_PAD ENTRY_BUBBLE_CALLERID_PAD;
+               max: ENTRY_BUBBLE_CALLERID_PAD ENTRY_BUBBLE_CALLERID_PAD;
+               fixed: 1 1;
+               align: 0.0 0.0;
+               visible: 0;
+               rel1 { relative: 1.0 1.0; to: "elm.swallow.callerid"; to_y: "elm.rect.top.pad"; }
+               rel2 { relative: 1.0 0.0; to_y: "elm.rect.bottom.pad"; }
+            }
+         }
 	 part { name: "elm.text";
 	    type: TEXTBLOCK;
 	    mouse_events: 1;
@@ -2321,13 +2368,18 @@ group { name: "elm/entry/base-password/popup";
 		  min: 0 1;
                   max: 1 0;
 	       }
-	    }
-	    description { state: "disabled" 0.0;
+            }
+            description { state: "callerid_on" 0.0;
                inherit: "default" 0.0;
-	       text {
-		  style: "entry_textblock_disabled_style";
-	       }
-	    }
+               rel1 { relative: 1.0 1.0; to_x: "elm.rect.callerid.pad"; to_y: "elm.rect.subject.line"; }
+               rel2 { relative: 1.0 1.0; to_y: "elm.rect.subject.line"; }
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               text {
+                  style: "entry_textblock_disabled_style";
+               }
+            }
 	 }
          part {
            name: "elm.swallow.end";
@@ -2357,6 +2409,20 @@ group { name: "elm/entry/base-password/popup";
 	    signal: "elm,state,enabled";
 	    source: "elm";
 	    action: STATE_SET "default" 0.0;
+	    target: "elm.text";
+	 }
+	 program { name: "go_callerid_on";
+	    signal: "elm,state,callerid,enabled";
+	    source: "elm";
+	    action: STATE_SET "callerid_on" 0.0;
+	    target: "elm.swallow.callerid";
+	    target: "elm.text";
+	 }
+	 program { name: "go_callerid_off";
+	    signal: "elm,state,callerid,disabled";
+	    source: "elm";
+	    action: STATE_SET "default" 0.0;
+	    target: "elm.swallow.callerid";
 	    target: "elm.text";
 	 }
       }
@@ -2656,6 +2722,19 @@ group { name: "elm/entry/base-password/popup";
 	    }
 	 }
          part {
+           name: "elm.rect.topright.pad";
+           type: RECT;
+           scale: 1;
+           description {
+              state: "default" 0.0;
+              min: ENTRY_BUBBLE_CALLERID_PAD ENTRY_BUBBLE_CALLERID_PAD;
+              max: ENTRY_BUBBLE_CALLERID_PAD ENTRY_BUBBLE_CALLERID_PAD;
+              align: 1.0 0.0;
+              visible: 0;
+              rel1.relative: 1.0 0.0;
+           }
+         }
+         part {
            name: "elm.rect.top.pad";
            type: RECT;
            scale: 1;
@@ -2731,6 +2810,38 @@ group { name: "elm/entry/base-password/popup";
               rel2 { relative: 0.0 1.0; to_x: "elm.rect.right.pad"; to_y: "elm.rect.top.pad"; }
            }
          }
+         part {
+            name: "elm.swallow.callerid";
+            type: SWALLOW;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min: ENTRY_BUBBLE_CALLERID_WIDTH ENTRY_BUBBLE_CALLERID_HEIGHT;
+               max: ENTRY_BUBBLE_CALLERID_WIDTH ENTRY_BUBBLE_CALLERID_HEIGHT;
+               align: 1.0 0.0;
+               visible: 0;
+               rel1 { relative: 0.0 1.0; to_x: "elm.rect.topright.pad"; to_y: "elm.rect.topright.pad"; }
+               rel2 { relative: 0.0 1.0; to_x: "elm.rect.topright.pad"; to_y: "elm.rect.bottom.pad"; }
+            }
+            description { state: "callerid_on" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part {
+            name: "elm.rect.callerid.pad";
+            type: RECT;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min: ENTRY_BUBBLE_CALLERID_PAD ENTRY_BUBBLE_CALLERID_PAD;
+               max: ENTRY_BUBBLE_CALLERID_PAD ENTRY_BUBBLE_CALLERID_PAD;
+               align: 1.0 0.0;
+               visible: 0;
+               rel1 { relative: 0.0 1.0; to_x: "elm.swallow.callerid"; to_y: "elm.rect.topright.pad"; }
+               rel2 { relative: 0.0 1.0; to_x: "elm.swallow.callerid"; to_y: "elm.rect.bottom.pad"; }
+	    }
+         }
 	 part { name: "elm.text";
 	    type: TEXTBLOCK;
 	    mouse_events: 1;
@@ -2754,6 +2865,11 @@ group { name: "elm/entry/base-password/popup";
 		  min: 0 1;
                   max: 1 0;
 	       }
+	    }
+	    description { state: "callerid_on" 0.0;
+               inherit: "default" 0.0;
+               rel1 { relative: 0.0 1.0; to_y: "elm.rect.subject.line";}
+               rel2 { relative: 0.0 1.0; to_x: "elm.rect.callerid.pad"; to_y: "elm.rect.subject.line"; }
 	    }
 	    description { state: "disabled" 0.0;
                inherit: "default" 0.0;
@@ -2791,6 +2907,20 @@ group { name: "elm/entry/base-password/popup";
 	    signal: "elm,state,enabled";
 	    source: "elm";
 	    action: STATE_SET "default" 0.0;
+	    target: "elm.text";
+	 }
+	 program { name: "go_callerid_on";
+	    signal: "elm,state,callerid,enabled";
+	    source: "elm";
+	    action: STATE_SET "callerid_on" 0.0;
+	    target: "elm.swallow.callerid";
+	    target: "elm.text";
+	 }
+	 program { name: "go_callerid_off";
+	    signal: "elm,state,callerid,disabled";
+	    source: "elm";
+	    action: STATE_SET "default" 0.0;
+	    target: "elm.swallow.callerid";
 	    target: "elm.text";
 	 }
       }
