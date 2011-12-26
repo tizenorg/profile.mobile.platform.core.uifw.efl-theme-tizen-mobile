@@ -15,1074 +15,245 @@
  *
  */
 
-group {
-        name: "elm/gengrid/item/default_grid/default";
-
-        data.item: "icons" "elm.swallow.icon elm.swallow.end";
-
-        parts {
-                part {
-                        name: "bg";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; }
-                                rel2 { relative: 1.0 1.0; }
-                        }
-                }
-
-		part {
-                        name: "left_top_padding";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 8 15;
-                                align: 0.0 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; to: "bg"; }
-                                rel2 { relative: 0.0 0.0; to: "bg"; }
-                        }
-                }
-
-                part {
-                        name: "right_bottom_padding";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 7 0;
-                                color: 0 0 0 0;
-                                align: 1.0 1.0;
-                                rel1 { relative: 1.0 1.0; to: "bg"; }
-                                rel2 { relative: 1.0 1.0; to: "bg"; }
-                        }
-                }
-
-		part {
-			name: "area_bg";
-			type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                color: 239 239 239 255;
-                                rel1 { relative: 1.0 1.0; to_x: "left_top_padding"; to_y: "left_top_padding";}
-                                rel2 { relative: 0.0 0.0; to_x: "right_bottom_padding"; to_y: "right_bottom_padding";}
-                        }
-			description {
-                                state: "enabled" 0.0;
-                                inherit: "default" 0.0;
-				rel1.offset: -6 -6;
-                                rel2.offset: 5 5;
-                        }
-		}
-
-                part {
-                        name: "elm.swallow.icon";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 0.0 0.0; offset: 1 1; to: "area_bg"; }
-                                rel2 { relative: 1.0 1.0; offset: -2 -2; to: "area_bg"; }
-                        }
-                }
-
-                part {
-                        name: "elm.swallow.end";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 0.0 0.0; to: "elm.swallow.icon"; }
-                                rel2 { relative: 1.0 1.0; to: "elm.swallow.icon"; }
-                        }
-                }
-
-                part {
-			name: "reorder_bg";
-			type: RECT;
-			description {
-                                state: "default" 0.0;
-                                color: 0 0 0 0;
-				visible: 0;
-                                rel1.to: "area_bg";
-                                rel2.to: "area_bg";
-                        }
-			description {
-                                state: "enabled" 0.0;
-				inherit: "default" 0.0;
-				color: 0 0 0 128;
-				visible: 1;
-                        }
-		}
-        }
-        programs {
-		program {
-			name:    "go_reorder_disabled";
-			signal:  "elm,state,reorder,disabled";
-			source:  "elm";
-			action:  STATE_SET "default" 0.0;
-			target:  "area_bg";
-			target:  "reorder_bg";
-			transition: ACCELERATE 0.3;
-		}
-		program {
-			name:    "go_reorder_enabled";
-			signal:  "elm,state,reorder,enabled";
-			source:  "elm";
-			action:  STATE_SET "enabled" 0.0;
-			target:  "area_bg";
-			target:  "reorder_bg";
-			transition: ACCELERATE 0.3;
-		}
-	}
-}
-
-group { 
-	name: "elm/gengrid/item/default_gridtext/default";
-
-      	data.item: "labels" "elm.text";
-      	data.item: "icons" "elm.swallow.icon elm.swallow.end";
-      
-	parts {
-		part {
-			name: "bg";
-			type: RECT;
-			description {
-		        	state: "default" 0.0;
-            	   		color: 0 0 0 0;
-				rel1 { relative: 0.0 0.0; }
-                                rel2 { relative: 1.0 1.0; }
-            		}
-		}
-
-		part {
-                        name: "elm.swallow.icon";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 0.0 0.0; to: "bg"; }
-                                rel2 { relative: 1.0 0.0; to: "bottom_gap"; }
-                        }
-                }
-
-                part {
-                        name: "bottom_gap";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 10;
-                                fixed: 0 1;
-                                align: 0.0 1.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 1.0; to: "bg"; }
-                                rel2 { relative: 1.0 1.0; to: "bg"; }
-                        }
-                }
-
-		part {
-			name: "label_bg";
-			type: RECT;
-			description {
-				state: "default" 0.0;
-				color: 0 0 0 128;
-				rel1 { relative: 0.0 0.833; offset: 0 0; to: "elm.swallow.icon"; }
-                                rel2 { relative: 1.0 1.0; offset: -1 0; to: "elm.swallow.icon"; }
-			}
-		}
-
-		part { 
-			name: "elm.text";
-            		type: TEXT;
-            		mouse_events: 0;
-            		scale: 1;
-            		description {
-               			state: "default" 0.0;
-               			rel1 { relative: 0.0  0.0; to: "label_bg"; }
-               			rel2 { relative: 1.0  1.0; to: "label_bg"; }
-               			color: 255 255 255 255;
-               			text {
-                  			font: "SLP:style=Roman";
-                  			size: 16;
-                  			align: 0.5 0.5;
-               			}
-            		}
-         	}
-
-		part { 
-			name: "elm.swallow.end";
-            		type: SWALLOW;
-            		description { 
-				state: "default" 0.0;
-               			rel1 { relative: 0.0 0.0; to: "elm.swallow.icon"; }
-               			rel2 { relative: 1.0 1.0; to: "elm.swallow.icon"; }
-            		}
-         	}
-	}
-}
-
-group {
-        name: "elm/gengrid/item/photoframe_default/default";
-
-        data.item: "labels" "elm.text";
-        data.item: "icons" "elm.swallow.icon elm.swallow.end";
-
-        parts {
-                part {
-                        name: "bg";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; }
-                                rel2 { relative: 1.0 1.0; }
-                        }
-                }
-
-                part {
-                        name: "area_bg";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                color: 0 0 0 0;
-                                min: 120 120;
-                                align: 0.5 0.0;
-                                rel1 { relative: 0.0 0.0; to: "bg"; }
-                                rel2 { relative: 1.0 0.0; to: "bg"; }
-                        }
-                }
-
-		part {
-                        name: "elm.swallow.icon";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 0.0 0.0; to: "bg"; }
-                                rel2 { relative: 1.0 0.0; to: "bottom_gap"; }
-                        }
-                }
-
-                part {
-                        name: "bottom_gap";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 10;
-                                fixed: 0 1;
-                                align: 0.0 1.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 1.0; to: "bg"; }
-                                rel2 { relative: 1.0 1.0; to: "bg"; }
-                        }
-                }
-		                
-		part {
-                        name: "elm.swallow.end";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 0.0 0.0; to: "elm.swallow.icon"; }
-                                rel2 { relative: 1.0 1.0; to: "elm.swallow.icon"; }
-                        }
-                }
-        }
-}
-
-group {
-        name: "elm/gengrid/item/photoframe_video/default";
-
-	images {
-                image : "00_button_play.png" COMP;
-        }
-
-        data.item: "labels" "elm.text";
-        data.item: "icons" "elm.swallow.icon elm.swallow.end";
-
-        parts {
-                part {
-                        name: "bg";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; }
-                                rel2 { relative: 1.0 1.0; }
-                        }
-                }
-
-                part {
-                        name: "area_bg";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                color: 0 0 0 0;
-                                min: 120 120;
-                                align: 0.5 0.0;
-                                rel1 { relative: 0.0 0.0; to: "bg"; }
-                                rel2 { relative: 1.0 0.0; to: "bg"; }
-                        }
-                }
-
-		part {
-                        name: "elm.swallow.icon";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 0.0 0.0; to: "bg"; }
-                                rel2 { relative: 1.0 0.0; to: "bottom_gap"; }
-                        }
-                }
-
-                part {
-                        name: "bottom_gap";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 10;
-                                fixed: 0 1;
-                                align: 0.0 1.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 1.0; to: "bg"; }
-                                rel2 { relative: 1.0 1.0; to: "bg"; }
-                        }
-                }
-
-		part {
-			name: "elm.image.btn";
-			type: IMAGE;
-			description {
-                                state: "default" 0.0;
-				rel1 { relative: (40/120) (40/120); to: "elm.swallow.icon"; }
-                                rel2 { relative: ((120-40)/120) ((120-40)/120); to: "elm.swallow.icon"; }
-                                image.normal: "00_button_play.png";
-                        }
-		}
-
-		part {
-                        name: "elm.text";
-                        type: TEXT;
-                        mouse_events: 0;
-                        description {
-                                state: "default" 0.0;
-				min: 0 18;
-				fixed: 0 1;
-				align: 0.5 1.0;
-                                rel1 { relative: 0.0  1.0; to: "area_bg"; }
-                                rel2 { relative: 1.0  1.0; to: "area_bg"; }
-                                color: 255 255 255 255;
-                                text {
-                                        font: "SLP:style=Bold";
-                                        size: 18;
-                                        align: 0.5 0.5;
-                                }
-                        }
-                }
-
-                part {
-                        name: "elm.swallow.end";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 0.0 0.0; to: "elm.swallow.icon"; }
-                                rel2 { relative: 1.0 1.0; to: "elm.swallow.icon"; }
-                        }
-                }
-        }
-}
-
-group
-{
-        name: "elm/gengrid/photoframe/horizontal_layout";
-
-        parts {
-                part {
-                        name: "bg";
-                        type: RECT;
-                        mouse_events: 1;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 0.0 0.0; }
-                                rel2 { relative: 1.0 1.0; }
-                                color: 0 0 0 0;
-                        }
-                }
-
-                part {
-                        name: "icon_bg";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                color: 255 255 255 255;
-                                rel1 { relative: (((120-104)/2)/120) (((120-74)/2)/120); to: "bg"; }
-                                rel2 { relative: ((120-(120-104)/2)/120) ((120-(120-74)/2)/120); to: "bg"; }
-                        }
-                }
-
-                part {
-                        name: "elm.swallow.icon";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 0.0 0.0; offset: 2 2; to: "icon_bg"; }
-                                rel2 { relative: 1.0 1.0; offset: (-2-1) (-2-1); to: "icon_bg"; }
-                        }
-                }
-        }
-}
-
-group
-{
-        name: "elm/gengrid/photoframe/vertical_layout";
-
-        parts {
-                part {
-                        name: "bg";
-                        type: RECT;
-                        mouse_events: 1;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 0.0 0.0; }
-                                rel2 { relative: 1.0 1.0; }
-                                color: 0 0 0 0;
-                        }
-                }
-
-                part {
-                        name: "icon_bg";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                color: 255 255 255 255;
-                                rel1 { relative: (((120-74)/2)/120) (((120-104)/2)/120); to: "bg"; }
-                                rel2 { relative: ((120-(120-74)/2)/120) ((120-(120-104)/2)/120); to: "bg"; }
-                        }
-                }
-
-                part {
-                        name: "elm.swallow.icon";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 0.0 0.0; offset: 2 2; to: "icon_bg"; }
-                                rel2 { relative: 1.0 1.0; offset: (-2-1) (-2-1); to: "icon_bg"; }
-                        }
-                }
-        }
-}
-
-group {
-        name: "elm/gengrid/item/stackedgrid_album/default";
-
-        data.item: "labels" "elm.text.name elm.text.count";
-        data.item: "icons" "elm.swallow.icon elm.swallow.mark";
-
-        parts {
-                part {
-                        name: "bg";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; }
-                                rel2 { relative: 1.0 1.0; }
-                        }
-                }
-
-                part {
-                        name: "left_padding";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 9 0;
-                                fixed: 1 0;
-                                align: 0.0 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; to: "bg"; }
-                                rel2 { relative: 0.0 1.0; to: "bg"; }
-                        }
-                }
-
-                part {
-                        name: "right_padding";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 9 0;
-                                fixed: 1 0;
-                                align: 1.0 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 1.0 0.0; to: "bg"; }
-                                rel2 { relative: 1.0 1.0; to: "bg"; }
-                        }
-                }
-
-                part {
-                        name: "elm.swallow.icon";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 1.0 0.0; to: "left_padding"; }
-                                rel2 { relative: 0.0 0.0; to_x: "right_padding"; to_y: "bottom_gap"; }
-                        }
-                }
-
-                part {
-                        name: "elm.swallow.mark";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                min: 46 46;
-                                fixed : 1 1;
-                                align: 1.0 0.0;
-                                rel1 { relative: 1.0 0.0; to: "elm.swallow.icon"; }
-                                rel2 { relative: 1.0 0.0; to: "elm.swallow.icon"; }
-                        }
-                }
-
-                part {
-                        name: "bottom_gap";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 71;
-                                fixed: 0 1;
-                                align: 0.0 1.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 1.0; to: "bg"; }
-                                rel2 { relative: 1.0 1.0; to: "bg"; }
-                        }
-                }
-
-                part {
-                        name: "elm.text.name";
-                        type: TEXT;
-                        mouse_events: 0;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 20;
-                                fixed: 0 1;
-                                align: 0.5 0.0;
-                                rel1 { relative: 0.0  0.0; to: "bottom_gap"; }
-                                rel2 { relative: 1.0  0.0; to: "bottom_gap"; }
-                                color: 255 255 255 255;
-
-                                text {
-                                        font: "SLP:style=Bold";
-                                        size: 18;
-                                        align: 0.5 0.5;
-                                }
-                        }
-                }
-
-                part {
-                        name: "elm.text.count";
-                        type: TEXT;
-                        mouse_events: 0;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 20;
-                                fixed: 0 1;
-                                align: 0.5 0.0;
-                                rel1 { relative: 0.0  1.0; to: "elm.text.name"; }
-                                rel2 { relative: 1.0  1.0; to: "elm.text.name"; }
-                                color: 204 204 204 255;
-
-                                text {
-                                        font: "SLP";
-                                        size: 18;
-                                        align: 0.5 0.5;
-                                }
-                        }
-                }
-        }
-}
-
-group {
-        name: "elm/gengrid/item/stackedgrid_album_edit/default";
-
-	images {
-                image : "00_grid_edit_text_bg.png" COMP;
-        }
-
-	data.item: "labels" "elm.text.name elm.text.count";
-        data.item: "icons" "elm.swallow.icon elm.swallow.mark elm.swallow.end";
-
-        parts {
-                part {
-                        name: "bg";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; }
-                                rel2 { relative: 1.0 1.0; }
-                        }
-                }
-
-		part {
-			name: "left_padding";
-			type: RECT;
-			description {
-                                state: "default" 0.0;
-				min: 9 0;
-				fixed: 1 0;
-				align: 0.0 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; to: "bg"; }
-                                rel2 { relative: 0.0 1.0; to: "bg"; }
-                        }
-		}
-	
-		part {
-			name: "right_padding";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 9 0;
-                                fixed: 1 0;
-                                align: 1.0 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 1.0 0.0; to: "bg"; }
-                                rel2 { relative: 1.0 1.0; to: "bg"; }
-                        }
-		}
-
-                part {
-                        name: "elm.swallow.icon";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 1.0 0.0; to: "left_padding"; }
-                                rel2 { relative: 0.0 0.0; to_x: "right_padding"; to_y: "bottom_gap"; }
-                        }
-                }
-
-		part {
-			name: "elm.swallow.mark";
-			type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-				min: 46 46;
-				fixed : 1 1;
-				align: 1.0 0.0;
-                                rel1 { relative: 1.0 0.0; to: "elm.swallow.icon"; }
-                                rel2 { relative: 1.0 0.0; to: "elm.swallow.icon"; }
-                        }
-		}
-
-                part {
-                        name: "bottom_gap";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 71;
-                                fixed: 0 1;
-                                align: 0.0 1.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 1.0; to: "bg"; }
-                                rel2 { relative: 1.0 1.0; to: "bg"; }
-                        }
-                }
-
-		part {
-			name: "edit_text_bg_top_padding";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 7;
-                                fixed: 0 1;
-                                align: 0.0 1.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; to: "bottom_gap"; }
-                                rel2 { relative: 1.0 0.0; to: "bottom_gap"; }
-                        }
-		}
-
-		part {
-                        name: "elm.swallow.end";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 0.0 0.0; to: "elm.swallow.icon"; }
-                                rel2 { relative: 1.0 1.0; to: "elm.swallow.icon"; }
-                        }
-                }
-
-		part {
-			name: "edit_text_bg";
-                        type: IMAGE;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 54;
-                                fixed: 0 1;
-                                align: 0.0 0.0;
-                                rel1 { relative: 0.0 0.0; to: "edit_text_bg_top_padding"; }
-                                rel2 { relative: 1.0 0.0; to: "edit_text_bg_top_padding"; }
-				image.normal: "00_grid_edit_text_bg.png";
-                        }
-		}
-
-		part {
-                        name: "elm.text.name";
-                        type: TEXT;
-                        mouse_events: 0;
-                        description {
-                                state: "default" 0.0;
-				min: 0 20;
-				fixed: 0 1;
-				align: 0.5 0.0;
-                                rel1 { relative: 0.0  0.0; to: "bottom_gap"; }
-                                rel2 { relative: 1.0  0.0; to: "bottom_gap"; }
-                                color: 255 255 255 255;
-				
-                                text {
-                                        font: "SLP:style=Bold";
-                                        size: 18;
-                                        align: 0.5 0.5;
-                                }
-                        }
-                }
-
-		part {
-                        name: "elm.text.count";
-                        type: TEXT;
-                        mouse_events: 0;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 20;
-                                fixed: 0 1;
-                                align: 0.5 0.0;
-                                rel1 { relative: 0.0  1.0; to: "elm.text.name"; }
-                                rel2 { relative: 1.0  1.0; to: "elm.text.name"; }
-                                color: 204 204 204 255;
-
-                                text {
-                                        font: "SLP";
-                                        size: 18;
-                                        align: 0.5 0.5;
-                                }
-                        }
-                }
-        }
-}
-
-group {
-        name: "elm/gengrid/item/stackedgrid_photo/default";
-
-        data.item: "labels" "elm.text.name elm.text.count";
-        data.item: "icons" "elm.swallow.icon elm.swallow.mark";
-
-        parts {
-                part {
-                        name: "bg";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; }
-                                rel2 { relative: 1.0 1.0; }
-                        }
-                }
-
-                part {
-                        name: "left_padding";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 8 0;
-                                fixed: 1 0;
-                                align: 0.0 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; to: "bg"; }
-                                rel2 { relative: 0.0 1.0; to: "bg"; }
-                        }
-                }
-
-                part {
-                        name: "right_padding";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 8 0;
-                                fixed: 1 0;
-                                align: 1.0 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 1.0 0.0; to: "bg"; }
-                                rel2 { relative: 1.0 1.0; to: "bg"; }
-                        }
-                }
-
-                part {
-                        name: "elm.swallow.icon";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 1.0 0.0; to: "left_padding"; }
-                                rel2 { relative: 0.0 0.0; to_x: "right_padding"; to_y: "bottom_gap"; }
-                        }
-                }
-
-                part {
-                        name: "elm.swallow.mark";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                min: 46 46;
-                                fixed : 1 1;
-                                align: 1.0 0.0;
-                                rel1 { relative: 1.0 0.0; to: "elm.swallow.icon"; }
-                                rel2 { relative: 1.0 0.0; to: "elm.swallow.icon"; }
-                        }
-                }
-
-                part {
-                        name: "bottom_gap";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 69;
-                                fixed: 0 1;
-                                align: 0.0 1.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 1.0; to: "bg"; }
-                                rel2 { relative: 1.0 1.0; to: "bg"; }
-                        }
-                }
-
-		part {
-			name: "bottom_gap_top_padding";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 9;
-                                fixed: 0 1;
-                                align: 0.0 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; to: "bottom_gap"; }
-                                rel2 { relative: 1.0 0.0; to: "bottom_gap"; }
-                        }
-		}
-
-                part {
-                        name: "elm.text.name";
-                        type: TEXT;
-                        mouse_events: 0;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 20;
-                                fixed: 0 1;
-                                align: 0.5 0.0;
-                                rel1 { relative: 0.0  1.0; to: "bottom_gap_top_padding"; }
-                                rel2 { relative: 1.0  1.0; to: "bottom_gap_top_padding"; }
-                                color: 255 255 255 255;
-
-                                text {
-                                        font: "SLP:style=Bold";
-                                        size: 18;
-                                        align: 0.5 0.5;
-                                }
-                        }
-                }
-
-                part {
-                        name: "elm.text.count";
-                        type: TEXT;
-                        mouse_events: 0;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 20;
-                                fixed: 0 1;
-                                align: 0.5 0.0;
-                                rel1 { relative: 0.0  1.0; to: "elm.text.name"; }
-                                rel2 { relative: 1.0  1.0; to: "elm.text.name"; }
-                                color: 204 204 204 255;
-
-                                text {
-                                        font: "SLP";
-                                        size: 18;
-                                        align: 0.5 0.5;
-                                }
-                        }
-                }
-        }
-}
-
-group {
-        name: "elm/gengrid/item/stackedgrid_photo_edit/default";
-
-	images {
-                image : "00_grid_edit_text_bg.png" COMP;
-        }
-
-        data.item: "labels" "elm.text.name elm.text.count";
-        data.item: "icons" "elm.swallow.icon elm.swallow.mark elm.swallow.end";
-
-        parts {
-                part {
-                        name: "bg";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; }
-                                rel2 { relative: 1.0 1.0; }
-                        }
-                }
-
-                part {
-                        name: "left_padding";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 8 0;
-                                fixed: 1 0;
-                                align: 0.0 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; to: "bg"; }
-                                rel2 { relative: 0.0 1.0; to: "bg"; }
-                        }
-                }
-
-                part {
-                        name: "right_padding";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 8 0;
-                                fixed: 1 0;
-                                align: 1.0 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 1.0 0.0; to: "bg"; }
-                                rel2 { relative: 1.0 1.0; to: "bg"; }
-                        }
-                }
-
-                part {
-                        name: "elm.swallow.icon";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 1.0 0.0; to: "left_padding"; }
-                                rel2 { relative: 0.0 0.0; to_x: "right_padding"; to_y: "bottom_gap"; }
-                        }
-                }
-
-                part {
-                        name: "elm.swallow.mark";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                min: 46 46;
-                                fixed : 1 1;
-                                align: 1.0 0.0;
-                                rel1 { relative: 1.0 0.0; to: "elm.swallow.icon"; }
-                                rel2 { relative: 1.0 0.0; to: "elm.swallow.icon"; }
-                        }
-                }
-
-                part {
-                        name: "bottom_gap";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 69;
-                                fixed: 0 1;
-                                align: 0.0 1.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 1.0; to: "bg"; }
-                                rel2 { relative: 1.0 1.0; to: "bg"; }
-                        }
-                }
-
-		part {
-			name: "bottom_gap_top_padding";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 9;
-                                fixed: 0 1;
-                                align: 0.0 0.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; to: "bottom_gap"; }
-                                rel2 { relative: 1.0 0.0; to: "bottom_gap"; }
-                        }
-		}
-
-		part {
-			name: "edit_text_bg_top_padding";
-                        type: RECT;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 2;
-                                fixed: 0 1;
-                                align: 0.0 1.0;
-                                color: 0 0 0 0;
-                                rel1 { relative: 0.0 0.0; to: "bottom_gap"; }
-                                rel2 { relative: 1.0 0.0; to: "bottom_gap"; }
-                        }
-		}
-
-		part {
-                        name: "elm.swallow.end";
-                        type: SWALLOW;
-                        description {
-                                state: "default" 0.0;
-                                rel1 { relative: 0.0 0.0; to: "elm.swallow.icon"; }
-                                rel2 { relative: 1.0 1.0; to: "elm.swallow.icon"; }
-                        }
-                }
-
-		part {
-			name: "edit_text_bg";
-                        type: IMAGE;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 54;
-                                fixed: 0 1;
-                                align: 0.0 0.0;
-                                rel1 { relative: 0.0 1.0; to: "edit_text_bg_top_padding"; }
-                                rel2 { relative: 1.0 1.0; to: "edit_text_bg_top_padding"; }
-				image.normal: "00_grid_edit_text_bg.png";
-                        }
-		}
-
-                part {
-                        name: "elm.text.name";
-                        type: TEXT;
-                        mouse_events: 0;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 20;
-                                fixed: 0 1;
-                                align: 0.5 0.0;
-                                rel1 { relative: 0.0  1.0; to: "bottom_gap_top_padding"; }
-                                rel2 { relative: 1.0  1.0; to: "bottom_gap_top_padding"; }
-                                color: 255 255 255 255;
-
-                                text {
-                                        font: "SLP:style=Bold";
-                                        size: 18;
-                                        align: 0.5 0.5;
-                                }
-                        }
-                }
-
-                part {
-                        name: "elm.text.count";
-                        type: TEXT;
-                        mouse_events: 0;
-                        description {
-                                state: "default" 0.0;
-                                min: 0 20;
-                                fixed: 0 1;
-                                align: 0.5 0.0;
-                                rel1 { relative: 0.0  1.0; to: "elm.text.name"; }
-                                rel2 { relative: 1.0  1.0; to: "elm.text.name"; }
-                                color: 204 204 204 255;
-
-                                text {
-                                        font: "SLP";
-                                        size: 18;
-                                        align: 0.5 0.5;
-                                }
-                        }
-                }
-        }
-}
+   styles {
+      style { name: "gengrid_textblock_style";
+         base: "font=SLP:style=Medium font_size="GENGRID_FONT_STYLE_18_INC" color="GENGRID_PART_TEXTBLOCK_STYLE_COLOR_INC" align=center wrap=mixed ellipsis=1.0";
+         tag: "br" "\n";
+         tag: "ps" "ps";
+         tag: "tab" "\t";
+         tag: "b" "+ font=SLP:style=Bold";
+      }
+   }
+
+   group { name: "elm/gengrid/item/default_grid/default";
+      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      parts {
+         part { name: "bg";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: GENGRID_PART_BG_COLOR_INC;
+            }
+         }
+         part { name: "left_top_padding";
+            type: RECT;
+            description { state: "default" 0.0;
+               min: 8 15;
+               align: 0.0 0.0;
+               visible: 0;
+               rel1.to: "bg";
+               rel2 {
+                  relative: 0.0 0.0;
+                  to: "bg";
+               }
+            }
+         }
+         part { name: "right_bottom_padding";
+            type: RECT;
+            description { state: "default" 0.0;
+               min: 7 0;
+               align: 1.0 1.0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to: "bg";
+               }
+               rel2.to: "bg";
+            }
+         }
+         part { name: "item_bg";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: GENGRID_PART_ITEM_BG_COLOR_INC;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to: "left_top_padding";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  to: "right_bottom_padding";
+               }
+            }
+            description { state: "enabled" 0.0;
+               inherit: "default" 0.0;
+               rel1.offset: -6 -6;
+               rel2.offset: 5 5;
+            }
+         }
+         part { name: "elm.swallow.icon";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1 {
+                  offset: 1 1;
+                  to: "item_bg";
+               }
+               rel2 {
+                  offset: -2 -2;
+                  to: "item_bg";
+               }
+            }
+         }
+         part { name: "elm.swallow.end";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1.to: "elm.swallow.icon";
+               rel2.to: "elm.swallow.icon";
+            }
+         }
+         part { name: "reorder_bg";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: GENGRID_PART_BG_COLOR_INC;
+               visible: 0;
+               rel1.to: "item_bg";
+               rel2.to: "item_bg";
+            }
+            description { state: "enabled" 0.0;
+               inherit: "default" 0.0;
+               color: GENGRID_PART_REORDER_BG_COLOR_INC;
+               visible: 1;
+            }
+         }
+      }
+      programs {
+         program { name: "go_reorder_disabled";
+            signal: "elm,state,reorder,disabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "item_bg";
+            target: "reorder_bg";
+            transition: ACCELERATE 0.3;
+         }
+         program { name:    "go_reorder_enabled";
+            signal:  "elm,state,reorder,enabled";
+            source:  "elm";
+            action:  STATE_SET "enabled" 0.0;
+            target:  "item_bg";
+            target:  "reorder_bg";
+            transition: ACCELERATE 0.3;
+         }
+      }
+   }
+
+   group { name: "elm/gengrid/item/default_gridtext/default";
+      data.item: "labels" "elm.text";
+      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      parts {
+         part { name: "bg";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: GENGRID_PART_BG_COLOR_INC;
+            }
+         }
+         part { name: "left_top_padding";
+            type: RECT;
+            description { state: "default" 0.0;
+               min: 8 15;
+               align: 0.0 0.0;
+               visible: 0;
+               rel1.to: "bg";
+               rel2 {
+                  relative: 0.0 0.0;
+                  to: "bg";
+               }
+            }
+         }
+         part { name: "right_bottom_padding";
+            type: RECT;
+            description { state: "default" 0.0;
+               min: 7 44;
+               align: 1.0 1.0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to: "bg";
+               }
+               rel2.to: "bg";
+            }
+         }
+         part { name: "item_bg";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: GENGRID_PART_ITEM_BG_COLOR_INC;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to: "left_top_padding";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  to: "right_bottom_padding";
+               }
+            }
+         }
+         part { name: "elm.text";
+            type: TEXTBLOCK;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "left_top_padding";
+                  to_y: "right_bottom_padding";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to: "right_bottom_padding";
+               }
+               text {
+                  style: "gengrid_textblock_style";
+                  min: 0 1;
+                  align: 0.5 0.5;
+               }
+            }
+         }
+         part { name: "elm.swallow.icon";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1 {
+                  offset: 1 1;
+                  to: "item_bg";
+               }
+               rel2 {
+                  offset: -2 -2;
+                  to: "item_bg";
+               }
+            }
+         }
+         part { name: "elm.swallow.end";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1.to: "elm.swallow.icon";
+               rel2.to: "elm.swallow.icon";
+            }
+         }
+         part { name: "reorder_bg";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: GENGRID_PART_BG_COLOR_INC;
+               visible: 0;
+               rel1.to: "item_bg";
+               rel2.to: "item_bg";
+            }
+            description { state: "enabled" 0.0;
+               inherit: "default" 0.0;
+               color: GENGRID_PART_REORDER_BG_COLOR_INC;
+               visible: 1;
+            }
+         }
+      }
+      programs {
+         program { name: "go_reorder_disabled";
+            signal: "elm,state,reorder,disabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "reorder_bg";
+            transition: ACCELERATE 0.3;
+         }
+         program { name:    "go_reorder_enabled";
+            signal:  "elm,state,reorder,enabled";
+            source:  "elm";
+            action:  STATE_SET "enabled" 0.0;
+            target:  "reorder_bg";
+            transition: ACCELERATE 0.3;
+         }
+      }
+   }
