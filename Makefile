@@ -1,4 +1,5 @@
 PREFIX ?= /usr
+INSTALL_DIR=$(DESTDIR)/opt/var/efl-theme-tizen-edc
 
 INSTALL=install -c
 
@@ -13,8 +14,12 @@ themes: copy_edc
 
 install_themes:
 	cd themes && make install
-	
-install: install_themes
+
+install_edc:
+	mkdir -p $(INSTALL_DIR)
+	cp themes/tizen.edc themes/widgets $(INSTALL_DIR) -r
+
+install: install_themes install_edc
 
 copy_edc:
 	cp themes/tizen.edc themes/tizen-black.edc
