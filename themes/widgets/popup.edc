@@ -1151,6 +1151,7 @@ group { name: "elm/popup/base/customstyle";
             rel2 {
                relative: 1.0 1.0;
                to: "elm.rect.title";
+               offset: 0 1;
             }
          }
          description { state: "show_title" 0.0;
@@ -1564,21 +1565,10 @@ group { name: "elm/popup/buttons3/default";
 group { name: "elm/popup/base/volumebarstyle";
    parts {
       images {
-         image: "00_volume_popup_bg.png" COMP;
+         image: "00_volumepopup_title_bg.png" COMP;
+         image: "00_popup_bottom_bg.png" COMP;
+         image: "00_popup_bg.png" COMP;
       }
-      styles
-        {
-           style { name: "popup_title_volumebarstyle";
-              base: "font=SLP:style=Medium font_size="POPUP_BASE_VOLUMEBAR_STYLE_TEXT_FONT_SIZE_INC" align=center color=#ffffff wrap=mixed ellipsis=1.0";
-              tag:  "br" "\n";
-              tag:  "ps" "ps";
-              tag:  "hilight" "+ font=SLP:style=Bold";
-              tag:  "b" "+ font=SLP:style=Bold";
-              tag:  "whitecolor" "+ color=#ffffff";
-              tag:  "tab" "\t";
-           }
-        }
-
       part { name: "base";
          type: RECT;
          scale : 1;
@@ -1600,23 +1590,23 @@ group { name: "elm/popup/base/volumebarstyle";
             rel1.to: "base";
             rel2.to: "base";
             image {
-               normal: "00_volume_popup_bg.png";
-               border: POPUP_BASE_VOLUMEBAR_STYLE_BG_IMAGE_BORDER_INC;
-               middle: DEFAULT;
+               normal: "00_popup_bg.png";
+               border: POPUP_BASE_DEFAULT_BG_DEFAULT_IMAGE_BORDER_INC;
                border_scale: 1;
             }
          }
       }
       part { name: "elm.rect.title";
-         type: RECT;
+         type: IMAGE;
          scale : 1;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
-            min: POPUP_BASE_VOLUMEBAR_STYLE_TITLE_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BASE_VOLUMEBAR_STYLE_TITLE_DEFAULT_MIN_MAX_INC;
+            min: POPUP_BASE_DEFAULT_TITLE_DEFAULT_MIN_INC;
             fixed : 1 1;
             align: 0.5 0.0;
             visible: 0;
+            image.normal: "00_volumepopup_title_bg.png";
+            image.border: POPUP_BASE_VOLUMEBAR_STYLE_TITLE_DEFAULT_IMAGE_BORDER_INC;
+            image.border_scale: 1;
             rel1 {
                relative: 0.5 0.0;
                to: "base";
@@ -1627,6 +1617,47 @@ group { name: "elm/popup/base/volumebarstyle";
             }
          }
          description { state: "show_title" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+      part { name: "left_pad";
+         type: RECT;
+         scale : 1;
+         description { state: "default" 0.0;
+            min: POPUP_BASE_DEFAULT_PADDING_MIN_MAX_INC;
+            max: POPUP_BASE_DEFAULT_PADDING_MIN_MAX_INC;
+            fixed : 1 1;
+            align: 0.0 0.0;
+            visible: 0;
+            rel1.to: "elm.rect.title";
+         }
+      }
+      part { name: "right_pad";
+         type: RECT;
+         scale : 1;
+         description { state: "default" 0.0;
+            min: POPUP_BASE_DEFAULT_PADDING_MIN_MAX_INC;
+            max: POPUP_BASE_DEFAULT_PADDING_MIN_MAX_INC;
+            fixed : 1 1;
+            align: 1.0 1.0;
+            visible: 0;
+            rel2.to: "elm.rect.title";
+         }
+      }
+      part { name: "elm.swallow.title.icon";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: POPUP_BASE_DEFAULT_TITLE_ICON_DEFAULT_MIN_MAX_INC;
+            max: POPUP_BASE_DEFAULT_TITLE_ICON_DEFAULT_MIN_MAX_INC;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            rel1 { relative: 1.0 0.0; to: "left_pad"; }
+            rel2 { relative: 0.0 1.0; to: "right_pad"; }
+            visible: 0;
+         }
+         description { state: "show_title_icon" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
@@ -1634,49 +1665,25 @@ group { name: "elm/popup/base/volumebarstyle";
       part {
          name: "elm.swallow.title";
          type: TEXTBLOCK;
-         effect: SHADOW;
          scale:1;
          description {
             state: "default" 0.0;
+            fixed: 1 1;
             text
               {
-                 style: "popup_title_volumebarstyle";
+                 style: "popup_title_style";
                  min: 0 0;
                  max: 0 1;
+                 align: 0.5 0.0;
               }
-            color: POPUP_DEFAULT_TITLE_TEXT_COLOR_INC;
+              color: POPUP_DEFAULT_TITLE_TEXT_COLOR_INC;
             visible:0;
-            color2: 0 0 0 255;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.title"; }
-            rel2 { relative: 1.0 1.0; to: "elm.rect.title"; }
-            align: 0.5 0.2;
+            rel1 { relative: 1.0 0.0; to: "left_pad"; }
+            rel2 { relative: 0.0 1.0; to: "right_pad"; }
          }
          description { state: "show_title" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-         }
-         description { state: "show_title_icon" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "elm.swallow.title.icon";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_VOLUMEBAR_STYLE_TITLE_ICON_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BASE_VOLUMEBAR_STYLE_TITLE_ICON_DEFAULT_MIN_MAX_INC;
-            fixed: 1 1;
-            align: 0.5 0.9;
-            rel1 {
-               to: "elm.rect.title";
-               relative: 0.0 0.0;
-            }
-            rel2 {
-               to: "elm.rect.title";
-               relative: 1.0 1.0;
-            }
-            visible: 0;
          }
          description { state: "show_title_icon" 0.0;
             inherit: "default" 0.0;
@@ -1695,8 +1702,8 @@ group { name: "elm/popup/base/volumebarstyle";
                to: "base";
             }
             rel2 {
-               relative: 0.5 0.0;
-               to: "pad_b_button";
+               relative: 0.5 1.0;
+               to: "base";
             }
          }
          description { state: "show_title" 0.0;
@@ -1726,21 +1733,23 @@ group { name: "elm/popup/base/volumebarstyle";
          }
       }
       part { name: "elm.swallow.buttonArea.Background";
-         type: RECT;
+         type: IMAGE;
          scale : 1;
          description { state: "default" 0.0;
             min: POPUP_BASE_VOLUMEBAR_STYLE_BUTTONAREA_BG_DEFAULT_MIN_INC;
             fixed : 1 1;
             align: 0.5 1.0;
-            color: 0 0 0 0;
             visible: 0;
+            image.normal: "00_popup_bottom_bg.png";
+            image.border: POPUP_BASE_DEFAULT_BUTTON_BG_IMAGE_BORDER_INC;
+            image.border_scale: 1;
             rel1 {
-               relative: 0.5 0.0;
-               to: "pad_b_button";
+               relative: 0.0 1.0;
+               to: "base";
             }
             rel2 {
-               relative: 0.5 0.0;
-               to: "pad_b_button";
+               relative: 1.0 1.0;
+               to: "base";
             }
          }
          description { state: "show_button_area" 0.0;
@@ -1752,10 +1761,7 @@ group { name: "elm/popup/base/volumebarstyle";
          type: SWALLOW;
          scale : 1;
          description { state: "default" 0.0;
-            min: POPUP_BASE_VOLUMEBAR_STYLE_BUTTONAREA_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BASE_VOLUMEBAR_STYLE_BUTTONAREA_DEFAULT_MIN_MAX_INC;
-            fixed : 1 1;
-            align: 0.5 0.5;
+            align: 0.0 0.0;
             visible: 0;
             rel1 {
                relative: 0.0 0.0;
@@ -1769,26 +1775,6 @@ group { name: "elm/popup/base/volumebarstyle";
          description { state: "show_button_area" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-         }
-      }
-      part { name: "pad_b_button";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: POPUP_BASE_VOLUMEBAR_STYLE_PADDING_BOTTOM_MIN_INC;
-            fixed: 0 1;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 0.0 1.0;
-               to: "base";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               to: "base";
-            }
          }
       }
    }
@@ -1847,7 +1833,7 @@ group { name: "elm/popup/base/volumebarstyle";
          signal: "elm,state,button,title,visible";
          source: "elm";
          action: STATE_SET "show_button_title_area" 0.0;
-         target: "elm.swallow.content"; 
+         target: "elm.swallow.content";
          target: "base";
       }
       program { name: hide_button_title_area;
@@ -1903,7 +1889,7 @@ group { name: "elm/popup/content/volumebarstyle";
             min : POPUP_CONTENT_VOLUMEBAR_STYLE_PADDING_RIGHT_MIN_INC;
             fixed: 1 0;
             rel1 {
-               relative: 1.0 0.0; 
+               relative: 1.0 0.0;
             }
             rel2 {
                relative: 1.0 1.0;
@@ -1950,1362 +1936,175 @@ group { name: "elm/popup/content/volumebarstyle";
    }
 }
 
-group { name: "elm/popup/buttons2/volumebarstyle";
-   parts{
-      part{ name:"actionbtn1";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTON2_VOLUMEBAR_STYLE_BUTTON_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BUTTON2_VOLUMEBAR_STYLE_BUTTON_DEFAULT_MIN_MAX_INC;
-            fixed : 1 1;
-            align: 1.0 1.0;
-            rel1 {
-               relative: 0.0 0.0;
-               to: "elm.rect.pad_btn";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "elm.rect.pad_btn";
-            }
-         }
-      }
-      part { name: "elm.rect.pad_btn";
-         type: RECT;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTON2_VOLUMEBAR_STYLE_PADDING_BUTTON_MIN_MAX_INC;
-            max: POPUP_BUTTON2_VOLUMEBAR_STYLE_PADDING_BUTTON_MIN_MAX_INC;
-            fixed : 1 1;
-            align: 0.5 1.0;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 0.5 0.0;
-            }
-            rel2 {
-               relative: 0.5 1.0;
-            }
-         }
-      }
-      part{ name:"actionbtn2";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTON2_VOLUMEBAR_STYLE_BUTTON_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BUTTON2_VOLUMEBAR_STYLE_BUTTON_DEFAULT_MIN_MAX_INC;
-            fixed : 1 1;
-            align: 0.0 1.0;
-            rel1 {
-               relative: 1.0 0.0;
-               to: "elm.rect.pad_btn";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               to: "elm.rect.pad_btn";
-            }
-         }
-      }
+group { name: "elm/layout/popup/entrypasswordview";
+   images {
+      image : "00_search_input_field_bg.png" COMP;
    }
-}
-
-group { name: "elm/popup/buttons1/volumebarstyle";
    parts{
-      part{ name:"actionbtn1";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTON1_VOLUMEBAR_STYLE_BUTTON_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BUTTON1_VOLUMEBAR_STYLE_BUTTON_DEFAULT_MIN_MAX_INC;
-            fixed : 1 1;
-            align: 0.5 1.0;
-                rel1 {
-                   relative: 0.5 0.0;
-                }
-            rel2 {
-               relative: 0.5 1.0;
-            }
-         }
-      }
-   }
-}
-
-group { name: "elm/popup/base/image_scroll";
-   parts {
-      images {
-         image: "00_popup_title_middle.png" COMP;
-         image: "00_popup_bottom.png" COMP;
-      }
-      styles
-        {
-           style { name: "popup_image_title_style";
-              base: "font=SLP:style=Medium font_size="POPUP_BASE_IMAGE_SCROLL_TEXT_FONT_SIZE_INC" align=center color=#ffffff wrap=mixed ellipsis=1.0";
-              tag:  "br" "\n";
-              tag:  "ps" "ps";
-              tag:  "hilight" "+ font=SLP:style=Bold";
-              tag:  "b" "+ font=SLP:style=Bold";
-              tag:  "whitecolor" "+ color=#ffffff";
-              tag:  "tab" "\t";
-           }
-        }
-        part { name: "bg";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_SCROLL_BG_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BASE_IMAGE_SCROLL_BG_DEFAULT_MIN_MAX_INC;
-            visible: 0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
-            align: 0.0 0.0;
-         }
-      }
       part { name: "base";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
+         scale: 1;
          description { state: "default" 0.0;
-            fixed: 1 1;
-            color: 255 0 0 0;
-            rel1 {
-               relative: 0.042 0.6; to: "bg";
-            }
-            rel2 {
-               relative: 0.88 0.94; to: "bg";}
-            align: 0.0 0.0;
+            min: POPUP_BASE_CUSTOMSTYLE_CONTENT_WIDTH_INC POPUP_BASE_CUSTOMSTYLE_CONTENT_HEIGHT_INC;
+            fixed: 1 0;
+            align: 0.5 0.5;
+            rel1 { relative: 0.0 0.0; }
+            rel2 { relative: 1.0 1.0; }
          }
       }
-      part { name: "elm.rect.title";
-         type: IMAGE;
-         scale : 1;
+      part { name: "pad_l";
+         scale: 1;
          description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_SCROLL_TITLE_DEFAULT_MIN_INC;
-            fixed : 1 1;
-            align: 0.5 0.0;
-            visible: 0;
-            image.normal: "00_popup_title_middle.png";
-            image.border: POPUP_BASE_IMAGE_SCROLL_TITLE_IMAGE_BORDER_INC;
-            image.border_scale: 1;
+            min : POPUP_BASE_CUSTOMSTYLE_CONTENT_SIDE_PADDING_INC 0;
+            fixed: 1 0;
             rel1 {
                relative: 0.0 0.0; to: "base";
             }
             rel2 {
-               relative: 1.0 0.0; to: "base";
+               relative: 0.0 1.0; to: "base";
             }
-         }
-         description { state: "show_title" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "background";
-         scale : 1;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_SCROLL_BACKGROUND_DEFAULT_MIN_INC;
-            rel1.to: "elm.rect.title";
-            rel2.to: "base";
-            rel1.relative: 0.0 1.0;
-            rel2.relative: 1.0 1.0;
-            image {
-               normal: "00_popup_bottom.png";
-               border: POPUP_BASE_IMAGE_SCROLL_BACKGROUND_IMAGE_BORDER_INC;
-               middle: DEFAULT;
-               border_scale: 1;
-            }
-         }
-      }
-      part { name: "elm.swallow.title.icon";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_SCROLL_TITLE_ICON_MIN_MAX_INC;
-            max: POPUP_BASE_IMAGE_SCROLL_TITLE_ICON_MIN_MAX_INC;
-            fixed: 1 1;
-            align: 0.0 0.5;
-            rel1 {
-               to: "elm.rect.title";
-               relative: 0.0 0.0;
-            }
-            rel2 {
-               to: "elm.rect.title";
-               relative: 1.0 1.0;
-            }   
-            visible: 0;
-         }
-         description { state: "show_title_icon" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part {
-         name: "elm.swallow.title";
-         type: TEXTBLOCK;
-         effect: SHADOW;
-         scale:1;
-         description {
-            state: "default" 0.0;
-            text
-              {                 
-                 style: "popup_image_title_style";
-                 min: 0 0;
-                 max: 0 1;
-              }
-            color: POPUP_DEFAULT_TITLE_TEXT_COLOR_INC;
-            visible:0;
-            color2: 0 0 0 255;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.title"; }  
-            rel2 { relative: 1.0 1.0; to: "elm.rect.title"; }
-            align: 0.5 0.5;
-         }
-         description { state: "show_title" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-         description { state: "show_title_icon" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_SCROLL_CONTENT_DEFAULT_MIN_INC;
-            align: 0.0 0.0;
-            fixed: 1 0;
-            rel1 {
-               relative: 0.05 0.05;
-               to: "background";
-            }
-            rel2 {
-               relative: 0.95 0.98;
-               to: "background";
-            }
-         }
-         description { state: "show_title" 0.0;
-            inherit: "default" 0.0;
-            rel1 {
-               relative: 0.05 1.05;
-               to: "elm.rect.title";
-            }
-         }
-         description { state: "show_button_area" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "show_button_title_area" 0.0;
-            inherit: "default" 0.0;
-            rel1 {
-               relative: 0.05 1.05;
-               to: "elm.rect.title";
-            }
-            rel2 {
-               relative: 0.95 0.98;
-               to: "background";
-            }
-         }
-      }
-      part { name: "elm.swallow.buttonArea.Background";
-         type: RECT;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_SCROLL_BUTTONAREA_BG_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BASE_IMAGE_SCROLL_BUTTONAREA_BG_DEFAULT_MIN_MAX_INC;
-            fixed : 1 1;
-            align: 0.0 0.5;
-            visible: 1;
-            rel1 {
-               relative: 0.92 0.04;
-               to: "bg";
-            }
-            rel2 {
-               relative: 1.0  1.0);
-               to_x: "bg";
-               to_y: "base";
-            }
-            color: 0 0 0 0;
-         }
-         description { state: "show_button_area" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "elm.swallow.buttonArea";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_SCROLL_BUTTONAREA_DEFAULT_MIN_INC;
-            max: POPUP_BASE_IMAGE_SCROLL_BUTTONAREA_DEFAULT_MAX_INC;
-            fixed : 1 1;
-            align: 0.0 0.5;
-            visible: 0;
-            rel1 {
-               relative: 0.0 0.0;
-               to: "elm.swallow.buttonArea.Background";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "elm.swallow.buttonArea.Background";
-            }
-         }
-         description { state: "show_button_area" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "pad_b_button";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: POPUP_BASE_IMAGE_SCROLL_PADDING_BOTTOM_MIN_INC;
-            fixed: 0 1;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 0.0 1.0;
-               to: "base";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               to: "base";
-            }
-         }
-      }
-   }
-   programs {
-      /*    program {
-       name: "show";
-       signal: "elm,state,show";
-       source: "elm";
-       action: STATE_SET "visible" 0.0;
-       target: "background";
-       transition: "DECELERATE" 0.5; 
-       }
-       program {
-       name: "hide";
-       signal: "elm,state,hide";
-       source: "elm";
-       action: STATE_SET "default" 0.0;
-       target: "background";
-       transition: "DECELERATE" 0.5; 
-      }*/
-      program { name: show_title;
-         signal: "elm,state,title,visible";
-         source: "elm";
-         action: STATE_SET "show_title" 0.0;
-         target: "elm.swallow.title";
-         target: "elm.rect.title";
-         target: "elm.swallow.content"; 
-         target: "base";
-      }
-      program { name: hide_title;
-         signal: "elm,state,title,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.title";
-         target: "elm.rect.title";
-         target: "elm.swallow.content"; 
-         target: "base";
-      }
-      program { name: show_title_icon;
-         signal: "elm,state,title,icon,visible";
-         source: "elm";
-         action: STATE_SET "show_title_icon" 0.0;
-         target: "elm.swallow.title";
-         target: "elm.swallow.title.icon";
-      }
-      program { name: hide_title_icon;
-         signal: "elm,state,title,icon,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.title";
-         target: "elm.swallow.title.icon";
-      }
-      program { name: show_button_area;
-         signal: "elm,state,button,visible";
-         source: "elm";
-         action: STATE_SET "show_button_area" 0.0;
-         target: "elm.swallow.buttonArea";
-         target: "elm.swallow.content";
-         target: "elm.swallow.buttonArea.Background"; 
-         target: "base";
-      }
-      program { name: hide_button_area;
-         signal: "elm,state,button,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.buttonArea";
-         target: "elm.swallow.content";
-         target: "elm.swallow.buttonArea.Background"; 
-         target: "base";
-      }
-      program { name: show_button_title_area;
-         signal: "elm,state,button,title,visible";
-         source: "elm";
-         action: STATE_SET "show_button_title_area" 0.0;
-         target: "elm.swallow.content"; 
-         target: "base";
-      }
-      program { name: hide_button_title_area;
-         signal: "elm,state,button,title,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.content"; 
-         target: "base";
-      }
-   } /* end of programs */
-}
-
-group { name: "elm/popup/content/image_scroll";
-   parts{
-      part { name: "pad_t";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            align: 0.5 0.0;
-            min: POPUP_CONTENT_IMAGE_SCROLL_PADDING_TOP_MIN_INC;
-            fixed: 0 1;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 1.0 0.0;to_x: "pad_l";
-            }
-            rel2 {
-               relative: 0.0 0.0;to_x: "pad_r"; 
-            }
-         }
-      }
-      part { name: "pad_l";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            min : POPUP_CONTENT_IMAGE_SCROLL_PADDING_LEFT_MIN_INC;
-            fixed: 1 0;
-            rel1 { 
-               relative: 0.0 0.0; 
-            }
-            rel2 { 
-               relative: 0.0 1.0; 
-            }
-            color: 0 0 0 0;
             align: 0.0 0.0;
          }
       }
-      part { name: "pad_r";     
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            min : POPUP_CONTENT_IMAGE_SCROLL_PADDING_RIGHT_MIN_INC;
-            fixed: 1 0;
-            rel1 { 
-               relative: 1.0 0.0; 
-            }
-            rel2 { 
-               relative: 1.0 1.0; 
-            }
-            color: 0 0 0 0;
-            align: 1.0 0.0;
-         }
-      } 
-      part{ name:"elm.swallow.content";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_CONTENT_IMAGE_SCROLL_CONTENT_DEFAULT_MIN_INC;
-            align: 0.5 0.5;
-            fixed: 1 0;
-            rel1 {
-               relative: 1.0 1.0;
-               to: "pad_t";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to: "pad_b";
-            }
-         }
-      }
-      part { name: "pad_b";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: POPUP_CONTENT_IMAGE_SCROLL_PADDING_BOTTOM_MIN_INC;
-            fixed: 0 1;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 1.0 1.0;to_x: "pad_l";
-            }
-            rel2 {
-               relative: 0.0 1.0;to_x: "pad_r";
-            }
-         }
-      }
-   }
-}
-group { name: "elm/popup/buttons2/image_scroll";
-   parts{
-      part{ name:"actionbtn1";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTONS2_IMAGE_SCROLL_BUTTON_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BUTTONS2_IMAGE_SCROLL_BUTTON_DEFAULT_MIN_MAX_INC;
-            fixed : 1 1;
-            align: 0.0 0.0;
-            rel1 {
-               relative: 0.0 0.0;
-            }
-         }
-      }
-      part{ name:"actionbtn2";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTONS2_IMAGE_SCROLL_BUTTON_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BUTTONS2_IMAGE_SCROLL_BUTTON_DEFAULT_MIN_MAX_INC;
-            fixed : 1 1;
-            align: 0.0 1.0;
-            rel2 {
-               relative: 1.0 1.0;
-            }
-         }
-      }
-   }
-}
-
-group { name: "elm/popup/base/image_slider";
-   parts {
-      images {
-         image: "00_popup_title_middle.png" COMP;
-         image: "00_popup_content.png" COMP;
-      }
-      part { name: "bg";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_SLIDER_BG_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BASE_IMAGE_SLIDER_BG_DEFAULT_MIN_MAX_INC;
-            color: 0 0 0 0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
-            align: 0.0 0.0;
-         }
-      }
-      part { name: "base";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 0.23 0.3; to: "bg";
-            }
-            rel2 {
-               relative: 0.77 0.94; to: "bg";}
-            align: 0.0 0.0;
-         }
-      }
-      part { name: "elm.rect.title";
+      part { name: "elm.image1";
          type: IMAGE;
-         scale : 1;
+         scale: 1;
          description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_SLIDER_TITLE_DEFAULT_MIN_INC;
-            fixed : 1 1;
-            align: 0.5 0.0;
-            visible: 0;
-            image.normal: "00_popup_title_middle.png";
-            image.border: POPUP_BASE_IMAGE_SLIDER_TITLE_DEFAULT_IMAGE_BORDER_INC;
-            image.border_scale: 1;
-            rel1 {
-               relative: 0.0 0.0; to: "base";
-            }
-            rel2 {
-               relative: 1.0 0.0; to: "base";
-            }
-         }
-         description { state: "show_title" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "background";
-         scale : 1;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            align: 0.5 0.0;
-            rel1.to: "elm.rect.title";
-            rel2.to: "base";
-            rel1.relative: 0.0 1.0;
-            rel2.relative: 1.0 1.0;
-            image {
-               normal: "00_popup_content.png";
-               border: POPUP_BASE_IMAGE_SLIDER_BACKGROUND_DEFAULT_IMAGE_BORDER_INC;
-               middle: DEFAULT;
+            min: POPUP_BASE_CUSTOMSTYLE_CONTENT_ENTRY_MIN_INC;
+            max: POPUP_BASE_CUSTOMSTYLE_CONTENT_ENTRY_MIN_INC;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            rel1 { relative: 1.0 0.0; to_x: "pad_l"; to_y: "base"; }
+            rel2 { relative: 1.0 1.0; to: "base"; }
+            image { normal: "00_search_input_field_bg.png";
+               border: 3 3 3 3;
                border_scale: 1;
             }
          }
       }
-      part { name: "elm.swallow.title.icon";
+      part { name: "elm.entry1";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_SLIDER_TITLE_ICON_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BASE_IMAGE_SLIDER_TITLE_ICON_DEFAULT_MIN_MAX_INC;
-            fixed: 1 1;
-            align: 0.0 0.5;
-            rel1 {
-               to: "elm.rect.title";
-               relative: 0.0 0.0;
-            }
-            rel2 {
-               to: "elm.rect.title";
-               relative: 1.0 1.0;
-            }   
-            visible: 0;
-         }
-         description { state: "show_title_icon" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
+             rel1.to: "elm.image1";
+             rel2.to: "elm.image1";
          }
       }
-      part {
-         name: "elm.swallow.title";
-         type: TEXTBLOCK;
-         effect: SHADOW;
-         scale:1;
-         description {
-            state: "default" 0.0;
-            text
-              {                 
-                 style: "popup_image_title_style";
-                 min: 0 0;
-                 max: 0 1;
-              }
-            color: POPUP_DEFAULT_TITLE_TEXT_COLOR_INC;
-            visible:0;
-            color2: 0 0 0 255;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.title"; }  
-            rel2 { relative: 1.0 1.0; to: "elm.rect.title"; }
-            align: 0.5 0.5;
-         }
-         description { state: "show_title" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-         description { state: "show_title_icon" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 {
-               relative: 0.03 0.05;
-               to: "background";
-            }
-            rel2 {
-               relative: 0.97 0.98;
-               to: "background";
-            }
-         }
-         description { state: "show_title" 0.0;
-            inherit: "default" 0.0;
-            rel1 {
-               relative: 0.05 1.05;
-               to: "elm.rect.title";
-            }
-         }
-         description { state: "show_button_area" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "show_button_title_area" 0.0;
-            inherit: "default" 0.0;
-            rel1 {
-               relative: 0.05 1.05;
-               to: "elm.rect.title";
-            }
-            rel2 {
-               relative: 0.95 0.98;
-               to: "background";
-            }
-         }
-      }
-      part { name: "elm.swallow.buttonArea.Background";
-         type: RECT;
-         scale : 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            visible: 1;
-            rel1 {
-               relative: 0.92 0.04;
-               to: "bg";
-            }
-            rel2 {
-               relative: 1.0  1.0);
-               to_x: "bg";
-               to_y: "base";
-            }
-            color: 0 0 0 0;
-         }
-         description { state: "show_button_area" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "elm.swallow.buttonArea";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            align: 0.5 0.5;
-            visible: 0;
-            rel1 {
-               relative: 0.0 0.0;
-               to: "elm.swallow.buttonArea.Background";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               to: "elm.swallow.buttonArea.Background";
-            }
-         }
-         description { state: "show_button_area" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-   }
-   programs {
-      /*    program {
-       name: "show";
-       signal: "elm,state,show";
-       source: "elm";
-       action: STATE_SET "visible" 0.0;
-       target: "background";
-       transition: "DECELERATE" 0.5; 
-       }
-       program {
-       name: "hide";
-       signal: "elm,state,hide";
-       source: "elm";
-       action: STATE_SET "default" 0.0;
-       target: "background";
-       transition: "DECELERATE" 0.5; 
-      }*/
-      program { name: show_title;
-         signal: "elm,state,title,visible";
-         source: "elm";
-         action: STATE_SET "show_title" 0.0;
-         target: "elm.swallow.title";
-         target: "elm.rect.title";
-         target: "elm.swallow.content"; 
-         target: "base";
-      }
-      program { name: hide_title;
-         signal: "elm,state,title,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.title";
-         target: "elm.rect.title";
-         target: "elm.swallow.content"; 
-         target: "base";
-      }
-      program { name: show_title_icon;
-         signal: "elm,state,title,icon,visible";
-         source: "elm";
-         action: STATE_SET "show_title_icon" 0.0;
-         target: "elm.swallow.title";
-         target: "elm.swallow.title.icon";
-      }
-      program { name: hide_title_icon;
-         signal: "elm,state,title,icon,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.title";
-         target: "elm.swallow.title.icon";
-      }
-      program { name: show_button_area;
-         signal: "elm,state,button,visible";
-         source: "elm";
-         action: STATE_SET "show_button_area" 0.0;
-         target: "elm.swallow.buttonArea";
-         target: "elm.swallow.content";
-         target: "elm.swallow.buttonArea.Background"; 
-         target: "base";
-      }
-      program { name: hide_button_area;
-         signal: "elm,state,button,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.buttonArea";
-         target: "elm.swallow.content";
-         target: "elm.swallow.buttonArea.Background"; 
-         target: "base";
-      }
-      program { name: show_button_title_area;
-         signal: "elm,state,button,title,visible";
-         source: "elm";
-         action: STATE_SET "show_button_title_area" 0.0;
-         target: "elm.swallow.content"; 
-         target: "base";
-      }
-      program { name: hide_button_title_area;
-         signal: "elm,state,button,title,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.content"; 
-         target: "base";
-      }
-   } /* end of programs */
-}
-
-group { name: "elm/popup/content/image_slider";
-   parts{
-      part { name: "pad_t";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            align: 0.5 0.0;
-            min: POPUP_CONTENT_IMAGE_SLIDER_PADDING_TOP_DEFAULT_MIN_INC;
-            fixed: 0 1;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 1.0 0.0;to_x: "pad_l";
-            }
-            rel2 {
-               relative: 0.0 0.0;to_x: "pad_r"; 
-            }
-         }
-      }
-      part { name: "pad_l";
-         type: RECT;
+      part { name: "pad_n";
          scale: 1;
          description { state: "default" 0.0;
-            min : POPUP_CONTENT_IMAGE_SLIDER_PADDING_LEFT_DEFAULT_MIN_INC;
-            fixed: 1 0;
-            rel1 { 
-               relative: 0.0 0.0; 
-            }
-            rel2 { 
-               relative: 0.0 1.0; 
-            }
-            color: 0 0 0 0;
-            align: 0.0 0.0;
-         }
-      }
-      part { name: "pad_r";     
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            min : POPUP_CONTENT_IMAGE_SLIDER_PADDING_RIGHT_DEFAULT_MIN_INC;
-            fixed: 1 0;
-            rel1 { 
-               relative: 1.0 0.0; 
-            }
-            rel2 { 
-               relative: 1.0 1.0; 
-            }
-            color: 0 0 0 0;
-            align: 1.0 0.0;
-         }
-      } 
-      part{ name:"elm.swallow.content";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_CONTENT_IMAGE_SLIDER_CONTENT_DEFAULT_MIN_INC;
-            align: 0.5 0.5;
+            min : POPUP_BASE_CUSTOMSTYLE_CONTENT_CENTER_PADDING_MIN_INC 0;
+            max: POPUP_BASE_CUSTOMSTYLE_CONTENT_CENTER_PADDING_MIN_INC 9999;
             fixed: 1 0;
             rel1 {
-               relative: 1.0 1.0;
-               to: "pad_t";
+               relative: 1.0 0.0; to_x: "elm.image1"; to_y: "base";
             }
             rel2 {
-               relative: 0.0 0.0;
-               to: "pad_b";     
+               relative: 1.0 1.0; to: "base";
             }
-         }
-      }
-      part { name: "pad_b";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: POPUP_CONTENT_IMAGE_SLIDER_PADDING_BOTTOM_DEFAULT_MIN_INC;
-            fixed: 0 1;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 1.0 1.0;to_x: "pad_l";
-            }
-            rel2 {
-               relative: 0.0 1.0;to_x: "pad_r"; 
-            }
-         }
-      }
-   }
-}
-group { name: "elm/popup/buttons2/image_slider";
-   parts{
-      part{ name:"actionbtn1";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTONS2_IMAGE_SLIDER_BUTTON_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BUTTONS2_IMAGE_SLIDER_BUTTON_DEFAULT_MIN_MAX_INC;
-            fixed : 1 1;
-            align: 0.0 0.0;
-            rel1 {
-               relative: 0.0 0.0;
-            }
-         }
-      }
-      part{ name:"actionbtn2";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTONS2_IMAGE_SLIDER_BUTTON_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BUTTONS2_IMAGE_SLIDER_BUTTON_DEFAULT_MIN_MAX_INC;
-            fixed : 1 1;
-            align: 0.0 1.0;
-            rel2 {
-               relative: 1.0 1.0;
-            }
-         }
-      }
-   }
-}
-
-group { name: "elm/popup/base/image_list";
-   parts {
-      images {
-         image: "00_popup_title_middle.png" COMP;
-         image: "00_popup_bottom.png" COMP;
-         image: "00_popup_bg.png" COMP;
-      }
-      part { name: "bg";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_LIST_BG_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BASE_IMAGE_LIST_BG_DEFAULT_MIN_MAX_INC;
-            color: 255 0 0 0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
             align: 0.0 0.0;
          }
       }
-      part { name: "base";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            fixed: 1 1;
-            color: 255 0 0 0;
-            rel1 {
-               relative: 0.23 0.4; to: "bg";
-            }
-            rel2 {
-               relative: 0.77 0.94; to: "bg";}
-            align: 0.0 0.0;
-         }
-      }
-      part { name: "elm.rect.title";
+      part { name: "elm.image2";
          type: IMAGE;
-         scale : 1;
+         scale: 1;
          description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_LIST_TITLE_DEFAULT_MIN_INC;
-            fixed : 0 1;
-            visible: 0;
-            image.normal: "00_popup_title_middle.png";
-            image.border: POPUP_BASE_IMAGE_LIST_TITLE_DEFAULT_IMAGE_BORDER_INC;
-            image.border_scale: 1;
-            rel1 {
-               relative: 0.0 0.0; to: "base";
-            }
-            rel2 {
-               relative: 1.0 0.0; to: "base";
-            }
-         }
-         description { state: "show_title" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "background";
-         scale : 1;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_LIST_BACKGROUND_DEFAULT_MIN_INC;
+            min: POPUP_BASE_CUSTOMSTYLE_CONTENT_ENTRY_MIN_INC;
+            max: POPUP_BASE_CUSTOMSTYLE_CONTENT_ENTRY_MIN_INC;
             fixed: 1 1;
-            rel1.to: "elm.rect.title";
-            rel1.relative: 0.0 1.0;
-            rel2.to: "base";
-            rel2.relative: 1.0 1.0;
-            image {
-               normal: "00_popup_bottom.png";
-               border: POPUP_BASE_IMAGE_LIST_BACKGROUND_DEFAULT_IMAGE_BORDER_INC;
-               middle: DEFAULT;
+            align: 0.0 0.5;
+            rel1 { relative: 1.0 0.0; to_x: "pad_n"; to_y: "base"; }
+            rel2 { relative: 1.0 1.0; to: "base"; }
+            image { normal: "00_search_input_field_bg.png";
+               border: 3 3 3 3;
                border_scale: 1;
             }
          }
       }
-      part { name: "elm.swallow.title.icon";
+      part { name: "elm.entry2";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_LIST_TITLE_ICON_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BASE_IMAGE_LIST_TITLE_ICON_DEFAULT_MIN_MAX_INC;
+             rel1.to: "elm.image2";
+             rel2.to: "elm.image2";
+         }
+      }
+      part { name: "pad_n2";
+         scale: 1;
+         description { state: "default" 0.0;
+            min : POPUP_BASE_CUSTOMSTYLE_CONTENT_CENTER_PADDING_MIN_INC 0;
+            max: POPUP_BASE_CUSTOMSTYLE_CONTENT_CENTER_PADDING_MIN_INC 9999;
+            fixed: 1 0;
+            rel1 {
+               relative: 1.0 0.0; to_x: "elm.image2"; to_y: "base";
+            }
+            rel2 {
+               relative: 1.0 1.0; to: "base";
+            }
+            align: 0.0 0.0;
+         }
+      }
+      part { name: "elm.image3";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: POPUP_BASE_CUSTOMSTYLE_CONTENT_ENTRY_MIN_INC;
+            max: POPUP_BASE_CUSTOMSTYLE_CONTENT_ENTRY_MIN_INC;
             fixed: 1 1;
             align: 0.0 0.5;
-            rel1 {
-               to: "elm.rect.title";
-               relative: 0.0 0.0;
+            rel1 { relative: 1.0 0.0; to_x: "pad_n2"; to_y: "base"; }
+            rel2 { relative: 1.0 1.0; to: "base"; }
+            image { normal: "00_search_input_field_bg.png";
+               border: 3 3 3 3;
+               border_scale: 1;
             }
-            rel2 {
-               to: "elm.rect.title";
-               relative: 1.0 1.0;
-            }   
-            visible: 0;
-         }
-         description { state: "show_title_icon" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
          }
       }
-      part {
-         name: "elm.swallow.title";
-         type: TEXTBLOCK;
-         effect: SHADOW;
-         scale:1;
-         description {
-            state: "default" 0.0;
-            text
-              {                 
-                 style: "popup_image_title_style";
-                 min: 0 0;
-                 max: 0 1;
-              }
-            color: POPUP_DEFAULT_TITLE_TEXT_COLOR_INC;
-            visible:0;
-            color2: 0 0 0 255;
-            rel1 { relative: 0.0 0.0; to: "elm.rect.title"; }  
-            rel2 { relative: 1.0 1.0; to: "elm.rect.title"; }
-            align: 0.5 0.5;
-         }
-         description { state: "show_title" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-         description { state: "show_title_icon" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "elm.swallow.content";
+      part { name: "elm.entry3";
          type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_LIST_CONTENT_DEFAULT_MIN_INC;
-            align: 0.5 0.5;
-            fixed: 1 0;
-            rel1 {
-               relative: 0.05 0.05;
-               to: "background";
-            }
-            rel2 {
-               relative: 0.95 0.98;
-               to: "background";
-            }
-         }
-         description { state: "show_title" 0.0;
-            inherit: "default" 0.0;
-            rel1 {
-               relative: 0.05 1.05;
-               to: "elm.rect.title";
-            }
-         }
-         description { state: "show_button_area" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "show_button_title_area" 0.0;
-            inherit: "default" 0.0;
-            rel1 {
-               relative: 0.05 1.05;
-               to: "elm.rect.title";
-            }
-            rel2 {
-               relative: 0.95 0.98;
-               to: "background";
-            }
-         }
-      }
-      part { name: "elm.swallow.buttonArea.Background";
-         type: RECT;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_LIST_BUTTONAREA_BG_DEFAULT_MIN_INC;
-            fixed : 1 1;
-            align: 1.0 0.5;
-            visible: 1;
-            rel1 {
-               relative: 0.92 0.04;
-               to: "bg";
-            }
-            rel2 {
-               relative: 1.0  1.0);
-               to_x: "bg";
-               to_y: "base";
-            }
-            color: 0 0 0 0;
-         }
-         description { state: "show_button_area" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "elm.swallow.buttonArea";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_IMAGE_LIST_BUTTONAREA_DEFAULT_MIN_INC;
-            fixed : 1 1;
-            align: 0.5 0.5;
-            visible: 1;
-            rel1 {
-               relative: 0.0 0.0;
-               to: "elm.swallow.buttonArea.Background";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               to: "elm.swallow.buttonArea.Background";
-            }
-            color: 255 0 0 200;
-         }
-         description { state: "show_button_area" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-   }
-   programs {
-      /*    program {
-       name: "show";
-       signal: "elm,state,show";
-       source: "elm";
-       action: STATE_SET "visible" 0.0;
-       target: "background";
-       transition: "DECELERATE" 0.5; 
-       }
-       program {
-       name: "hide";
-       signal: "elm,state,hide";
-       source: "elm";
-       action: STATE_SET "default" 0.0;
-       target: "background";
-       transition: "DECELERATE" 0.5; 
-      }*/
-      program { name: show_title;
-         signal: "elm,state,title,visible";
-         source: "elm";
-         action: STATE_SET "show_title" 0.0;
-         target: "elm.swallow.title";
-         target: "elm.rect.title";
-         target: "elm.swallow.content"; 
-         target: "base";
-      }
-      program { name: hide_title;
-         signal: "elm,state,title,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.title";
-         target: "elm.rect.title";
-         target: "elm.swallow.content"; 
-         target: "base";
-      }
-      program { name: show_title_icon;
-         signal: "elm,state,title,icon,visible";
-         source: "elm";
-         action: STATE_SET "show_title_icon" 0.0;
-         target: "elm.swallow.title";
-         target: "elm.swallow.title.icon";
-      }
-      program { name: hide_title_icon;
-         signal: "elm,state,title,icon,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.title";
-         target: "elm.swallow.title.icon";
-      }
-      program { name: show_button_area;
-         signal: "elm,state,button,visible";
-         source: "elm";
-         action: STATE_SET "show_button_area" 0.0;
-         target: "elm.swallow.buttonArea";
-         target: "elm.swallow.content";
-         target: "elm.swallow.buttonArea.Background"; 
-         target: "base";
-      }
-      program { name: hide_button_area;
-         signal: "elm,state,button,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.buttonArea";
-         target: "elm.swallow.content";
-         target: "elm.swallow.buttonArea.Background"; 
-         target: "base";
-      }
-      program { name: show_button_title_area;
-         signal: "elm,state,button,title,visible";
-         source: "elm";
-         action: STATE_SET "show_button_title_area" 0.0;
-         target: "elm.swallow.content"; 
-         target: "base";
-      }
-      program { name: hide_button_title_area;
-         signal: "elm,state,button,title,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.content"; 
-         target: "base";
-      }
-   } /* end of programs */
-}
-
-group { name: "elm/popup/content/image_list";
-   parts{
-      part { name: "pad_t";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            align: 0.5 0.0;
-            min: POPUP_CONTENT_IMAGE_LIST_PADDING_TOP_DEFAULT_MIN_INC;
-            fixed: 0 1;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 1.0 0.0;to_x: "pad_l";
-            }
-            rel2 {
-               relative: 0.0 0.0;to_x: "pad_r"; 
-            }
-         }
-      }
-      part { name: "pad_l";
-         type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            min : POPUP_CONTENT_IMAGE_LIST_PADDING_LEFT_DEFAULT_MIN_INC;
+             rel1.to: "elm.image3";
+             rel2.to: "elm.image3";
+         }
+      }
+      part { name: "pad_n3";
+         scale: 1;
+         description { state: "default" 0.0;
+            min : POPUP_BASE_CUSTOMSTYLE_CONTENT_CENTER_PADDING_MIN_INC 0;
+            max: POPUP_BASE_CUSTOMSTYLE_CONTENT_CENTER_PADDING_MIN_INC 9999;
             fixed: 1 0;
-            rel1 { 
-               relative: 0.0 0.0; 
+            rel1 {
+               relative: 1.0 0.0; to_x: "elm.image3"; to_y: "base";
             }
-            rel2 { 
-               relative: 0.0 1.0; 
+            rel2 {
+               relative: 1.0 1.0; to: "base";
             }
-            color: 0 0 0 0;
             align: 0.0 0.0;
          }
       }
-      part { name: "pad_r";     
-         type: RECT;
+      part { name: "elm.image4";
+         type: IMAGE;
          scale: 1;
          description { state: "default" 0.0;
-            min : POPUP_CONTENT_IMAGE_LIST_PADDING_RIGHT_DEFAULT_MIN_INC;
-            fixed: 1 0;
-            rel1 { 
-               relative: 1.0 0.0; 
-            }
-            rel2 { 
-               relative: 1.0 1.0; 
-            }
-            color: 0 0 0 0;
-            align: 1.0 0.0;
-         }
-      } 
-      part{ name:"elm.swallow.content";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_CONTENT_IMAGE_LIST_CONTENT_DEFAULT_MIN_INC;
-            align: 0.5 0.5;
-            fixed: 1 0;
-            rel1 {
-               relative: 0.5 1.0;
-               to: "pad_t";
-            }
-            rel2 {
-               relative: 0.5 0.0;
-               to: "pad_b";     
+            min: POPUP_BASE_CUSTOMSTYLE_CONTENT_ENTRY_MIN_INC;
+            max: POPUP_BASE_CUSTOMSTYLE_CONTENT_ENTRY_MIN_INC;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            rel1 { relative: 1.0 0.0; to_x: "pad_n3"; to_y: "base"; }
+            rel2 { relative: 1.0 1.0; to: "base"; }
+            image { normal: "00_search_input_field_bg.png";
+               border: 3 3 3 3;
+               border_scale: 1;
             }
          }
       }
-      part { name: "pad_b";
-         type: RECT;
-         scale : 1;
-         mouse_events: 0;
-         repeat_events: 1;
+      part { name: "elm.entry4";
+         type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: POPUP_CONTENT_IMAGE_LIST_PADDING_BOTTOM_DEFAULT_MIN_INC;
-            fixed: 0 1;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 0.0 1.0;to_x: "pad_l";
-            }
-            rel2 {
-               relative: 1.0 1.0;to_x: "pad_r"; 
-            }
+             rel1.to: "elm.image4";
+             rel2.to: "elm.image4";
          }
       }
    }
 }
-group { name: "elm/popup/buttons2/image_list";
-   parts{
-      part{ name:"actionbtn1";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTONS2_IMAGE_LIST_BUTTON_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BUTTONS2_IMAGE_LIST_BUTTON_DEFAULT_MIN_MAX_INC;
-            fixed : 1 1;
-            align: 0.0 0.0;
-            rel1 {
-               relative: 0.0 0.0;
-            }
-         }
-      }
-      part{ name:"actionbtn2";
-         type: SWALLOW;
-         scale : 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTONS2_IMAGE_LIST_BUTTON_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BUTTONS2_IMAGE_LIST_BUTTON_DEFAULT_MIN_MAX_INC;
-            fixed : 1 1;
-            align: 0.0 1.0;
-            rel2 {
-               relative: 1.0 1.0;
-            }
-         }
-      }
-   }
-}
-
