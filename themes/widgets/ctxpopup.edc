@@ -627,6 +627,7 @@
 				type: IMAGE;
 				scale: 1;
 				mouse_events: 0;
+				clip_to: "ctxpopup_clip";
 				description {
 					state: "default" 0.0;
 					rel1 {
@@ -648,6 +649,7 @@
 				type: RECT;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				description { state: "default" 0.0;
 					visible: 0;
 					min: 40 0;
@@ -667,6 +669,7 @@
 				type: RECT;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				description { state: "default" 0.0;
 					visible: 0;
 					min: 40 0;
@@ -686,6 +689,7 @@
 				type: RECT;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				description { state: "default" 0.0;
 					visible: 0;
 					min: 0 40;
@@ -705,6 +709,7 @@
 				type: RECT;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				description { state: "default" 0.0;
 					visible: 0;
 					min: 0 40;
@@ -724,6 +729,7 @@
 				type: SWALLOW;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				dragable {
 					x: 1 1 0;
 					y: 1 1 0;
@@ -740,6 +746,7 @@
 				type: SWALLOW;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				dragable {
 					x: 1 1 0;
 					y: 1 1 0;
@@ -756,6 +763,7 @@
 				type: SWALLOW;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				dragable {
 					x: 1 1 0;
 					y: 1 1 0;
@@ -772,6 +780,7 @@
 				type: SWALLOW;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				dragable {
 					x: 1 1 0;
 					y: 1 1 0;
@@ -880,6 +889,7 @@
 				type: IMAGE;
 				scale: 1;
 				mouse_events: 0;
+				clip_to: "ctxpopup_clip";
 				description {
 					state: "default" 0.0;
 					rel1 {to:"ctxpopup_frame_left_top";}
@@ -894,6 +904,7 @@
 			part {
 				name: "elm.swallow.content";
 				type: SWALLOW;
+				clip_to: "ctxpopup_clip";
 				description {
 					state: "default" 0.0;
 					align: 0 0;
@@ -901,10 +912,133 @@
 					rel2 {to:"ctxpopup_frame_right_bottom";  relative: 0.5 0.5;}
 				}
 			}
+			part { name: "ctxpopup_clip";
+				type: RECT;
+				description { state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1 { to:"ctxpopup_frame_left_top"; relative: 0.5 0.5; }
+				rel2 { to:"ctxpopup_frame_right_bottom"; relative: 0.5 0.5; }
+				}
+				description { state: "show_up" 0.0;
+					color: 255 255 255 0;
+					rel1 { to:"arrow_area_down"; relative: 0 1; }
+					rel2 { to:"arrow_area_down"; relative: 1 1; }
+				}
+				description { state: "show_left" 0.0;
+					color: 255 255 255 0;
+					rel1 { to:"arrow_area_right"; relative: 1 0; }
+					rel2 { to:"arrow_area_right"; relative: 1 1; }
+				}
+				description { state: "show_right" 0.0;
+					color: 255 255 255 0;
+					rel1 { to:"arrow_area_left"; relative: 0 0; }
+					rel2 { to:"arrow_area_left"; relative: 0 1; }
+				}
+				description { state: "show_down" 0.0;
+					color: 255 255 255 0;
+					rel1 { to:"arrow_area_up"; relative: 0 0; }
+					rel2 { to:"arrow_area_up"; relative: 1 0; }
+				}
+				description { state: "hide_up" 0.0;
+					color: 255 255 255 255;
+					rel1 { to:"arrow_area_down"; relative: 0 1; }
+					rel2 { to:"arrow_area_down"; relative: 1 1; }
+				}
+				description { state: "hide_left" 0.0;
+					color: 255 255 255 255;
+					rel1 { to:"arrow_area_right"; relative: 1 0; }
+					rel2 { to:"arrow_area_right"; relative: 1 1; }
+				}
+				description { state: "hide_right" 0.0;
+					color: 255 255 255 255;
+					rel1 { to:"arrow_area_left"; relative: 0 0; }
+					rel2 { to:"arrow_area_left"; relative: 0 1; }
+				}
+				description { state: "hide_down" 0.0;
+					color: 255 255 255 255;
+					rel1 { to:"arrow_area_up"; relative: 0 0; }
+					rel2 { to:"arrow_area_up"; relative: 1 0; }
+				}
+				description { state: "visible" 0.0;
+					color: 255 255 255 255;
+					rel1 { to_x:"arrow_area_left"; to_y:"arrow_area_up"; }
+					rel2 { to_x:"arrow_area_right"; to_y:"arrow_area_down"; }
+				}
+			}
+		}
+		programs {
+			program { name: "show";
+				signal: "elm,state,show";
+				source: "elm";
+				action: STATE_SET "visible" 0.0;
+				transition: LINEAR 0.25;
+				target: "ctxpopup_clip";
+			}
+			program { name: "show_up";
+				signal: "elm,state,show,up";
+				source: "elm";
+				action: STATE_SET "show_up" 0.0;
+				transition: LINEAR 0.25;
+				target: "ctxpopup_clip";
+			}
+			program { name: "show_left";
+				signal: "elm,state,show,left";
+				source: "elm";
+				action: STATE_SET "show_left" 0.0;
+				transition: LINEAR 0.25;
+				target: "ctxpopup_clip";
+			}
+			program { name: "show_right";
+				signal: "elm,state,show,right";
+				source: "elm";
+				action: STATE_SET "show_right" 0.0;
+				transition: LINEAR 0.25;
+				target: "ctxpopup_clip";
+			}
+			program { name: "show_down";
+				signal: "elm,state,show,down";
+				source: "elm";
+				action: STATE_SET "show_down" 0.0;
+				transition: LINEAR 0.25;
+				target: "ctxpopup_clip";
+			}
+			program { name: "hide_up";
+				signal: "elm,state,hide,up";
+				source: "elm";
+				action: STATE_SET "hide_up" 0.0;
+				transition: LINEAR 0.25;
+				target: "ctxpopup_clip";
+				after: "hide_finished";
+			}
+			program { name: "hide_left";
+				signal: "elm,state,hide,left";
+				source: "elm";
+				action: STATE_SET "hide_left" 0.0;
+				transition: LINEAR 0.25;
+				target: "ctxpopup_clip";
+				after: "hide_finished";
+			}
+			program { name: "hide_right";
+				signal: "elm,state,hide,right";
+				source: "elm";
+				action: STATE_SET "hide_right" 0.0;
+				transition: LINEAR 0.25;
+				target: "ctxpopup_clip";
+				after: "hide_finished";
+			}
+			program { name: "hide_down";
+				signal: "elm,state,hide,down";
+				source: "elm";
+				action: STATE_SET "hide_down" 0.0;
+				transition: LINEAR 0.25;
+				target: "ctxpopup_clip";
+				after: "hide_finished";
+			}
+			program { name: "hide_finished";
+				action: SIGNAL_EMIT "elm,action,hide,finished" "";
+			}
 		}
 	}
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 	group { name: "elm/ctxpopup/arrow/default";
@@ -3187,15 +3321,14 @@ group {
 #define CTXPOPUP_TP_FONT_SIZE 24
 ///////////////////////////////////////////////////////////////////////////////
 group {
-	name: "elm/ctxpopup/base/datefield/default";
-	alias: "elm/ctxpopup/base/datefield/calendar";
-	alias: "elm/ctxpopup/base/datefield/clk_default";
+	name: "elm/ctxpopup/base/datetime/default";
 	alias: "elm/ctxpopup/base/timepicker";
 	parts {
 		part {
 			name: "ctxpopup_frame";
 			type: RECT;
 			scale: 1;
+			clip_to: "ctxpopup_clip";
 			description {
 				color: CTXPOPUP_TP_BG_COLOR_INC;
 				min: 1 CTXPOPUP_TP_HEIGHT_INC;
@@ -3207,6 +3340,7 @@ group {
 			name: "elm.swallow.content";
 			type: SWALLOW;
 			scale: 1;
+			clip_to: "ctxpopup_clip";
 			description {
 				state: "default" 0.0;
 				min: 1 CTXPOPUP_TP_HEIGHT_INC;
@@ -3216,6 +3350,7 @@ group {
 				type: RECT;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				description { state: "default" 0.0;
 					visible: 0;
 					min: 20 0;
@@ -3235,6 +3370,7 @@ group {
 				type: RECT;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				description { state: "default" 0.0;
 					visible: 0;
 					min: 20 0;
@@ -3254,6 +3390,7 @@ group {
 				type: RECT;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				description { state: "default" 0.0;
 					visible: 0;
 					min: 0 20;
@@ -3273,6 +3410,7 @@ group {
 				type: RECT;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				description { state: "default" 0.0;
 					visible: 0;
 					min: 0 20;
@@ -3292,6 +3430,7 @@ group {
 				type: SWALLOW;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				dragable {
 					x: 1 1 0;
 					y: 1 1 0;
@@ -3308,6 +3447,7 @@ group {
 				type: SWALLOW;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				dragable {
 					x: 1 1 0;
 					y: 1 1 0;
@@ -3324,6 +3464,7 @@ group {
 				type: SWALLOW;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				dragable {
 					x: 1 1 0;
 					y: 1 1 0;
@@ -3340,6 +3481,7 @@ group {
 				type: SWALLOW;
 				mouse_events: 0;
 				scale: 1;
+				clip_to: "ctxpopup_clip";
 				dragable {
 					x: 1 1 0;
 					y: 1 1 0;
@@ -3352,12 +3494,135 @@ group {
 					visible: 1;
 				}
 			}
+			part { name: "ctxpopup_clip";
+				type: RECT;
+				description { state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1 { to:"ctxpopup_frame"; relative: 0 0; }
+				rel2 { to:"ctxpopup_frame"; relative: 0 1; }
+				}
+				description { state: "show_up" 0.0;
+					color: 255 255 255 0;
+					rel1 { to:"arrow_area_down"; relative: 0 1; }
+					rel2 { to:"arrow_area_down"; relative: 1 1; }
+				}
+				description { state: "show_left" 0.0;
+					color: 255 255 255 0;
+					rel1 { to:"arrow_area_right"; relative: 1 0; }
+					rel2 { to:"arrow_area_right"; relative: 1 1; }
+				}
+				description { state: "show_right" 0.0;
+					color: 255 255 255 0;
+					rel1 { to:"arrow_area_left"; relative: 0 0; }
+					rel2 { to:"arrow_area_left"; relative: 0 1; }
+				}
+				description { state: "show_down" 0.0;
+					color: 255 255 255 0;
+					rel1 { to:"arrow_area_up"; relative: 0 0; }
+					rel2 { to:"arrow_area_up"; relative: 1 0; }
+				}
+				description { state: "hide_up" 0.0;
+					color: 255 255 255 255;
+					rel1 { to:"arrow_area_down"; relative: 0 1; }
+					rel1 { to:"arrow_area_down"; relative: 1 1; }
+				}
+				description { state: "hide_left" 0.0;
+					color: 255 255 255 255;
+					rel1 { to:"arrow_area_right"; relative: 1 0; }
+					rel2 { to:"arrow_area_right"; relative: 1 1; }
+				}
+				description { state: "hide_right" 0.0;
+					color: 255 255 255 255;
+					rel1 { to:"arrow_area_left"; relative: 0 0; }
+					rel2 { to:"arrow_area_left"; relative: 0 1; }
+				}
+				description { state: "hide_down" 0.0;
+					color: 255 255 255 255;
+					rel1 { to:"arrow_area_up"; relative: 0 0; }
+					rel2 { to:"arrow_area_up"; relative: 1 0; }
+				}
+				description { state: "visible" 0.0;
+					color: 255 255 255 255;
+					rel1 { to_x:"arrow_area_left"; to_y:"arrow_area_up"; }
+					rel2 { to_x:"arrow_area_right"; to_y:"arrow_area_down"; }
+				}
+			}
+	}
+	programs {
+		program { name: "show";
+			signal: "elm,state,show";
+			source: "elm";
+			action: STATE_SET "visible" 0.0;
+			transition: LINEAR 0.25;
+			target: "ctxpopup_clip";
+		}
+		program { name: "show_up";
+			signal: "elm,state,show,up";
+			source: "elm";
+			action: STATE_SET "show_up" 0.0;
+			transition: LINEAR 0.25;
+			target: "ctxpopup_clip";
+		}
+		program { name: "show_left";
+			signal: "elm,state,show,left";
+			source: "elm";
+			action: STATE_SET "show_left" 0.0;
+			transition: LINEAR 0.25;
+			target: "ctxpopup_clip";
+		}
+		program { name: "show_right";
+			signal: "elm,state,show,right";
+			source: "elm";
+			action: STATE_SET "show_right" 0.0;
+			transition: LINEAR 0.25;
+			target: "ctxpopup_clip";
+		}
+		program { name: "show_down";
+			signal: "elm,state,show,down";
+			source: "elm";
+			action: STATE_SET "show_down" 0.0;
+			transition: LINEAR 0.25;
+			target: "ctxpopup_clip";
+		}
+		program { name: "hide_up";
+			signal: "elm,state,hide,up";
+			source: "elm";
+			action: STATE_SET "hide_up" 0.0;
+			transition: LINEAR 0.25;
+			target: "ctxpopup_clip";
+			after: "hide_finished";
+		}
+		program { name: "hide_left";
+			signal: "elm,state,hide,left";
+			source: "elm";
+			action: STATE_SET "hide_left" 0.0;
+			transition: LINEAR 0.25;
+			target: "ctxpopup_clip";
+			after: "hide_finished";
+		}
+		program { name: "hide_right";
+			signal: "elm,state,hide,right";
+			source: "elm";
+			action: STATE_SET "hide_right" 0.0;
+			transition: LINEAR 0.25;
+			target: "ctxpopup_clip";
+			after: "hide_finished";
+		}
+		program { name: "hide_down";
+			signal: "elm,state,hide,down";
+			source: "elm";
+			action: STATE_SET "hide_down" 0.0;
+			transition: LINEAR 0.25;
+			target: "ctxpopup_clip";
+			after: "hide_finished";
+		}
+		program { name: "hide_finished";
+			action: SIGNAL_EMIT "elm,action,hide,finished" "";
+		}
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////
-group { name: "elm/ctxpopup/arrow/datefield/default";
-	alias: "elm/ctxpopup/arrow/datefield/calendar";
-	alias: "elm/ctxpopup/arrow/datefield/clk_default";
+group { name: "elm/ctxpopup/arrow/datetime/default";
 	alias: "elm/ctxpopup/arrow/timepicker";
 	images {
 		image: "timepicker_left_arrow.png" COMP;
@@ -3453,9 +3718,7 @@ group { name: "elm/ctxpopup/arrow/datefield/default";
 }
 ///////////////////////////////////////////////////////////////////////////////
 group {
-	name: "elm/ctxpopup/text_style_item/datefield/default";
-	alias: "elm/ctxpopup/text_style_item/datefield/calendar";
-	alias: "elm/ctxpopup/text_style_item/datefield/clk_default";
+	name: "elm/ctxpopup/text_style_item/datetime/default";
 	alias: "elm/ctxpopup/text_style_item/timepicker";
 	parts {
 		part {
