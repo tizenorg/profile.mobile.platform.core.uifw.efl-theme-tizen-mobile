@@ -424,6 +424,9 @@ group { name: "elm/toolbar/item/default";
          description { state: "animation" 0.0;
             color: 255 255 255 255;
          }
+         description { state: "disabled" 0.0;
+            color: 255 255 255 153;
+         }
       }
       part { name: "elm.icon.clipper";
          type: RECT;
@@ -444,6 +447,9 @@ group { name: "elm/toolbar/item/default";
          }
          description { state: "animation" 0.0;
             color: 255 255 255 255;
+         }
+         description { state: "disabled" 0.0;
+            color: 255 255 255 153;
          }
       }
       part { name: "event";
@@ -498,55 +504,25 @@ group { name: "elm/toolbar/item/default";
       program { name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
-         action: STATE_SET "disabled" 0.0;
-         target: "bg";
-         after: "disable_text";
-      }
-      program { name: "disable_text";
          script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "visible"))
-            {
-               set_state(PART:"elm.text", "disabled_visible", 0.0);
-               set_state(PART:"elm.text_new", "disabled_visible", 0.0);
-            }
-            else
-            {
-               set_state(PART:"elm.text", "disabled", 0.0);
-               set_state(PART:"elm.text_new", "disabled", 0.0);
-            }
+            set_int(item_state, ITEM_STATE_DISABLED);
+            set_state(PART:"bg", "disabled", 0.0);
             set_state(PART:"elm.text.clipper", "disabled", 0.0);
             set_state(PART:"elm.icon.clipper", "disabled", 0.0);
-            set_int(item_state, ITEM_STATE_DISABLED);
+            run_program(PROGRAM:"label_set,animation,done");
+            run_program(PROGRAM:"icon_set,animation,done");
          }
       }
       program { name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "bg";
-         after: "enable_text";
-      }
-      program { name: "enable_text";
          script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "disabled_visible"))
-            {
-               set_state(PART:"elm.text", "visible", 0.0);
-               set_state(PART:"elm.text_new", "visible", 0.0);
-            }
-            else
-            {
-               set_state(PART:"elm.text", "default", 0.0);
-               set_state(PART:"elm.text_new", "default", 0.0);
-            }
+            set_int(item_state, ITEM_STATE_ENABLED);
+            set_state(PART:"bg", "default", 0.0);
             set_state(PART:"elm.text.clipper", "default", 0.0);
             set_state(PART:"elm.icon.clipper", "default", 0.0);
-            set_int(item_state, ITEM_STATE_ENABLED);
+            run_program(PROGRAM:"label_set,animation,done");
+            run_program(PROGRAM:"icon_set,animation,done");
          }
       }
       program { name: "label_set,animation,forward";
@@ -574,9 +550,13 @@ group { name: "elm/toolbar/item/default";
       program { name: "label,reset";
          signal: "elm,state,label,reset";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.clipper";
-         target: "elm.text_new.clipper";
+         script {
+            set_state(PART:"elm.text_new.clipper", "default", 0.0);
+            if (get_int(item_state) != ITEM_STATE_DISABLED)
+              set_state(PART:"elm.text.clipper", "default", 0.0);
+            else
+              set_state(PART:"elm.text.clipper", "disabled", 0.0);
+         }
       }
       program { name: "icon_set,animation,forward";
          signal: "elm,state,icon_set,forward";
@@ -603,9 +583,13 @@ group { name: "elm/toolbar/item/default";
       program { name: "icon,reset";
          signal: "elm,state,icon,reset";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.icon.clipper";
-         target: "elm.icon_new.clipper";
+         script {
+            set_state(PART:"elm.icon_new.clipper", "default", 0.0);
+            if (get_int(item_state) != ITEM_STATE_DISABLED)
+              set_state(PART:"elm.icon.clipper", "default", 0.0);
+            else
+              set_state(PART:"elm.icon.clipper", "disabled", 0.0);
+         }
       }
       program { name: "text_show";
          signal: "elm,state,text,visible";
@@ -924,6 +908,9 @@ group { name: "elm/toolbar/item/tabbar";
    }
 
    data.item: "transition_animation_on" "1";
+   script {
+      public item_state = ITEM_STATE_ENABLED;
+   }
    parts {
       part { name: "bg";
          mouse_events: 0;
@@ -1263,6 +1250,9 @@ group { name: "elm/toolbar/item/tabbar";
          description { state: "animation" 0.0;
             color: 255 255 255 255;
          }
+         description { state: "disabled" 0.0;
+            color: 255 255 255 153;
+         }
       }
       part { name: "elm.icon.clipper";
          type: RECT;
@@ -1283,6 +1273,9 @@ group { name: "elm/toolbar/item/tabbar";
          }
          description { state: "animation" 0.0;
             color: 255 255 255 255;
+         }
+         description { state: "disabled" 0.0;
+            color: 255 255 255 153;
          }
       }
       part { name: "event";
@@ -1345,53 +1338,25 @@ group { name: "elm/toolbar/item/tabbar";
       program { name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
-         action: STATE_SET "disabled" 0.0;
-         target: "bg";
-         after: "disable_text";
-      }
-      program { name: "disable_text";
          script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "visible"))
-            {
-               set_state(PART:"elm.text", "disabled_visible", 0.0);
-               set_state(PART:"elm.text_new", "disabled_visible", 0.0);
-            }
-            else
-            {
-               set_state(PART:"elm.text", "disabled", 0.0);
-               set_state(PART:"elm.text_new", "disabled", 0.0);
-            }
+            set_int(item_state, ITEM_STATE_DISABLED);
+            set_state(PART:"bg", "disabled", 0.0);
             set_state(PART:"elm.text.clipper", "disabled", 0.0);
             set_state(PART:"elm.icon.clipper", "disabled", 0.0);
+            run_program(PROGRAM:"label_set,animation,done");
+            run_program(PROGRAM:"icon_set,animation,done");
          }
       }
       program { name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "bg";
-         after: "enable_text";
-      }
-      program { name: "enable_text";
          script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "disabled_visible"))
-            {
-               set_state(PART:"elm.text", "visible", 0.0);
-               set_state(PART:"elm.text_new", "visible", 0.0);
-            }
-            else
-            {
-               set_state(PART:"elm.text", "default", 0.0);
-               set_state(PART:"elm.text_new", "default", 0.0);
-            }
+            set_int(item_state, ITEM_STATE_ENABLED);
+            set_state(PART:"bg", "default", 0.0);
             set_state(PART:"elm.text.clipper", "default", 0.0);
             set_state(PART:"elm.icon.clipper", "default", 0.0);
+            run_program(PROGRAM:"label_set,animation,done");
+            run_program(PROGRAM:"icon_set,animation,done");
          }
       }
       program { name: "label_set,animation,forward";
@@ -1419,9 +1384,13 @@ group { name: "elm/toolbar/item/tabbar";
       program { name: "label,reset";
          signal: "elm,state,label,reset";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.clipper";
-         target: "elm.text_new.clipper";
+         script {
+            set_state(PART:"elm.text_new.clipper", "default", 0.0);
+            if (get_int(item_state) != ITEM_STATE_DISABLED)
+              set_state(PART:"elm.text.clipper", "default", 0.0);
+            else
+              set_state(PART:"elm.text.clipper", "disabled", 0.0);
+         }
       }
       program { name: "icon_set,animation,forward";
          signal: "elm,state,icon_set,forward";
@@ -1448,9 +1417,13 @@ group { name: "elm/toolbar/item/tabbar";
       program { name: "icon,reset";
          signal: "elm,state,icon,reset";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.icon.clipper";
-         target: "elm.icon_new.clipper";
+         script {
+            set_state(PART:"elm.icon_new.clipper", "default", 0.0);
+            if (get_int(item_state) != ITEM_STATE_DISABLED)
+              set_state(PART:"elm.icon.clipper", "default", 0.0);
+            else
+              set_state(PART:"elm.icon.clipper", "disabled", 0.0);
+         }
       }
       program { name: "text_show";
          signal: "elm,state,text,visible";
