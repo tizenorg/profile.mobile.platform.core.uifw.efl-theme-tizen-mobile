@@ -2868,3 +2868,77 @@
          }
       }
    }
+
+   group { name: "elm/slider/horizontal/expanded_indicator_button";
+      inherit: "elm/slider/horizontal/default";
+      script {
+         public invert_on = 0;
+         public set_invert_on() {
+            set_state(PART:"level", "inverted", 0.0);
+            set_state(PART:"level2", "inverted", 0.0);
+            set_int(invert_on, 1);
+         }
+         public set_invert_off() {
+            set_state(PART:"level", "default", 0.0);
+            set_state(PART:"level2", "default", 0.0);
+            set_int(invert_on, 0);
+         }
+         public thumb_down() {
+            if(get_int(invert_on) == 0)
+               set_state(PART:"level", "pressed", 0.0);
+            else if(get_int(invert_on) == 1)
+               set_state(PART:"level2", "pressed", 0.0);
+            }
+         public thumb_up() {
+            if(get_int(invert_on) == 0)
+               set_state(PART:"level", "default", 0.0);
+            else if(get_int(invert_on) == 1)
+               set_state(PART:"level2", "inverted", 0.0);
+            }
+         }
+      parts {
+         part { name: "elm.dragable.slider";
+            type: GROUP;
+            source: "elm/slider/horizontal/indicator/expanded_indicator_button";
+            mouse_events: 1;
+            scale: 1;
+            dragable {
+               x: 1 1 0;
+               y: 0 0 0;
+               confine: "bg";
+            }
+            description { state: "default" 0.0;
+               min: SLIDER_INDICATOR_WIDTH_INC SLIDER_INDICATOR_HEIGHT_INC;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.5 0.0;
+                  to_x: "bg";
+               }
+               rel2 {
+                  relative: 0.5 1.0;
+                  to_x: "bg";
+               }
+               color: 0 0 0 0;
+            }
+         }
+      }
+   }
+
+   group { name: "elm/slider/horizontal/indicator/expanded_indicator_button";
+      inherit: "elm/slider/horizontal/indicator/default";
+      parts {
+         part { name: "button_events";
+            type: RECT;
+            mouse_events: 1;
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               min: 2*SLIDER_INDICATOR_WIDTH_INC 1.5*SLIDER_INDICATOR_HEIGHT_INC;
+               align: 0.5 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: VERTICAL;
+               color: 0 0 0 0;
+            }
+         }
+      }
+   }
