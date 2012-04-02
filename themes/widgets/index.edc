@@ -261,6 +261,10 @@
                inherit: "default" 0.0;
                min: INDEX_2ND_LEVEL_POPUP_WIDTH_INC INDEX_POPUP_HEIGHT_INC;
             }
+            description { state: "active" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
          }
          part {
             name: "elm.text";
@@ -389,18 +393,6 @@
                set_state_val(PART:"elm.dragable.index.1", STATE_ALIGNMENT, 0.5, dy);
             }
          }
-         program { name: "first_level_invisible";
-            signal: "hide_first_level";
-            source: "";
-            action: STATE_SET "index1" 0.0;
-            target: "button_image";
-         }
-         program { name: "2nd_level_invisible";
-            signal: "hide_2nd_level";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "button_image";
-         }
          program { name: "index0.active";
             signal: "elm,state,active";
             source: "elm";
@@ -408,8 +400,6 @@
             transition: DECELERATE 0.3;
             target: "elm.swallow.index.0";
             target: "clip";
-            target: "index.0.bg.image.middle";
-            target: "elm.text";
             after: "disable_timer";
          }
          program { name: "initial.index0.active";
@@ -446,6 +436,25 @@
             target: "elm.swallow.index.1";
             target: "clip2";
             target: "index.1.bg.image.middle";
+         }
+         program { name: "index.active";
+            signal: "elm,indicator,state,active";
+            source: "elm";
+            action: STATE_SET "active" 0.0;
+            transition: DECELERATE 0.5;
+            target: "clip2";
+            target: "elm.swallow.index.0";
+            target: "clip";
+            target: "index.0.bg.image.middle";
+            target: "elm.text";
+            target: "button_image";
+         }
+         program { name: "index.inactive";
+            signal: "elm,indicator,state,inactive";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.5;
+            target: "clip2";
          }
          program { name: "button.image.hidden";
             signal: "elm,state,button,image,hide";
