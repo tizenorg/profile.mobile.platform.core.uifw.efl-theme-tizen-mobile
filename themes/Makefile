@@ -11,8 +11,7 @@ all: tizen-hd tizen-black-hd
 .SUFFIXES: .edc .edj
 .edc.edj:
 	cp ./inc/$(@:.edj=-inc.edc) ./inc/tmp-inc.edc
-	#edje_cc -v -id ./images/$(@:.edj=) -sd ./sounds -fd ../objects $(@:.edj=.edc) # commented -sd ./sounds
-	edje_cc $(EDJE_FLAGS_$(V)) -id ./images/$(@:.edj=) -fd ../objects $(@:.edj=.edc)
+	edje_cc $(EDJE_FLAGS_$(V)) -id ./images/$(@:.edj=) -sd ./sounds -fd ../objects $(@:.edj=.edc)
 	rm ./inc/tmp-inc.edc
 
 tizen-hd: tizen-hd.edj
