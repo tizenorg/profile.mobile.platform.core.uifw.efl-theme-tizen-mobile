@@ -6450,44 +6450,65 @@ group { name: "elm/button/base/searchbar/default";
          image: image_normal COMP; \
          image: image_press COMP; \
          image: image_disable COMP; \
-      } \
-      script { \
-         public button_state = BUTTON_STATE_ENABLED; \
+         image: "00_button_01_normal.png" COMP; \
+         image: "00_button_01_normal_press.png" COMP; \
+         image: "00_button_01_normal_dim.png" COMP; \
+         image: "00_button_01_normal_Focus.png" COMP; \
       } \
       parts { \
          part { name: "button_image"; \
             scale: 1; \
             description { state: "default" 0.0; \
                min: BUTTON_COLORSELECTOR_BG_DEFAULT_MIN_INC; \
+               max: BUTTON_COLORSELECTOR_BG_DEFAULT_MIN_INC; \
                image { \
-                  normal: image_normal; \
-                  border: COLORSELECTOR_BUTTON_BORDER; \
+                  normal: "00_button_01_normal.png"; \
+                  border: BUTTON_COLORSELECTOR_BG_BORDER_INC; \
                   border_scale: 1; \
                } \
             } \
-            description { state: "clicked" 0.0; \
+            description { \
+               state: "clicked" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "00_button_01_normal_press.png"; \
+            } \
+            description { \
+               state: "disabled" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "00_button_01_normal_dim.png"; \
+            } \
+            description { \
+               state: "focused" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "00_button_01_normal_Focus.png"; \
+            } \
+         } \
+         part { name: "button_center_part"; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               min: BUTTON_COLORSELECTOR_IMAGE_MIN_MAX_INC; \
+               max: BUTTON_COLORSELECTOR_IMAGE_MIN_MAX_INC; \
+               image.normal: image_normal; \
+            } \
+            description { \
+               state: "clicked" 0.0; \
                inherit: "default" 0.0; \
                image.normal: image_press; \
             } \
-            description { state: "disabled" 0.0; \
+            description { \
+               state: "disabled" 0.0; \
                inherit: "default" 0.0; \
                image.normal: image_disable; \
             } \
-            description { state: "focused" 0.0; \
-               inherit: "default" 0.0; \
-               image.normal: image_press; \
-            } \
          } \
-         part { name: "over2"; \
+         part { name: "over1"; \
             type: RECT; \
-            repeat_events: 1; \
             ignore_flags: ON_HOLD; \
             description { state: "default" 0.0; \
                color: 0 0 0 0; \
             } \
          } \
-         part { name: "over3"; \
-            type: RECT; \
+         part { name: "over2"; \
             repeat_events: 1; \
             description { state: "default" 0.0; \
                color: 0 0 0 0; \
@@ -6508,29 +6529,29 @@ group { name: "elm/button/base/searchbar/default";
       programs { \
          program { name: "button_click"; \
             signal: "mouse,down,1"; \
-            source: "over2"; \
+            source: "over1"; \
             action: SIGNAL_EMIT "elm,action,press" ""; \
             after: "button_click_anim"; \
          } \
          program { name: "button_click_anim"; \
             action: STATE_SET "clicked" 0.0; \
             target: "button_image"; \
+            target: "button_center_part"; \
          } \
-         program { name: "button_unpress"; \
-            action: SIGNAL_EMIT "elm,action,unpress" ""; \
-         } \
-         program { name: "button_mouseout_clicked"; \
+         program { name: "button_unclick"; \
             signal: "mouse,up,1"; \
-            source: "over3"; \
-            script { \
-               if (get_int(button_state) != BUTTON_STATE_DISABLED) \
-                 set_state(PART:"button_image", "default", 0.0); \
-            } \
-            after: button_unpress; \
+            source: "over2"; \
+            action: SIGNAL_EMIT "elm,action,unpress" ""; \
+            after: "button_unclick_anim"; \
+         } \
+         program { name: "button_unclick_anim"; \
+            action: STATE_SET "default" 0.0; \
+            target: "button_image"; \
+            target: "button_center_part"; \
          } \
          program { name: "touch_snd"; \
             signal: "mouse,clicked,1"; \
-            source: "over2"; \
+            source: "over1"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
             after: button_unclick3; \
          } \
@@ -6541,21 +6562,17 @@ group { name: "elm/button/base/searchbar/default";
             signal: "elm,state,disabled"; \
             source: "elm"; \
             action: STATE_SET "disabled" 0.0; \
-            target: "button_image"; \
             target: "disabler"; \
-            script { \
-               set_int(button_state, BUTTON_STATE_DISABLED); \
-            } \
+            target: "button_image"; \
+            target: "button_center_part"; \
          } \
          program { name: "enable"; \
             signal: "elm,state,enabled"; \
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
-            target: "button_image"; \
             target: "disabler"; \
-            script { \
-               set_int(button_state, BUTTON_STATE_ENABLED); \
-            } \
+            target: "button_image"; \
+            target: "button_center_part"; \
          } \
       } \
    }
