@@ -5,7 +5,7 @@ EDJE_FLAGS_VERBOSE_ =
 EDJE_FLAGS_VERBOSE_0 =
 EDJE_FLAGS_VERBOSE_1 = -v
 
-all: tizen-hd tizen-black-hd
+all: tizen-hd
 	echo $(escaped_prefix)
 
 .SUFFIXES: .edc .edj
@@ -15,7 +15,6 @@ all: tizen-hd tizen-black-hd
 	rm ./inc/tmp-inc.edc
 
 tizen-hd: tizen-hd.edj
-tizen-black-hd: tizen-black-hd.edj
 
 clean:
 	rm -f *.edj
