@@ -23,14 +23,8 @@ install: install_themes install_edc
 
 copy_edc:
 	cp themes/tizen.edc themes/tizen-hd.edc
-	cp themes/tizen.edc themes/tizen-black-hd.edc
 
 tizen-hd:
-	cp themes/tizen.edc themes/$@.edc
-	cd themes && make $@
-	rm themes/tizen-*.edc
-
-tizen-black-hd:
 	cp themes/tizen.edc themes/$@.edc
 	cd themes && make $@
 	rm themes/tizen-*.edc
