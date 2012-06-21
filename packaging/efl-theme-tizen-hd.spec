@@ -12,14 +12,6 @@ BuildRequires: edje, edje-bin, embryo, embryo-bin
 Tizen HD theme for EFL
 
 
-%package -n efl-theme-tizen-black-hd
-Summary: Tizen Black HD theme files for EFL
-
-
-%description -n efl-theme-tizen-black-hd
-Tizen Black HD theme for EFL
-
-
 %package -n efl-theme-tizen-devel
 Summary: Development package
 
@@ -48,10 +40,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_datadir}/elementary/themes/tizen-hd.edj
 
-
-%files -n efl-theme-tizen-black-hd
-%defattr(-,root,root,-)
-%{_datadir}/elementary/themes/tizen-black-hd.edj
 
 %files -n efl-theme-tizen-devel
 %defattr(-,root,root,-)
