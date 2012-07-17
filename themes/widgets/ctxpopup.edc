@@ -590,8 +590,8 @@
 	group {
 		name: "elm/ctxpopup/base/default";
 		images {
-			image: "00_popup_bubble_bg.png" COMP;
-			image: "00_popup_bg.png" COMP;
+			image: CTXPOPUP_BUBBLE_BG_IMAGE COMP;
+			image: CTXPOPUP_BG_IMAGE COMP;
 		}
 		parts {
 			part {
@@ -639,8 +639,8 @@
 						to:"frame_shadow_right_bottom_padding";
 					}
 					image {
-						normal: "00_popup_bubble_bg.png";
-						border: 13 13 13 13;
+						normal: CTXPOPUP_BUBBLE_BG_IMAGE;
+						border: CTXPOPUP_BUBBLE_BG_IMAGE_BORDER;
 						border_scale: 1;
 					}
 				}
@@ -895,8 +895,8 @@
 					rel1 {to:"ctxpopup_frame_left_top";}
 					rel2 {to:"ctxpopup_frame_right_bottom";}
 					image {
-						normal: "00_popup_bg.png";
-						border: 3 3 3 3;
+						normal: CTXPOPUP_BG_IMAGE;
+						border: CTXPOPUP_BG_IMAGE_BORDER;
 						border_scale: 1;
 					}
 				}
@@ -1227,6 +1227,17 @@
 					}
 				}
 				description {
+					state: "horizontal" 0.0;
+					inherit: "default" 0.0;
+					text {
+						font: "SLP:style=Roman";
+						size: CTXPOPUP_ITEM_MAIN_TEXT_SIZE_INC;
+						align: 0 0.5;
+						min: 1 1;
+						text_class: "slp_roman";
+					}
+				}
+				description {
 					state: "compress" 0.0;
 					inherit: "default" 0.0;
 					max: -1 -1;
@@ -1235,9 +1246,26 @@
 					}
 				}
 				description {
+					state: "compress.horizontal" 0.0;
+					inherit: "default" 0.0;
+					max: -1 -1;
+					text {
+						min: 0 1;
+						size: CTXPOPUP_ITEM_MAIN_TEXT_SIZE_INC;
+					}
+				}
+				description {
 					state: "clicked" 0.0;
 					inherit: "default" 0.0;
 					color: CTXPOPUP_MAIN_TEXT_PRESS_COLOR_INC;
+				}
+				description {
+					state: "clicked.horizontal" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_MAIN_TEXT_PRESS_COLOR_INC;
+					text {
+						size: CTXPOPUP_ITEM_MAIN_TEXT_SIZE_INC;
+					}
 				}
 			}
 			part {
@@ -1317,8 +1345,15 @@
 				name: "compress";
 				signal: "elm,state,compress";
 				source: "elm";
-				action: STATE_SET "compress" 0.0;
-				target: "elm.text";
+				script {
+					new st[31];
+					new Float:vl;
+					get_state(PART:"separator", st, 30, vl);
+					if (!strcmp(st, "horizontal"))
+						set_state(PART:"elm.text", "compress.horizontal", 0.0);
+					else
+						set_state(PART:"elm.text", "compress", 0.0);
+				}
 			}
 			program {
 				name: "vertical";
@@ -1326,6 +1361,7 @@
 				source: "elm";
 				script {
 					set_state(PART:"separator", "vertical", 0.0);
+					set_state(PART:"elm.text", "vertical", 0.0);
 				}
 			}
 			program {
@@ -1334,6 +1370,7 @@
 				source: "elm";
 				script {
 					set_state(PART:"separator", "horizontal", 0.0);
+					set_state(PART:"elm.text", "horizontal", 0.0);
 				}
 			}
 			program {
@@ -1341,7 +1378,13 @@
 				signal: "mouse,down,1";
 				source: "over2";
 				script {
-					set_state(PART:"elm.text", "clicked", 0.0);
+					new st[31];
+					new Float:vl;
+					get_state(PART:"separator", st, 30, vl);
+					if (!strcmp(st, "horizontal"))
+						set_state(PART:"elm.text", "clicked.horizontal", 0.0);
+					else
+						set_state(PART:"elm.text", "clicked", 0.0);
 					set_state(PART:"bg", "clicked", 0.0);
 				}
 			}
@@ -1350,7 +1393,13 @@
 				signal: "mouse,up,1";
 				source: "over2";
 				script {
-					set_state(PART:"elm.text", "compress", 0.0);
+					new st[31];
+					new Float:vl;
+					get_state(PART:"separator", st, 30, vl);
+					if (!strcmp(st, "horizontal"))
+						set_state(PART:"elm.text", "compress.horizontal", 0.0);
+					else
+						set_state(PART:"elm.text", "compress", 0.0);
 					set_state(PART:"bg", "default", 0.0);
 				}
 			}
