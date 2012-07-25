@@ -1,26 +1,33 @@
-PREFIX ?= /usr
+TARGET=tizen-hd.edj
+
+PREFIX?=/usr
 INSTALL=install -c
-themedir=$(DESTDIR)$(PREFIX)/share/elementary/themes
+EDC_DIR=$(DESTDIR)/opt/var/efl-theme-tizen-edc
+THEME_DIR=$(DESTDIR)$(PREFIX)/share/elementary/themes
 EDJE_FLAGS_VERBOSE_ =
 EDJE_FLAGS_VERBOSE_0 =
 EDJE_FLAGS_VERBOSE_1 = -v
+TMP_INC=tmp-inc.edc
+SRC=tizen.edc
 
-all: tizen-hd
-	echo $(escaped_prefix)
+all: $(TARGET)
 
-.SUFFIXES: .edc .edj
-.edc.edj:
-	cp ./inc/$(@:.edj=-inc.edc) ./inc/tmp-inc.edc
-	edje_cc $(EDJE_FLAGS_$(V)) -id ./images/$(@:.edj=) -sd ./sounds -fd ../objects $(@:.edj=.edc)
-	rm ./inc/tmp-inc.edc
-
-tizen-hd: tizen-hd.edj
+$(TARGET):
+	cp -f ./inc/$(@:.edj=-inc.edc) ./inc/$(TMP_INC)
+	edje_cc $(EDJE_FLAGS_$(V)) -id ./images/$(@:.edj=) -sd ./sounds -fd ../objects $(SRC) $@
 
 clean:
 	rm -f *.edj
-
-install:
-	mkdir -p $(themedir)
-	$(INSTALL) tizen*.edj $(themedir)
+	rm -f ./inc/$(TMP_INC)
 
 distclean: clean
+
+install:
+	mkdir -p $(THEME_DIR)
+	$(INSTALL) $(TARGET) $(THEME_DIR)
+	mkdir -p $(EDC_DIR)
+	cp -r $(SRC) widgets $(EDC_DIR)
+
+uninstall:
+	rm -f $(THEME_DIR)/$(TARGET)
+	rm -f $(EDC_DIR)/$(SRC) && rm -rf $(EDC_DIR)/widgets
