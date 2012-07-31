@@ -12,7 +12,7 @@ SRC=tizen.edc
 
 all: $(TARGET)
 
-$(TARGET):
+$(TARGET): clean
 	cp -f ./inc/$(@:.edj=-inc.edc) ./inc/$(TMP_INC)
 	edje_cc $(EDJE_FLAGS_$(V)) -id ./images/$(@:.edj=) -sd ./sounds -fd ../objects $(SRC) $@
 

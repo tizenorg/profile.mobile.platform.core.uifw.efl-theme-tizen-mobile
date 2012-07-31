@@ -3,7 +3,7 @@ PREFIX ?= /usr
 all:
 	cd themes && make
 
-install: all
+install: 
 	cd themes && make $@
 
 uninstall:
