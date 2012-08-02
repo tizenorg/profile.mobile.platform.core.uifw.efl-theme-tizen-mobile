@@ -976,11 +976,13 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
    }
 
 ////////////////////////////////////////////////////////////////////////////////
-#define CHECK_STYLE_ON_OFF(style_name, on_image, off_image) \
+#define CHECK_STYLE_ON_OFF(style_name, on_image, off_image, on_dim_image, off_dim_image) \
    group { name: "elm/check/base/"style_name; \
       images { \
          image: on_image COMP; \
          image: off_image COMP; \
+         image: on_dim_image COMP; \
+         image: off_dim_image COMP; \
       } \
       parts { \
          part { name: "bg"; \
@@ -1020,6 +1022,14 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
             description { state: "visible_pressed" 0.0; \
                inherit: "default" 0.0; \
                image.normal: on_image; \
+            } \
+            description { state: "visible_disable" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: on_dim_image; \
+            } \
+            description { state: "off_disable" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: off_dim_image; \
             } \
          } \
          part { name: "elm.swallow.content"; \
@@ -1214,6 +1224,11 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                  set_state(PART:"elm.text", "disabled_visible", 0.0); \
                else \
                  set_state(PART:"elm.text", "disabled", 0.0); \
+               get_state(PART:"check", st, 30, vl); \
+               if (!strcmp(st, "visible")) \
+                 set_state(PART:"check", "visible_disable", 0.0); \
+               else \
+                 set_state(PART:"check", "off_disable", 0.0); \
                get_state(PART:"elm.swallow.content", st, 30, vl); \
                if (!strcmp(st, "visible")) \
                  set_state(PART:"elm.swallow.content", "disabled_visible", 0.0); \
@@ -1238,6 +1253,11 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                  set_state(PART:"elm.text", "visible", 0.0); \
                else \
                  set_state(PART:"elm.text", "default", 0.0); \
+               get_state(PART:"check", st, 30, vl); \
+               if (!strcmp(st, "visible_disable")) \
+                 set_state(PART:"check", "visible", 0.0); \
+               else \
+                 set_state(PART:"check", "default", 0.0); \
                get_state(PART:"elm.swallow.content", st, 30, vl); \
                if (!strcmp(st, "visible")) \
                  set_state(PART:"elm.swallow.content", "visible", 0.0); \
@@ -1248,9 +1268,9 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
       } \
    }
 ///////////////////////////////////////////////////////////////////////////////////////
-   CHECK_STYLE_ON_OFF("on&off", "00_button_on.png", "00_button_off.png")
+   CHECK_STYLE_ON_OFF("on&off", "00_button_on.png", "00_button_off.png","00_button_on_dim.png", "00_button_off_dim.png")
 
-   CHECK_STYLE_ON_OFF("on&off_01", "00_button_on_01.png", "00_button_off_01.png")
+   CHECK_STYLE_ON_OFF("on&off_01", "00_button_on_01.png", "00_button_off_01.png", "00_button_on_01_dim.png", "00_button_off_01_dim.png")
 ///////////////////////////////////////////////////////////////////////////////////////
 #define CHECK_STYLE_FAVORITE(style_name, min_width, min_height) \
    group { name: "elm/check/base/"style_name; \
