@@ -1657,8 +1657,8 @@
 					state: "default" 0.0;
 					color: CTXPOPUP_SEPARATOR_COLOR_INC;
 					align: 0.5 0;
-					min: 1 0;
-					max: 1 999999;
+					min: 0 1;
+					max: 999999 1;
 					visible: 0;
 				}
 				description {
@@ -1713,10 +1713,8 @@
 				description {
 					state: "default" 0.0;
 					min: 1 CTXPOPUP_ITEM_HEIGHT_INC;
-					max: (CTXPOPUP_CONTENT_WIDTH_MAX_INC-(3*CTXPOPUP_ITEM_PADDING_INC)-CTXPOPUP_ICON_WIDTH_INC) CTXPOPUP_ITEM_HEIGHT_INC;
-					fixed: 0 1;
 					align: 0.5 0.5;
-					rel1 {relative: 1.0 0.0; to_x: "icon_right_padding";}
+					rel1 {relative: 1.0 1.0; to_x: "icon_right_padding"; to_y: "separator";}
 					rel2 {relative: 0.0 1.0; to_x: "text_right_padding";}
 					color: CTXPOPUP_MAIN_TEXT_UNREAD_COLOR_INC;
 					text {
@@ -1728,6 +1726,17 @@
 					}
 				}
 				description {
+					state: "text_horizontal" 0.0;
+					inherit: "default" 0.0;
+                                        rel1 {relative: 1.0 0.0; to_x: "icon_right_padding";}
+                                        rel2 {relative: 0.0 1.0; to_x: "text_right_padding";}
+					text {
+						size: CTXPOPUP_ITEM_MAIN_TEXT_SIZE_INC;
+						align: 0.5 0.5;
+						min: 1 1;
+					}
+				}
+				description {
 					state: "compress" 0.0;
 					inherit: "default" 0.0;
 					max: -1 -1;
@@ -1736,9 +1745,33 @@
 					}
 				}
 				description {
+					state: "compress.text_horizontal" 0.0;
+					inherit: "default" 0.0;
+					max: -1 -1;
+                                        rel1 {relative: 1.0 0.0; to_x: "icon_right_padding";}
+                                        rel2 {relative: 0.0 1.0; to_x: "text_right_padding";}
+					text {
+						size: CTXPOPUP_ITEM_MAIN_TEXT_SIZE_INC;
+						align: 0.5 0.5;
+						min: 0 1;
+					}
+				}
+				description {
 					state: "clicked" 0.0;
 					inherit: "default" 0.0;
 					color: CTXPOPUP_MAIN_TEXT_PRESS_COLOR_INC;
+				}
+				description {
+					state: "clicked.text_horizontal" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_MAIN_TEXT_PRESS_COLOR_INC;
+                                        rel1 {relative: 1.0 0.0; to_x: "icon_right_padding";}
+                                        rel2 {relative: 0.0 1.0; to_x: "text_right_padding";}
+					text {
+						size: CTXPOPUP_ITEM_MAIN_TEXT_SIZE_INC;
+						align: 0.5 0.5;
+						min: 0 1;
+					}
 				}
 			}
 			part {
@@ -1819,8 +1852,15 @@
 				name: "compress";
 				signal: "elm,state,compress";
 				source: "elm";
-				action: STATE_SET "compress" 0.0;
-				target: "elm.text";
+				script {
+					new st[31];
+					new Float:vl;
+					get_state(PART:"separator", st, 30, vl);
+					if (!strcmp(st, "horizontal"))
+						set_state(PART:"elm.text", "compress.text_horizontal", 0.0);
+					else
+						set_state(PART:"elm.text", "compress", 0.0);
+				}
 			}
 			program {
 				name: "vertical";
@@ -1828,6 +1868,7 @@
 				source: "elm";
 				script {
 					set_state(PART:"separator", "vertical", 0.0);
+                                        set_state(PART:"elm.text", "vertical", 0.0);
 				}
 			}
 			program {
@@ -1836,6 +1877,7 @@
 				source: "elm";
 				script {
 					set_state(PART:"separator", "horizontal", 0.0);
+                                        set_state(PART:"elm.text", "text_horizontal", 0.0);
 				}
 			}
 			program {
@@ -1843,6 +1885,12 @@
 				signal: "mouse,down,1";
 				source: "over2";
 				script {
+					new st[31];
+					new Float:vl;
+					get_state(PART:"separator", st, 30, vl);
+                                        if (!strcmp(st, "horizontal"))
+						set_state(PART:"elm.text", "clicked.text_horizontal", 0.0);
+					else
 					set_state(PART:"elm.text", "clicked", 0.0);
 					set_state(PART:"bg", "clicked", 0.0);
 				}
@@ -1852,6 +1900,12 @@
 				signal: "mouse,up,1";
 				source: "over2";
 				script {
+					new st[31];
+					new Float:vl;
+					get_state(PART:"separator", st, 30, vl);
+					if (!strcmp(st, "horizontal"))
+						set_state(PART:"elm.text", "compress.text_horizontal", 0.0);
+					else
 					set_state(PART:"elm.text", "compress", 0.0);
 					set_state(PART:"bg", "default", 0.0);
 				}
