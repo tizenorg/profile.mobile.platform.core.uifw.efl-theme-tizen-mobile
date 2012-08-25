@@ -20,7 +20,7 @@
 // if size is different for each theme, split it into each theme inc.
 
 
-#define GENLIST_HEIGHT_1LINE 113  // excep bottom 1 line
+#define GENLIST_HEIGHT_1LINE 114
 //FIXME: Change from GENLIST_TREESIZE_DEFAULT to below macro
 #define GENLIST_TREESIZE_DEFAULT 32
 
@@ -29,8 +29,6 @@
 #define GENLIST_PADDING_SIZE_RIGHT     GENLIST_PADDING_SIZE_DEFAULT
 #define GENLIST_PADDING_SIZE_TOP       10
 #define GENLIST_PADDING_SIZE_BOTTOM    10
-
-#define GENLIST_TEXT2_WIDTH_MIN 150
 
 #define GENLIST_SIZE_PASSWORD_ICON 114
 
@@ -130,8 +128,70 @@
          param\
       }
 
-#define GENLIST_DESCRIPT_DOT_LT( NAME, left, top, param ) \
-      description { state: NAME 0.0;\
+//   |  top     |
+// -----------------
+//  |  HERE  <--| right
+// -----------------
+//  | bottom   |
+#define GENLIST_DESCRIPTION_RTB( right, top, bottom, param ) \
+      description { state: "default" 0.0;\
+         align: 1 0.5;\
+         rel1 { \
+            relative: 0 1; \
+            to_x: right; \
+            to_y: top; \
+         }\
+         rel2 {\
+            relative: 0 0;\
+            to_x: right;\
+            to_y: bottom;\
+         }\
+         param\
+      }
+
+// left |  HERE  | right
+// ---------------------
+//      | bottom |
+#define GENLIST_DESCRIPTION_LRB( left, right, bottom, param ) \
+      description { state: "default" 0.0;\
+         align: 0.5 1;\
+         rel1 { \
+            relative: 1 0; \
+            to_x: left; \
+            to_y: bottom; \
+         }\
+         rel2 {\
+            relative: 0 0;\
+            to_x: right;\
+            to_y: bottom;\
+         }\
+         param\
+      }
+
+//      |   top  |
+// ---------------------
+// left |  HERE  | right
+#define GENLIST_DESCRIPTION_LRT( left, right, top, param ) \
+      description { state: "default" 0.0;\
+         align: 0.5 0;\
+         rel1 { \
+            relative: 1 1; \
+            to_x: left; \
+            to_y: top; \
+         }\
+         rel2 {\
+            relative: 0 1;\
+            to_x: right;\
+            to_y: top;\
+         }\
+         param\
+      }
+
+//      |       top  |
+// ---------------------
+// left | -->  HERE  |
+#define GENLIST_DESCRIPTION_LT( left, top, param ) \
+      description { state: "default" 0.0;\
          align: 0 0;\
          rel1 { \
             relative: 1 1; \
@@ -146,8 +206,31 @@
          param\
       }
 
-#define GENLIST_DESCRIPT_DOT_RT( NAME, right, top, param ) \
-      description { state: NAME 0.0;\
+
+//      |       top  |
+// ---------------------
+// left |  --> HERE  |
+// ---------------------
+//      |     bottom |
+#define GENLIST_DESCRIPTION_LTB( left, top, bottom, param ) \
+      description { state: "default" 0.0;\
+         align: 0 0.5;\
+         rel1 { \
+            relative: 1 1; \
+            to_x: left; \
+            to_y: top; \
+         }\
+         rel2 {\
+            relative: 1 0;\
+            to_x: left;\
+            to_y: bottom;\
+         }\
+         param\
+      }
+
+
+#define GENLIST_DESCRIPTION_RT( right, top, param ) \
+      description { state: "default" 0.0;\
          align: 1 0;\
          rel1 { \
             relative: 0 1; \
@@ -161,6 +244,7 @@
          }\
          param\
       }
+
 
 #define GENLIST_DESCRIPT_DOT_LB( NAME, left, bottom, param ) \
       description { state: NAME 0.0;\
@@ -178,76 +262,12 @@
          param\
       }\
 
-#define GENLIST_DESCRIPT_DOT_RB( NAME, right, bottom, param ) \
-      description { state: NAME 0.0;\
+#define GENLIST_DESCRIPTION_RB( right, bottom, param ) \
+      description { state: "default" 0.0;\
          align: 1 1;\
          rel1 { \
             relative: 0 0; \
             to_x: right; \
-            to_y: bottom; \
-         }\
-         rel2 {\
-            relative: 0 0;\
-            to_x: right;\
-            to_y: bottom;\
-         }\
-         param\
-      }
-
-#define GENLIST_DESCRIPT_LINE_LEFT( NAME, left, top, bottom, param ) \
-      description { state: NAME 0.0;\
-         align: 0 0.5;\
-         rel1 { \
-            relative: 1 1; \
-            to_x: left; \
-            to_y: top; \
-         }\
-         rel2 {\
-            relative: 1 0;\
-            to_x: left;\
-            to_y: bottom;\
-         }\
-         param\
-      }
-
-#define GENLIST_DESCRIPT_LINE_RIGHT( NAME, right, top, bottom, param ) \
-      description { state: NAME 0.0;\
-         align: 1 0.5;\
-         rel1 { \
-            relative: 0 1; \
-            to_x: right; \
-            to_y: top; \
-         }\
-         rel2 {\
-            relative: 0 0;\
-            to_x: right;\
-            to_y: bottom;\
-         }\
-         param\
-      }
-
-#define GENLIST_DESCRIPT_LINE_TOP( NAME, left, right, top, param ) \
-      description { state: NAME 0.0;\
-         align: 0.5 0;\
-         rel1 { \
-            relative: 1 1; \
-            to_x: left; \
-            to_y: top; \
-         }\
-         rel2 {\
-            relative: 0 1;\
-            to_x: right;\
-            to_y: top;\
-         }\
-         param\
-      }
-
-#define GENLIST_DESCRIPT_LINE_BOTTOM( NAME, left, right, bottom, param ) \
-      description { state: NAME 0.0;\
-         align: 0.5 1;\
-         rel1 { \
-            relative: 1 0; \
-            to_x: left; \
             to_y: bottom; \
          }\
          rel2 {\
@@ -274,6 +294,7 @@
             description { state: "default" 0.0; \
                min: 0 HEIGHT; \
                align: 0.5 0.5; \
+               rel2.offset: -1 0;\
                color: GENLIST_PART_DIALOGUE_GROUP_BG_COLOR; \
             } \
          }
@@ -324,6 +345,19 @@
                fixed: 0 1; \
                min: 0 8; \
                color: GENLIST_PART_REORDER_BG_COLOR; \
+            } \
+         }
+
+#define GENLIST_PART_COLORBAR \
+         part { name: "elm.icon.colorbar"; \
+            clip_to: "disclip"; \
+            type: SWALLOW; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               min: 10 21; \
+               fixed: 1 1; \
+               rel2.relative: 0 0; \
+               align: 0 0; \
             } \
          }
 
@@ -481,13 +515,11 @@
                align: 0 0.5; \
                rel1 { \
                   relative: 1 0.5; \
-                  to_x: LEFT; \
-                  to_y: LEFT; \
+                  to: LEFT; \
                } \
                rel2 { \
                   relative: 1 0.5; \
-                  to_x: LEFT; \
-                  to_y: LEFT; \
+                  to: LEFT; \
                } \
             } \
          }
@@ -1442,8 +1474,6 @@
          program { name: "play_button_press"; \
             action: PLAY_SAMPLE "button-pressed" 1.0; \
          }
-
-
 
 #define GENLIST_PROGRAM_REORDER \
          program { name: "reorder_enabled"; \
