@@ -36,10 +36,11 @@
          image: "01_list_reorder_bg_below.png" COMP;
       }
       parts {
+         GENLIST_PART_DISCLIP
          GENLIST_PART_BG_IMAGE
-         GENLIST_PART_BASE_REORDER( 112 )
+         GENLIST_PART_BASE_REORDER( GENLIST_HEIGHT_1LINE + 8 )
          GENLIST_PART_BOTTOM_LINE
-
+         // FIXME: right padding is not needed when swallow content is NULL.
          GENLIST_PART_PADDING_RIGHT( 16 )
 
          GENLIST_PART_PADDING_LEFT_TO("elm.padding.icon1.left", "reorder.padding.left", 16)
@@ -47,20 +48,27 @@
             clip_to: "disclip";
             type: SWALLOW;
             scale: 1;
-            GENLIST_DESCRIPTION_L("elm.padding.icon1.left", min: 60 0; align: 1 0.5; )
+            GENLIST_DESCRIPTION_L("elm.padding.icon1.left", align: 1 0.5; )
             description { state: "decorate" 0.0;
                inherit: "default" 0.0;
                align: 0 0.5;
             }
-            GENLIST_DESCRIPTION_FLIP_ENABLED
+            description { state: "flip_enabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
          }
          GENLIST_PART_PADDING_LEFT_TO("elm.padding.icon1.right", "elm.edit.icon.1", 16)
+         part { name: "content_disclip";
+            type: RECT;
+            description { state: "default" 0.0;
+            }
+         }
          part { name: "elm.swallow.decorate.content";
-            clip_to: "disclip";
+            clip_to: "content_disclip";
             type: SWALLOW;
-            mouse_events: 1;
             scale: 1;
-            GENLIST_DESCRIPTION_LR( "elm.padding.icon1.right", "elm.padding.icon2.left", )
+            GENLIST_DESCRIPTION_LR("elm.padding.icon1.right", "elm.edit.icon.2", )
             description { state: "flip_enabled" 0.0;
                inherit: "default" 0.0;
                rel1 {
@@ -75,57 +83,58 @@
                }
             }
          }
-         GENLIST_PART_PADDING_RIGHT_TO("elm.padding.icon2.left", "elm.edit.icon.2", 16)
          part { name: "elm.edit.icon.2";
             clip_to: "disclip";
             type: SWALLOW;
             scale: 1;
-            GENLIST_DESCRIPTION_R( "elm.padding.icon2.right", min: 48 48; align: 0 0.5; )
+            GENLIST_DESCRIPTION_R("elm.padding.right", align: 0 0.5; )
             description { state: "decorate" 0.0;
                inherit: "default" 0.0;
-               align: 1 0.5;
+               align: 1 .0.5;
             }
-            GENLIST_DESCRIPTION_FLIP_ENABLED
+            description { state: "flip_enabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
          }
-         GENLIST_PART_PADDING_RIGHT_TO("elm.padding.icon2.right", "elm.padding.right", 16)
-         GENLIST_PART_DISCLIP
       }
       programs {
          GENLIST_PROGRAM_DISCLIP
          GENLIST_PROGRAM_SELECT( ; )
          GENLIST_PROGRAM_REORDER
+         GENLIST_PROGRAM_FLIP_TARGET(target: "elm.swallow.decorate.content";)
          program { name: "decorate_enabled_effect";
             signal: "elm,state,decorate,enabled,effect";
             source: "elm";
-            action: STATE_SET "decorate" 0.0;
             transition: DECELERATE 0.7;
+            action:  STATE_SET "decorate" 0.0;
             target: "elm.edit.icon.1";
             target: "elm.edit.icon.2";
          }
          program { name: "decorate_disabled_effect";
             signal: "elm,state,decorate,disabled,effect";
             source: "elm";
-            action: STATE_SET "default" 0.0;
             transition: DECELERATE 0.7;
+            action:  STATE_SET "default" 0.0;
+            target: "elm.swallow.decorate.content";
             target: "elm.edit.icon.1";
             target: "elm.edit.icon.2";
          }
          program { name: "decorate_enabled";
             signal: "elm,state,decorate,enabled";
             source: "elm";
-            action: STATE_SET "decorate" 0.0;
+            action:  STATE_SET "decorate" 0.0;
             target: "elm.edit.icon.1";
             target: "elm.edit.icon.2";
          }
          program { name: "decorate_disabled";
             signal: "elm,state,decorate,disabled";
             source: "elm";
-            action: STATE_SET "default" 0.0;
+            action:  STATE_SET "default" 0.0;
+            target: "elm.swallow.decorate.content";
             target: "elm.edit.icon.1";
             target: "elm.edit.icon.2";
          }
-         GENLIST_PROGRAM_FLIP_TARGET( target: "elm.edit.icon.1"; target: "elm.edit.icon.2";,
-                                      target: "elm.swallow.decorate.content"; )
       }
    }
 
