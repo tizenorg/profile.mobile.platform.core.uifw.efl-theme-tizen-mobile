@@ -40,7 +40,8 @@
          GENLIST_PART_BG_IMAGE
          GENLIST_PART_BASE_REORDER( GENLIST_HEIGHT_1LINE + 8 )
          GENLIST_PART_BOTTOM_LINE
-         // FIXME: right padding is not needed when swallow content is NULL.
+         // FIXME: padding is not needed when swallow content is NULL.
+         // But how can edje kwno existence of swallow content?
          GENLIST_PART_PADDING_RIGHT( 16 )
 
          GENLIST_PART_PADDING_LEFT_TO("elm.padding.icon1.left", "reorder.padding.left", 16)
@@ -59,6 +60,7 @@
             }
          }
          GENLIST_PART_PADDING_LEFT_TO("elm.padding.icon1.right", "elm.edit.icon.1", 16)
+         // Disclip is needed because sometimes contents exceeds the min size
          part { name: "content_disclip";
             type: RECT;
             description { state: "default" 0.0;
@@ -73,13 +75,11 @@
                inherit: "default" 0.0;
                rel1 {
                   relative: 0 0;
-                  to_x: "base";
-                  to_y: "base";
+                  to: "base";
                }
                rel2 {
                   relative: 1 1;
-                  to_x: "base";
-                  to_y: "base";
+                  to: "base";
                }
             }
          }
@@ -101,8 +101,45 @@
       programs {
          GENLIST_PROGRAM_DISCLIP
          GENLIST_PROGRAM_SELECT( ; )
-         GENLIST_PROGRAM_REORDER
          GENLIST_PROGRAM_FLIP_TARGET(target: "elm.swallow.decorate.content";)
+         program { name: "reorder_enabled";
+            signal: "elm,state,reorder,mode_set";
+            source: "elm";
+            action: STATE_SET "reorder" 0.0;
+            target: "base";
+            target: "reorder.padding.left";
+            target: "reorder.padding.top";
+            target: "bottom_line";
+         }
+         program { name: "reorder_disabled";
+            signal: "elm,state,reorder,mode_unset";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "base";
+            target: "reorder.padding.left";
+            target: "reorder.padding.top";
+            target: "bottom_line";
+         }
+         program { name: "reorder_enabled_effect";
+            signal: "elm,state,reorder_enabled_effect";
+            source: "elm";
+            transition: DECELERATE 0.7;
+            action: STATE_SET "reorder" 0.0;
+            target: "base";
+            target: "reorder.padding.left";
+            target: "reorder.padding.top";
+            target: "bottom_line";
+         }
+         program { name: "reorder_disabled_effect";
+            signal: "elm,state,reorder_disabled_effect";
+            source: "elm";
+            transition: DECELERATE 0.7;
+            action: STATE_SET "default" 0.0;
+            target: "base";
+            target: "reorder.padding.left";
+            target: "reorder.padding.top";
+            target: "bottom_line";
+         }
          program { name: "decorate_enabled_effect";
             signal: "elm,state,decorate,enabled,effect";
             source: "elm";
