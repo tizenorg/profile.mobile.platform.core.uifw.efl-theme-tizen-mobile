@@ -263,7 +263,7 @@
       parts {
          GENLIST_PART_DISCLIP
          GENLIST_PART_BG_IMAGE
-         GENLIST_PART_BASE_REORDER( GENLIST_HEIGHT_1LINE )
+         GENLIST_PART_BASE( GENLIST_HEIGHT_1LINE )
          GENLIST_PART_BOTTOM_LINE
          GENLIST_PART_PADDING_LEFT( GENLIST_PADDING_SIZE_LEFT )
          GENLIST_PART_PADDING_RIGHT( GENLIST_PADDING_SIZE_RIGHT )
@@ -277,7 +277,6 @@
       programs {
          GENLIST_PROGRAM_DISCLIP
          GENLIST_PROGRAM_SELECT( target: "elm.text"; )
-         GENLIST_PROGRAM_REORDER
          GENLIST_PROGRAM_FLIP
       }
    }
@@ -291,7 +290,7 @@
       parts {
          GENLIST_PART_DISCLIP
          GENLIST_PART_BG_IMAGE
-         GENLIST_PART_BASE_REORDER( GENLIST_HEIGHT_1LINE )
+         GENLIST_PART_BASE( GENLIST_HEIGHT_1LINE )
          GENLIST_PART_BOTTOM_LINE
          GENLIST_PART_PADDING_LEFT( GENLIST_PADDING_SIZE_LEFT )
          GENLIST_PART_PADDING_RIGHT( GENLIST_PADDING_SIZE_RIGHT )
@@ -303,7 +302,6 @@
       programs {
          GENLIST_PROGRAM_DISCLIP
          GENLIST_PROGRAM_SELECT( target: "elm.text"; )
-         GENLIST_PROGRAM_REORDER
          GENLIST_PROGRAM_FLIP
       }
    }
@@ -371,7 +369,7 @@
       parts {
          GENLIST_PART_DISCLIP
          GENLIST_PART_BG_IMAGE
-         GENLIST_PART_BASE_REORDER( GENLIST_HEIGHT_1LINE )
+         GENLIST_PART_BASE( GENLIST_HEIGHT_1LINE )
          GENLIST_PART_BOTTOM_LINE
          GENLIST_PART_PADDING_LEFT( GENLIST_PADDING_SIZE_LEFT )
          GENLIST_PART_PADDING_RIGHT( GENLIST_PADDING_SIZE_RIGHT )
@@ -388,7 +386,6 @@
       programs {
          GENLIST_PROGRAM_DISCLIP
          GENLIST_PROGRAM_SELECT( target: "elm.text"; )
-         GENLIST_PROGRAM_REORDER
          GENLIST_PROGRAM_FLIP
       }
    }
@@ -5605,7 +5602,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               text.style: "genlist_style_email_selected";
+               text.style: "genlist_style_email_focus";
             }
             description { state: "read" 0.0;
                inherit: "default" 0.0;
@@ -5643,14 +5640,14 @@
                }
                align: 0.0 0.5;
                text {
-                  style: "genlist_style_email_name";
+                  style: "genlist_style_name_text";
                   min: 0 1;
                   align: 0.0 0.5;
                }
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               text.style: "genlist_style_email_name_selected";
+               text.style: "genlist_style_name_text_focus";
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -5834,7 +5831,7 @@
       }
    }
 
-// Email style (No UX???)
+// 2.2.3.9 & 2.2.3.10?? (Email style)
    group { name: "elm/genlist/item/4text.8icon/default";
       alias: "elm/genlist/item_odd/4text.8icon/default";
       alias: "elm/genlist/item_compress/4text.8icon/default";
@@ -5982,17 +5979,13 @@
                   align: 0 0.5;
                }
             )
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               text.style: "genlist_style_email_selected";
-            }
             description { state: "read" 0.0;
                inherit: "default" 0.0;
                text.style: "genlist_style_email_read";
             }
-            description { state: "unread" 0.0;
+            description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               text.style: "genlist_style_email_unread";
+               text.style: "genlist_style_email_focus";
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6048,7 +6041,7 @@
                color: GENLIST_LIST_SUB_TEXT_DEFAULT_COLOR;
                text {
                   font: "SLP:style=Medium";
-                  size: GENLIST_FONT_32_INC;
+                  size: GENLIST_LIST_SUB_TEXT_SIZE;
                   min: 0 1;
                   align: 1.0 0.5;
                   text_class: "slp_medium";
@@ -6080,16 +6073,15 @@
             GENLIST_DESCRIPTION_LT("elm.icon.priority", "elm.text.subject",
                min: 0 GENLIST_SIZE_40_INC;
                fixed: 1 1;
-               //align: 0.0 0.0;
                text {
-                  style: "genlist_style_email_name";
+                  style: "genlist_style_name_text";
                   min: 0 1;
                   align: 0.0 0.5;
                }
             )
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               text.style: "genlist_style_email_name_selected";
+               text.style: "genlist_style_name_text_focus";
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6100,7 +6092,7 @@
             GENLIST_DESCRIPTION("elm.icon.lastverb", "elm.text.date", "elm.text.name", "elm.padding.bottom",
                min: 0 GENLIST_SIZE_40_INC;
                fixed: 1 1;
-               //align: 0.0 1.0;
+               align: 0.0 1.0;
                color: GENLIST_CONTENTS_TEXT_COLOR;
                text {
                   font: "SLP:style=Medium";
@@ -6144,11 +6136,6 @@
          GENLIST_PART_DISCLIP
       }
       programs {
-         // signal: elm,state,%s,active
-         //   a "check" item named %s went active
-         // signal: elm,state,%s,passive
-         //   a "check" item named %s went passive
-         // default is passive
          program { name: "go_active";
             signal: "elm,state,selected";
             source: "elm";
@@ -6171,8 +6158,8 @@
                set_state(PART:"elm.text.preview", "default", 0.0);
                if (get_int(email_state) == 1)
                  set_state(PART:"elm.text.subject", "read", 0.0);
-              else
-                 set_state(PART:"elm.text.subject", "unread", 0.0);
+               else
+                 set_state(PART:"elm.text.subject", "default", 0.0);
             }
          }
          program { name: "go_disabled";
@@ -6200,7 +6187,7 @@
             source: "elm";
             script {
               set_int(email_state, 0);
-              set_state(PART:"elm.text.subject", "unread", 0.0);
+              set_state(PART:"elm.text.subject", "default", 0.0);
             }
          }
          program { name: "go_attach";
@@ -6375,15 +6362,11 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               text.style: "genlist_style_email_selected";
+               text.style: "genlist_style_email_focus";
             }
             description { state: "read" 0.0;
                inherit: "default" 0.0;
                text.style: "genlist_style_email_read";
-            }
-            description { state: "unread" 0.0;
-               inherit: "default" 0.0;
-               text.style: "genlist_style_email_unread";
             }
             description { state: "urgency_read" 0.0;
                inherit: "default" 0.0;
@@ -6412,14 +6395,14 @@
                }
                align: 0.0 0.5;
                text {
-                  style: "genlist_style_email_name";
+                  style: "genlist_style_name_text";
                   min: 0 1;
                   align: 0.0 0.5;
                }
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               text.style: "genlist_style_email_name_selected";
+               text.style: "genlist_style_name_text_focus";
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6620,7 +6603,7 @@
          program { name: "go_unread";
             signal: "elm,state,unread";
             source: "elm";
-            action: STATE_SET "unread" 0.0;
+            action: STATE_SET "default" 0.0;
             target: "elm.text.1";
          }
          program { name: "go_urgeny_unread";
@@ -7259,10 +7242,10 @@
                   to_x: "elm.padding.right";
                }
                align: 0.0 0.5;
-               color: GENLIST_UNREAD_EMAIL_COLOR;
+               color: GENLIST_EMAIL_UNREAD_COLOR;
                text {
                   font: "SLP:style=Roman";
-                  size: GENLIST_UNREAD_EMAIL_SIZE;
+                  size: GENLIST_EMAIL_SIZE;
                   min: 0 1;
                   align: 0.0 0.5;
                   text_class: "list_item";
