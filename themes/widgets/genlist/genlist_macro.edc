@@ -24,6 +24,8 @@
 #define GENLIST_HEIGHT_2LINE 130
 //FIXME: Change from GENLIST_TREESIZE_DEFAULT to below macro
 #define GENLIST_TREESIZE_DEFAULT 32
+#define GENLIST_HEIGHT_GROUPINDEX 48
+#define GENLIST_HEIGHT_GROUPINDEX_EXT 68
 
 #define GENLIST_PADDING_SIZE_DEFAULT   16
 #define GENLIST_PADDING_SIZE_LEFT      GENLIST_PADDING_SIZE_DEFAULT
@@ -318,6 +320,17 @@
             } \
          }
 
+#define GENLIST_PART_BASE_EVENT_OFF \
+         part { name: "base";\
+            type: RECT;\
+            repeat_events: 0;\
+            scale: 1; \
+            description { state: "default" 0.0;\
+               align: 0.5 0.5; \
+               color: 0 0 0 0; \
+            }\
+         }
+
 #define GENLIST_PART_BASE_REORDER( HEIGHT ) \
          part { name: "base"; \
             type: RECT; \
@@ -378,16 +391,6 @@
                rel2.relative: 0 0; \
                align: 0 0; \
             } \
-         }
-
-/// Why is this needed??? (event block??)
-#define GENLIST_PART_BASE_EVENT_OFF \
-         part { name: "base";\
-            type: RECT;\
-            repeat_events: 0;\
-            description { state: "default" 0.0;\
-               color: 0 0 0 0;\
-            }\
          }
 
 #define GENLIST_PART_BOTTOM_LINE \
@@ -472,24 +475,8 @@
                   offset: 0 -1; \
                } \
             } \
-            GENLIST_PART_MAP_START(-90.0, 0.0, 0.0) \
-            GENLIST_PART_MAP_FINISH(0.0, 0.0, 0.0) \
+            GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
          }
-
-#define GENLIST_PART_PADDING_TEXT_TOP( param_padding_size ) \
-       part { name: "elm.padding.text.top"; \
-            type: RECT; \
-            scale: 1; \
-            description { \
-               state: "default" 0.0; \
-               min: 0 param_padding_size; \
-               fixed: 0 1; \
-               visible: 0; \
-               rel2.relative: 1.0 0.0; \
-               align: 0.0 0.0; \
-            } \
-         }
-
 
 #define GENLIST_PART_PADDING( NAME, SIZE, REL1, REL2 ) \
        part { name: NAME; \
@@ -722,8 +709,7 @@
                rel2.relative: 0.0 1.0; \
                align: 0.0 0.0; \
             } \
-            GENLIST_PART_MAP_START(-90.0, 0.0, 0.0) \
-            GENLIST_PART_MAP_FINISH(0.0, 0.0, 0.0) \
+            GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
          }
 
 #define GENLIST_PART_SWALLOW_END( param_padding_size ) \
@@ -786,48 +772,45 @@
          } \
       }
 
-#define GENLIST_PART_MAP_START( param_x, param_y, param_z ) \
-		description { state: "map_transition" 0.0; \
-                   inherit: "default" 0.0; \
-                   color: 50 50 50 100; \
-                   map { \
-                      perspective: "point"; \
-                      on: 1; \
-                      smooth: 1; \
-                      perspective_on: 1; \
-                      backface_cull: 1; \
-                      rotation { \
-                         center: "point"; \
-                         x: param_x; \
-                         y: param_y; \
-                         z: param_z; \
-                      } \
-                  } \
-                } \
-                description { \
-                        state: "hide" 0.0; \
-                        inherit: "default" 0.0; \
-                        visible: 0; \
-                }
-
-#define GENLIST_PART_MAP_FINISH( param_x, param_y, param_z ) \
-                description { \
-                        state: "map_rotate" 0.0; \
-                        inherit: "default" 0.0; \
-                        map { \
-                                perspective: "point"; \
-                                on: 1; \
-                                smooth: 1; \
-                                perspective_on: 1; \
-                                backface_cull: 1; \
-                                rotation { \
-                                        center: "point"; \
-                                        x: param_x; \
-                                        y: param_y; \
-                                        z: param_z; \
-                                } \
-                       } \
-               } \
+#define GENLIST_DESCRIPTION_MAP( param_x, param_y, param_z ) \
+   description { state: "map_transition" 0.0; \
+      inherit: "default" 0.0; \
+      color: 50 50 50 100; \
+      map { \
+         perspective: "point"; \
+         on: 1; \
+         smooth: 1; \
+         perspective_on: 1; \
+         backface_cull: 1; \
+         rotation { \
+            center: "point"; \
+            x: param_x; \
+            y: param_y; \
+            z: param_z; \
+         } \
+      } \
+   } \
+   description { state: "map_rotate" 0.0; \
+      inherit: "default" 0.0; \
+      map { \
+         perspective: "point"; \
+         on: 1; \
+         smooth: 1; \
+         perspective_on: 1; \
+         backface_cull: 1; \
+         rotation { \
+            center: "point"; \
+            x: 0; \
+            y: 0; \
+            z: 0; \
+         } \
+      } \
+   } \
+   description { \
+      state: "hide" 0.0; \
+      inherit: "default" 0.0; \
+      visible: 0; \
+   }
 
 #define GENLIST_PART_MAP_BASE( param_item_height ) \
          part { name: "base"; \
@@ -838,8 +821,7 @@
                min: 0 param_item_height; \
                color: GENLIST_PART_DIALOGUE_GROUP_BG_COLOR; \
             } \
-            GENLIST_PART_MAP_START(-90.0, 0.0, 0.0) \
-            GENLIST_PART_MAP_FINISH(0.0, 0.0, 0.0) \
+            GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
          }
 
 #define GENLIST_EXPANDABLE_PART_BASE( GE_HEIGHT , GE_COLOR ) \
@@ -855,8 +837,7 @@
                inherit: "default" 0.0; \
                color: GENLIST_PART_LIST_PRESS_COLOR_INC; \
             } \
-            GENLIST_PART_MAP_START(-90.0, 0.0, 0.0) \
-            GENLIST_PART_MAP_FINISH(0.0, 0.0, 0.0) \
+            GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
          }
 
 /* XXX: refactor expandable edc first.
@@ -877,6 +858,7 @@
             } \
          }
 
+/*
 #define GENLIST_PROGRAM_MAP_ROTATE_EXPAND_START() \
                 name: "rotaion_transition"; \
                 signal: "flip_item"; \
@@ -892,7 +874,43 @@
 #define GENLIST_PROGRAM_MAP_EXPAND_END() \
                 name: "rotation_end"; \
                 action: STATE_SET "default" 0.0;
+*/
 
+#define GENLIST_PROGRAM_MAP_ROTATE( EXPAND_SECOND, CONTRACT_SECOND, TARGET ) \
+   program { name: "rotaion_transition"; \
+      signal: "flip_item"; \
+      action: STATE_SET "map_transition" 0.0; \
+      after: "rotation"; \
+      TARGET \
+   } \
+   program { name: "rotation"; \
+      action: STATE_SET "map_rotate" 0.0; \
+      transition: LINEAR EXPAND_SECOND; \
+      after: "rotation_end"; \
+      TARGET \
+   } \
+   program { name: "rotation_end"; \
+      action: STATE_SET "default" 0.0; \
+      TARGET \
+   } \
+   program { name: "rotation_transition2"; \
+      signal: "elm,state,contract_flip"; \
+      action: STATE_SET "map_rotate" 0.0; \
+      after: "rotation2"; \
+      TARGET \
+   } \
+   program { name: "rotation2"; \
+      action: STATE_SET "map_transition" 0.0; \
+      transition: LINEAR CONTRACT_SECOND; \
+      after: "rotation3"; \
+      TARGET \
+   } \
+   program { name: "rotation3"; \
+      action: STATE_SET "hide" 0.0; \
+      TARGET \
+   }
+
+/*
 #define GENLIST_PROGRAM_MAP_ROTATE_CONTRACT_START() \
                 name: "rotation_transition2"; \
                 signal: "elm,state,contract_flip"; \
@@ -908,7 +926,7 @@
 #define GENLIST_PROGRAM_MAP_CONTRACT_END() \
                 name: "rotation3"; \
                 action: STATE_SET "hide" 0.0;
-
+*/
 #define GENLIST_PART_EXPANDABLE2_NOSHADOW_BASE( param_item_height ) \
          part { name: "base"; \
             type: RECT; \
@@ -918,8 +936,7 @@
                min: 0 param_item_height; \
                color: GENLIST_PART_EXPANDABLE_2ND_DEPTH_BG_COLOR_INC; \
             } \
-            GENLIST_PART_MAP_START(-90.0, 0.0, 0.0) \
-            GENLIST_PART_MAP_FINISH(0.0, 0.0, 0.0) \
+            GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
          }
 
 #define GENLIST_PART_EXPANDABLE_SWALLOW_PADDING \
@@ -934,8 +951,7 @@
                } \
                rel2.to_x: "elm.padding.left"; \
             } \
-            GENLIST_PART_MAP_START(-90.0, 0.0, 0.0) \
-            GENLIST_PART_MAP_FINISH(0.0, 0.0, 0.0) \
+            GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
          } \
 
 #define GENLIST_PART_PADDING_LEFT_SLIDE( param_padding_size ) \
@@ -1849,4 +1865,68 @@
             border: 0 0 2 2;\
          }\
       }\
+   }
+
+
+#define GENLIST_PART_BG_IMAGE_INDEX_LIST \
+part { name: "bg_image"; \
+   type: IMAGE; \
+   clip_to: "disclip"; \
+   mouse_events: 0; \
+   description { state: "default" 0.0; \
+      rel1.to: "base"; \
+      rel2.to: "base"; \
+      image { \
+         normal: "00_index list_bg.png"; \
+         border: 0 0 2 2; \
+      } \
+   } \
+}
+
+// FIXME: UX do not define selected state. But I thinkt that it is neededs :(
+#define GENLIST_PART_TEXT_INDEX_LIST(NAME, LEFT, RIGHT) \
+part { name: NAME; \
+   scale: 1; \
+   clip_to: "disclip"; \
+   type: TEXT; \
+   mouse_events: 0; \
+   GENLIST_DESCRIPTION_LR(LEFT, RIGHT, \
+      color: GENLIST_TEXT_INDEX_LIST_COLOR; \
+      align: 0 0.5; \
+      text { \
+         align: 0 0.5; \
+         min: 0 1; \
+         max: 1 0; \
+         font: "SLP:style=Roman"; \
+         size: GENLIST_TEXT_INDEX_LIST_SIZE; \
+         text_class: "list_item"; \
+      } \
+   ) \
+   description { state: "selected" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 255 255 255; \
+   } \
+}
+
+
+#define GENLIST_PROOGRAM_EXPAND(SOURCE, TARGET) \
+   program { \
+      name: "expand"; \
+      signal: "mouse,clicked,1"; \
+      source: SOURCE; \
+      action: SIGNAL_EMIT "elm,action,expand,toggle" "elm"; \
+   } \
+   program { \
+      name: "go_expanded"; \
+      signal: "elm,state,expanded"; \
+      source: "elm"; \
+      action: STATE_SET "active" 0.0; \
+      TARGET \
+   } \
+   program { \
+      name: "go_contracted"; \
+      signal: "elm,state,contracted"; \
+      source: "elm"; \
+      action: STATE_SET "default" 0.0; \
+      TARGET \
    }
