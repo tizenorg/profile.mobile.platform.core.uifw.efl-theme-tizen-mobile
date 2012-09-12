@@ -19,6 +19,24 @@
 #define ITEM_STATE_ENABLED 0
 #define ITEM_STATE_DISABLED 1
 
+#define TOOLBAR_TEXT_STYLE(_font_size) \
+   style { name: "toolbar_text_style_"_font_size; \
+      base: "font=SLP:style=Medium font_size="_font_size" align=center color="BUTTON_CONTROLBAR_ITEM_BUTTON_TEXTBLOCK_COLOR_INC" wrap=word ellipsis=1 text_class=slp_medium"; \
+      tag: "br" "\n"; \
+      tag: "ps" "ps"; \
+      tag: "hilight" "+ font=SLP:style=Bold"; \
+      tag: "b" "+ font=SLP:style=Bold"; \
+      tag: "tab" "\t"; \
+   }
+
+styles{
+   TOOLBAR_TEXT_STYLE(26)
+   TOOLBAR_TEXT_STYLE(28)
+   TOOLBAR_TEXT_STYLE(30)
+   TOOLBAR_TEXT_STYLE(32)
+   TOOLBAR_TEXT_STYLE(36)
+}
+
 group { name: "elm/toolbar/base/default";
    images {
       image: "00_winset_control_toolbar_bg.png" COMP;
@@ -69,20 +87,11 @@ group { name: "elm/toolbar/item/default";
    images {
       image: "00_winset_toolbar_press.png" COMP;
    }
-   styles{
-      style { name: "toolbar_style";
-         base: "font=SLP:style=Medium font_size="BUTTON_CONTROLBAR_ITEM_BUTTON_TEXT_SIZE_INC" align=center color="BUTTON_CONTROLBAR_ITEM_BUTTON_TEXTBLOCK_COLOR_INC" wrap=mixed ellipsis=1 text_class=slp_medium";
-         tag: "br" "\n";
-         tag: "ps" "ps";
-         tag: "hilight" "+ font=SLP:style=Bold";
-         tag: "b" "+ font=SLP:style=Bold";
-         tag: "tab" "\t";
-      }
-   }
 
    data.item: "transition_animation_on" "1";
    script {
       public item_state = ITEM_STATE_ENABLED;
+      public items_number = 0;
    }
    parts {
       part { name: "bg";
@@ -328,7 +337,7 @@ group { name: "elm/toolbar/item/default";
          scale: 1;
          clip_to: "elm.text.clipper";
          description { state: "default" 0.0;
-            visible: 1;
+            visible: 0;
             rel1 {
                relative: 1.0 1.0;
                to_x: "padding_left_top";
@@ -341,27 +350,33 @@ group { name: "elm/toolbar/item/default";
             color: BUTTON_NAVIFRAME_DEFAULT_TEXT_COLOR_INC;
             fixed: 1 1;
             text {
-               style: "toolbar_style";
+               style: "toolbar_text_style_26";
                min: 0 1;
             }
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
-         description { state: "clicked" 0.0;
+         description { state: "visible_28" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_28";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
          }
-         description { state: "focused" 0.0;
+         description { state: "visible_30" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_30";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
+         }
+         description { state: "visible_32" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_32";
+            visible: 1;
+         }
+         description { state: "visible_36" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_36";
+            visible: 1;
          }
       }
       part { name: "elm.text_new";
@@ -370,7 +385,7 @@ group { name: "elm/toolbar/item/default";
          scale: 1;
          clip_to: "elm.text_new.clipper";
          description { state: "default" 0.0;
-            visible: 1;
+            visible: 0;
             rel1 {
                relative: 1.0 1.0;
                to_x: "padding_left_top";
@@ -383,7 +398,7 @@ group { name: "elm/toolbar/item/default";
             color: BUTTON_NAVIFRAME_DEFAULT_TEXT_COLOR_INC;
             fixed: 1 1;
             text {
-               style: "toolbar_style";
+               style: "toolbar_text_style_26";
                min: 0 1;
             }
          }
@@ -391,15 +406,25 @@ group { name: "elm/toolbar/item/default";
             inherit: "default" 0.0;
             visible: 1;
          }
-         description { state: "clicked" 0.0;
+         description { state: "visible_28" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_28";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
          }
-         description { state: "focused" 0.0;
+         description { state: "visible_30" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_30";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
+         }
+         description { state: "visible_32" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_32";
+            visible: 1;
+         }
+         description { state: "visible_36" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_36";
+            visible: 1;
          }
       }
       part { name: "elm.text.clipper";
@@ -526,16 +551,25 @@ group { name: "elm/toolbar/item/default";
       program { name: "label_set,animation,forward";
          signal: "elm,state,label_set,forward";
          source: "elm";
-         after: "label_set,animation";
+         after: "label_set,sync";
       }
       program { name: "label_set,animation,backward";
          signal: "elm,state,label_set,backward";
          source: "elm";
+         after: "label_set,sync";
+      }
+      program { name: "label_set,sync";
+         signal: "elm,state,label_set";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            set_state(PART:"elm.text_new", st, vl);
+         }
          after: "label_set,animation";
       }
       program { name: "label_set,animation";
-         signal: "elm,state,label_set";
-         source: "elm";
          action: STATE_SET "animation" 0.0;
          target: "elm.text.clipper";
          target: "elm.text_new.clipper";
@@ -602,7 +636,17 @@ group { name: "elm/toolbar/item/default";
                  set_state(PART:"icon_rect", "visible", 0.0);
                  set_state(PART:"padding_after_icon", "visible", 0.0);
               }
-            set_state(PART:"elm.text", "visible", 0.0);
+            if (strcmp(st, "default"))
+              {
+                 set_state(PART:"elm.text", "visible", 0.0);
+              }
+            else
+              {
+                if (get_int(items_number) <= 3)
+                  set_state(PART:"elm.text", "visible_32", 0.0);
+                else if (get_int(items_number) >= 4)
+                  set_state(PART:"elm.text", "visible_30", 0.0);
+              }
          }
       }
       program { name: "text_hide";
@@ -628,17 +672,149 @@ group { name: "elm/toolbar/item/default";
             new st[31];
             new Float:vl;
             get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "visible"))
+            if (!strncmp(st, "visible", 7))
               {
                  set_state(PART:"elm.swallow.icon", "visible", 0.0);
                  set_state(PART:"icon_rect", "visible", 0.0);
                  set_state(PART:"padding_after_icon", "visible", 0.0);
+                 set_state(PART:"elm.text", "visible", 0.0);
               }
             else
               {
                  set_state(PART:"elm.swallow.icon", "icononly", 0.0);
                  set_state(PART:"icon_rect", "icononly", 0.0);
                  set_state(PART:"padding_after_icon", "icononly", 0.0);
+              }
+         }
+      }
+      program { name: "icon_hide";
+         signal: "elm,state,icon,hidden";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strncmp(st, "visible", 7))
+              {
+                if (get_int(items_number) <= 3)
+                  set_state(PART:"elm.text", "visible_32", 0.0);
+                else if (get_int(items_number) >= 4)
+                  set_state(PART:"elm.text", "visible_30", 0.0);
+              }
+            set_state(PART:"elm.swallow.icon", "default", 0.0);
+            set_state(PART:"icon_rect", "default", 0.0);
+            set_state(PART:"padding_after_icon", "default", 0.0);
+         }
+      }
+      program { name: "text_only_item_1";
+         signal: "elm,number,item,1";
+         source: "elm";
+         script {
+            set_int(items_number, 1);
+         }
+         after: "text_only_item_under_3";
+      }
+      program { name: "text_only_item_2";
+         signal: "elm,number,item,2";
+         source: "elm";
+         script {
+            set_int(items_number, 2);
+         }
+         after: "text_only_item_under_3";
+      }
+      program { name: "text_only_item_3";
+         signal: "elm,number,item,3";
+         source: "elm";
+         script {
+            set_int(items_number, 3);
+         }
+         after: "text_only_item_under_3";
+      }
+      program { name: "text_only_item_under_3";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.icon", st, 30, vl);
+            if (strcmp(st, "visible"))
+              {
+                get_state(PART:"elm.text", st, 30, vl);
+                if (!strncmp(st, "visible", 7))
+                  {
+                      set_state(PART:"elm.text", "visible_32", 0.0);
+                  }
+              }
+         }
+      }
+      program { name: "text_only_item_4";
+         signal: "elm,number,item,4";
+         source: "elm";
+         script {
+            set_int(items_number, 4);
+         }
+         after: "text_only_item_upper_4";
+      }
+      program { name: "text_only_item_5";
+         signal: "elm,number,item,5";
+         source: "elm";
+         script {
+            set_int(items_number, 5);
+         }
+         after: "text_only_item_upper_4";
+      }
+      program { name: "text_only_item_6";
+         signal: "elm,number,item,6";
+         source: "elm";
+         script {
+            set_int(items_number, 6);
+         }
+         after: "text_only_item_upper_4";
+      }
+      program { name: "text_only_item_7";
+         signal: "elm,number,item,7";
+         source: "elm";
+         script {
+            set_int(items_number, 7);
+         }
+         after: "text_only_item_upper_4";
+      }
+      program { name: "text_only_item_8";
+         signal: "elm,number,item,8";
+         source: "elm";
+         script {
+            set_int(items_number, 8);
+         }
+         after: "text_only_item_upper_4";
+      }
+      program { name: "text_only_item_9";
+         signal: "elm,number,item,9";
+         source: "elm";
+         script {
+            set_int(items_number, 9);
+         }
+         after: "text_only_item_upper_4";
+      }
+      program { name: "text_only_item_10";
+         signal: "elm,number,item,10";
+         source: "elm";
+         script {
+            set_int(items_number, 10);
+         }
+         after: "text_only_item_upper_4";
+      }
+      program { name: "text_only_item_upper_4";
+         signal: "elm,number,item,4";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.icon", st, 30, vl);
+            if (strcmp(st, "visible"))
+              {
+                get_state(PART:"elm.text", st, 30, vl);
+                if (!strncmp(st, "visible", 7))
+                  {
+                      set_state(PART:"elm.text", "visible_30", 0.0);
+                  }
               }
          }
       }
@@ -649,6 +825,7 @@ group { name: "elm/toolbar/item/item_horizontal";
    inherit: "elm/toolbar/item/default";
    script {
       public item_state = ITEM_STATE_ENABLED;
+      public items_number = 0;
    }
    parts {
       part { name: "icon_rect";
@@ -759,27 +936,32 @@ group { name: "elm/toolbar/item/item_horizontal";
                to_y: "padding_left_top";
             }
             text {
-               style: "toolbar_style";
                min: 1 0;
             }
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
-         description { state: "clicked" 0.0;
+         description { state: "visible_28" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_28";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
          }
-         description { state: "focused" 0.0;
+         description { state: "visible_30" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_30";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
+         }
+         description { state: "visible_32" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_32";
+            visible: 1;
+         }
+         description { state: "visible_36" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_36";
+            visible: 1;
          }
       }
       part { name: "elm.text_new";
@@ -791,27 +973,32 @@ group { name: "elm/toolbar/item/item_horizontal";
                to_y: "padding_left_top";
             }
             text {
-               style: "toolbar_style";
                min: 1 0;
             }
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
-         description { state: "clicked" 0.0;
+         description { state: "visible_28" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_28";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
          }
-         description { state: "focused" 0.0;
+         description { state: "visible_30" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_30";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
+         }
+         description { state: "visible_32" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_32";
+            visible: 1;
+         }
+         description { state: "visible_36" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_36";
+            visible: 1;
          }
       }
    }
@@ -1075,6 +1262,7 @@ group { name: "elm/toolbar/item/tabbar";
    data.item: "transition_animation_on" "1";
    script {
       public item_state = ITEM_STATE_ENABLED;
+      public items_number = 0;
    }
    parts {
       part { name: "bg";
@@ -1343,28 +1531,35 @@ group { name: "elm/toolbar/item/tabbar";
             color: BUTTON_NAVIFRAME_DEFAULT_TEXT_COLOR_INC;
             fixed: 1 1;
             text {
-               style: "toolbar_style";
+               style: "toolbar_text_style_26";
                min: 0 1;
             }
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
-         description { state: "clicked" 0.0;
+         description { state: "visible_28" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_28";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
          }
-         description { state: "focused" 0.0;
+         description { state: "visible_30" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_30";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
          }
+         description { state: "visible_32" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_32";
+            visible: 1;
+         }
+         description { state: "visible_36" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_36";
+            visible: 1;
+         }
+
       }
       part { name: "elm.text_new";
          type: TEXTBLOCK;
@@ -1372,7 +1567,7 @@ group { name: "elm/toolbar/item/tabbar";
          scale: 1;
          clip_to: "elm.text_new.clipper";
          description { state: "default" 0.0;
-            visible: 1;
+            visible: 0;
             rel1 {
                relative: 1.0 1.0;
                to_x: "padding_left_top";
@@ -1385,7 +1580,7 @@ group { name: "elm/toolbar/item/tabbar";
             color: BUTTON_NAVIFRAME_DEFAULT_TEXT_COLOR_INC;
             fixed: 1 1;
             text {
-               style: "toolbar_style";
+               style: "toolbar_text_style_26";
                min: 0 1;
             }
          }
@@ -1393,16 +1588,27 @@ group { name: "elm/toolbar/item/tabbar";
             inherit: "default" 0.0;
             visible: 1;
          }
-         description { state: "clicked" 0.0;
+         description { state: "visible_28" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_28";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
          }
-         description { state: "focused" 0.0;
+         description { state: "visible_30" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_30";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
          }
+         description { state: "visible_32" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_32";
+            visible: 1;
+         }
+         description { state: "visible_36" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_36";
+            visible: 1;
+         }
+
       }
       part { name: "padding.badge";
          type: RECT;
@@ -1646,16 +1852,25 @@ group { name: "elm/toolbar/item/tabbar";
       program { name: "label_set,animation,forward";
          signal: "elm,state,label_set,forward";
          source: "elm";
-         after: "label_set,animation";
+         after: "label_set,sync";
       }
       program { name: "label_set,animation,backward";
          signal: "elm,state,label_set,backward";
          source: "elm";
+         after: "label_set,sync";
+      }
+      program { name: "label_set,sync";
+         signal: "elm,state,label_set";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            set_state(PART:"elm.text_new", st, vl);
+         }
          after: "label_set,animation";
       }
       program { name: "label_set,animation";
-         signal: "elm,state,label_set";
-         source: "elm";
          action: STATE_SET "animation" 0.0;
          target: "elm.text.clipper";
          target: "elm.text_new.clipper";
@@ -1722,7 +1937,19 @@ group { name: "elm/toolbar/item/tabbar";
                  set_state(PART:"icon_rect", "visible", 0.0);
                  set_state(PART:"padding_after_icon", "visible", 0.0);
               }
-            set_state(PART:"elm.text", "visible", 0.0);
+            if (strcmp(st, "default"))
+              {
+                 set_state(PART:"elm.text", "visible", 0.0);
+              }
+            else
+              {
+                if (get_int(items_number) <= 3)
+                  set_state(PART:"elm.text", "visible_36", 0.0);
+                else if (get_int(items_number) == 4)
+                  set_state(PART:"elm.text", "visible_32", 0.0);
+                else if (get_int(items_number) >= 5)
+                  set_state(PART:"elm.text", "visible_30", 0.0);
+              }
          }
       }
       program { name: "text_hide";
@@ -1748,17 +1975,159 @@ group { name: "elm/toolbar/item/tabbar";
             new st[31];
             new Float:vl;
             get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "visible"))
+            if (!strncmp(st, "visible", 7))
               {
                  set_state(PART:"elm.swallow.icon", "visible", 0.0);
                  set_state(PART:"icon_rect", "visible", 0.0);
                  set_state(PART:"padding_after_icon", "visible", 0.0);
+                 set_state(PART:"elm.text", "visible", 0.0);
               }
             else
               {
                  set_state(PART:"elm.swallow.icon", "icononly", 0.0);
                  set_state(PART:"icon_rect", "icononly", 0.0);
                  set_state(PART:"padding_after_icon", "icononly", 0.0);
+              }
+         }
+      }
+      program { name: "icon_hide";
+         signal: "elm,state,icon,hidden";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strncmp(st, "visible", 7))
+              {
+                if (get_int(items_number) <= 3)
+                  set_state(PART:"elm.text", "visible_36", 0.0);
+                else if (get_int(items_number) == 4)
+                  set_state(PART:"elm.text", "visible_32", 0.0);
+                else if (get_int(items_number) >= 5)
+                  set_state(PART:"elm.text", "visible_30", 0.0);
+              }
+            set_state(PART:"elm.swallow.icon", "default", 0.0);
+            set_state(PART:"icon_rect", "default", 0.0);
+            set_state(PART:"padding_after_icon", "default", 0.0);
+         }
+      }
+      program { name: "text_only_item_1";
+         signal: "elm,number,item,1";
+         source: "elm";
+         script {
+            set_int(items_number, 1);
+         }
+         after: "text_only_item_under_3";
+      }
+      program { name: "text_only_item_2";
+         signal: "elm,number,item,2";
+         source: "elm";
+         script {
+            set_int(items_number, 2);
+         }
+         after: "text_only_item_under_3";
+      }
+      program { name: "text_only_item_3";
+         signal: "elm,number,item,3";
+         source: "elm";
+         script {
+            set_int(items_number, 3);
+         }
+         after: "text_only_item_under_3";
+      }
+      program { name: "text_only_item_under_3";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.icon", st, 30, vl);
+            if (strcmp(st, "visible"))
+              {
+                get_state(PART:"elm.text", st, 30, vl);
+                if (!strncmp(st, "visible", 7))
+                  {
+                      set_state(PART:"elm.text", "visible_36", 0.0);
+                  }
+              }
+         }
+      }
+      program { name: "text_only_item_4";
+         signal: "elm,number,item,4";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            set_int(items_number, 4);
+            get_state(PART:"elm.swallow.icon", st, 30, vl);
+            if (strcmp(st, "visible"))
+              {
+                get_state(PART:"elm.text", st, 30, vl);
+                if (!strncmp(st, "visible", 7))
+                  {
+                      set_state(PART:"elm.text", "visible_32", 0.0);
+                  }
+              }
+         }
+      }
+      program { name: "text_only_item_5";
+         signal: "elm,number,item,5";
+         source: "elm";
+         script {
+            set_int(items_number, 5);
+         }
+         after: "text_only_item_upper_5";
+      }
+      program { name: "text_only_item_6";
+         signal: "elm,number,item,6";
+         source: "elm";
+         script {
+            set_int(items_number, 6);
+         }
+         after: "text_only_item_upper_5";
+      }
+      program { name: "text_only_item_7";
+         signal: "elm,number,item,7";
+         source: "elm";
+         script {
+            set_int(items_number, 7);
+         }
+         after: "text_only_item_upper_5";
+      }
+      program { name: "text_only_item_8";
+         signal: "elm,number,item,8";
+         source: "elm";
+         script {
+            set_int(items_number, 8);
+         }
+         after: "text_only_item_upper_5";
+      }
+      program { name: "text_only_item_9";
+         signal: "elm,number,item,9";
+         source: "elm";
+         script {
+            set_int(items_number, 9);
+         }
+         after: "text_only_item_upper_5";
+      }
+      program { name: "text_only_item_10";
+         signal: "elm,number,item,10";
+         source: "elm";
+         script {
+            set_int(items_number, 10);
+         }
+         after: "text_only_item_upper_5";
+      }
+      program { name: "text_only_item_upper_5";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.icon", st, 30, vl);
+            if (strcmp(st, "visible"))
+              {
+                get_state(PART:"elm.text", st, 30, vl);
+                if (!strncmp(st, "visible", 7))
+                  {
+                      set_state(PART:"elm.text", "visible_30", 0.0);
+                  }
               }
          }
       }
@@ -1783,6 +2152,7 @@ group { name: "elm/toolbar/item/tabbar/item_horizontal";
    inherit: "elm/toolbar/item/tabbar";
    script {
       public item_state = ITEM_STATE_ENABLED;
+      public items_number = 0;
    }
    parts {
       part { name: "icon_rect";
@@ -1893,27 +2263,33 @@ group { name: "elm/toolbar/item/tabbar/item_horizontal";
                to_y: "padding_left_top";
             }
             text {
-               style: "toolbar_style";
+               style: "toolbar_text_style_26";
                min: 1 0;
             }
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
-         description { state: "clicked" 0.0;
+         description { state: "visible_28" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_28";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
          }
-         description { state: "focused" 0.0;
+         description { state: "visible_30" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_30";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
+         }
+         description { state: "visible_32" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_32";
+            visible: 1;
+         }
+         description { state: "visible_36" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_36";
+            visible: 1;
          }
       }
       part { name: "elm.text_new";
@@ -1925,27 +2301,33 @@ group { name: "elm/toolbar/item/tabbar/item_horizontal";
                to_y: "padding_left_top";
             }
             text {
-               style: "toolbar_style";
+               style: "toolbar_text_style_26";
                min: 1 0;
             }
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
-         description { state: "clicked" 0.0;
+         description { state: "visible_28" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_28";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
          }
-         description { state: "focused" 0.0;
+         description { state: "visible_30" 0.0;
             inherit: "default" 0.0;
+            text.style: "toolbar_text_style_30";
             visible: 1;
-            color: BUTTON_NAVIFRAME_FOCUSED_TEXT_COLOR_INC;
+         }
+         description { state: "visible_32" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_32";
+            visible: 1;
+         }
+         description { state: "visible_36" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_text_style_36";
+            visible: 1;
          }
       }
    }
