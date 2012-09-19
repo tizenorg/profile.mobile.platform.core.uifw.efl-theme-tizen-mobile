@@ -1138,7 +1138,7 @@
 				}
 			}
 			part {
-				name: "separator";
+				name: "separator1";
 				mouse_events: 0;
 				type: RECT;
 				scale: 1;
@@ -1152,7 +1152,38 @@
 				}
 				description {
 					state: "horizontal" 0.0;
-					color: CTXPOPUP_HORIZONTAL_SEPARATOR_COLOR_INC;
+					color: CTXPOPUP_HORIZONTAL_SEPARATOR_1_COLOR_INC;
+					align: 0 0.5;
+					min: CTXPOPUP_HORIZONTAL_SEPARATOR_MIN_SIZE_INC;
+					max: CTXPOPUP_HORIZONTAL_SEPARATOR_MAX_SIZE_INC;
+					visible: 1;
+				}
+				description {
+					state: "vertical" 0.0;
+					color: 0 0 0 0;
+					align: 0.5 0;
+					min: 0 0;
+					max: 0 0;
+					visible: 0;
+				}
+			}
+			part {
+				name: "separator2";
+				mouse_events: 0;
+				type: RECT;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					color: CTXPOPUP_SEPARATOR_COLOR_INC;
+					align: 0.5 0;
+					min: 0 1;
+					max: 999999 1;
+					visible: 0;
+				}
+				description {
+					state: "horizontal" 0.0;
+					color: CTXPOPUP_HORIZONTAL_SEPARATOR_2_COLOR_INC;
+					rel1 { relative: 1.0 0.0; to: "separator1"; to_y: "bg";}
 					align: 0 0.5;
 					min: CTXPOPUP_HORIZONTAL_SEPARATOR_MIN_SIZE_INC;
 					max: CTXPOPUP_HORIZONTAL_SEPARATOR_MAX_SIZE_INC;
@@ -1189,8 +1220,8 @@
 					state: "default" 0.0;
 					min: 1 CTXPOPUP_ITEM_HEIGHT_INC;
 					align: 0.5 0.5;
-					rel1 {relative: 1.0 1.0; to_x: "left_padding"; to_y: "separator";}
-					rel2 {relative: 0.0 1.0; to_x: "right_padding";}
+					rel1 {relative: 1.0 0.0; to_x: "left_padding"; to_y: "bg";}
+					rel2 {relative: 0.0 1.0; to_x: "right_padding"; to_y: "bg";}
 					color: CTXPOPUP_MAIN_TEXT_UNREAD_COLOR_INC;
 					text {
 						font: "SLP:style=Roman";
@@ -1203,8 +1234,8 @@
 				description {
 					state: "text_horizontal" 0.0;
 					inherit: "default" 0.0;
-					rel1 {relative: 1.0 0.0; to: "left_padding";}
-					rel2 {relative: 0.0 1.0; to: "right_padding";}
+					rel1 {relative: 1.0 0.0; to: "left_padding"; to_y: "bg";}
+					rel2 {relative: 0.0 1.0; to: "right_padding"; to_y: "bg";}
 					text {
 						size: CTXPOPUP_ITEM_MAIN_TEXT_SIZE_INC;
 						align: 0.5 0.5;
@@ -1223,8 +1254,8 @@
 					state: "compress.text_horizontal" 0.0;
 					inherit: "default" 0.0;
 					max: -1 -1;
-					rel1 {relative: 1.0 0.0; to: "left_padding";}
-					rel2 {relative: 0.0 1.0; to: "right_padding";}
+					rel1 {relative: 1.0 0.0; to: "left_padding"; to_y: "bg";}
+					rel2 {relative: 0.0 1.0; to: "right_padding"; to_y: "bg";}
 					text {
 						size: CTXPOPUP_ITEM_MAIN_TEXT_SIZE_INC;
 						align: 0.5 0.5;
@@ -1240,8 +1271,8 @@
 					state: "clicked.text_horizontal" 0.0;
 					inherit: "default" 0.0;
 					color: CTXPOPUP_MAIN_TEXT_PRESS_COLOR_INC;
-					rel1 {relative: 1.0 0.0; to: "left_padding";}
-					rel2 {relative: 0.0 1.0; to: "right_padding";}
+					rel1 {relative: 1.0 0.0; to: "left_padding"; to_y: "bg";}
+					rel2 {relative: 0.0 1.0; to: "right_padding"; to_y: "bg";}
 					text {
 						size: CTXPOPUP_ITEM_MAIN_TEXT_SIZE_INC;
 						align: 0.5 0.5;
@@ -1319,7 +1350,8 @@
 				signal: "elm,state,default";
 				source: "elm";
 				script {
-					set_state(PART:"separator", "default", 0.0);
+					set_state(PART:"separator1", "default", 0.0);
+					set_state(PART:"separator2", "default", 0.0);
 				}
 			}
 			program {
@@ -1329,7 +1361,7 @@
 				script {
 					new st[31];
 					new Float:vl;
-					get_state(PART:"separator", st, 30, vl);
+					get_state(PART:"separator2", st, 30, vl);
 					if (!strcmp(st, "horizontal"))
 						set_state(PART:"elm.text", "compress.text_horizontal", 0.0);
 					else
@@ -1347,8 +1379,9 @@
 				signal: "elm,state,vertical";
 				source: "elm";
 				script {
-					set_state(PART:"separator", "vertical", 0.0);
-					set_state(PART:"elm.text", "vertical", 0.0);
+					set_state(PART:"separator1", "vertical", 0.0);
+					set_state(PART:"separator2", "vertical", 0.0);
+					set_state(PART:"elm.text", "default", 0.0);
 				}
 			}
 			program {
@@ -1356,7 +1389,8 @@
 				signal: "elm,state,horizontal";
 				source: "elm";
 				script {
-					set_state(PART:"separator", "horizontal", 0.0);
+					set_state(PART:"separator1", "horizontal", 0.0);
+					set_state(PART:"separator2", "horizontal", 0.0);
 					set_state(PART:"elm.text", "text_horizontal", 0.0);
 				}
 			}
@@ -1365,7 +1399,8 @@
 				signal: "elm,state,text_horizontal";
 				source: "elm";
 				script {
-					set_state(PART:"separator", "default", 0.0);
+					set_state(PART:"separator1", "default", 0.0);
+					set_state(PART:"separator2", "default", 0.0);
 					set_state(PART:"elm.text", "text_horizontal", 0.0);
 				}
 			}
@@ -1376,7 +1411,7 @@
 				script {
 					new st[31];
 					new Float:vl;
-					get_state(PART:"separator", st, 30, vl);
+					get_state(PART:"separator2", st, 30, vl);
 					if (!strcmp(st, "horizontal"))
 						set_state(PART:"elm.text", "clicked.text_horizontal", 0.0);
 					else
@@ -1397,7 +1432,7 @@
 				script {
 					new st[31];
 					new Float:vl;
-					get_state(PART:"separator", st, 30, vl);
+					get_state(PART:"separator2", st, 30, vl);
 					if (!strcmp(st, "horizontal"))
 						set_state(PART:"elm.text", "compress.text_horizontal", 0.0);
 					else
@@ -1455,7 +1490,7 @@
 				}
 			}
 			part {
-				name: "separator";
+				name: "separator1";
 				mouse_events: 0;
 				type: RECT;
 				scale: 1;
@@ -1469,7 +1504,38 @@
 				}
 				description {
 					state: "horizontal" 0.0;
-					color: CTXPOPUP_HORIZONTAL_SEPARATOR_COLOR_INC;
+					color: CTXPOPUP_HORIZONTAL_SEPARATOR_1_COLOR_INC;
+					align: 0 0.5;
+					min: CTXPOPUP_HORIZONTAL_SEPARATOR_MIN_SIZE_INC;
+					max: CTXPOPUP_HORIZONTAL_SEPARATOR_MAX_SIZE_INC;
+					visible: 1;
+				}
+				description {
+					state: "vertical" 0.0;
+					color: 0 0 0 0;
+					align: 0.5 0;
+					min: 0 0;
+					max: 0 0;
+					visible: 0;
+				}
+			}
+			part {
+				name: "separator2";
+				mouse_events: 0;
+				type: RECT;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					color: CTXPOPUP_SEPARATOR_COLOR_INC;
+					align: 0.5 0;
+					min: 1 0;
+					max: 1 999999;
+					visible: 0;
+				}
+				description {
+					state: "horizontal" 0.0;
+					color: CTXPOPUP_HORIZONTAL_SEPARATOR_2_COLOR_INC;
+					rel1 { relative: 1.0 0.0; to: "separator1"; to_y: "bg";}
 					align: 0 0.5;
 					min: CTXPOPUP_HORIZONTAL_SEPARATOR_MIN_SIZE_INC;
 					max: CTXPOPUP_HORIZONTAL_SEPARATOR_MAX_SIZE_INC;
@@ -1477,10 +1543,10 @@
 				}
 			description {
 					state: "vertical" 0.0;
-					color: CTXPOPUP_HORIZONTAL_SEPARATOR_COLOR_INC;
+					color: CTXPOPUP_SEPARATOR_COLOR_INC;
 					align: 0.5 0;
-					min: CTXPOPUP_VERTICAL_SEPARATOR_MIN_SIZE_INC;
-					max: CTXPOPUP_VERTICAL_SEPARATOR_MAX_SIZE_INC;
+					min: 0 1;
+					max: 999999 1;
 					visible: 1;
 				}
 			}
@@ -1546,7 +1612,8 @@
 				signal: "elm,state,default";
 				source: "elm";
 				script {
-					set_state(PART:"separator", "default", 0.0);
+					set_state(PART:"separator1", "default", 0.0);
+					set_state(PART:"separator2", "default", 0.0);
 				}
 			}
 			program {
@@ -1554,7 +1621,8 @@
 				signal: "elm,state,vertical";
 				source: "elm";
 				script {
-					set_state(PART:"separator", "vertical", 0.0);
+					set_state(PART:"separator1", "vertical", 0.0);
+					set_state(PART:"separator2", "vertical", 0.0);
 				}
 			}
 			program {
@@ -1562,7 +1630,8 @@
 				signal: "elm,state,horizontal";
 				source: "elm";
 				script {
-					set_state(PART:"separator", "horizontal", 0.0);
+					set_state(PART:"separator1", "horizontal", 0.0);
+					set_state(PART:"separator2", "horizontal", 0.0);
 				}
 			}
 			program {
@@ -1643,7 +1712,7 @@
 				}
 			}
 			part {
-				name: "separator";
+				name: "separator1";
 				mouse_events: 0;
 				type: RECT;
 				scale: 1;
@@ -1657,7 +1726,38 @@
 				}
 				description {
 					state: "horizontal" 0.0;
-					color: CTXPOPUP_HORIZONTAL_SEPARATOR_COLOR_INC;
+					color: CTXPOPUP_HORIZONTAL_SEPARATOR_1_COLOR_INC;
+					align: 0 0.5;
+					min: CTXPOPUP_HORIZONTAL_SEPARATOR_MIN_SIZE_INC;
+					max: CTXPOPUP_HORIZONTAL_SEPARATOR_MAX_SIZE_INC;
+					visible: 1;
+				}
+				description {
+					state: "vertical" 0.0;
+					color: 0 0 0 0;
+					align: 0.5 0;
+					min: 0 0;
+					max: 0 0;
+					visible: 0;
+				}
+			}
+			part {
+				name: "separator2";
+				mouse_events: 0;
+				type: RECT;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					color: CTXPOPUP_SEPARATOR_COLOR_INC;
+					align: 0.5 0;
+					min: 0 1;
+					max: 999999 1;
+					visible: 0;
+				}
+				description {
+					state: "horizontal" 0.0;
+					color: CTXPOPUP_HORIZONTAL_SEPARATOR_2_COLOR_INC;
+					rel1 { relative: 1.0 0.0; to: "separator1"; to_y: "bg";}
 					align: 0 0.5;
 					min: CTXPOPUP_HORIZONTAL_SEPARATOR_MIN_SIZE_INC;
 					max: CTXPOPUP_HORIZONTAL_SEPARATOR_MAX_SIZE_INC;
@@ -1708,8 +1808,8 @@
 					state: "default" 0.0;
 					min: 1 CTXPOPUP_ITEM_HEIGHT_INC;
 					align: 0.5 0.5;
-					rel1 {relative: 1.0 1.0; to_x: "icon_right_padding"; to_y: "separator";}
-					rel2 {relative: 0.0 1.0; to_x: "text_right_padding";}
+					rel1 {relative: 1.0 0.0; to_x: "icon_right_padding"; to_y: "bg";}
+					rel2 {relative: 0.0 1.0; to_x: "text_right_padding"; to_y: "bg";}
 					color: CTXPOPUP_MAIN_TEXT_UNREAD_COLOR_INC;
 					text {
 						font: "SLP:style=Roman";
@@ -1722,8 +1822,8 @@
 				description {
 					state: "text_horizontal" 0.0;
 					inherit: "default" 0.0;
-                                        rel1 {relative: 1.0 0.0; to_x: "icon_right_padding";}
-                                        rel2 {relative: 0.0 1.0; to_x: "text_right_padding";}
+					rel1 {relative: 1.0 0.0; to_x: "icon_right_padding"; to_y: "bg";}
+					rel2 {relative: 0.0 1.0; to_x: "text_right_padding"; to_y: "bg";}
 					text {
 						size: CTXPOPUP_ITEM_MAIN_TEXT_SIZE_INC;
 						align: 0.5 0.5;
@@ -1742,8 +1842,8 @@
 					state: "compress.text_horizontal" 0.0;
 					inherit: "default" 0.0;
 					max: -1 -1;
-                                        rel1 {relative: 1.0 0.0; to_x: "icon_right_padding";}
-                                        rel2 {relative: 0.0 1.0; to_x: "text_right_padding";}
+					rel1 {relative: 1.0 0.0; to_x: "icon_right_padding"; to_y: "bg";}
+					rel2 {relative: 0.0 1.0; to_x: "text_right_padding"; to_y: "bg";}
 					text {
 						size: CTXPOPUP_ITEM_MAIN_TEXT_SIZE_INC;
 						align: 0.5 0.5;
@@ -1759,8 +1859,8 @@
 					state: "clicked.text_horizontal" 0.0;
 					inherit: "default" 0.0;
 					color: CTXPOPUP_MAIN_TEXT_PRESS_COLOR_INC;
-                                        rel1 {relative: 1.0 0.0; to_x: "icon_right_padding";}
-                                        rel2 {relative: 0.0 1.0; to_x: "text_right_padding";}
+					rel1 {relative: 1.0 0.0; to_x: "icon_right_padding"; to_y: "bg";}
+					rel2 {relative: 0.0 1.0; to_x: "text_right_padding"; to_y: "bg";}
 					text {
 						size: CTXPOPUP_ITEM_MAIN_TEXT_SIZE_INC;
 						align: 0.5 0.5;
@@ -1839,7 +1939,8 @@
 				signal: "elm,state,default";
 				source: "elm";
 				script {
-					set_state(PART:"separator", "default", 0.0);
+					set_state(PART:"separator1", "default", 0.0);
+					set_state(PART:"separator2", "default", 0.0);
 				}
 			}
 			program {
@@ -1849,7 +1950,7 @@
 				script {
 					new st[31];
 					new Float:vl;
-					get_state(PART:"separator", st, 30, vl);
+					get_state(PART:"separator2", st, 30, vl);
 					if (!strcmp(st, "horizontal"))
 						set_state(PART:"elm.text", "compress.text_horizontal", 0.0);
 					else
@@ -1861,8 +1962,8 @@
 				signal: "elm,state,vertical";
 				source: "elm";
 				script {
-					set_state(PART:"separator", "vertical", 0.0);
-                                        set_state(PART:"elm.text", "vertical", 0.0);
+					set_state(PART:"separator2", "vertical", 0.0);
+					set_state(PART:"elm.text", "default", 0.0);
 				}
 			}
 			program {
@@ -1870,8 +1971,8 @@
 				signal: "elm,state,horizontal";
 				source: "elm";
 				script {
-					set_state(PART:"separator", "horizontal", 0.0);
-                                        set_state(PART:"elm.text", "text_horizontal", 0.0);
+					set_state(PART:"separator2", "horizontal", 0.0);
+					set_state(PART:"elm.text", "text_horizontal", 0.0);
 				}
 			}
 			program {
@@ -1881,7 +1982,7 @@
 				script {
 					new st[31];
 					new Float:vl;
-					get_state(PART:"separator", st, 30, vl);
+					get_state(PART:"separator2", st, 30, vl);
                                         if (!strcmp(st, "horizontal"))
 						set_state(PART:"elm.text", "clicked.text_horizontal", 0.0);
 					else
@@ -1896,7 +1997,7 @@
 				script {
 					new st[31];
 					new Float:vl;
-					get_state(PART:"separator", st, 30, vl);
+					get_state(PART:"separator2", st, 30, vl);
 					if (!strcmp(st, "horizontal"))
 						set_state(PART:"elm.text", "compress.text_horizontal", 0.0);
 					else
