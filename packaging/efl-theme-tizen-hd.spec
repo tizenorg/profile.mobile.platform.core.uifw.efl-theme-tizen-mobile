@@ -39,6 +39,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root,-)
 %{_datadir}/elementary/themes/tizen-hd.edj
+%manifest %{name}.manifest
 
 
 %files -n efl-theme-tizen-devel
