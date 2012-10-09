@@ -34,12 +34,15 @@ make %{?jobs:-j%jobs}
 %install
 rm -rf %{buildroot}
 %make_install
+mkdir -p %{buildroot}/usr/share/license
+cp %{_builddir}/%{buildsubdir}/COPYING %{buildroot}/usr/share/license/%{name}
 
 
 %files
 %defattr(-,root,root,-)
 %{_datadir}/elementary/themes/tizen-hd.edj
 %manifest %{name}.manifest
+/usr/share/license/%{name}
 
 
 %files -n efl-theme-tizen-devel
