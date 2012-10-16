@@ -20,13 +20,8 @@
  * vim:ts=3
 */
 group { name: "elm/scroller/base/default";
-
-   alias: "elm/list/base/default";
-   alias: "elm/genlist/base/default";
    alias: "elm/carousel/base/default";
-   alias: "elm/gengrid/base/default";
    alias: "elm/scroller/base/map_bubble";
-   alias: "elm/genscroller/base/default";
 
    data {
       item: "focus_highlight" "on";
@@ -1054,6 +1049,40 @@ group { name: "elm/scroller/base/handler";
          source: "elm";
          action: STATE_SET "default" 0.0;
          target: "disabler";
+      }
+   }
+}
+
+group { name: "elm/genlist/base/default";
+   alias: "elm/list/base/default";
+   alias: "elm/gengrid/base/default";
+   alias: "elm/genscroller/base/default";
+   inherit: "elm/scroller/base/default";
+   programs {
+      program { name: "show";
+         signal: "show";
+         source: "";
+         script {
+            new v;
+            emit("do-show-vbar", "");
+            set_int(sbvis_v, 1);
+            v = get_int(sbalways_v);
+            if (!v) {
+              v = get_int(sbvis_timer);
+              if (v > 0) cancel_timer(v);
+              v = timer(1.0, "timer0", 0);
+              set_int(sbvis_timer, v);
+            }
+            emit("do-show-hbar", "");
+            set_int(sbvis_h, 1);
+            v = get_int(sbalways_h);
+            if (!v) {
+              v = get_int(sbvis_timer);
+              if (v > 0) cancel_timer(v);
+              v = timer(1.0, "timer0", 0);
+              set_int(sbvis_timer, v);
+            }
+         }
       }
    }
 }
