@@ -21,7 +21,17 @@
 
 #define TOOLBAR_TEXT_STYLE(_font_size) \
    style { name: "toolbar_text_style_"_font_size; \
-      base: "font=SLP:style=Medium font_size="_font_size" align=center color="BUTTON_CONTROLBAR_ITEM_BUTTON_TEXTBLOCK_COLOR_INC" wrap=word ellipsis=1 text_class=slp_medium"; \
+      base: "font=SLP:style=Medium style=far_shadow,bottom shadow_color=#ffffffff font_size="_font_size" align=center color="TABBAR_ITEM_TEXTBLOCK_COLOR_INC" wrap=word ellipsis=1 text_class=slp_medium"; \
+      tag: "br" "\n"; \
+      tag: "ps" "ps"; \
+      tag: "hilight" "+ font=SLP:style=Bold"; \
+      tag: "b" "+ font=SLP:style=Bold"; \
+      tag: "tab" "\t"; \
+   }
+
+#define TOOLBAR_SELECTED_TEXT_STYLE(_font_size) \
+   style { name: "toolbar_selected_text_style_"_font_size; \
+      base: "font=SLP:style=Medium style=far_shadow,bottom shadow_color=#ffffffff font_size="_font_size" align=center color="TABBAR_ITEM_SELECTED_TEXTBLOCK_COLOR_INC" wrap=word ellipsis=1 text_class=slp_medium"; \
       tag: "br" "\n"; \
       tag: "ps" "ps"; \
       tag: "hilight" "+ font=SLP:style=Bold"; \
@@ -35,6 +45,7 @@ styles{
    TOOLBAR_TEXT_STYLE(30)
    TOOLBAR_TEXT_STYLE(32)
    TOOLBAR_TEXT_STYLE(36)
+   TOOLBAR_SELECTED_TEXT_STYLE(30)
 }
 
 group { name: "elm/toolbar/base/default";
@@ -172,7 +183,7 @@ group { name: "elm/toolbar/item/default";
             color: 0 0 0 0;
          }
          description { state: "visible" 0.0;
-            min: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
+            min: TABBAR_ITEM_ICON_SIZE_INC;
             fixed: 0 1;
             rel1 {
                relative: 1.0 1.0;
@@ -253,8 +264,8 @@ group { name: "elm/toolbar/item/default";
          }
          description { state: "visible" 0.0;
             fixed: 0 1;
-            min: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
-            max: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
+            min: TABBAR_ITEM_ICON_SIZE_INC;
+            max: TABBAR_ITEM_ICON_SIZE_INC;
             rel1 {
                relative: 1.0 1.0;
                to: "padding_left_top";
@@ -268,8 +279,8 @@ group { name: "elm/toolbar/item/default";
             aspect_preference: HORIZONTAL;
          }
          description { state: "icononly" 0.0;
-            min: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
-            max: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
+            min: TABBAR_ITEM_ICON_SIZE_INC;
+            max: TABBAR_ITEM_ICON_SIZE_INC;
             rel1 {
                relative: 1.0 1.0;
                to: "padding_left_top";
@@ -302,8 +313,8 @@ group { name: "elm/toolbar/item/default";
          }
          description { state: "visible" 0.0;
             fixed: 0 1;
-            min: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
-            max: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
+            min: TABBAR_ITEM_ICON_SIZE_INC;
+            max: TABBAR_ITEM_ICON_SIZE_INC;
             rel1 {
                relative: 1.0 1.0;
                to: "padding_left_top";
@@ -317,8 +328,8 @@ group { name: "elm/toolbar/item/default";
             aspect_preference: HORIZONTAL;
          }
          description { state: "icononly" 0.0;
-            min: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
-            max: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
+            min: TABBAR_ITEM_ICON_SIZE_INC;
+            max: TABBAR_ITEM_ICON_SIZE_INC;
             rel1 {
                relative: 1.0 1.0;
                to: "padding_left_top";
@@ -1037,34 +1048,64 @@ group { name: "elm/toolbar/object/default";
 group { name: "elm/toolbar/base/tabbar";
    alias: "elm/toolbar/base/tabbar/item_horizontal";
    images {
-      image: "00_winset_title_tabbar_bg.png" COMP;
+      image: "00_divider_line.png" COMP;
+      image: "00_badge.png" COMP;
    }
 
    parts {
       part { name: "base";
-         mouse_events: 1;
+         type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
-            image.normal: "00_winset_title_tabbar_bg.png";
+            color: 248 246 239 255;
+         }
+      }
+      part { name: "left_padding";
+         type: RECT;
+         mouse_events: 0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 8 0;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            rel1.to: "base";
+            rel2.to: "base";
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
+         }
+      }
+      part { name: "right_padding";
+         type: RECT;
+         mouse_events: 0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 8 0;
+            fixed: 1 1;
+            align: 1.0 0.5;
+            rel1.to: "base";
+            rel2.to: "base";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
          }
       }
       part { name: "clipper";
          type: RECT;
          mouse_events: 0;
+         scale: 1;
          description {
             state: "default" 0.0;
-            rel1 {
-               to: "base";
-               offset: 2 2;
-            }
-            rel2 {
-               to: "base";
-               offset: -3 -3;
-            }
+            rel1.to: "left_padding";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "right_padding";
+            rel2.relative: 0.0 1.0;
          }
       }
       part { name: "elm.swallow.content";
          clip_to: "clipper";
          type: SWALLOW;
+         scale: 1;
          description {
             state: "default" 0.0;
             rel1.to: "clipper";
@@ -1075,6 +1116,7 @@ group { name: "elm/toolbar/base/tabbar";
          type: RECT;
          mouse_events: 1;
          repeat_events: 1;
+         scale: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
@@ -1088,11 +1130,12 @@ group { name: "elm/toolbar/more/tabbar";
    }
    parts {
       part { name: "base";
+         type: RECT;
          mouse_events: 1;
          description { state: "default" 0.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 0.0;
-            image.normal: "00_winset_title_tabbar_bg.png";
+            color: 248 246 239 255;
          }
          description { state: "open" 0.0;
             inherit: "default" 0.0;
@@ -1251,8 +1294,7 @@ group { name: "elm/toolbar/more/tabbar";
 group { name: "elm/toolbar/item/tabbar";
    images {
       image: "00_winset_title_tabbar_bg.png" COMP;
-      image: "00_winset_title_tabbar_bg_focus.png" COMP;
-      image: "00_tab_move_bg.png" COMP;
+      image: "00_Move_bg.png" COMP;
    }
 
    data.item: "transition_animation_on" "1";
@@ -1262,43 +1304,53 @@ group { name: "elm/toolbar/item/tabbar";
    }
    parts {
       part { name: "bg";
+         type: RECT;
          mouse_events: 0;
          description { state: "default" 0.0;
-            visible: TABBAR_ITEM_BG_DEFAULT_VISIBLE_INC;
-            color: TABBAR_ITEM_BG_DEFAULT_COLOR_INC;
-            image.normal: "00_winset_title_tabbar_bg.png";
-            image.border: TABBAR_ITEM_BG_DEFAULT_BORDER_INC;
+            min: 176 0;
+            color: 248 246 239 255;
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
-            image.normal: "00_winset_title_tabbar_bg_focus.png";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
          }
          description { state: "moving" 0.0;
             inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "bg_cover";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            image.normal: "00_Move_bg.png";
+            image.border: 3 3 0 0;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
             visible: 1;
-            image.normal: "00_tab_move_bg.png";
-            image.border: 9 9 3 3;
-            color: 255 255 255 255;
+         }
+         description { state: "moving" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
       part { name: "padding_left_top";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               align: 0.0 0.0;
-               rel2.relative: 0.0 0.0;
-               min: 10 8;
-               fixed: 1 1;
-               visible: 1;
-               color: 0 0 0 0;
-            }
+         type: RECT;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel2.relative: 0.0 0.0;
+            min: 10 0;
+            fixed: 1 1;
+            visible: 0;
+            color: 0 0 0 0;
          }
+      }
       part { name: "padding_right_bottom";
          type: RECT;
          scale: 1;
@@ -1306,9 +1358,9 @@ group { name: "elm/toolbar/item/tabbar";
          description { state: "default" 0.0;
             align: 1.0 1.0;
             rel1.relative: 1.0 1.0;
-            min: 10 5;
+            min: 10 0;
             fixed: 1 1;
-            visible: 1;
+            visible: 0;
             color: 0 0 0 0;
          }
       }
@@ -1333,7 +1385,7 @@ group { name: "elm/toolbar/item/tabbar";
             color: 0 0 0 0;
          }
          description { state: "visible" 0.0;
-            min: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
+            min: TABBAR_ITEM_ICON_SIZE_INC;
             fixed: 0 1;
             rel1 {
                relative: 1.0 1.0;
@@ -1362,20 +1414,13 @@ group { name: "elm/toolbar/item/tabbar";
                to: "icon_rect";
             }
             rel2.to: "icon_rect";
-            fixed: 0 1;
+            fixed: 0 0;
             min: 0 0;
             color: 0 0 0 0;
          }
          description { state: "visible" 0.0;
-            align: 0.0 0.0;
-            rel1 {
-               relative: 0.0 1.0;
-               to: "icon_rect";
-            }
-            rel2.to: "icon_rect";
-            fixed: 0 1;
-            min: 0 0;
-            color: 0 0 0 0;
+            inherit: "default" 0.0;
+            min: 0 1;
          }
          description { state: "icononly" 0.0;
             inherit: "default" 0.0;
@@ -1422,11 +1467,13 @@ group { name: "elm/toolbar/item/tabbar";
          }
          description { state: "visible" 0.0;
             fixed: 0 1;
-            min: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
-            max: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
+            min: TABBAR_ITEM_ICON_SIZE_INC;
+            max: TABBAR_ITEM_ICON_SIZE_INC;
+            align: 0.5 1.0;
             rel1 {
-               relative: 1.0 1.0;
-               to: "padding_left_top";
+               relative: 1.0 0.0;
+               to_x: "padding_left_top";
+               to_y: "padding_before_text";
             }
             rel2 {
                relative: 0.0 0.0;
@@ -1437,8 +1484,8 @@ group { name: "elm/toolbar/item/tabbar";
             aspect_preference: HORIZONTAL;
          }
          description { state: "icononly" 0.0;
-            min: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
-            max: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
+            min: TABBAR_ITEM_ICON_SIZE_INC;
+            max: TABBAR_ITEM_ICON_SIZE_INC;
             rel1 {
                relative: 1.0 1.0;
                to: "padding_left_top";
@@ -1471,8 +1518,8 @@ group { name: "elm/toolbar/item/tabbar";
          }
          description { state: "visible" 0.0;
             fixed: 0 1;
-            min: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
-            max: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
+            min: TABBAR_ITEM_ICON_SIZE_INC;
+            max: TABBAR_ITEM_ICON_SIZE_INC;
             rel1 {
                relative: 1.0 1.0;
                to: "padding_left_top";
@@ -1486,8 +1533,8 @@ group { name: "elm/toolbar/item/tabbar";
             aspect_preference: HORIZONTAL;
          }
          description { state: "icononly" 0.0;
-            min: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
-            max: BUTTON_CONTROLBAR_ITEM_BUTTON_ICON_SIZE_INC;
+            min: TABBAR_ITEM_ICON_SIZE_INC;
+            max: TABBAR_ITEM_ICON_SIZE_INC;
             rel1 {
                relative: 1.0 1.0;
                to: "padding_left_top";
@@ -1516,20 +1563,27 @@ group { name: "elm/toolbar/item/tabbar";
                relative: 0.0 0.0;
                to: "padding_right_bottom";
             }
-            color: BUTTON_NAVIFRAME_DEFAULT_TEXT_COLOR_INC;
+            min: 0 36;
+            max: 9999 36;
             fixed: 1 1;
             text {
-               style: "toolbar_text_style_26";
-               min: 0 1;
+               style: "toolbar_text_style_30";
+               min: 0 0;
+               max: 0 1;
             }
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_selected_text_style_30";
+            visible: 1;
+         }
          description { state: "visible_28" 0.0;
             inherit: "default" 0.0;
-            text.style: "toolbar_text_style_28";
+            text.style: "toolbar_text_style_30";
             visible: 1;
          }
          description { state: "visible_30" 0.0;
@@ -1539,12 +1593,12 @@ group { name: "elm/toolbar/item/tabbar";
          }
          description { state: "visible_32" 0.0;
             inherit: "default" 0.0;
-            text.style: "toolbar_text_style_32";
+            text.style: "toolbar_text_style_30";
             visible: 1;
          }
          description { state: "visible_36" 0.0;
             inherit: "default" 0.0;
-            text.style: "toolbar_text_style_36";
+            text.style: "toolbar_text_style_30";
             visible: 1;
          }
 
@@ -1565,20 +1619,27 @@ group { name: "elm/toolbar/item/tabbar";
                relative: 0.0 0.0;
                to: "padding_right_bottom";
             }
-            color: BUTTON_NAVIFRAME_DEFAULT_TEXT_COLOR_INC;
+            min: 0 36;
+            max: 9999 36;
             fixed: 1 1;
             text {
-               style: "toolbar_text_style_26";
-               min: 0 1;
+               style: "toolbar_text_style_30";
+               min: 0 0;
+               max: 0 1;
             }
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            text.style: "toolbar_selected_text_style_30";
+            visible: 1;
+         }
          description { state: "visible_28" 0.0;
             inherit: "default" 0.0;
-            text.style: "toolbar_text_style_28";
+            text.style: "toolbar_text_style_30";
             visible: 1;
          }
          description { state: "visible_30" 0.0;
@@ -1588,12 +1649,12 @@ group { name: "elm/toolbar/item/tabbar";
          }
          description { state: "visible_32" 0.0;
             inherit: "default" 0.0;
-            text.style: "toolbar_text_style_32";
+            text.style: "toolbar_text_style_30";
             visible: 1;
          }
          description { state: "visible_36" 0.0;
             inherit: "default" 0.0;
-            text.style: "toolbar_text_style_36";
+            text.style: "toolbar_text_style_30";
             visible: 1;
          }
 
@@ -1603,10 +1664,16 @@ group { name: "elm/toolbar/item/tabbar";
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            align: 1.0 0.0;
-            rel1.relative: 1.0 0.0;
-            rel2.relative: 1.0 0.0;
-            min: 0 3;
+            align: 1.0 1.0;
+            rel1 {
+                to: "elm.swallow.icon";
+                relative: 1.0 0.0;
+            }
+            rel2 {
+                to: "elm.swallow.icon";
+                relative: 1.0 0.0;
+            }
+            min: 11 4;
             fixed: 1 1;
             visible: 0;
          }
@@ -1616,6 +1683,8 @@ group { name: "elm/toolbar/item/tabbar";
          scale: 1;
          description { state: "default" 0.0;
             visible: 0;
+            min: 52 47;
+            fixed: 1 1;
             rel1 {
                to: "left.padding.text";
                relative: 0.0 0.0;
@@ -1625,8 +1694,8 @@ group { name: "elm/toolbar/item/tabbar";
                relative: 1.0 1.0;
             }
             image {
-               normal: "00_winset_badge.png";
-               border: 20 20 0 0;
+               normal: "00_badge.png";
+               border: 28 22 0 0;
                border_scale: 1;
             }
          }
@@ -1642,16 +1711,16 @@ group { name: "elm/toolbar/item/tabbar";
             state: "default" 0.0;
             visible: 0;
             fixed: 1 1;
-            min: 16 42;
+            min: 21 47;
             rel1 {
-               to: "elm.text.badge";
+               to: "padding.badge";
                relative: 0.0 0.0;
             }
             rel2 {
-               to: "elm.text.badge";
+               to: "padding.badge";
                relative: 0.0 0.0;
             }
-            align: 1.0 0.0;
+            align: 0.0 0.0;
          }
       }
       part { name: "right.padding.text";
@@ -1661,16 +1730,16 @@ group { name: "elm/toolbar/item/tabbar";
             state: "default" 0.0;
             visible: 0;
             fixed: 1 1;
-            min: 16 42;
+            min: 15 47;
             rel1 {
-               to_y: "padding.badge";
+               to: "elm.text.badge";
                relative: 1.0 0.0;
             }
             rel2 {
-               to_y: "padding.badge";
+               to: "elm.text.badge";
                relative: 1.0 0.0;
             }
-            align: 1.0 0.0;
+            align: 0.0 0.0;
          }
       }
       part { name: "elm.text.badge";
@@ -1681,18 +1750,19 @@ group { name: "elm/toolbar/item/tabbar";
             state: "default" 0.0;
             visible: 0;
             rel1 {
-               to_y: "right.padding.text";
-               relative: 0.0 0.0;
+               to: "left.padding.text";
+               relative: 1.0 0.0;
             }
             rel2 {
-               to: "right.padding.text";
-               relative: 0.0 1.0;
+               to: "left.padding.text";
+               relative: 1.0 1.0;
             }
-            align: 1.0 0.5;
-            color: 249 249 249 255;
+            fixed: 1 0;
+            align: 0.0 0.5;
+            color: 10 100 208 255;
             text {
                font: "SLP:style=Bold";
-               size: 26;
+               size: 33;
                min: 1 1;
                max: 1 0;
             }
@@ -1729,10 +1799,13 @@ group { name: "elm/toolbar/item/tabbar";
       part { name: "elm.icon.clipper";
          type: RECT;
          description { state: "default" 0.0;
-            color: 255 255 255 255;
+            color: 153 153 153 255;
          }
          description { state: "animation" 0.0;
             color: 255 255 255 0;
+         }
+         description { state: "selected" 0.0;
+            color: 61 114 180 255;
          }
          description { state: "disabled" 0.0;
             color: 255 255 255 153;
@@ -1746,8 +1819,32 @@ group { name: "elm/toolbar/item/tabbar";
          description { state: "animation" 0.0;
             color: 255 255 255 255;
          }
+         description { state: "selected" 0.0;
+            color: 61 114 180 255;
+         }
          description { state: "disabled" 0.0;
             color: 255 255 255 153;
+         }
+      }
+      part { name: "divider";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 4 26;
+            max: 4 9999;
+            fixed: 1 1;
+            rel1 {
+                relative: 1.0 0.5;
+                to_y: "elm.text";
+            }
+            rel2 {
+                relative: 1.0 0.5;
+                to_y: "elm.text";
+            }
+            image {
+                normal: "00_divider_line.png";
+                border: 0 0 2 2;
+            }
          }
       }
       part { name: "event";
@@ -1764,21 +1861,24 @@ group { name: "elm/toolbar/item/tabbar";
          signal:  "elm,state,selected";
          source:  "elm";
          action:  STATE_SET "selected" 0.0;
-         target:  "bg";
-         transition: LINEAR 0.2;
+         target:  "elm.text";
+         target:  "elm.icon.clipper";
+         target:  "bg_cover";
       }
       program { name: "go_passive";
          signal:  "elm,state,unselected";
          source:  "elm";
          action:  STATE_SET "default" 0.0;
-         target:  "bg";
-         transition: LINEAR 0.1;
+         target:  "elm.text";
+         target:  "elm.icon.clipper";
+         target:  "bg_cover";
       }
       program { name: "moving";
          signal:  "elm,state,moving";
          source:  "elm";
          action:  STATE_SET "moving" 0.0;
          target:  "bg";
+         target:  "bg_cover";
       }
 /*    program { name: "pressed";
          signal:  "mouse,down,1";
