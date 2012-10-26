@@ -25,6 +25,8 @@
    group { name: "elm/check/base/"style_name; \
       images { \
          image: "00_check_bg.png" COMP; \
+         image: "00_check_bg_press.png" COMP; \
+         image: "00_check_checking_press.png" COMP; \
          image: "00_check_checking.png" COMP; \
       } \
       script { \
@@ -55,6 +57,13 @@
                image.normal: "00_check_bg.png"; \
                fill.smooth : 0; \
             } \
+            description { state: "visible" 0.0; \
+               inherit: "default" 0.0; \
+            } \
+            description { state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "00_check_bg_press.png"; \
+            } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
             } \
@@ -71,6 +80,11 @@
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
+               visible: 1; \
+            } \
+            description { state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "00_check_checking_press.png"; \
                visible: 1; \
             } \
             description { state: "disabled_visible" 0.0; \
@@ -106,11 +120,11 @@
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
-               color: 128 128 128 128; \
+               color: 128 128 128 102; \
             } \
             description { state: "disabled_visible" 0.0; \
                inherit: "default" 0.0; \
-               color: 128 128 128 128; \
+               color: 128 128 128 102; \
                fixed: 1 1; \
                visible: 1; \
                aspect: 1.0 1.0; \
@@ -197,6 +211,42 @@
             signal: "mouse,clicked,1"; \
             source: "events1"; \
             action: SIGNAL_EMIT "elm,action,check,toggle" ""; \
+         } \
+         program { name: "bg_normal"; \
+            signal: "mouse,up,1"; \
+            source: "events2"; \
+            script { \
+               new st[31]; \
+               new Float:vl; \
+               get_state(PART:"check", st, 30, vl); \
+               if (!strcmp(st, "pressed")) \
+                 set_state(PART:"check", "visible", 0.0); \
+               set_state(PART:"bg", "default", 0.0); \
+            } \
+         } \
+         program { name: "pressed"; \
+            signal: "mouse,down,1"; \
+            source: "events2"; \
+            script { \
+               new st[31]; \
+               new Float:vl; \
+               get_state(PART:"check", st, 30, vl); \
+               if (!strcmp(st, "default")) \
+                 set_state(PART:"check", "default", 0.0); \
+               else \
+                 set_state(PART:"check", "pressed", 0.0); \
+               set_state(PART:"bg", "pressed", 0.0); \
+            } \
+         } \
+         program { name: "mouse,out"; \
+            signal: "mouse,out"; \
+            source: "events2"; \
+            script { \
+               if (get_int(check_state) == CHECK_STATE_VISIBLE) \
+                 set_state(PART:"check", "visible", 0.0); \
+               else \
+                 set_state(PART:"check", "default", 0.0); \
+            } \
          } \
          program { name: "check_on"; \
             signal: "elm,state,check,on"; \
@@ -398,11 +448,11 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
-               color: 128 128 128 128; \
+               color: 128 128 128 102; \
             } \
             description { state: "disabled_visible" 0.0; \
                inherit: "default" 0.0; \
-               color: 128 128 128 128; \
+               color: 128 128 128 102; \
                fixed: 1 1; \
                visible: 1; \
                aspect: 1.0 1.0; \
@@ -1049,8 +1099,6 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                rel2.to: "bg"; \
                image { \
                   normal: off_image; \
-                  border: CHECK_ONOFF_CHECK_IMAGE_BORDER_INC; \
-                  border_scale: 1; \
                } \
             } \
             description { state: "visible" 0.0; \
@@ -1317,8 +1365,8 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
 #define CHECK_STYLE_FAVORITE(style_name, min_width, min_height) \
    group { name: "elm/check/base/"style_name; \
       images { \
-         image: "00_winset_icon_favorite_off.png" COMP; \
-         image: "00_winset_icon_favorite_on.png" COMP; \
+         image: "00_icon_favorite_on.png" COMP; \
+         image: "00_icon_favorite_off.png" COMP; \
       } \
       parts { \
          part { name: "back_bg"; \
@@ -1350,22 +1398,22 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
             description { state: "default" 0.0; \
                rel1.to: "bg"; \
                rel2.to: "bg"; \
-               image.normal: "00_winset_icon_favorite_off.png"; \
+               image.normal: "00_icon_favorite_off.png"; \
                color: 255 255 255 255; \
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
-               image.normal: "00_winset_icon_favorite_on.png"; \
+               image.normal: "00_icon_favorite_on.png"; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
-               image.normal: "00_winset_icon_favorite_off.png"; \
-               color: 128 128 128 255; \
+               image.normal: "00_icon_favorite_off.png"; \
+               color: 128 128 128 102; \
             } \
             description { state: "disabled_visible" 0.0; \
                inherit: "default" 0.0; \
-               image.normal: "00_winset_icon_favorite_on.png"; \
-               color: 128 128 128 255; \
+               image.normal: "00_icon_favorite_on.png"; \
+               color: 128 128 128 102; \
             } \
          } \
          part { name: "elm.swallow.content"; \
@@ -1395,11 +1443,11 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
-               color: 128 128 128 128; \
+               color: 128 128 128 102; \
             } \
             description { state: "disabled_visible" 0.0; \
                inherit: "default" 0.0; \
-               color: 128 128 128 128; \
+               color: 128 128 128 102; \
                fixed: 1 1; \
                visible: 1; \
                aspect: 1.0 1.0; \
