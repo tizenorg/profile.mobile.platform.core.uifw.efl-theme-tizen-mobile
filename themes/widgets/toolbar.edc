@@ -1046,7 +1046,6 @@ group { name: "elm/toolbar/object/default";
 }
 
 group { name: "elm/toolbar/base/tabbar";
-   alias: "elm/toolbar/base/tabbar/item_horizontal";
    images {
       image: "00_divider_line.png" COMP;
       image: "00_badge.png" COMP;
@@ -1846,6 +1845,10 @@ group { name: "elm/toolbar/item/tabbar";
                 border: 0 0 2 2;
             }
          }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
       }
       part { name: "event";
          type: RECT;
@@ -2233,185 +2236,46 @@ group { name: "elm/toolbar/item/tabbar";
          target: "elm.text.badge";
          target: "elm.image.badge";
       }
+      program { name: "divider_visible";
+         signal: "elm,order,first,item";
+         signal: "elm,order,default,item";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "divider";
+      }
+      program { name: "divider_hidden";
+         signal: "elm,order,last,item";
+         source: "elm";
+         action: STATE_SET "hidden" 0.0;
+         target: "divider";
+      }
+   }
+}
+
+group { name: "elm/toolbar/base/tabbar/item_horizontal";
+   inherit: "elm/toolbar/base/tabbar";
+   parts {
+      part { name: "left_padding";
+         description {
+            state: "default" 0.0;
+            min: 34 0;
+         }
+      }
+      part { name: "right_padding";
+         description {
+            state: "default" 0.0;
+            min: 34 0;
+         }
+      }
    }
 }
 
 group { name: "elm/toolbar/item/tabbar/item_horizontal";
    inherit: "elm/toolbar/item/tabbar";
    parts {
-      part { name: "icon_rect";
+      part { name: "bg";
          description { state: "default" 0.0;
-            fixed: 1 0;
-            align: 0.0 0.5;
-         }
-         description { state: "visible" 0.0;
-            fixed: 1 0;
-            rel2 {
-               relative: 1.0 0.0;
-               to_x: "padding_left_top";
-               to_y: "padding_right_bottom";
-            }
-            align: 0.0 0.5;
-         }
-      }
-      part { name: "padding_after_icon";
-         description { state: "default" 0.0; //when only icon or no icon is there
-            rel1.relative: 1.0 0.0;
-            fixed: 1 1;
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            min: 6 0;
-         }
-      }
-      part { name: "padding_before_text";
-         description { state: "default" 0.0; //when only icon or no icon is there
-            align: 1.0 0.5;
-            rel1 {
-               relative: 0.0 1.0;
-               to_x: "elm.text";
-               to_y: "padding_left_top";
-            }
-            rel2 {
-               to_x: "elm.text";
-               to_y: "padding_right_bottom";
-            }
-            fixed: 1 0;
-            min: 6 0;
-         }
-      }
-      part { name: "elm.swallow.icon";
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            rel2 {
-               relative: 1.0 0.0;
-               to_x: "padding_left_top";
-               to_y: "padding_right_bottom";
-            }
-            fixed: 1 0;
-         }
-         description { state: "visible" 0.0;
-            fixed: 1 0;
-            align: 1.0 0.5;
-            rel1 {
-               relative: 0.0 1.0;
-               to_x: "padding_before_text";
-               to_y: "padding_left_top";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "padding_before_text";
-               to_y: "padding_right_bottom";
-            }
-            aspect_preference: VERTICAL;
-         }
-         description { state: "icononly" 0.0;
-            aspect_preference: VERTICAL;
-         }
-      }
-      part { name: "elm.swallow.icon_new";
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            rel2 {
-               relative: 1.0 0.0;
-               to_x: "padding_left_top";
-               to_y: "padding_right_bottom";
-            }
-            fixed: 1 0;
-         }
-         description { state: "visible" 0.0;
-            fixed: 1 0;
-            align: 1.0 0.5;
-            rel1 {
-               relative: 0.0 1.0;
-               to_x: "padding_before_text";
-               to_y: "padding_left_top";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "padding_before_text";
-               to_y: "padding_right_bottom";
-            }
-            aspect_preference: VERTICAL;
-         }
-         description { state: "icononly" 0.0;
-            aspect_preference: VERTICAL;
-         }
-      }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         description { state: "default" 0.0;
-            rel1 {
-               relative: 1.0 1.0;
-               to_x: "padding_after_icon";
-               to_y: "padding_left_top";
-            }
-            text {
-               style: "toolbar_text_style_26";
-               min: 1 0;
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-         description { state: "visible_28" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_28";
-            visible: 1;
-         }
-         description { state: "visible_30" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_30";
-            visible: 1;
-         }
-         description { state: "visible_32" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_32";
-            visible: 1;
-         }
-         description { state: "visible_36" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_36";
-            visible: 1;
-         }
-      }
-      part { name: "elm.text_new";
-         type: TEXTBLOCK;
-         description { state: "default" 0.0;
-            rel1 {
-               relative: 1.0 1.0;
-               to_x: "padding_after_icon";
-               to_y: "padding_left_top";
-            }
-            text {
-               style: "toolbar_text_style_26";
-               min: 1 0;
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-         description { state: "visible_28" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_28";
-            visible: 1;
-         }
-         description { state: "visible_30" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_30";
-            visible: 1;
-         }
-         description { state: "visible_32" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_32";
-            visible: 1;
-         }
-         description { state: "visible_36" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_36";
-            visible: 1;
+            min: 303 0;
          }
       }
    }
