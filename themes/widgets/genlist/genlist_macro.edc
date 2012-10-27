@@ -443,6 +443,76 @@
             }\
          } \
 
+#define GENLIST_PART_VERTICAL_LINE_L(LEFT) \
+         part { name: "vertical_line"; \
+            type: RECT; \
+            mouse_events: 0; \
+            GENLIST_DESCRIPTION_L(LEFT,  \
+               min: 1 0; \
+               fixed: 1 0; \
+               align: 0 0.5; \
+               rel1.offset: 0 5; \
+               rel2.offset: 0 -5; \
+               color: GENLIST_PART_LIST_LINE1_COLOR; \
+            ) \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               color: GENLIST_PART_LIST_PRESS_COLOR; \
+            } \
+         } \
+         part { name: "vertical_line2"; \
+            type: RECT; \
+            mouse_events: 0; \
+            GENLIST_DESCRIPTION_L("vertical_line", \
+               min: 1 0; \
+               fixed: 1 0; \
+               align: 0 0.5; \
+               rel1.offset: 0 5; \
+               rel2.offset: 0 -5; \
+               color: GENLIST_PART_LIST_LINE2_COLOR; \
+            ) \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               color: GENLIST_PART_LIST_PRESS_COLOR; \
+            } \
+         }
+
+#define GENLIST_PART_CENTER_LINE_LT(LEFT, TOP) \
+         part { name: "center_line"; \
+            type: RECT; \
+            mouse_events: 0; \
+            GENLIST_DESCRIPTION_LT(LEFT, TOP, \
+               min: 0 1; \
+               fixed: 0 1; \
+               rel1.offset: 5 0; \
+               rel2.to_x: "base"; \
+               rel2.relative: 1 1; \
+               rel2.offset: -5 0; \
+               color: GENLIST_PART_LIST_LINE1_COLOR; \
+            ) \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               color: GENLIST_PART_LIST_PRESS_COLOR; \
+            } \
+         } \
+         part { name: "center_line2"; \
+            type: RECT; \
+            mouse_events: 0; \
+            GENLIST_DESCRIPTION_LT(LEFT, "center_line", \
+               min: 0 1; \
+               fixed: 0 1; \
+               rel1.offset: 5 0; \
+               rel2.to_x: "base"; \
+               rel2.relative: 1 1; \
+               rel2.offset: -5 0; \
+               color: GENLIST_PART_LIST_LINE2_COLOR; \
+            ) \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               color: GENLIST_PART_LIST_PRESS_COLOR; \
+            } \
+         }
+
 // FIXME: When reorder state is enabled, base height should not be shrinked actually.
 // But currently There are no way to notify size recaculation to genlist code.
 #define GENLIST_PART_BASE_REORDER( HEIGHT ) \
@@ -2003,7 +2073,42 @@
       text_class: "list_item"; \
    }
 
-#define GENLIST_DESCRIPTION_LISTIMTEM_OTHERS \
+
+#define GENLIST_PARAM_MULTILINE_TEXT \
+   color: GENLIST_MULTILINE_TEXT_COLOR; \
+   text { \
+      align: 0 0.5; \
+      min: 0 1; \
+      font: "SLP:style=Bold"; \
+      size: GENLIST_MULTILINE_TEXT_SIZE; \
+      text_class: "slp_medium"; \
+   }
+
+#define GENLIST_PARAM_MULTILINE_LISITEM_TEXT_TB \
+   text { \
+      align: 0 0.5; \
+      min: 0 1; \
+      style: "genlist_style_multiline_list_main_text_default"; \
+   }
+
+#define GENLIST_PARAM_FLEXIBLE_TEXT_SUB_TB \
+   text { \
+      align: 0 0.5; \
+      min: 0 1; \
+      style: "genlist_style_flexible_text_sub"; \
+   }
+
+#define GENLIST_DESCRIPTION_MULTILINE_LISTIMTEM_OTHERS \
+   description { state: "selected" 0.0; \
+      inherit: "default" 0.0; \
+      text.style: "genlist_style_multiline_list_main_text_focus"; \
+   } \
+   description { state: "disabled" 0.0; \
+      inherit: "default" 0.0; \
+      text.style: "genlist_style_multiline_list_main_text_dim"; \
+   } \
+
+#define GENLIST_DESCRIPTION_LISTITEM_OTHERS \
    description { state: "selected" 0.0; \
       inherit: "default" 0.0; \
       color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR; \
@@ -2020,7 +2125,7 @@
       style: "genlist_style_list_main_text_default"; \
    }
 
-#define GENLIST_DESCRIPTION_LISTIMTEM_OTHERS_TB \
+#define GENLIST_DESCRIPTION_LISTITEM_OTHERS_TB \
    description { state: "selected" 0.0; \
       inherit: "default" 0.0; \
       text.style: "genlist_style_list_main_text_focus"; \
@@ -2030,6 +2135,47 @@
       text.style: "genlist_style_list_main_text_dim"; \
    } \
 
+
+#define GENLIST_PART_LISTITEM(NAME, DESCRIPION) \
+   part { name: NAME; \
+      clip_to: "disclip"; \
+      type: TEXT; \
+      mouse_events: 0; \
+      scale: 1; \
+      DESCRIPION \
+      GENLIST_DESCRIPTION_LISTITEM_OTHERS \
+   }
+
+#define GENLIST_PART_LISTITEM_TB(NAME, DESCRIPION) \
+   part { name: NAME; \
+      clip_to: "disclip"; \
+      type: TEXTBLOCK; \
+      mouse_events: 0; \
+      scale: 1; \
+      DESCRIPION \
+      GENLIST_DESCRIPTION_LISTITEM_OTHERS_TB \
+   }
+
+#define GENLIST_PART_SUBITEM(NAME, DESCRIPION) \
+    part { name: NAME; \
+      scale: 1; \
+      clip_to: "disclip"; \
+      type: TEXT; \
+      mouse_events: 0; \
+      DESCRIPION \
+      GENLIST_DESCRIPTION_SUBITEM_OTHERS \
+   }
+
+#define GENLIST_PART_SUBITEM_TB(NAME, DESCRIPION) \
+    part { name: NAME; \
+      scale: 1; \
+      clip_to: "disclip"; \
+      type: TEXTBLOCK; \
+      mouse_events: 0; \
+      DESCRIPION \
+      GENLIST_DESCRIPTION_SUBITEM_OTHERS_TB \
+   }
+
 #define GENLIST_PART_LISTITEM_(NAME, HEIGHT, LEFT, RIGHT, TOP, BOTTOM, PARAM) \
    GENLIST_PART_TEXT(NAME, \
       GENLIST_DESCRIPTION(LEFT, RIGHT, TOP, BOTTOM, \
@@ -2037,7 +2183,7 @@
          GENLIST_PARAM_LISTITEM_DEFAULT \
          PARAM \
       ) \
-      GENLIST_DESCRIPTION_LISTIMTEM_OTHERS \
+      GENLIST_DESCRIPTION_LISTITEM_OTHERS \
    )
 
 #define GENLIST_PART_LISTITEM_TB_(NAME, HEIGHT, LEFT, RIGHT, TOP, BOTTOM, PARAM) \
@@ -2047,7 +2193,7 @@
          GENLIST_PARAM_LISTITEM_DEFAULT_TB \
          PARAM \
       ) \
-      GENLIST_DESCRIPTION_LISTIMTEM_OTHERS_TB \
+      GENLIST_DESCRIPTION_LISTITEM_OTHERS_TB \
    )
 
 #define GENLIST_PART_LISTITEM_LR(NAME, HEIGHT, LEFT, RIGHT, PARAM) \
@@ -2057,8 +2203,19 @@
          GENLIST_PARAM_LISTITEM_DEFAULT \
          PARAM \
       ) \
-      GENLIST_DESCRIPTION_LISTIMTEM_OTHERS \
+      GENLIST_DESCRIPTION_LISTITEM_OTHERS \
    )
+
+#define GENLIST_PART_LISTITEM_LRT_TB(NAME, HEIGHT, LEFT, RIGHT, TOP, PARAM) \
+   GENLIST_PART_TEXTBLOCK(NAME, \
+      GENLIST_DESCRIPTION_LRT(LEFT, RIGHT, TOP, \
+         min: 0 HEIGHT; \
+         GENLIST_PARAM_LISTITEM_DEFAULT_TB \
+         PARAM \
+      ) \
+      GENLIST_DESCRIPTION_LISTITEM_OTHERS_TB \
+   )
+
 
 #define GENLIST_PART_LISTITEM_LR_TB(NAME, HEIGHT, LEFT, RIGHT, PARAM) \
    GENLIST_PART_TEXTBLOCK(NAME, \
@@ -2067,7 +2224,7 @@
          GENLIST_PARAM_LISTITEM_DEFAULT_TB \
          PARAM \
       ) \
-      GENLIST_DESCRIPTION_LISTIMTEM_OTHERS_TB \
+      GENLIST_DESCRIPTION_LISTITEM_OTHERS_TB \
    )
 
 #define GENLIST_PARAM_SUBITEM_DEFAULT \
@@ -2547,57 +2704,6 @@
       color: GENLIST_3LINE_MAIN_TEXT_FOCUS_COLOR; \
    }
 
-#define GENLIST_PART_LISTITEM(NAME, DESCRIPION) \
-   part { name: NAME; \
-      clip_to: "disclip"; \
-      type: TEXT; \
-      mouse_events: 0; \
-      scale: 1; \
-      DESCRIPION \
-      description { state: "selected" 0.0; \
-         inherit: "default" 0.0; \
-         text.style: "genlist_style_list_main_text_focus"; \
-      } \
-   }
-
-#define GENLIST_PART_LISTITEM_TB(NAME, DESCRIPION) \
-   part { name: NAME; \
-      clip_to: "disclip"; \
-      type: TEXTBLOCK; \
-      mouse_events: 0; \
-      scale: 1; \
-      DESCRIPION \
-      description { state: "selected" 0.0; \
-         inherit: "default" 0.0; \
-         text.style: "genlist_style_list_main_text_focus"; \
-      } \
-   }
-
-#define GENLIST_PART_SUBITEM(NAME, DESCRIPION) \
-    part { name: NAME; \
-      scale: 1; \
-      clip_to: "disclip"; \
-      type: TEXT; \
-      mouse_events: 0; \
-      DESCRIPION \
-      description { state: "selected" 0.0; \
-         inherit: "default" 0.0; \
-         color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR; \
-      } \
-   }
-
-#define GENLIST_PART_SUBITEM_TB(NAME, DESCRIPION) \
-    part { name: NAME; \
-      scale: 1; \
-      clip_to: "disclip"; \
-      type: TEXTBLOCK; \
-      mouse_events: 0; \
-      DESCRIPION \
-      description { state: "selected" 0.0; \
-         inherit: "default" 0.0; \
-         text.style: "genlist_style_list_sub_text_focus"; \
-      } \
-   }
 
 #define GENLIST_PARAM_IMAGE_BUBBLE \
    image { \
