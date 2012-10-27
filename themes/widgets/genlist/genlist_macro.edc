@@ -500,15 +500,19 @@
          GENLIST_PART_BOTTOM_LINE
 
 #define GENLIST_PART_COLORBAR \
-         part { name: "elm.icon.colorbar"; \
+         part { name: "elm.swallow.colorbar"; \
             clip_to: "disclip"; \
             type: SWALLOW; \
             scale: 1; \
             description { state: "default" 0.0; \
-               min: 10 21; \
-               fixed: 1 1; \
-               rel2.relative: 0 0; \
+               min: 16 24; \
+               max: 16 24; \
                align: 0 0; \
+               fixed: 1 1; \
+               rel1.relative: 1 0; \
+               rel1.to_x: "elm.padding.left"; \
+               rel2.relative: 1 0; \
+               rel2.to_x: "elm.padding.left"; \
             } \
          }
 
@@ -1720,7 +1724,7 @@
             target: "disclip"; \
          }
 
-#define GENLIST_PROGRAMS_3LINE_TEXT \
+#define GENLIST_PROGRAMS_3LINE_3TEXT \
       script { \
          public readed = 0; \
       } \
@@ -1749,6 +1753,63 @@
                set_state(PART:"bottom_line2", "default", 0.0); \
                set_state(PART:"elm.text.2", "default", 0.0); \
                set_state(PART:"elm.text.3", "default", 0.0); \
+               if (get_int(readed) == 1) \
+                 set_state(PART:"elm.text.1", "read", 0.0); \
+               else \
+                 set_state(PART:"elm.text.1", "default", 0.0); \
+            } \
+         } \
+         program { name: "play_button_press"; \
+            action: PLAY_SAMPLE "button-pressed" 1.0; \
+         } \
+         program { name: "go_read"; \
+            signal: "elm,state,read"; \
+            source: "*"; \
+            script { \
+              set_int(readed, 1); \
+              set_state(PART:"elm.text.1", "read", 0.0); \
+            } \
+         } \
+         program { name: "go_unread"; \
+            signal: "elm,state,unread"; \
+            script { \
+              set_int(readed, 0); \
+              set_state(PART:"elm.text.1", "default", 0.0); \
+            } \
+         } \
+      }
+
+#define GENLIST_PROGRAMS_3LINE_4TEXT \
+      script { \
+         public readed = 0; \
+      } \
+      programs { \
+         GENLIST_PROGRAM_DISCLIP( target: "elm.text.1"; target: "elm.text.2"; target: "elm.text.3"; target: "elm.text.4"; ) \
+         GENLIST_PROGRAM_FLIP \
+         program { name: "selected"; \
+            signal: "elm,state,selected"; \
+            source: "elm"; \
+            action: STATE_SET "selected" 0.0; \
+            target: "bg_image"; \
+            target: "bottom_line"; \
+            target: "bottom_line2"; \
+            target: "elm.text.1"; \
+            target: "elm.text.2"; \
+            target: "elm.text.3"; \
+            target: "elm.text.4"; \
+            after: "play_button_press"; \
+         } \
+         program { name: "go_passive"; \
+            signal: "elm,state,unselected"; \
+            source: "elm"; \
+            transition: LINEAR 0.1; \
+            script { \
+               set_state(PART:"bg_image", "default", 0.0); \
+               set_state(PART:"bottom_line", "default", 0.0); \
+               set_state(PART:"bottom_line2", "default", 0.0); \
+               set_state(PART:"elm.text.2", "default", 0.0); \
+               set_state(PART:"elm.text.3", "default", 0.0); \
+               set_state(PART:"elm.text.4", "default", 0.0); \
                if (get_int(readed) == 1) \
                  set_state(PART:"elm.text.1", "read", 0.0); \
                else \
@@ -1926,6 +1987,11 @@
       type: TEXTBLOCK; \
       DESCRIPION \
    }
+
+#define GENLIST_PARAM_TEXT_LIMIT \
+   rel1.to_x: "base"; /* This limits text growing. */\
+   rel1.relative: 0.5 0; /* This limits text growing. */\
+   text.max: 1 0; /* This limits text growing. */
 
 #define GENLIST_PARAM_LISTITEM_DEFAULT \
    color: GENLIST_LIST_MAIN_TEXT_DEFAULT_COLOR; \
