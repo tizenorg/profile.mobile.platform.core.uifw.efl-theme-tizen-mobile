@@ -353,8 +353,8 @@
 #define GENLIST_DIALOGUE_INHERIT_BODY( _PARTS ) \
       GENLIST_IMAGES_BG_IMAGE \
       parts { \
-         GENLIST_PART_DIALOGUE_BG_IMAGE \
-         GENLIST_PART_DIALOGUE_BASE \
+         GENLIST_PART_BG_IMAGE_DIALOGUE \
+         GENLIST_PART_BASE \
          GENLIST_PART_PADDING_LEFT_SIZE( DIALOGUE_PADDING_SIZE_LEFT ) \
          GENLIST_PART_PADDING_RIGHT_SIZE( DIALOGUE_PADDING_SIZE_RIGHT ) \
          _PARTS \
@@ -388,7 +388,7 @@
             image : "00_list_group_bg_bottom_press.png" COMP; \
          }
 
-#define GENLIST_PART_DIALOGUE_BG_IMAGE \
+#define GENLIST_PART_BG_IMAGE_DIALOGUE \
          part { name: "bg_image"; \
             type: IMAGE; \
             mouse_events: 0; \
@@ -396,7 +396,7 @@
                color: 255 255 255 255; \
                image { \
                   normal: "00_list_group_bg.png"; \
-                  border: 12 12 12 12; \
+                  border: 14 14 10 10; \
                   border_scale: 1; \
                } \
             } \
@@ -404,49 +404,49 @@
                color: 255 255 255 255; \
                image { \
                   normal: "00_list_group_bg_press.png"; \
-                  border: 12 12 12 12; \
+                  border: 14 14 10 10; \
                   border_scale: 1; \
                } \
             } \
             description { state: "top" 0.0; \
                image { \
                   normal: "00_list_group_bg_top.png"; \
-                  border: 12 12 12 12; \
+                  border: 14 14 10 2; \
                   border_scale: 1; \
                } \
             } \
             description { state: "top_selected" 0.0; \
                image { \
                   normal: "00_list_group_bg_top_press.png"; \
-                  border: 12 12 12 12; \
+                  border: 14 14 10 2; \
                   border_scale: 1; \
                } \
             } \
             description { state: "center" 0.0; \
                image { \
                   normal: "00_list_group_bg_center.png"; \
-                  border: 12 12 12 12; \
+                  border: 14 14 2 2; \
                   border_scale: 1; \
                } \
             } \
             description { state: "center_selected" 0.0; \
                image { \
                   normal: "00_list_group_bg_center_press.png"; \
-                  border: 12 12 12 12; \
+                  border: 14 14 2 2; \
                   border_scale: 1; \
                } \
             } \
             description { state: "bottom" 0.0; \
                image { \
                   normal: "00_list_group_bg_bottom.png"; \
-                  border: 12 12 12 12; \
+                  border: 14 14 2 10; \
                   border_scale: 1; \
                } \
             } \
             description { state: "bottom_selected" 0.0; \
                image { \
                   normal: "00_list_group_bg_bottom_press.png"; \
-                  border: 12 12 12 12; \
+                  border: 14 14 2 10; \
                   border_scale: 1; \
                } \
             } \
@@ -464,7 +464,7 @@
 //****************************************************************************//
 // ****************************** BASE  ********************************//
 //****************************************************************************//
-#define GENLIST_PART_BASE \
+#define GENLIST_PART_BASE_BOTTOM_LINE \
          part { name: "base"; \
             type: RECT; \
             repeat_events: 1; \
@@ -478,21 +478,7 @@
          } \
          GENLIST_PART_BOTTOM_LINE
 
-#define GENLIST_PART_DIALOGUE_BASE \
-         part { name: "base"; \
-            type: RECT; \
-            repeat_events: 1; \
-            scale: 1; \
-            description { state: "default" 0.0; \
-               align: 0.5 0.5; \
-               color: 0 0 0 0; \
-               rel2.relative: 1 0; \
-               rel2.to: "bottom_line"; \
-            } \
-         } \
-         GENLIST_PART_DIALOGUE_BOTTOM_LINE
-
-#define GENLIST_PART_GROUP_TITLE_BASE \
+#define GENLIST_PART_BASE \
          part { name: "base"; \
             type: RECT; \
             repeat_events: 1; \
@@ -505,7 +491,7 @@
 
 // FIXME: When reorder state is enabled, base height should not be shrinked actually.
 // But currently There are no way to notify size recaculation to genlist code.
-#define GENLIST_PART_BASE_REORDER( HEIGHT ) \
+#define GENLIST_PART_BASE_LIST_REORDER( HEIGHT ) \
          part { name: "base"; \
             type: RECT; \
             repeat_events: 1; \
@@ -1658,7 +1644,7 @@
             TARGET \
          }
 
-#define GENLIST_PROGRAM_SELECT( TARGET ) \
+#define GENLIST_PROGRAM_SELECT_BOTTOM_LINE( TARGET ) \
          program { name: "selected"; \
             signal: "elm,state,selected"; \
             source: "elm"; \
@@ -1683,7 +1669,28 @@
             action: PLAY_SAMPLE "button-pressed" 1.0; \
          }
 
-#define GENLIST_PROGRAM_DIALOGUE_SELECT( TARGET ) \
+#define GENLIST_PROGRAM_SELECT_INDEX( TARGET ) \
+         program { name: "selected"; \
+            signal: "elm,state,selected"; \
+            source: "elm"; \
+            action: STATE_SET "selected" 0.0; \
+            target: "bg_image"; \
+            TARGET \
+            after: "play_button_press"; \
+         } \
+         program { name: "unselected"; \
+            signal: "elm,state,unselected"; \
+            source: "elm"; \
+            action: STATE_SET "default" 0.0; \
+            target: "bg_image"; \
+            TARGET \
+            transition: LINEAR 0.1; \
+         } \
+         program { name: "play_button_press"; \
+            action: PLAY_SAMPLE "button-pressed" 1.0; \
+         }
+
+#define GENLIST_PROGRAM_SELECT( TARGET ) \
          program { name: "selected"; \
             signal: "elm,state,selected"; \
             source: "elm"; \
@@ -1691,15 +1698,11 @@
                new st[31]; \
                new Float:vl; \
                get_state(PART:"bg_image", st, 30, vl); \
-               if (!strcmp(st, "top")) { \
+               if (!strcmp(st, "top")) \
                   set_state(PART:"bg_image", "top_selected", 0.0); \
-                  set_state(PART:"bottom_line", "selected", 0.0); \
-                  set_state(PART:"bottom_line2", "selected", 0.0); \
-               } else if (!strcmp(st, "center")) {\
+               else if (!strcmp(st, "center")) \
                   set_state(PART:"bg_image", "center_selected", 0.0); \
-                  set_state(PART:"bottom_line", "selected", 0.0); \
-                  set_state(PART:"bottom_line2", "selected", 0.0); \
-               } else if (!strcmp(st, "bottom")) \
+               else if (!strcmp(st, "bottom")) \
                   set_state(PART:"bg_image", "bottom_selected", 0.0); \
                else \
                   set_state(PART:"bg_image", "selected", 0.0); \
@@ -1714,23 +1717,14 @@
                new st[31]; \
                new Float:vl; \
                get_state(PART:"bg_image", st, 30, vl); \
-               if (!strcmp(st, "top_selected")) {\
+               if (!strcmp(st, "top_selected")) \
                   set_state(PART:"bg_image", "top", 0.0); \
-                  set_state(PART:"bottom_line", "visible", 0.0); \
-                  set_state(PART:"bottom_line2", "visible", 0.0); \
-               } else if (!strcmp(st, "center_selected")) { \
+               else if (!strcmp(st, "center_selected"))  \
                   set_state(PART:"bg_image", "center", 0.0); \
-                  set_state(PART:"bottom_line", "visible", 0.0); \
-                  set_state(PART:"bottom_line2", "visible", 0.0); \
-               } else if (!strcmp(st, "bottom_selected")) { \
+               else if (!strcmp(st, "bottom_selected"))  \
                   set_state(PART:"bg_image", "bottom", 0.0); \
-                  set_state(PART:"bottom_line", "default", 0.0); \
-                  set_state(PART:"bottom_line2", "default", 0.0); \
-               } else {\
+               else \
                   set_state(PART:"bg_image", "default", 0.0); \
-                  set_state(PART:"bottom_line", "default", 0.0); \
-                  set_state(PART:"bottom_line2", "default", 0.0); \
-               } \
             } \
             transition: LINEAR 0.1; \
             after: "target_unselected"; \
@@ -1748,38 +1742,24 @@
             source: "*"; \
             action: STATE_SET "top" 0.0; \
             target: "bg_image"; \
-            after: "bottom_line_visible"; \
          } \
          program { name: "bg_center"; \
             signal: "elm,state,center"; \
             source: "*"; \
             action: STATE_SET "center" 0.0; \
             target: "bg_image"; \
-            after: "bottom_line_visible"; \
          } \
          program { name: "bg_bottom"; \
             signal: "elm,state,bottom"; \
             source: "*"; \
             action: STATE_SET "bottom" 0.0; \
             target: "bg_image"; \
-            after: "bottom_line_default"; \
          } \
          program { name: "bg_default"; \
             signal: "elm,state,default"; \
             source: "*"; \
             action: STATE_SET "default" 0.0; \
             target: "bg_image"; \
-            after: "bottom_line_default"; \
-         } \
-         program { name: "bottom_line_visible";  \
-            action: STATE_SET "visible" 0.0; \
-            target: "bottom_line"; \
-            target: "bottom_line2"; \
-         } \
-         program { name: "bottom_line_default";  \
-            action: STATE_SET "default" 0.0; \
-            target: "bottom_line"; \
-            target: "bottom_line2"; \
          } \
          program { name: "play_button_press"; \
             action: PLAY_SAMPLE "button-pressed" 1.0; \
@@ -2131,6 +2111,26 @@
    rel2.offset: 8 0;
 
 /*****************************************************************************/
+/******************************* Genlist RECCT ********************************/
+/*****************************************************************************/
+#define GENLIST_PART_RECT(NAME, DESCRIPION) \
+    part { name: NAME; \
+      scale: 1; \
+      type: RECT; \
+      DESCRIPION \
+   }
+
+#define GENLIST_PART_INDEX_LINE(LEFT, RIGHT) \
+         GENLIST_PART_RECT("index_line", \
+            GENLIST_DESCRIPTION_LR(LEFT, RIGHT, \
+               color: GENLIST_INDEX_LINE_COLOR; \
+               min: 0 4; max: -1 4;) \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               color: GENLIST_INDEX_LINE_FOCUS_COLOR; \
+            } \
+         )
+/*****************************************************************************/
 /******************************* Genlist TEXT ********************************/
 /*****************************************************************************/
 #define GENLIST_PART_TEXT(NAME, DESCRIPION) \
@@ -2156,6 +2156,18 @@
    rel1.to_x: "base"; /* This limits text growing. */\
    rel1.relative: 0.5 0; /* This limits text growing. */\
    text.max: 1 0; /* This limits text growing. */
+
+#define GENLIST_PARAM_INDEX_LIST \
+   color: GENLIST_INDEX_LIST_COLOR; \
+   align: 0 0.5; \
+   text { \
+      align: 0 0.5; \
+      min: 0 1; \
+      max: 1 0; \
+      font: "SLP:style=Bold"; \
+      size: GENLIST_INDEX_LIST_SIZE; \
+      text_class: "list_item"; \
+   } \
 
 #define GENLIST_PARAM_LISTITEM_DEFAULT \
    color: GENLIST_LIST_MAIN_TEXT_DEFAULT_COLOR; \
@@ -2383,6 +2395,12 @@
    }
 
 /*************************** Descriptions **********************************/
+#define GENLIST_DESCRIPTION_INDEX_LIST \
+   description { state: "selected" 0.0; \
+      inherit: "default" 0.0; \
+      color: GENLIST_INDEX_LIST_FOCUS_COLOR; \
+   } \
+
 #define GENLIST_DESCRIPTION_LISTITEM_OTHERS \
    description { state: "selected" 0.0; \
       inherit: "default" 0.0; \
@@ -2895,45 +2913,7 @@
 /******************************************************************************/
 /** ETC
 /******************************************************************************/
-#define GENLIST_PART_BG_IMAGE_INDEX_LIST \
-part { name: "bg_image"; \
-   type: IMAGE; \
-   clip_to: "disclip"; \
-   mouse_events: 0; \
-   description { state: "default" 0.0; \
-      rel1.to: "base"; \
-      rel2.to: "base"; \
-      image { \
-         normal: "00_index list_bg.png"; \
-         border: 0 0 2 2; \
-      } \
-   } \
-}
-
 // FIXME: UX do not define selected state. But I thinkt that it is neededs :(
-#define GENLIST_PART_TEXT_INDEX_LIST(NAME, LEFT, RIGHT) \
-part { name: NAME; \
-   scale: 1; \
-   clip_to: "disclip"; \
-   type: TEXT; \
-   mouse_events: 0; \
-   GENLIST_DESCRIPTION_LR(LEFT, RIGHT, \
-      color: GENLIST_TEXT_INDEX_LIST_COLOR; \
-      align: 0 0.5; \
-      text { \
-         align: 0 0.5; \
-         min: 0 1; \
-         max: 1 0; \
-         font: "SLP:style=Roman"; \
-         size: GENLIST_TEXT_INDEX_LIST_SIZE; \
-         text_class: "list_item"; \
-      } \
-   ) \
-   description { state: "selected" 0.0; \
-      inherit: "default" 0.0; \
-      color: 255 255 255 255; \
-   } \
-}
 
 #define GENLIST_PROOGRAM_EXPAND(SOURCE, TARGET) \
    program { \
@@ -2957,7 +2937,7 @@ part { name: NAME; \
       TARGET \
    }
 
-#define GENLIST_PART_BASE_H( HEIGHT) \
+#define GENLIST_PART_BASE_LIST_H( HEIGHT) \
          part { name: "base"; \
             type: RECT; \
             repeat_events: 1; \
@@ -3002,7 +2982,7 @@ part { name: NAME; \
             } \
          }
 
-#define GENLIST_PART_DIALOGUE_BASE__( param_item_height ) \
+#define GENLIST_PART_BASE__( param_item_height ) \
          part { name: "base"; \
             type: RECT; \
             clip_to: "disclip"; \
