@@ -28,857 +28,11 @@
    }
    group { name:"elm/naviframe/item/basic/default";
       alias:"elm/naviframe/item/1line/default";
-      images {
-          image: "00_winset_control_top_bg.png" COMP;
-          image: "00_winset_control_top_arrow.png" COMP;
-          image: "00_winset_divider_line.png" COMP;
-          image: "00_winset_control_toolbar_bg.png" COMP;
-          image: "00_winset_title_bg.png" COMP;
-      }
-      script {
-         public oh_show = 0;     //optionheader show/hide
-         public oh_close = 0;    //optionheader close/open
-         public cbar_bg = 0;     //Controlbar BG Show call count
-      }
-      parts {
-         part { name: "base";
-            type: RECT;
-            mouse_events:  0;
-            description { state: "default" 0.0;
-               visible: 0;
-            }
-            description { state: "left" 0.0;
-               inherit: "default" 0.0;
-               rel1.relative: -1.0 0.0;
-               rel2.relative: 0.0 1.0;
-            }
-            description { state: "right" 0.0;
-               inherit: "default" 0.0;
-               rel1.relative: 1.0 0.0;
-               rel2.relative: 2.0 1.0;
-            }
-         }
-         part { name: "title_bg";
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 1 NAVIFRAME_TITLE_H_INC;
-               align: 0.0 0.0;
-               fixed: 0 1;
-               rel1 { relative: 0.0 0.0; to: "base"; }
-               rel2 { relative: 1.0 0.0; to: "base"; }
-               image.normal: "00_winset_title_bg.png";
-            }
-            description { state: "hide" 0.0;
-               inherit: "default" 0.0;
-               min: 0 0;
-               max: 0 0;
-               fixed: 1 1;
-            }
-         }
-         part { name: "title_clip";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1 { to: "title_bg"; }
-               rel2 { to: "title_bg"; }
-            }
-         }
-         part { name: "elm.swallow.content";
-            type: SWALLOW;
-            scale: 1;
-            repeat_events: 0;
-            clip_to: "content_clip";
-            description { state: "default" 0.0;
-               align: 0.0 0.0;
-               rel1.relative: 0.0 0.95;
-               rel1.to_x: "base";
-               rel1.to_y: "optionheader_bg";
-               rel2.relative: 1.0 0.0;
-               rel2.to_x: "base";
-               rel2.to_y: "controlbar_bg";
-            }
-         }
-         part { name: "optionheader_bg";
-            type: IMAGE;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 1 0;
-               align: 0.5 0;
-               fixed: 0 1;
-               rel1.to: "title_bg";
-               rel1.relative: 0 1;
-               rel2.to: "title_bg";
-               visible: 0;
-               image { normal: "00_winset_control_top_bg.png";
-                  border: NAVIFRAME_OH_BORDER_INC;
-               }
-            }
-            description { state: "show" 0.0;
-               inherit: "default" 0.0;
-               min: 1 NAVIFRAME_OH_OPENED_H_INC;
-               visible: 1;
-            }
-            description { state: "hide" 0.0;
-               inherit: "default" 0.0;
-               min: 0 0;
-               max: 0 0;
-               fixed: 1 1;
-            }
-         }
-         part { name: "optionheader_clip";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1 { to: "optionheader_bg"; }
-               rel2 { to: "optionheader_bg"; }
-            }
-         }
-         part { name: "optionheader_top_padding";
-            type: RECT;
-            scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_PADDING_INC;
-               rel1 { relative: 0.0 0.0; to: "optionheader_bg"; }
-               rel2 { relative: 1.0 0.0; to: "optionheader_bg"; }
-               fixed: 0 1;
-               align: 0.0 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "optionheader";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_CONTENT_H_INC;
-               rel1 { relative: 0.0 1.0; to: "optionheader_top_padding"; }
-               rel2 { relative: 1.0 1.0; to: "optionheader_top_padding"; }
-               fixed: 0 1;
-               align: 0.0 0.0;
-            }
-         }
-         part { name: "optionheader_bottom_padding";
-            type: RECT;
-            scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_PADDING_INC;
-               rel1 { relative: 0.0 1.0; to: "optionheader"; }
-               rel2 { relative: 1.0 1.0; to: "optionheader"; }
-               fixed: 0 1;
-               align: 0.0 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "optionheader_shadow";
-            type: RECT;
-            scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_SHADOW_INC;
-               rel1 { relative: 0.0 1.0; to: "optionheader_bottom_padding"; }
-               rel2 { relative: 1.0 1.0; to: "optionheader_bottom_padding"; }
-               fixed: 0 1;
-               align: 0.0 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "content_clip";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1.to: "elm.swallow.content";
-               rel2.to: "elm.swallow.content";
-            }
-         }
-         part { name: "padding_center_text1";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               min: NAVIFRAME_PADDING_INC;
-               fixed: 1 0;
-               align: 0.0 0.0;
-               rel1 { relative: 0.0 0.0; to: "title_bg"; }
-               rel2 { relative: 0.0 1.0; to: "title_bg"; }
-               visible: 0;
-            }
-            description { state: "icon" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_ICON_PADDING_INC;
-            }
-         }
-         part { name: "padding_center_text2";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               min: NAVIFRAME_PADDING_INC;
-               fixed: 1 0;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to_x: "title_more_btn"; to_y: "title_bg"; }
-               rel2 { relative: 0.0 1.0; to_x: "title_more_btn"; to_y: "title_bg"; }
-               visible: 0;
-            }
-         }
-         part { name: "padding_left";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               min: NAVIFRAME_PADDING_INC;
-               fixed: 1 0;
-               align: 0.0 0.0;
-               rel1 { relative: 0.0 0.0; to: "title_bg"; }
-               rel2 { relative: 0.0 1.0; to: "title_bg"; }
-               visible: 0;
-            }
-         }
-         part { name: "padding_bottom_text";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               min: 0 8;
-               fixed: 0 1;
-               align: 0.0 1.0;
-               rel1 { relative: 0.0 1.0; to: "title_bg"; }
-               rel2 { relative: 1.0 1.0; to: "title_bg"; }
-               visible: 0;
-            }
-         }
-         part { name: "elm.text.title";
-            type: TEXT;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               text { font: "SLP:style=Medium";
-                  size: NAVIFRAME_TITLE_FONT_SIZE_INC;
-                  min: 0 0;
-                  max: 1 0;
-                  align: 0.0 0.5;
-                  text_class: "slp_medium";
-               }
-               color: NAVIFRAME_TITLE_TEXT_COLOR_INC;
-               align: 0.0 0.5;
-               fixed: 1 0;
-               rel1 { relative: 1.0 0.0; to: "padding_center_text1"; }
-               rel2 { relative: 0.0 1.0; to: "padding_center_text2"; }
-            }
-            description { state: "subtitle_is_set" 0.0;
-               inherit: "default" 0.0;
-               align: 0.0 0.0;
-               rel2 { relative: 0.0 0.6; to_x: "padding_center_text2"; to_y: "padding_center_text1"; }
-            }
-         }
-         part { name: "elm.text.subtitle";
-            type: TEXT;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               text { font: "SLP:style=Medium";
-                  size: NAVIFRAME_SUBTITLE_FONT_SIZE_INC;
-                  min: 0 0;
-                  max: 1 0;
-                  text_class: "slp_medium";
-                  align: 0.0 1.0;
-               }
-               color: NAVIFRAME_SUBTITLE_TEXT_COLOR_INC;
-               align: 0.0 1.0;
-               fixed: 1 0;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to_x: "padding_left";
-                  to_y: "padding_bottom_text";
-               }
-               rel2 {
-                  relative: 0.0 0.0;
-                  to_x: "padding_center_text2";
-                  to_y: "padding_bottom_text";
-               }
-            }
-         }
-         part { name: "padding_before_text";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "elm.text.title"; }
-               rel2 { relative: 0.0 1.0; to: "elm.text.title"; }
-               fixed: 1 0;
-               min: NAVIFRAME_PADDING_INC;
-               visible: 0;
-            }
-         }
-         part { name: "elm.swallow.icon";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               max: NAVIFRAME_ICON_SIZE_INC;
-               fixed: 1 1;
-               rel1 { relative: 0.0 0.0; to: "padding_before_text"; }
-               rel2 { relative: 0.0 1.0; to: "padding_before_text"; }
-               aspect: 1.0 1.0;
-               aspect_preference: VERTICAL;
-               align: 1.0 0.5;
-            }
-         }
-         part { name: "click_event_area";
-             ignore_flags: ON_HOLD;
-             repeat_events: 1;
-             description { state: "default" 0.0;
-                rel1 { to: "title_bg"; }
-                rel2 { to: "title_bg"; }
-             }
-         }
-         part { name: "title_left_btn";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
-               fixed: 1 1;
-               align: 1 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_right_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_right_btn"; }
-            }
-         }
-         part { name: "left_btn_separator";
-            type: IMAGE;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               min: 4 48;
-               max: 4 48;
-               fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_left_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_left_btn"; }
-               image {
-                  normal: "00_winset_divider_line.png";
-                  border: 0 2 18 0;
-                  border_scale: 1;
-               }
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "title_right_btn";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
-               align: 1 0.5;
-               fixed: 1 1;
-               rel1 { relative: 1.0 0.0; to: "title_bg"; }
-               rel2 { relative: 1.0 1.0; to: "title_bg"; }
-            }
-         }
-         part { name: "right_btn_separator";
-            type: IMAGE;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               min: 4 48;
-               max: 4 48;
-               fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_right_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_right_btn"; }
-               image {
-                  normal: "00_winset_divider_line.png";
-                  border: 0 2 18 0;
-                  border_scale: 1;
-               }
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "title_more_btn";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
-               fixed: 1 1;
-               align: 1 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_left_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_left_btn"; }
-            }
-         }
-         part { name: "more_btn_separator";
-            type: IMAGE;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               min: 4 48;
-               max: 4 48;
-               fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_more_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_more_btn"; }
-               image {
-                  normal: "00_winset_divider_line.png";
-                  border: 0 2 18 0;
-                  border_scale: 1;
-               }
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "optionheader_arrow";
-            type: IMAGE;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_OH_ARROW_SIZE_INC;
-               max: NAVIFRAME_OH_ARROW_SIZE_INC;
-               fixed: 1 1;
-               align: 0.5 0.0;
-               rel1 { relative: 0.0 0.88; to: "title_more_btn"; }
-               rel2 { relative: 1.0 1.08; to: "title_more_btn"; }
-               image.normal: "00_winset_control_top_arrow.png";
-               color: 255 255 255 0;
-            }
-            description { state: "show" 0.0;
-               inherit: "default" 0.0;
-               color: 255 255 255 255;
-            }
-         }
-         part { name: "controlbar_bg";
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 0 0;
-               max: 999999 0;
-               fixed: 0 1;
-               align: 0.0 1.0;
-               visible: 0;
-               rel1 { to: "base"; }
-               rel2 { to: "base"; }
-               image.normal: "00_winset_control_toolbar_bg.png";
-            }
-            description { state: "show" 0.0;
-               inherit: "default" 0.0;
-               min: 0 CONTROLBAR_SMALL_HEIGHT_INC;
-               max: 999999 CONTROLBAR_SMALL_HEIGHT_INC;
-               visible: 1;
-            }
-         }
-         part { name: "elm.prev_btn_bg";
-            type: RECT;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 0 0;
-               fixed: 1 0;
-               align: 1.0 0.0;
-               rel1 { relative: 1.0 0.0; to: "controlbar_bg"; }
-               rel2.to: "controlbar_bg";
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_TITLE_PREV_BTN_BG_SIZE_INC 0;
-            }
-         }
-         part { name: "prev_btn_separator";
-            type: IMAGE;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 4 48;
-               max: 4 48;
-               fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "elm.prev_btn_bg"; }
-               rel2 { relative: 0.0 1.0; to: "elm.prev_btn_bg"; }
-               image {
-                  normal: "00_winset_divider_line.png";
-                  border: 0 2 18 0;
-                  border_scale: 1;
-               }
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "elm.swallow.prev_btn";
-            type: SWALLOW;
-            scale: 1;
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               align: 0.5 0.5;
-               rel1.to: "elm.prev_btn_bg";
-               rel2.to: "elm.prev_btn_bg";
-            }
-         }
-         part { name: "controlbar_clip";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1.to: "controlbar_bg";
-               rel2 { relative: 0.0 1.0; to_x: "prev_btn_separator"; to_y: "elm.prev_btn_bg"; }
-            }
-         }
-         part { name: "controlbar";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "controlbar_clip";
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               rel1.to: "controlbar_clip";
-               rel2.to: "controlbar_clip";
-            }
-         }
-      }
-      programs {
-         program { name: "content_new_pushed";
-            signal: "elm,state,new,pushed,internal";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "base";
-            transition: DECELERATE NAVIFRAME_VIEW_TRANS_TIME;
-            after: "show_finished";
-         }
-         program { name: "content_cur_pushed";
-            signal: "elm,state,cur,pushed,internal";
-            source: "";
-            action: STATE_SET "left" 0.0;
-            target: "base";
-            transition: DECELERATE NAVIFRAME_VIEW_TRANS_TIME;
-            after: "pushed_finished";
-         }
-         program { name: "content_prev_popped";
-            signal: "elm,state,prev,popped,internal";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "base";
-            transition: DECELERATE NAVIFRAME_VIEW_TRANS_TIME;
-            after: "show_finished";
-         }
-         program { name: "content_cur_popped";
-            signal: "elm,state,cur,popped,internal";
-            source: "";
-            action: STATE_SET "right" 0.0;
-            target: "base";
-            transition: DECELERATE NAVIFRAME_VIEW_TRANS_TIME;
-            after: "popped_finished";
-         }
-         program { name: "cur_pushed";
-            signal: "elm,state,cur,pushed";
-            source: "elm";
-            script {
-               set_state(PART:"base", "default", 0.0);
-               emit("elm,state,cur,pushed,internal", "");
-            }
-         }
-         program { name: "new_pushed";
-            signal: "elm,state,new,pushed";
-            source: "elm";
-            script {
-               set_state(PART:"base", "right", 0.0);
-               emit("elm,state,new,pushed,internal", "");
-            }
-         }
-         program { name: "prev_popped";
-            signal: "elm,state,prev,popped";
-            source: "elm";
-            script {
-               set_state(PART:"base", "left", 0.0);
-               emit("elm,state,prev,popped,internal", "");
-            }
-         }
-         program { name: "cur_popped";
-            signal: "elm,state,cur,popped";
-            source: "elm";
-            script {
-               set_state(PART:"base", "default", 0.0);
-               emit("elm,state,cur,popped,internal", "");
-            }
-         }
-         program { name: "visible";
-            signal: "elm,state,visible";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "base";
-         }
-         program { name: "title_show";
-            signal: "elm,state,title,show";
-            source: "elm";
-            script {
-               set_state(PART:"title_bg", "default", 0.0);
-               if (get_int(oh_show) == 1) {
-                  if (get_int(oh_close) == 1) {
-                     emit("elm,state,optionheader,instant_close", "");
-                  }else {
-                     emit("elm,state,optionheader,instant_open", "");
-                  }
-               }
-               else
-                 set_state(PART:"optionheader_bg", "default", 0.0);
-            }
-         }
-         program { name: "title_hide";
-            signal: "elm,state,title,hide";
-            source: "elm";
-            action: STATE_SET "hide" 0.0;
-            target: "title_bg";
-            target: "optionheader_bg";
-         }
-         program { name: "subtitle_show";
-            signal: "elm,state,subtitle,show";
-            source: "elm";
-            script {
-               set_state(PART:"elm.text.title", "subtitle_is_set", 0.0);
-            }
-         }
-         program { name: "subtitle_hide";
-            signal: "elm,state,subtitle,hide";
-            source: "elm";
-            script {
-               set_state(PART:"elm.text.title", "default", 0.0);
-            }
-         }
-         program { name: "prev_btn_show";
-            signal: "elm,state,prev_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,controlbar_bg,show", "elm");
-               set_state(PART:"elm.prev_btn_bg", "visible", 0.0);
-               set_state(PART:"prev_btn_separator", "visible", 0.0);
-            }
-         }
-         program { name: "prev_btn_hide";
-            signal: "elm,state,prev_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,controlbar_bg,hide", "elm");
-               set_state(PART:"elm.prev_btn_bg", "default", 0.0);
-               set_state(PART:"prev_btn_separator", "default", 0.0);
-            }
-         }
-         program { name: "icon_show";
-            signal: "elm,state,icon,show";
-            source: "elm";
-            action: STATE_SET "icon" 0.0;
-            target: "padding_center_text1";
-         }
-         program { name: "icon_hide";
-            signal: "elm,state,icon,hide";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "padding_center_text1";
-         }
-         program { name: "left_btn_show";
-            signal: "elm,state,title_left_btn,show";
-            source: "elm";
-            action: STATE_SET "visible" 0.0;
-            target: "left_btn_separator";
-         }
-         program { name: "left_btn_hide";
-            signal: "elm,state,title_left_btn,hide";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "left_btn_separator";
-         }
-         program { name: "right_btn_show";
-            signal: "elm,state,title_right_btn,show";
-            source: "elm";
-            action: STATE_SET "visible" 0.0;
-            target: "right_btn_separator";
-         }
-         program { name: "right_btn_hide";
-            signal: "elm,state,title_right_btn,hide";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "right_btn_separator";
-         }
-         program { name: "more_btn_show";
-            signal: "elm,state,title_more_btn,show";
-            source: "elm";
-            action: STATE_SET "visible" 0.0;
-            target: "more_btn_separator";
-         }
-         program { name: "more_btn_hide";
-            signal: "elm,state,title_more_btn,hide";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "more_btn_separator";
-         }
-         program { name: "controlbar_show";
-            signal: "elm,state,controlbar,show";
-            source: "elm";
-            script {
-               emit("elm,state,controlbar_bg,show", "elm");
-            }
-         }
-         program { name: "controlbar_hide";
-            signal: "elm,state,controlbar,hide";
-            source: "elm";
-            script {
-               emit("elm,state,controlbar_bg,hide", "elm");
-            }
-         }
-         program { name: "controlbar_bg_show";
-            signal: "elm,state,controlbar_bg,show";
-            source: "elm";
-            script {
-               set_state(PART:"controlbar_bg", "show", 0.0);
-               set_int(cbar_bg, get_int(cbar_bg) + 1);
-            }
-         }
-         program { name: "controlbar_bg_hide";
-            signal: "elm,state,controlbar_bg,hide";
-            source: "elm";
-            script {
-               set_int(cbar_bg, get_int(cbar_bg) - 1);
-               if (get_int(cbar_bg) <= 0)
-                 set_state(PART:"controlbar_bg", "default", 0.0);
-            }
-         }
-         program { name: "optionheader_show";
-            signal: "elm,state,optionheader,show";
-            source: "elm";
-            script {
-               set_state(PART:"optionheader_bg", "show", 0.0);
-               set_state(PART:"optionheader_arrow", "show", 0.0);
-               set_int(oh_show, 1);
-            }
-         }
-         program { name: "optionheader_hide";
-            signal: "elm,state,optionheader,hide";
-            source: "elm";
-            script {
-               set_state(PART:"optionheader_bg", "default", 0.0);
-               set_state(PART:"optionheader_arrow", "default", 0.0);
-               set_int(oh_show, 0);
-            }
-         }
-         program { name: "optionheader_open";
-            signal: "elm,state,optionheader,open";
-            source: "";
-            action: STATE_SET "show" 0.0;
-            target: "optionheader_bg";
-            target: "optionheader_arrow";
-            transition: LINEAR 0.2;
-            after: "optionheader_open_set";
-         }
-         program { name: "optionheader_close";
-            signal: "elm,state,optionheader,close";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "optionheader_bg";
-            target: "optionheader_arrow";
-            transition: LINEAR 0.2;
-            after: "optionheader_close_set";
-         }
-         program { name: "optionheader_instant_open";
-            signal: "elm,state,optionheader,instant_open";
-            source: "";
-            action: STATE_SET "show" 0.0;
-            target: "optionheader_bg";
-            target: "optionheader_arrow";
-            after: "optionheader_open_set";
-         }
-         program { name: "optionheader_instant_close";
-            signal: "elm,state,optionheader,instant_close";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "optionheader_bg";
-            target: "optionheader_arrow";
-            after: "optionheader_close_set";
-         }
-         program { name: "optionheader_close_set";
-            signal: "elm,state,optionheader,close_set";
-            source: "";
-            script {
-               set_int(oh_close, 1);
-            }
-         }
-         program { name: "optionheader_open_set";
-            signal: "elm,state,optionheader,open_set";
-            source: "";
-            script {
-               set_int(oh_close, 0);
-            }
-         }
-         program { name: "controlbar_open";
-            signal: "elm,state,controlbar,open";
-            source: "";
-            action: STATE_SET "show" 0.0;
-            target: "controlbar_bg";
-            transition: LINEAR 0.2;
-         }
-         program { name: "controlbar_close";
-            signal: "elm,state,controlbar,close";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "controlbar_bg";
-            transition: LINEAR 0.2;
-         }
-         program { name: "controlbar_instant_open";
-            signal: "elm,state,controlbar,instant_open";
-            source: "";
-            script {
-               emit("elm,state,prev_btn,show", "elm");
-               emit("elm,state,controlbar,show", "elm");
-            }
-         }
-         program { name: "controlbar_instant_close";
-            signal: "elm,state,controlbar,instant_close";
-            source: "";
-            script {
-               emit("elm,state,prev_btn,hide", "elm");
-               emit("elm,state,controlbar,hide", "elm");
-            }
-         }
-         program { name: "show_finished";
-            action: SIGNAL_EMIT "elm,action,show,finished" "";
-         }
-         program { name: "pushed_finished";
-            action: SIGNAL_EMIT "elm,action,pushed,finished" "";
-         }
-         program { name: "popped_finished";
-            action: SIGNAL_EMIT "elm,action,popped,finished" "";
-         }
-         program {
-            name: "title_clicked";
-            signal: "mouse,clicked,1";
-            source: "click_event_area";
-            action: SIGNAL_EMIT "elm,action,title,clicked" "";
-         }
-      }
-   }
-   group { name:"elm/naviframe/item/basic2/default";
+      alias:"elm/naviframe/item/basic2/default";
       alias:"elm/naviframe/item/2line/default";
-      images {
-         image: "00_winset_control_top_bg.png" COMP;
-         image: "00_winset_control_top_arrow.png" COMP;
-         image: "00_winset_divider_line.png" COMP;
-         image: "00_winset_control_toolbar_bg.png" COMP;
-         image: "00_winset_title_bg.png" COMP;
-      }
       script {
-         public oh_show = 0;     //optionheader show/hide
-         public oh_close = 0;    //optionheader close/open
          public cbar_bg = 0;     //Controlbar BG Show call count
+         public buttons_visible = 0; //when both buttons are visible
       }
       parts {
          part { name: "base";
@@ -899,6 +53,7 @@
             }
          }
          part { name: "title_bg";
+            type: RECT;
             scale: 1;
             description { state: "default" 0.0;
                min: 1 NAVIFRAME_TITLE_H_INC;
@@ -906,7 +61,7 @@
                fixed: 0 1;
                rel1 { relative: 0.0 0.0; to: "base"; }
                rel2 { relative: 1.0 0.0; to: "base"; }
-               image.normal: "00_winset_title_bg.png";
+               color: 248 246 239 255;
             }
             description { state: "hide" 0.0;
                inherit: "default" 0.0;
@@ -923,138 +78,19 @@
                rel2 { to: "title_bg"; }
             }
          }
-         part { name: "elm.swallow.content";
-            type: SWALLOW;
-            scale: 1;
-            repeat_events: 0;
-            clip_to: "content_clip";
-            description { state: "default" 0.0;
-               align: 0.0 0.0;
-               rel1.relative: 0.0 0.95;
-               rel1.to_x: "base";
-               rel1.to_y: "optionheader_bg";
-               rel2.relative: 1.0 0.0;
-               rel2.to_x: "base";
-               rel2.to_y: "controlbar_bg";
-            }
-         }
-         part { name: "optionheader_bg";
-            type: IMAGE;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 1 0;
-               align: 0.5 0;
-               fixed: 0 1;
-               rel1.to: "title_bg";
-               rel1.relative: 0 1;
-               rel2.to: "title_bg";
-               visible: 0;
-               image { normal: "00_winset_control_top_bg.png";
-                  border: NAVIFRAME_OH_BORDER_INC;
-               }
-            }
-            description { state: "show" 0.0;
-               inherit: "default" 0.0;
-               min: 1 NAVIFRAME_OH_OPENED_DOUBLE_H_INC;
-               visible: 1;
-            }
-            description { state: "hide" 0.0;
-               inherit: "default" 0.0;
-               min: 0 0;
-               max: 0 0;
-               fixed: 1 1;
-            }
-         }
-         part { name: "optionheader_clip";
+         part { name: "top_padding";
             type: RECT;
             mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1 { to: "optionheader_bg"; }
-               rel2 { to: "optionheader_bg"; }
-            }
-         }
-         part { name: "optionheader_top_padding";
-            type: RECT;
             scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_PADDING_INC;
-               rel1 { relative: 0.0 0.0; to: "optionheader_bg"; }
-               rel2 { relative: 1.0 0.0; to: "optionheader_bg"; }
+            clip_to: "title_clip";
+            description {
+               state: "default" 0.0;
+               min: 0 32;
                fixed: 0 1;
                align: 0.0 0.0;
+               rel1 { relative: 0.0 0.0; to: "title_bg"; }
+               rel2 { relative: 1.0 0.0; to: "title_bg"; }
                visible: 0;
-            }
-         }
-         part { name: "optionheader";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_CONTENT_H_INC;
-               rel1 { relative: 0.0 1.0; to: "optionheader_top_padding"; }
-               rel2 { relative: 1.0 1.0; to: "optionheader_top_padding"; }
-               fixed: 0 1;
-               align: 0.0 0.0;
-            }
-         }
-         part { name: "optionheader_mid_padding";
-            type: RECT;
-            scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_PADDING_INC;
-               rel1 { relative: 0.0 1.0; to: "optionheader"; }
-               rel2 { relative: 1.0 1.0; to: "optionheader"; }
-               fixed: 0 1;
-               align: 0.0 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "optionheader2";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_CONTENT_H_INC;
-               rel1 { relative: 0.0 1.0; to: "optionheader_mid_padding";}
-               rel2 { relative: 1.0 1.0; to: "optionheader_mid_padding";}
-               fixed: 0 1;
-               align: 0.0 0.0;
-            }
-         }
-         part { name: "optionheader_bottom_padding";
-            type: RECT;
-            scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_PADDING_INC;
-               rel1 { relative: 0.0 1.0; to: "optionheader2"; }
-               rel2 { relative: 1.0 1.0; to: "optionheader2"; }
-               fixed: 0 1;
-               align: 0.0 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "optionheader_shadow";
-            type: RECT;
-            scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_SHADOW_INC;
-               rel1 { relative: 0.0 1.0; to: "optionheader_bottom_padding"; }
-               rel2 { relative: 1.0 1.0; to: "optionheader_bottom_padding"; }
-               fixed: 0 1;
-               align: 0.0 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "content_clip";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1.to: "elm.swallow.content";
-               rel2.to: "elm.swallow.content";
             }
          }
          part { name: "padding_center_text1";
@@ -1075,17 +111,40 @@
                min: NAVIFRAME_ICON_PADDING_INC;
             }
          }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            scale: 1;
+            repeat_events: 0;
+            clip_to: "content_clip";
+            description { state: "default" 0.0;
+               align: 0.0 0.0;
+               rel1.relative: 0.0 1.0;
+               rel1.to_x: "base";
+               rel1.to_y: "title_bg";
+               rel2.relative: 1.0 0.0;
+               rel2.to_x: "base";
+               rel2.to_y: "controlbar_bg";
+            }
+         }
+         part { name: "content_clip";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1.to: "elm.swallow.content";
+               rel2.to: "elm.swallow.content";
+            }
+         }
          part { name: "padding_center_text2";
             type: RECT;
             mouse_events: 0;
             scale: 1;
             clip_to: "title_clip";
             description { state: "default" 0.0;
-               min: NAVIFRAME_PADDING_INC;
+               min: 18 0;
                fixed: 1 0;
                align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to_x: "title_more_btn"; to_y: "title_bg"; }
-               rel2 { relative: 0.0 1.0; to_x: "title_more_btn"; to_y: "title_bg"; }
+               rel1 { relative: 0.0 0.0; to: "title_left_btn"; }
+               rel2 { relative: 0.0 1.0; to: "title_left_btn"; }
                visible: 0;
             }
          }
@@ -1109,7 +168,7 @@
             scale: 1;
             clip_to: "title_clip";
             description { state: "default" 0.0;
-               min: 0 8;
+               min: 0 11;
                fixed: 0 1;
                align: 0.0 1.0;
                rel1 { relative: 0.0 1.0; to: "title_bg"; }
@@ -1132,13 +191,21 @@
                color: NAVIFRAME_TITLE_TEXT_COLOR_INC;
                align: 0.0 0.5;
                fixed: 1 0;
-               rel1 { relative: 1.0 0.0; to: "padding_center_text1"; }
+               rel1 { relative: 1.0 1.0; to_x: "padding_center_text1"; to_y: "top_padding"; }
                rel2 { relative: 0.0 1.0; to: "padding_center_text2"; }
             }
             description { state: "subtitle_is_set" 0.0;
                inherit: "default" 0.0;
+               text { font: "SLP:style=Medium";
+                  size: NAVIFRAME_TITLE_SMALL_FONT_SIZE_INC;
+                  min: 0 0;
+                  max: 1 0;
+                  align: 0.0 0.2;
+                  text_class: "slp_medium";
+               }
+               fixed: 1 0;
                align: 0.0 0.0;
-               rel2 { relative: 0.0 0.6; to_x: "padding_center_text2"; to_y: "padding_center_text1"; }
+               rel1 { relative: 1.0 0.0; to_x: "padding_center_text1"; to_y: "top_padding"; }
             }
          }
          part { name: "elm.text.subtitle";
@@ -1193,7 +260,7 @@
                rel2 { relative: 0.0 1.0; to: "padding_before_text"; }
                aspect: 1.0 1.0;
                aspect_preference: VERTICAL;
-               align: 1.0 0.5;
+               align: 1.0 0.3;
             }
          }
          part { name: "click_event_area";
@@ -1212,31 +279,43 @@
                max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
                fixed: 1 1;
                align: 1 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_right_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_right_btn"; }
+               rel1 { relative: 0.0 0.0; to: "title_btns_padding"; }
+               rel2 { relative: 0.0 1.0; to: "title_btns_padding"; }
             }
          }
-         part { name: "left_btn_separator";
-            type: IMAGE;
+         part { name: "title_btns_padding";
+            type: RECT;
             scale: 1;
             clip_to: "title_clip";
             description { state: "default" 0.0;
-               min: 4 48;
-               max: 4 48;
+               min: 0 0;
                fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_left_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_left_btn"; }
-               image {
-                  normal: "00_winset_divider_line.png";
-                  border: 0 2 18 0;
-                  border_scale: 1;
-               }
+               align: 1 0.5;
+               visible: 0;
+               rel1 { relative: 0.0 0.0; to: "title_right_btn"; }
+               rel2 { relative: 0.0 1.0; to: "title_right_btn"; }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: 18 0;
+            }
+         }
+         part { name: "bottom_right_padding";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min: 0 0;
+               fixed: 1 1;
+               align: 1.0 1.0;
+               rel1 { relative: 1.0 1.0; to: "title_bg"; }
+               rel2 { relative: 1.0 1.0; to: "title_bg"; }
                visible: 0;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
-               visible: 1;
+               min: 26 11;
             }
          }
          part { name: "title_right_btn";
@@ -1247,87 +326,12 @@
                max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
                align: 1 0.5;
                fixed: 1 1;
-               rel1 { relative: 1.0 0.0; to: "title_bg"; }
-               rel2 { relative: 1.0 1.0; to: "title_bg"; }
-            }
-         }
-         part { name: "right_btn_separator";
-            type: IMAGE;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               min: 4 48;
-               max: 4 48;
-               fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_right_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_right_btn"; }
-               image {
-                  normal: "00_winset_divider_line.png";
-                  border: 0 2 18 0;
-                  border_scale: 1;
-               }
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "title_more_btn";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
-               fixed: 1 1;
-               align: 1 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_left_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_left_btn"; }
-            }
-         }
-         part { name: "more_btn_separator";
-            type: IMAGE;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               min: 4 48;
-               max: 4 48;
-               fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_more_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_more_btn"; }
-               image {
-                  normal: "00_winset_divider_line.png";
-                  border: 0 2 18 0;
-                  border_scale: 1;
-               }
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "optionheader_arrow";
-            type: IMAGE;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_OH_ARROW_SIZE_INC;
-               max: NAVIFRAME_OH_ARROW_SIZE_INC;
-               fixed: 1 1;
-               align: 0.5 0.0;
-               rel1 { relative: 0.0 0.88; to: "title_more_btn"; }
-               rel2 { relative: 1.0 1.08; to: "title_more_btn"; }
-               image.normal: "00_winset_control_top_arrow.png";
-               color: 255 255 255 0;
-            }
-            description { state: "show" 0.0;
-               inherit: "default" 0.0;
-               color: 255 255 255 255;
+               rel1 { relative: 1.0 1.0; to_x: "title_bg"; to_y: "top_padding"; }
+               rel2 { relative: 0.0 0.0; to: "bottom_right_padding"; }
             }
          }
          part { name: "controlbar_bg";
+            type: RECT;
             scale: 1;
             description { state: "default" 0.0;
                min: 0 0;
@@ -1337,18 +341,47 @@
                visible: 0;
                rel1 { to: "base"; }
                rel2 { to: "base"; }
-               image.normal: "00_winset_control_toolbar_bg.png";
+               color: 248 246 239 255;
             }
-            description { state: "show" 0.0;
+            description { state: "visible" 0.0;
                inherit: "default" 0.0;
                min: 0 CONTROLBAR_SMALL_HEIGHT_INC;
                max: 999999 CONTROLBAR_SMALL_HEIGHT_INC;
                visible: 1;
             }
          }
-         part { name: "elm.prev_btn_bg";
+         part { name: "more_btn_bg";
             type: RECT;
             scale: 1;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 0 0;
+               fixed: 1 0;
+               align: 0.0 0.0;
+               rel1 { relative: 0.0 0.0; to: "controlbar_bg"; }
+               rel2 { relative: 0.0 1.0; to: "controlbar_bg"; }
+               visible: 0;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: 115 0;
+            }
+         }
+         part { name: "title_more_btn";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               max: NAVIFRAME_PREV_FUNC_BTN_SIZE_INC;
+               fixed: 1 1;
+               align: 0.5 0.5;
+               rel1.to: "more_btn_bg";
+               rel2.to: "more_btn_bg";
+            }
+         }
+         part { name: "prev_btn_bg";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
             description { state: "default" 0.0;
                min: 0 0;
                fixed: 1 0;
@@ -1359,39 +392,18 @@
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
-               min: NAVIFRAME_TITLE_PREV_BTN_BG_SIZE_INC 0;
-            }
-         }
-         part { name: "prev_btn_separator";
-            type: IMAGE;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 4 48;
-               max: 4 48;
-               fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "elm.prev_btn_bg"; }
-               rel2 { relative: 0.0 1.0; to: "elm.prev_btn_bg"; }
-               image {
-                  normal: "00_winset_divider_line.png";
-                  border: 0 2 18 0;
-                  border_scale: 1;
-               }
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
+               min: 115 0;
             }
          }
          part { name: "elm.swallow.prev_btn";
             type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
+               max: NAVIFRAME_PREV_FUNC_BTN_SIZE_INC;
                fixed: 1 1;
                align: 0.5 0.5;
-               rel1.to: "elm.prev_btn_bg";
-               rel2.to: "elm.prev_btn_bg";
+               rel1.to: "prev_btn_bg";
+               rel2.to: "prev_btn_bg";
             }
          }
          part { name: "controlbar_clip";
@@ -1399,7 +411,8 @@
             mouse_events: 0;
             description { state: "default" 0.0;
                rel1.to: "controlbar_bg";
-               rel2 { relative: 0.0 1.0; to_x: "prev_btn_separator"; to_y: "elm.prev_btn_bg"; }
+               rel1 { relative: 1.0 0.0; to: "more_btn_bg"; }
+               rel2 { relative: 0.0 1.0; to: "prev_btn_bg"; }
             }
          }
          part { name: "controlbar";
@@ -1487,25 +500,14 @@
          program { name: "title_show";
             signal: "elm,state,title,show";
             source: "elm";
-            script {
-               set_state(PART:"title_bg", "default", 0.0);
-               if (get_int(oh_show) == 1) {
-                  if (get_int(oh_close) == 1) {
-                     emit("elm,state,optionheader,instant_close", "");
-                  }else {
-                     emit("elm,state,optionheader,instant_open", "");
-                  }
-               }
-               else
-                 set_state(PART:"optionheader_bg", "default", 0.0);
-            }
+            action: STATE_SET "default" 0.0;
+            target: "title_bg";
          }
          program { name: "title_hide";
             signal: "elm,state,title,hide";
             source: "elm";
             action: STATE_SET "hide" 0.0;
             target: "title_bg";
-            target: "optionheader_bg";
          }
          program { name: "subtitle_show";
             signal: "elm,state,subtitle,show";
@@ -1526,8 +528,7 @@
             source: "elm";
             script {
                emit("elm,state,controlbar_bg,show", "elm");
-               set_state(PART:"elm.prev_btn_bg", "visible", 0.0);
-               set_state(PART:"prev_btn_separator", "visible", 0.0);
+               set_state(PART:"prev_btn_bg", "visible", 0.0);
             }
          }
          program { name: "prev_btn_hide";
@@ -1535,8 +536,7 @@
             source: "elm";
             script {
                emit("elm,state,controlbar_bg,hide", "elm");
-               set_state(PART:"elm.prev_btn_bg", "default", 0.0);
-               set_state(PART:"prev_btn_separator", "default", 0.0);
+               set_state(PART:"prev_btn_bg", "default", 0.0);
             }
          }
          program { name: "icon_show";
@@ -1554,38 +554,60 @@
          program { name: "left_btn_show";
             signal: "elm,state,title_left_btn,show";
             source: "elm";
-            action: STATE_SET "visible" 0.0;
-            target: "left_btn_separator";
+            script {
+               set_int(buttons_visible, get_int(buttons_visible) + 1);
+               set_state(PART:"bottom_right_padding", "visible", 0.0);
+               if (get_int(buttons_visible) >= 2)
+                 set_state(PART:"title_btns_padding", "visible", 0.0);
+            }
          }
          program { name: "left_btn_hide";
             signal: "elm,state,title_left_btn,hide";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "left_btn_separator";
+            script {
+               set_int(buttons_visible, get_int(buttons_visible) - 1);
+               set_state(PART:"title_btns_padding", "default", 0.0);
+               if (get_int(buttons_visible) == 0)
+                 set_state(PART:"bottom_right_padding", "default", 0.0);
+            }
          }
          program { name: "right_btn_show";
             signal: "elm,state,title_right_btn,show";
             source: "elm";
             action: STATE_SET "visible" 0.0;
-            target: "right_btn_separator";
+            script {
+               set_int(buttons_visible, get_int(buttons_visible) + 1);
+               set_state(PART:"bottom_right_padding", "visible", 0.0);
+               if (get_int(buttons_visible) >= 2)
+                 set_state(PART:"title_btns_padding", "visible", 0.0);
+            }
          }
          program { name: "right_btn_hide";
             signal: "elm,state,title_right_btn,hide";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "right_btn_separator";
+            script {
+               set_int(buttons_visible, get_int(buttons_visible) - 1);
+               set_state(PART:"title_btns_padding", "default", 0.0);
+               if (get_int(buttons_visible) == 0)
+                 set_state(PART:"bottom_right_padding", "default", 0.0);
+            }
          }
          program { name: "more_btn_show";
             signal: "elm,state,title_more_btn,show";
             source: "elm";
-            action: STATE_SET "visible" 0.0;
-            target: "more_btn_separator";
+            script {
+               emit("elm,state,controlbar_bg,show", "elm");
+               set_state(PART:"more_btn_bg", "visible", 0.0);
+            }
          }
          program { name: "more_btn_hide";
             signal: "elm,state,title_more_btn,hide";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "more_btn_separator";
+            script {
+               emit("elm,state,controlbar_bg,hide", "elm");
+               set_state(PART:"more_btn_bg", "default", 0.0);
+            }
          }
          program { name: "controlbar_show";
             signal: "elm,state,controlbar,show";
@@ -1605,7 +627,7 @@
             signal: "elm,state,controlbar_bg,show";
             source: "elm";
             script {
-               set_state(PART:"controlbar_bg", "show", 0.0);
+               set_state(PART:"controlbar_bg", "visible", 0.0);
                set_int(cbar_bg, get_int(cbar_bg) + 1);
             }
          }
@@ -1618,76 +640,10 @@
                  set_state(PART:"controlbar_bg", "default", 0.0);
             }
          }
-         program { name: "optionheader_show";
-            signal: "elm,state,optionheader,show";
-            source: "elm";
-            script {
-               set_state(PART:"optionheader_bg", "show", 0.0);
-               set_state(PART:"optionheader_arrow", "show", 0.0);
-               set_int(oh_show, 1);
-            }
-         }
-         program { name: "optionheader_hide";
-            signal: "elm,state,optionheader,hide";
-            source: "elm";
-            script {
-               set_state(PART:"optionheader_bg", "default", 0.0);
-               set_state(PART:"optionheader_arrow", "default", 0.0);
-               set_int(oh_show, 0);
-            }
-         }
-         program { name: "optionheader_open";
-            signal: "elm,state,optionheader,open";
-            source: "";
-            action: STATE_SET "show" 0.0;
-            target: "optionheader_bg";
-            target: "optionheader_arrow";
-            transition: LINEAR 0.2;
-            after: "optionheader_open_set";
-         }
-         program { name: "optionheader_close";
-            signal: "elm,state,optionheader,close";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "optionheader_bg";
-            target: "optionheader_arrow";
-            transition: LINEAR 0.2;
-            after: "optionheader_close_set";
-         }
-         program { name: "optionheader_instant_open";
-            signal: "elm,state,optionheader,instant_open";
-            source: "";
-            action: STATE_SET "show" 0.0;
-            target: "optionheader_bg";
-            target: "optionheader_arrow";
-            after: "optionheader_open_set";
-         }
-         program { name: "optionheader_instant_close";
-            signal: "elm,state,optionheader,instant_close";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "optionheader_bg";
-            target: "optionheader_arrow";
-            after: "optionheader_close_set";
-         }
-         program { name: "optionheader_close_set";
-            signal: "elm,state,optionheader,close_set";
-            source: "";
-            script {
-               set_int(oh_close, 1);
-            }
-         }
-         program { name: "optionheader_open_set";
-            signal: "elm,state,optionheader,open_set";
-            source: "";
-            script {
-               set_int(oh_close, 0);
-            }
-         }
          program { name: "controlbar_open";
             signal: "elm,state,controlbar,open";
             source: "";
-            action: STATE_SET "show" 0.0;
+            action: STATE_SET "visible" 0.0;
             target: "controlbar_bg";
             transition: LINEAR 0.2;
          }
@@ -1735,12 +691,6 @@
    group { name: "elm/naviframe/item/segment/default";
       script {
          public cbar_bg = 0;     //Controlbar BG Show call count
-         public sep_show = 0;    //whether to show separator between left/right buttons
-      }
-      images {
-         image: "00_winset_control_toolbar_bg.png" COMP;
-         image: "00_winset_title_bg.png" COMP;
-         image: "00_winset_divider_line.png" COMP;
       }
       parts {
          part { name: "base";
@@ -1761,6 +711,7 @@
             }
          }
          part { name: "title_bg";
+            type: RECT;
             scale: 1;
             description { state: "default" 0.0;
                min: 1 NAVIFRAME_SEGMENT_TITLE_H_INC;
@@ -1768,7 +719,7 @@
                fixed: 0 1;
                rel1 { relative: 0.0 0.0; to: "base"; }
                rel2 { relative: 1.0 0.0; to: "base"; }
-               image.normal: "00_winset_title_bg.png";
+               color: 248 246 239 255;
             }
             description { state: "hide" 0.0;
                inherit: "default" 0.0;
@@ -1808,6 +759,19 @@
                rel2.to: "elm.swallow.content";
             }
          }
+         part { name: "text_left_padding";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               align: 0.0 0.5;
+               rel1 { relative: 0.0 0.0; }
+               rel2 { relative: 0.0 1.0; }
+               fixed: 1 0;
+               min: 16 0;
+               visible: 0;
+            }
+         }
          part { name: "left_padding";
             type: RECT;
             scale: 1;
@@ -1817,7 +781,7 @@
                rel1 { relative: 0.0 0.0; }
                rel2 { relative: 0.0 1.0; }
                fixed: 1 0;
-               min: NAVIFRAME_PADDING_INC;
+               min: 8 0;
                visible: 0;
             }
          }
@@ -1830,7 +794,7 @@
                rel1 { relative: 1.0 0.0; }
                rel2 { relative: 1.0 1.0; }
                fixed: 1 0;
-               min: NAVIFRAME_PADDING_INC;
+               min: 8 0;
                visible: 0;
             }
          }
@@ -1851,7 +815,7 @@
                fixed: 1 1;
                color: NAVIFRAME_TITLE_TEXT_COLOR_INC;
                align: 0 0;
-               rel1.to: "left_padding";
+               rel1.to: "text_left_padding";
                rel1.relative: 1.0 0.0;
                rel2.to: "right_padding";
                rel2.relative: 0.0 1.0;
@@ -1864,66 +828,6 @@
                 rel1 { to: "title_bg"; }
                 rel2 { to: "title_bg"; }
              }
-         }
-         part { name: "title_left_btn";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               max: NAVIFRAME_SEGMENT_TITLE_FUNC_BTN_SIZE_INC;
-               fixed: 1 1;
-               align: 1.0 0.0;
-               rel1 { relative: 0.0 1.0; to_x: "title_right_btn"; to_y: "elm.text.title"; }
-               rel2 { relative: 0.0 1.0; to_x: "title_right_btn"; to_y: "elm.text.title"; }
-            }
-         }
-         part { name: "left_btn_Padding";
-            type: RECT;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               min: 4 0;
-               fixed: 1 0;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_left_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_left_btn"; }
-               visible: 0;
-            }
-         }
-         part { name: "title_right_btn";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
-               align: 1.0 0.0;
-               fixed: 1 1;
-               rel1 { relative: 1.0 1.0; to_x: "title_bg"; to_y: "elm.text.title"; }
-               rel2 { relative: 1.0 1.0; to_x: "title_bg"; to_y: "elm.text.title"; }
-            }
-         }
-         part { name: "btns_separator";
-            type: IMAGE;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               min: 4 48;
-               max: 4 48;
-               fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_right_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_right_btn"; }
-               image {
-                  normal: "00_winset_divider_line.png";
-                  border: 0 2 18 0;
-                  border_scale: 1;
-               }
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
          }
          part { name: "segment";
             type: "SWALLOW";
@@ -1941,12 +845,9 @@
                rel2.to_y: "elm.text.title";
                rel2.relative: 0 1;
             }
-            description { state: "buttons_set" 0.0;
-               inherit: "default" 0.0;
-               rel2.to_x: "left_btn_Padding";
-            }
          }
          part { name: "controlbar_bg";
+            type: RECT;
             scale: 1;
             description { state: "default" 0.0;
                min: 0 0;
@@ -1956,18 +857,47 @@
                visible: 0;
                rel1 { to: "base"; }
                rel2 { to: "base"; }
-               image.normal: "00_winset_control_toolbar_bg.png";
+               color: 248 246 239 255;
             }
-            description { state: "show" 0.0;
+            description { state: "visible" 0.0;
                inherit: "default" 0.0;
                min: 0 CONTROLBAR_SMALL_HEIGHT_INC;
                max: 999999 CONTROLBAR_SMALL_HEIGHT_INC;
                visible: 1;
             }
          }
-         part { name: "elm.prev_btn_bg";
+         part { name: "more_btn_bg";
             type: RECT;
             scale: 1;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 0 0;
+               fixed: 1 0;
+               align: 0.0 0.0;
+               rel1 { relative: 0.0 0.0; to: "controlbar_bg"; }
+               rel2 { relative: 0.0 1.0; to: "controlbar_bg"; }
+               visible: 0;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: 115 0;
+            }
+         }
+         part { name: "title_more_btn";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               max: NAVIFRAME_PREV_FUNC_BTN_SIZE_INC;
+               fixed: 1 1;
+               align: 0.5 0.5;
+               rel1.to: "more_btn_bg";
+               rel2.to: "more_btn_bg";
+            }
+         }
+         part { name: "prev_btn_bg";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
             description { state: "default" 0.0;
                min: 0 0;
                fixed: 1 0;
@@ -1978,47 +908,27 @@
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
-               min: NAVIFRAME_TITLE_PREV_BTN_BG_SIZE_INC 0;
+               min: 115 0;
             }
          }
-         part { name: "prev_btn_separator";
-            type: IMAGE;
+         part { name: "elm.swallow.prev_btn";
+            type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
-               min: 4 48;
-               max: 4 48;
+               max: NAVIFRAME_PREV_FUNC_BTN_SIZE_INC;
                fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "elm.prev_btn_bg"; }
-               rel2 { relative: 0.0 1.0; to: "elm.prev_btn_bg"; }
-               image {
-                  normal: "00_winset_divider_line.png";
-                  border: 0 2 18 0;
-                  border_scale: 1;
-               }
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
+               align: 0.5 0.5;
+               rel1.to: "prev_btn_bg";
+               rel2.to: "prev_btn_bg";
             }
          }
-        part { name: "elm.swallow.prev_btn";
-           type: SWALLOW;
-           scale: 1;
-           description { state: "default" 0.0;
-              fixed: 1 1;
-              align: 0.5 0.5;
-              rel1.to: "elm.prev_btn_bg";
-              rel2.to: "elm.prev_btn_bg";
-           }
-        }
          part { name: "controlbar_clip";
             type: RECT;
             mouse_events: 0;
             description { state: "default" 0.0;
                rel1.to: "controlbar_bg";
-               rel2 { relative: 0.0 1.0; to_x: "prev_btn_separator"; to_y: "elm.prev_btn_bg"; }
+               rel1 { relative: 1.0 0.0; to: "more_btn_bg"; }
+               rel2 { relative: 0.0 1.0; to: "prev_btn_bg"; }
             }
          }
          part { name: "controlbar";
@@ -2106,7 +1016,7 @@
          program { name: "title_show";
             signal: "elm,state,title,show";
             source: "elm";
-            action: STATE_SET "show" 0.0;
+            action: STATE_SET "default" 0.0;
             target: "title_bg";
          }
          program { name: "title_hide";
@@ -2115,53 +1025,12 @@
             action: STATE_SET "hide" 0.0;
             target: "title_bg";
          }
-         program { name: "left_btn_show";
-            signal: "elm,state,title_left_btn,show";
-            source: "elm";
-            script {
-               set_state(PART:"segment", "buttons_set", 0.0);
-               set_int(sep_show, get_int(sep_show) + 1);
-               if (get_int(sep_show) >= 2)
-                 set_state(PART:"btns_separator", "visible", 0.0);
-            }
-         }
-         program { name: "left_btn_hide";
-            signal: "elm,state,title_left_btn,hide";
-            source: "elm";
-            script {
-               if (get_int(sep_show) == 0)
-                 set_state(PART:"segment", "default", 0.0);
-               set_int(sep_show, get_int(sep_show) - 1);
-               set_state(PART:"btns_separator", "default", 0.0);
-            }
-         }
-         program { name: "right_btn_show";
-            signal: "elm,state,title_right_btn,show";
-            source: "elm";
-            script {
-               set_state(PART:"segment", "buttons_set", 0.0);
-               set_int(sep_show, get_int(sep_show) + 1);
-               if (get_int(sep_show) >= 2)
-                 set_state(PART:"btns_separator", "visible", 0.0);
-            }
-         }
-         program { name: "right_btn_hide";
-            signal: "elm,state,title_right_btn,hide";
-            source: "elm";
-            script {
-               if (get_int(sep_show) == 0)
-                 set_state(PART:"segment", "default", 0.0);
-               set_int(sep_show, get_int(sep_show) - 1);
-               set_state(PART:"btns_separator", "default", 0.0);
-            }
-         }
          program { name: "prev_btn_show";
             signal: "elm,state,prev_btn,show";
             source: "elm";
             script {
                emit("elm,state,controlbar_bg,show", "elm");
-               set_state(PART:"elm.prev_btn_bg", "visible", 0.0);
-               set_state(PART:"prev_btn_separator", "visible", 0.0);
+               set_state(PART:"prev_btn_bg", "visible", 0.0);
             }
          }
          program { name: "prev_btn_hide";
@@ -2169,8 +1038,23 @@
             source: "elm";
             script {
                emit("elm,state,controlbar_bg,hide", "elm");
-               set_state(PART:"elm.prev_btn_bg", "default", 0.0);
-               set_state(PART:"prev_btn_separator", "default", 0.0);
+               set_state(PART:"prev_btn_bg", "default", 0.0);
+            }
+         }
+         program { name: "more_btn_show";
+            signal: "elm,state,title_more_btn,show";
+            source: "elm";
+            script {
+               emit("elm,state,controlbar_bg,show", "elm");
+               set_state(PART:"more_btn_bg", "visible", 0.0);
+            }
+         }
+         program { name: "more_btn_hide";
+            signal: "elm,state,title_more_btn,hide";
+            source: "elm";
+            script {
+               emit("elm,state,controlbar_bg,hide", "elm");
+               set_state(PART:"more_btn_bg", "default", 0.0);
             }
          }
          program { name: "controlbar_show";
@@ -2191,7 +1075,7 @@
             signal: "elm,state,controlbar_bg,show";
             source: "elm";
             script {
-               set_state(PART:"controlbar_bg", "show", 0.0);
+               set_state(PART:"controlbar_bg", "visible", 0.0);
                set_int(cbar_bg, get_int(cbar_bg) + 1);
             }
          }
@@ -2207,7 +1091,7 @@
          program { name: "controlbar_open";
             signal: "elm,state,controlbar,open";
             source: "";
-            action: STATE_SET "show" 0.0;
+            action: STATE_SET "visible" 0.0;
             target: "controlbar_bg";
             transition: LINEAR 0.2;
          }
@@ -2251,14 +1135,10 @@
          }
       }
    }
+
    group { name: "elm/naviframe/item/tabbar/default";
       script {
          public cbar_bg = 0;     //Controlbar BG Show call count
-      }
-      images {
-         image: "00_winset_control_toolbar_bg.png" COMP;
-         image: "00_winset_title_bg.png" COMP;
-         image: "00_winset_divider_line.png" COMP;
       }
       parts {
          part { name: "base";
@@ -2301,6 +1181,7 @@
             }
          }
          part { name: "controlbar_bg";
+            type: RECT;
             scale: 1;
             description { state: "default" 0.0;
                min: 0 0;
@@ -2310,61 +1191,69 @@
                visible: 0;
                rel1 { to: "base"; }
                rel2 { to: "base"; }
-               image.normal: "00_winset_control_toolbar_bg.png";
+               color: 248 246 239 255;
             }
-            description { state: "show" 0.0;
+            description { state: "visible" 0.0;
                inherit: "default" 0.0;
                min: 0 CONTROLBAR_SMALL_HEIGHT_INC;
                max: 999999 CONTROLBAR_SMALL_HEIGHT_INC;
                visible: 1;
             }
          }
-         part { name: "elm.prev_btn_bg";
-           type: RECT;
-           scale: 1;
-           description { state: "default" 0.0;
-              min: 0 0;
-              fixed: 1 0;
-              align: 1.0 0.0;
-              rel1 { relative: 1.0 0.0; to: "controlbar_bg"; }
-              rel2.to: "controlbar_bg";
-              visible: 0;
-           }
-           description { state: "visible" 0.0;
-              inherit: "default" 0.0;
-              min: NAVIFRAME_TITLE_PREV_BTN_BG_SIZE_INC 0;
-           }
-         }
-         part { name: "prev_btn_separator";
-            type: IMAGE;
+         part { name: "more_btn_bg";
+            type: RECT;
             scale: 1;
+            mouse_events: 0;
             description { state: "default" 0.0;
-               min: 4 48;
-               max: 4 48;
-               fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "elm.prev_btn_bg"; }
-               rel2 { relative: 0.0 1.0; to: "elm.prev_btn_bg"; }
-               image {
-                  normal: "00_winset_divider_line.png";
-                  border: 0 2 18 0;
-                  border_scale: 1;
-               }
+               min: 0 0;
+               fixed: 1 0;
+               align: 0.0 0.0;
+               rel1 { relative: 0.0 0.0; to: "controlbar_bg"; }
+               rel2 { relative: 0.0 1.0; to: "controlbar_bg"; }
                visible: 0;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
-               visible: 1;
+               min: 115 0;
+            }
+         }
+         part { name: "title_more_btn";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               max: NAVIFRAME_PREV_FUNC_BTN_SIZE_INC;
+               fixed: 1 1;
+               align: 0.5 0.5;
+               rel1.to: "more_btn_bg";
+               rel2.to: "more_btn_bg";
+            }
+         }
+         part { name: "prev_btn_bg";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 0 0;
+               fixed: 1 0;
+               align: 1.0 0.0;
+               rel1 { relative: 1.0 0.0; to: "controlbar_bg"; }
+               rel2.to: "controlbar_bg";
+               visible: 0;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: 115 0;
             }
          }
          part { name: "elm.swallow.prev_btn";
             type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
+               max: NAVIFRAME_PREV_FUNC_BTN_SIZE_INC;
                fixed: 1 1;
                align: 0.5 0.5;
-               rel1.to: "elm.prev_btn_bg";
-               rel2.to: "elm.prev_btn_bg";
+               rel1.to: "prev_btn_bg";
+               rel2.to: "prev_btn_bg";
             }
          }
          part { name: "controlbar_clip";
@@ -2372,7 +1261,8 @@
             mouse_events: 0;
             description { state: "default" 0.0;
                rel1.to: "controlbar_bg";
-               rel2 { relative: 0.0 1.0; to_x: "prev_btn_separator"; to_y: "elm.prev_btn_bg"; }
+               rel1 { relative: 1.0 0.0; to: "more_btn_bg"; }
+               rel2 { relative: 0.0 1.0; to: "prev_btn_bg"; }
             }
          }
          part { name: "controlbar";
@@ -2462,8 +1352,7 @@
             source: "elm";
             script {
                emit("elm,state,controlbar_bg,show", "elm");
-               set_state(PART:"elm.prev_btn_bg", "visible", 0.0);
-               set_state(PART:"prev_btn_separator", "visible", 0.0);
+               set_state(PART:"prev_btn_bg", "visible", 0.0);
             }
          }
          program { name: "prev_btn_hide";
@@ -2471,14 +1360,28 @@
             source: "elm";
             script {
                emit("elm,state,controlbar_bg,hide", "elm");
-               set_state(PART:"elm.prev_btn_bg", "default", 0.0);
-               set_state(PART:"prev_btn_separator", "default", 0.0);
+               set_state(PART:"prev_btn_bg", "default", 0.0);
+            }
+         }
+         program { name: "more_btn_show";
+            signal: "elm,state,title_more_btn,show";
+            source: "elm";
+            script {
+               emit("elm,state,controlbar_bg,show", "elm");
+               set_state(PART:"more_btn_bg", "visible", 0.0);
+            }
+         }
+         program { name: "more_btn_hide";
+            signal: "elm,state,title_more_btn,hide";
+            source: "elm";
+            script {
+               emit("elm,state,controlbar_bg,hide", "elm");
+               set_state(PART:"more_btn_bg", "default", 0.0);
             }
          }
          program { name: "controlbar_show";
             signal: "elm,state,controlbar,show";
             source: "elm";
-            action: STATE_SET "show" 0.0;
             script {
                emit("elm,state,controlbar_bg,show", "elm");
             }
@@ -2494,7 +1397,7 @@
             signal: "elm,state,controlbar_bg,show";
             source: "elm";
             script {
-               set_state(PART:"controlbar_bg", "show", 0.0);
+               set_state(PART:"controlbar_bg", "visible", 0.0);
                set_int(cbar_bg, get_int(cbar_bg) + 1);
             }
          }
@@ -2510,7 +1413,7 @@
          program { name: "controlbar_open";
             signal: "elm,state,controlbar,open";
             source: "";
-            action: STATE_SET "show" 0.0;
+            action: STATE_SET "visible" 0.0;
             target: "controlbar_bg";
             transition: LINEAR 0.2;
          }
@@ -2559,33 +1462,9 @@
       inherit: "elm/naviframe/item/basic/default";
       alias:"elm/naviframe/item/1line/instant/default";
       alias:"elm/naviframe/item/instant/default";
-      programs {
-         program { name: "cur_pushed";
-            signal: "elm,state,cur,pushed";
-            source: "elm";
-            after: "pushed_finished";
-         }
-         program { name: "new_pushed";
-            signal: "elm,state,new,pushed";
-            source: "elm";
-            after: "show_finished";
-         }
-         program { name: "prev_popped";
-            signal: "elm,state,prev,popped";
-            source: "elm";
-            after: "show_finished";
-         }
-         program { name: "cur_popped";
-            signal: "elm,state,cur,popped";
-            source: "elm";
-            after: "popped_finished";
-         }
-      }
-   }
-   group { name:"elm/naviframe/item/basic2/instant/default";
-      inherit: "elm/naviframe/item/basic2/default";
       alias:"elm/naviframe/item/2line/instant/default";
       alias:"elm/naviframe/item/instant2/default";
+      alias:"elm/naviframe/item/basic2/instant/default";
       programs {
          program { name: "cur_pushed";
             signal: "elm,state,cur,pushed";
@@ -2609,6 +1488,7 @@
          }
       }
    }
+
    group { name: "elm/naviframe/item/segment/instant/default";
       inherit:  "elm/naviframe/item/segment/default";
       programs {
@@ -2683,16 +1563,7 @@
    }
 
    group { name:"elm/naviframe/item/empty/default";
-      images {
-          image: "00_winset_control_top_bg.png" COMP;
-          image: "00_winset_control_top_arrow.png" COMP;
-          image: "00_winset_control_toolbar_bg.png" COMP;
-          image: "00_winset_title_bg.png" COMP;
-          image: "00_winset_divider_line.png" COMP;
-      }
       script {
-         public oh_show = 0;     //optionheader show/hide
-         public oh_close = 0;    //optionheader close/open
          public cbar_bg = 0;     //Controlbar BG Show call count
       }
       parts {
@@ -2714,25 +1585,18 @@
             }
          }
          part { name: "title_bg";
+            type: RECT;
             scale: 1;
             description { state: "default" 0.0;
                rel1 { to: "title"; }
                rel2 { to: "title"; }
-               image.normal: "00_winset_title_bg.png";
+               color: 248 246 239 255;
             }
             description { state: "hide" 0.0;
                inherit: "default" 0.0;
                min: 0 0;
                max: 0 0;
                fixed: 1 1;
-            }
-         }
-         part { name: "title_clip";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1 { to: "base"; }
-               rel2 { to: "base"; }
             }
          }
          part { name: "elm.swallow.content";
@@ -2742,98 +1606,12 @@
             clip_to: "content_clip";
             description { state: "default" 0.0;
                align: 0.0 0.0;
-               rel1.relative: 0.0 0.95;
+               rel1.relative: 0.0 1.0;
                rel1.to_x: "base";
-               rel1.to_y: "optionheader_bg";
+               rel1.to_y: "title_bg";
                rel2.relative: 1.0 0.0;
                rel2.to_x: "base";
                rel2.to_y: "controlbar_bg";
-            }
-         }
-         part { name: "optionheader_bg";
-            type: IMAGE;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 1 0;
-               align: 0.5 0;
-               fixed: 0 1;
-               rel1.to: "title_bg";
-               rel1.relative: 0 1;
-               rel2.to: "title_bg";
-               visible: 0;
-               image { normal: "00_winset_control_top_bg.png";
-                  border: NAVIFRAME_OH_BORDER_INC;
-               }
-            }
-            description { state: "show" 0.0;
-               inherit: "default" 0.0;
-               min: 1 NAVIFRAME_OH_OPENED_H_INC;
-               visible: 1;
-            }
-            description { state: "hide" 0.0;
-               inherit: "default" 0.0;
-               min: 0 0;
-               max: 0 0;
-               fixed: 1 1;
-            }
-         }
-         part { name: "optionheader_clip";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1 { to: "optionheader_bg"; }
-               rel2 { to: "optionheader_bg"; }
-            }
-         }
-         part { name: "optionheader_top_padding";
-            type: RECT;
-            scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_PADDING_INC;
-               rel1 { relative: 0.0 0.0; to: "optionheader_bg"; }
-               rel2 { relative: 1.0 0.0; to: "optionheader_bg"; }
-               fixed: 0 1;
-               align: 0.0 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "optionheader";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_CONTENT_H_INC;
-               rel1 { relative: 0.0 1.0; to: "optionheader_top_padding"; }
-               rel2 { relative: 1.0 1.0; to: "optionheader_top_padding"; }
-               fixed: 0 1;
-               align: 0.0 0.0;
-            }
-         }
-         part { name: "optionheader_bottom_padding";
-            type: RECT;
-            scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_PADDING_INC;
-               rel1 { relative: 0.0 1.0; to: "optionheader"; }
-               rel2 { relative: 1.0 1.0; to: "optionheader"; }
-               fixed: 0 1;
-               align: 0.0 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "optionheader_shadow";
-            type: RECT;
-            scale: 1;
-            clip_to: "optionheader_clip";
-            description { state: "default" 0.0;
-               min: 0 NAVIFRAME_OH_SHADOW_INC;
-               rel1 { relative: 0.0 1.0; to: "optionheader_bottom_padding"; }
-               rel2 { relative: 1.0 1.0; to: "optionheader_bottom_padding"; }
-               fixed: 0 1;
-               align: 0.0 0.0;
-               visible: 0;
             }
          }
          part { name: "content_clip";
@@ -2847,7 +1625,6 @@
          part { name: "title";
             type: SWALLOW;
             scale: 1;
-            clip_to: "title_clip";
             description { state: "default" 0.0;
                align: 0.5 0.0;
                fixed: 0 1;
@@ -2863,6 +1640,7 @@
             }
          }
          part { name: "controlbar_bg";
+            type: RECT;
             scale: 1;
             description { state: "default" 0.0;
                min: 0 0;
@@ -2872,18 +1650,47 @@
                visible: 0;
                rel1 { to: "base"; }
                rel2 { to: "base"; }
-               image.normal: "00_winset_control_toolbar_bg.png";
+               color: 248 246 239 255;
             }
-            description { state: "show" 0.0;
+            description { state: "visible" 0.0;
                inherit: "default" 0.0;
                min: 0 CONTROLBAR_SMALL_HEIGHT_INC;
                max: 999999 CONTROLBAR_SMALL_HEIGHT_INC;
                visible: 1;
             }
          }
-         part { name: "elm.prev_btn_bg";
+         part { name: "more_btn_bg";
             type: RECT;
             scale: 1;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 0 0;
+               fixed: 1 0;
+               align: 0.0 0.0;
+               rel1 { relative: 0.0 0.0; to: "controlbar_bg"; }
+               rel2 { relative: 0.0 1.0; to: "controlbar_bg"; }
+               visible: 0;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: 115 0;
+            }
+         }
+         part { name: "title_more_btn";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               max: NAVIFRAME_PREV_FUNC_BTN_SIZE_INC;
+               fixed: 1 1;
+               align: 0.5 0.5;
+               rel1.to: "more_btn_bg";
+               rel2.to: "more_btn_bg";
+            }
+         }
+         part { name: "prev_btn_bg";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
             description { state: "default" 0.0;
                min: 0 0;
                fixed: 1 0;
@@ -2894,39 +1701,18 @@
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
-               min: NAVIFRAME_TITLE_PREV_BTN_BG_SIZE_INC 0;
-            }
-         }
-         part { name: "prev_btn_separator";
-            type: IMAGE;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 4 48;
-               max: 4 48;
-               fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "elm.prev_btn_bg"; }
-               rel2 { relative: 0.0 1.0; to: "elm.prev_btn_bg"; }
-               image {
-                  normal: "00_winset_divider_line.png";
-                  border: 0 2 18 0;
-                  border_scale: 1;
-               }
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
+               min: 115 0;
             }
          }
          part { name: "elm.swallow.prev_btn";
             type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
+               max: NAVIFRAME_PREV_FUNC_BTN_SIZE_INC;
                fixed: 1 1;
                align: 0.5 0.5;
-               rel1.to: "elm.prev_btn_bg";
-               rel2.to: "elm.prev_btn_bg";
+               rel1.to: "prev_btn_bg";
+               rel2.to: "prev_btn_bg";
             }
          }
          part { name: "controlbar_clip";
@@ -2934,7 +1720,8 @@
             mouse_events: 0;
             description { state: "default" 0.0;
                rel1.to: "controlbar_bg";
-               rel2 { relative: 0.0 1.0; to_x: "prev_btn_separator"; to_y: "elm.prev_btn_bg"; }
+               rel1 { relative: 1.0 0.0; to: "more_btn_bg"; }
+               rel2 { relative: 0.0 1.0; to: "prev_btn_bg"; }
             }
          }
          part { name: "controlbar";
@@ -3022,19 +1809,9 @@
          program { name: "title_show";
             signal: "elm,state,title,show";
             source: "elm";
-            script {
-               set_state(PART:"title", "default", 0.0);
-               set_state(PART:"title_bg", "default", 0.0);
-               if (get_int(oh_show) == 1) {
-                  if (get_int(oh_close) == 1) {
-                     emit("elm,state,optionheader,instant_close", "");
-                  }else {
-                     emit("elm,state,optionheader,instant_open", "");
-                  }
-               }
-               else
-                 set_state(PART:"optionheader_bg", "default", 0.0);
-            }
+            action: STATE_SET "default" 0.0;
+            target: "title";
+            target: "title_bg";
          }
          program { name: "title_hide";
             signal: "elm,state,title,hide";
@@ -3042,15 +1819,13 @@
             action: STATE_SET "hide" 0.0;
             target: "title";
             target: "title_bg";
-            target: "optionheader_bg";
          }
          program { name: "prev_btn_show";
             signal: "elm,state,prev_btn,show";
             source: "elm";
             script {
                emit("elm,state,controlbar_bg,show", "elm");
-               set_state(PART:"elm.prev_btn_bg", "visible", 0.0);
-               set_state(PART:"prev_btn_separator", "visible", 0.0);
+               set_state(PART:"prev_btn_bg", "visible", 0.0);
             }
          }
          program { name: "prev_btn_hide";
@@ -3058,8 +1833,23 @@
             source: "elm";
             script {
                emit("elm,state,controlbar_bg,hide", "elm");
-               set_state(PART:"elm.prev_btn_bg", "default", 0.0);
-               set_state(PART:"prev_btn_separator", "default", 0.0);
+               set_state(PART:"prev_btn_bg", "default", 0.0);
+            }
+         }
+         program { name: "more_btn_show";
+            signal: "elm,state,title_more_btn,show";
+            source: "elm";
+            script {
+               emit("elm,state,controlbar_bg,show", "elm");
+               set_state(PART:"more_btn_bg", "visible", 0.0);
+            }
+         }
+         program { name: "more_btn_hide";
+            signal: "elm,state,title_more_btn,hide";
+            source: "elm";
+            script {
+               emit("elm,state,controlbar_bg,hide", "elm");
+               set_state(PART:"more_btn_bg", "default", 0.0);
             }
          }
          program { name: "controlbar_show";
@@ -3080,7 +1870,7 @@
             signal: "elm,state,controlbar_bg,show";
             source: "elm";
             script {
-               set_state(PART:"controlbar_bg", "show", 0.0);
+               set_state(PART:"controlbar_bg", "visible", 0.0);
                set_int(cbar_bg, get_int(cbar_bg) + 1);
             }
          }
@@ -3093,70 +1883,10 @@
                  set_state(PART:"controlbar_bg", "default", 0.0);
             }
          }
-         program { name: "optionheader_show";
-            signal: "elm,state,optionheader,show";
-            source: "elm";
-            script {
-               set_state(PART:"optionheader_bg", "show", 0.0);
-               set_int(oh_show, 1);
-            }
-         }
-         program { name: "optionheader_hide";
-            signal: "elm,state,optionheader,hide";
-            source: "elm";
-            script {
-               set_state(PART:"optionheader_bg", "default", 0.0);
-               set_int(oh_show, 0);
-            }
-         }
-         program { name: "optionheader_open";
-            signal: "elm,state,optionheader,open";
-            source: "";
-            action: STATE_SET "show" 0.0;
-            target: "optionheader_bg";
-            transition: LINEAR 0.2;
-            after: "optionheader_open_set";
-         }
-         program { name: "optionheader_close";
-            signal: "elm,state,optionheader,close";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "optionheader_bg";
-            transition: LINEAR 0.2;
-            after: "optionheader_close_set";
-         }
-         program { name: "optionheader_instant_open";
-            signal: "elm,state,optionheader,instant_open";
-            source: "";
-            action: STATE_SET "show" 0.0;
-            target: "optionheader_bg";
-            after: "optionheader_open_set";
-         }
-         program { name: "optionheader_instant_close";
-            signal: "elm,state,optionheader,instant_close";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "optionheader_bg";
-            after: "optionheader_close_set";
-         }
-         program { name: "optionheader_close_set";
-            signal: "elm,state,optionheader,close_set";
-            source: "";
-            script {
-               set_int(oh_close, 1);
-            }
-         }
-         program { name: "optionheader_open_set";
-            signal: "elm,state,optionheader,open_set";
-            source: "";
-            script {
-               set_int(oh_close, 0);
-            }
-         }
          program { name: "controlbar_open";
             signal: "elm,state,controlbar,open";
             source: "";
-            action: STATE_SET "show" 0.0;
+            action: STATE_SET "visible" 0.0;
             target: "controlbar_bg";
             transition: LINEAR 0.2;
          }
