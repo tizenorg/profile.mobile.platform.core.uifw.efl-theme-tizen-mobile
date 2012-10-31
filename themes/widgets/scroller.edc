@@ -23,20 +23,12 @@ group { name: "elm/scroller/base/default";
    alias: "elm/carousel/base/default";
    alias: "elm/scroller/base/map_bubble";
 
-   images {
-      image: "00_overscrolling_top.png" COMP;
-      image: "00_overscrolling_bottom.png" COMP;
-      image: "00_overscrolling_left.png" COMP;
-      image: "00_overscrolling_right.png" COMP;
-   }
-
    data {
       item: "focus_highlight" "on";
    }
 
    script {
       public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
-      public sh_v, sh_h, sh_timer, edge_timer;
       public timer0(val) {
          new v;
          v = get_int(sbvis_v);
@@ -56,19 +48,6 @@ group { name: "elm/scroller/base/default";
             }
          }
          set_int(sbvis_timer, 0);
-         return 0;
-      }
-      public timer1(val) {
-         emit("do-hide-vshadow", "");
-         emit("do-hide-hshadow", "");
-         set_int(sh_timer, 0);
-         return 0;
-      }
-      public timer2(val) {
-         emit("do-hide-vshadow", "");
-         emit("do-hide-hshadow", "");
-         emit("do-default-content", "");
-         set_int(edge_timer, 0);
          return 0;
       }
    }
@@ -97,17 +76,6 @@ group { name: "elm/scroller/base/default";
             rel2.offset: -1 -1;
          }
       }
-      part { name: "point";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            rel1.to: "bg";
-            rel2.to: "bg";
-            rel1.relative: 0.0 10.0;
-            rel2.relative: 1.0 10.0;
-            color: 0 0 0 0;
-         }
-      }
       part { name: "elm.swallow.content";
          clip_to: "clipper";
          type: SWALLOW;
@@ -115,25 +83,8 @@ group { name: "elm/scroller/base/default";
          description { state: "default" 0.0;
             rel1.to: "bg";
             rel2.to: "bg";
-         }
-         description { state: "default_map" 0.0;
-            inherit: "default" 0.0;
-            map {
-               on: 1;
-               smooth: 1;
-               perspective_on: 1;
-               backface_cull: 1;
-               rotation {
-                  center: "point";
-                  x: 0;
-                  y: 0;
-                  z: 0;
-               }
-            }
-         }
-         description { state: "shrink" 0.0;
-            inherit: "default_map" 0.0;
-            map.rotation.x: 0.1;
+            rel1.offset: 0 0;
+            rel2.offset: -1 -1;
          }
       }
       part { name: "sb_vbar_clip_master";
@@ -324,124 +275,6 @@ group { name: "elm/scroller/base/default";
             }
          }
       }
-      part { name: "vshadow_clip";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-         }
-         description { state: "hidden" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-         }
-      }
-      part { name: "shadow_top";
-         clip_to: "vshadow_clip";
-         type: IMAGE;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 10;
-            fixed: 1 1;
-            align: 0.5 0.0;
-            color: 255 255 255 150;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 0.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            image.normal: "00_overscrolling_top.png";
-         }
-         description { state: "edge_top" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
-         description { state: "edge_bottom" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 50;
-         }
-      }
-      part { name: "shadow_bottom";
-         clip_to: "vshadow_clip";
-         type: IMAGE;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 10;
-            fixed: 1 1;
-            align: 0.5 1.0;
-            color: 255 255 255 150;
-            rel1.relative: 0.0 1.0;
-            rel2.relative: 1.0 1.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            image.normal: "00_overscrolling_bottom.png";
-         }
-         description { state: "edge_top" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 50;
-         }
-         description { state: "edge_bottom" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
-      }
-      part { name: "hshadow_clip";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-         }
-         description { state: "hidden" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-         }
-      }
-      part { name: "shadow_left";
-         clip_to: "hshadow_clip";
-         type: IMAGE;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 10 0;
-            fixed: 1 1;
-            align: 0.0 0.5;
-            color: 255 255 255 150;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 0.0 1.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            image.normal: "00_overscrolling_left.png";
-         }
-         description { state: "edge_left" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
-         description { state: "edge_right" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 50;
-         }
-      }
-      part { name: "shadow_right";
-         clip_to: "hshadow_clip";
-         type: IMAGE;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 10 0;
-            fixed: 1 1;
-            align: 1.0 0.5;
-            color: 255 255 255 150;
-            rel1.relative: 1.0 0.0;
-            rel2.relative: 1.0 1.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            image.normal: "00_overscrolling_right.png";
-         }
-         description { state: "edge_left" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 50;
-         }
-         description { state: "edge_right" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
-      }
       part { name: "disabler";
          type: RECT;
          scale: 1;
@@ -465,17 +298,11 @@ group { name: "elm/scroller/base/default";
          script {
             set_state(PART:"sb_hbar_clip", "hidden", 0.0);
             set_state(PART:"sb_vbar_clip", "hidden", 0.0);
-            set_state(PART:"vshadow_clip", "hidden", 0.0);
-            set_state(PART:"hshadow_clip", "hidden", 0.0);
             set_int(sbvis_h, 0);
             set_int(sbvis_v, 0);
             set_int(sbalways_v, 0);
             set_int(sbalways_h, 0);
             set_int(sbvis_timer, 0);
-            set_int(sh_v, 0);
-            set_int(sh_h, 0);
-            set_int(sh_timer, 0);
-            set_int(edge_timer, 0);
          }
       }
 
@@ -593,59 +420,6 @@ group { name: "elm/scroller/base/default";
          target: "sb_hbar_clip";
       }
 
-      program { name: "vshadow_show";
-         signal: "do-show-vshadow";
-         source: "";
-         action:  STATE_SET "default" 0.0;
-         transition: LINEAR 0.5;
-         target: "vshadow_clip";
-      }
-      program { name: "vshadow_hide";
-         signal: "do-hide-vshadow";
-         source: "";
-         action:  STATE_SET "hidden" 0.0;
-         transition: LINEAR 0.5;
-         target: "vshadow_clip";
-      }
-      program { name: "hshadow_show";
-         signal: "do-show-hshadow";
-         source: "";
-         action:  STATE_SET "default" 0.0;
-         transition: LINEAR 0.5;
-         target: "hshadow_clip";
-      }
-      program { name: "hshadow_hide";
-         signal: "do-hide-hshadow";
-         source: "";
-         action:  STATE_SET "hidden" 0.0;
-         transition: LINEAR 0.5;
-         target: "hshadow_clip";
-      }
-      program { name: "shrink_content";
-         signal: "do-shrink-content";
-         source: "";
-         action:  STATE_SET "default_map" 0.0;
-         target: "elm.swallow.content";
-         after: "shrink";
-      }
-      program { name: "shrink";
-         action:  STATE_SET "shrink" 0.0;
-         target: "elm.swallow.content";
-         transition: LINEAR 0.2;
-      }
-      program { name: "default_content";
-         signal: "do-default-content";
-         source: "";
-         action:  STATE_SET "default_map" 0.0;
-         transition: LINEAR 0.2;
-         target: "elm.swallow.content";
-         after: "default";
-      }
-      program { name: "default";
-         action:  STATE_SET "default" 0.0;
-         target: "elm.swallow.content";
-      }
-
       program { name: "scroll";
          signal: "elm,action,scroll";
          source: "elm";
@@ -665,95 +439,10 @@ group { name: "elm/scroller/base/default";
             }
             v = get_int(sbvis_timer);
             if (v > 0) cancel_timer(v);
-            v = timer(1, "timer0", 0);
+            v = timer(1.0, "timer0", 0);
             set_int(sbvis_timer, v);
-
-            set_state(PART:"shadow_top", "default", 0.0);
-            set_state(PART:"shadow_bottom", "default", 0.0);
-            emit("do-show-vshadow", "");
-            v = get_int(sh_timer);
-            if (v > 0) cancel_timer(v);
-            v = timer(0.1, "timer1", 0);
-            set_int(sh_timer, v);
          }
       }
-      program { name: "edge_top";
-         signal: "elm,action,edge,top";
-         source: "elm";
-         script {
-            new v;
-            v = get_int(sh_timer);
-            if (v > 0) cancel_timer(v);
-            set_state(PART:"shadow_top", "edge_top", 0.0);
-            set_state(PART:"shadow_bottom", "edge_top", 0.0);
-            v = get_int(edge_timer);
-            if (!v) {
-                emit("do-show-vshadow", "");
-                emit("do-shrink-content", "");
-            }
-            if (v > 0) cancel_timer(v);
-            v = timer(0.2, "timer2", 0);
-            set_int(edge_timer, v);
-         }
-      }
-      program { name: "edge_bottom";
-         signal: "elm,action,edge,bottom";
-         source: "elm";
-         script {
-            new v;
-            v = get_int(sh_timer);
-            if (v > 0) cancel_timer(v);
-            set_state(PART:"shadow_top", "edge_bottom", 0.0);
-            set_state(PART:"shadow_bottom", "edge_bottom", 0.0);
-            v = get_int(edge_timer);
-            if (!v) {
-                emit("do-show-vshadow", "");
-                emit("do-shrink-content", "");
-            }
-            if (v > 0) cancel_timer(v);
-            v = timer(0.2, "timer2", 0);
-            set_int(edge_timer, v);
-         }
-      }
-      program { name: "edge_left";
-         signal: "elm,action,edge,left";
-         source: "elm";
-         script {
-            new v;
-            v = get_int(sh_timer);
-            if (v > 0) cancel_timer(v);
-            set_state(PART:"shadow_left", "edge_left", 0.0);
-            set_state(PART:"shadow_right", "edge_left", 0.0);
-            v = get_int(edge_timer);
-            if (!v) {
-                emit("do-show-hshadow", "");
-                emit("do-shrink-content", "");
-            }
-            if (v > 0) cancel_timer(v);
-            v = timer(0.2, "timer2", 0);
-            set_int(edge_timer, v);
-         }
-      }
-      program { name: "edge_right";
-         signal: "elm,action,edge,right";
-         source: "elm";
-         script {
-            new v;
-            v = get_int(sh_timer);
-            if (v > 0) cancel_timer(v);
-            set_state(PART:"shadow_left", "edge_right", 0.0);
-            set_state(PART:"shadow_right", "edge_right", 0.0);
-            v = get_int(edge_timer);
-            if (!v) {
-                emit("do-show-hshadow", "");
-                emit("do-shrink-content", "");
-            }
-            if (v > 0) cancel_timer(v);
-            v = timer(0.2, "timer2", 0);
-            set_int(edge_timer, v);
-         }
-      }
-
       program { name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
