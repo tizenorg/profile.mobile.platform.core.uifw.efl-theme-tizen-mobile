@@ -10027,29 +10027,23 @@ group { name: "elm/button/base/searchbar/default";
 
 //////////////////////////////////////////////////////////////
    group { name: "elm/button/base/naviframe/toolbar/default";
-      script {
-         public button_state = BUTTON_STATE_ENABLED;
-      }
       images {
          image: "00_toolbar_button.png" COMP;
          image: "00_toolbar_button_press.png" COMP;
          image: "00_toolbar_button_dim.png" COMP;
          image: "00_badge.png" COMP;
       }
-      styles{
-         style { name: "btn_naviframe_style";
-            base: "font=SLP:style=Bold font_size="BUTTON_NAVIFRAME_TITLE_TEXT_FONT_SIZE_INC" align=center color=#ffffff wrap=mixed ellipsis=1.0 text_class=slp_medium";
-            tag: "br" "\n";
-            tag: "ps" "ps";
-            tag: "tab" "\t";
-         }
+      script {
+         public button_state = BUTTON_STATE_ENABLED;
       }
       parts {
          part { name: "button_image";
             scale: 1;
             description { state: "default" 0.0;
                min: BUTTON_NAVIFRAME_TITLE_TEXT_BG_NORMAL_MIN_INC;
-               max: BUTTON_NAVIFRAME_TITLE_TEXT_BG_NORMAL_MAX_INC;
+               fixed: 1 1;
+               rel1.to: "padding_text_top";
+               rel2.to: "padding_text_bottom";
                image {
                   normal: "00_toolbar_button.png";
                   border: BUTTON_NAVIFRAME_TITLE_TEXT_BG_PRESSED_BORDER_INC;
@@ -10074,11 +10068,11 @@ group { name: "elm/button/base/searchbar/default";
             scale: 1;
             mouse_events: 0;
             description { state: "default" 0.0;
+               visible: 0;
                align: 0.0 0.0;
                rel2.relative: 0.0 0.0;
                min: BUTTON_NAVIFRAME_TITLE_TEXT_PADDING_MIN_INC;
                fixed: 1 1;
-               visible: 0;
             }
          }
          part { name: "padding_right_bottom";
@@ -10093,133 +10087,49 @@ group { name: "elm/button/base/searchbar/default";
                visible: 0;
             }
          }
-         part { name: "icon_rect";
+         part { name: "padding_text_top";
             type: RECT;
             scale: 1;
             mouse_events: 0;
             description { state: "default" 0.0;
                visible: 0;
-               min: 0 0;
-               fixed: 1 0;
-               rel1 {
-                  relative: 1.0 1.0;
-                  to: "padding_left_top";
-               }
+               min: BUTTON_NAVIFRAME_TITLE_TEXT_PADDING_MIN_INC;
+               fixed: 1 1;
+               rel1.to: "elm.text";
                rel2 {
-                  relative: 1.0 0.0;
-                  to_x: "padding_left_top";
-                  to_y: "padding_right_bottom";
+                  relative: 0.0 0.0;
+                  to: "elm.text";
                }
-               align: 0.0 0.5;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               min: BUTTON_NAVIFRAME_TITLE_VISIBLE_ICON_RECT_MIN_MAX_INC;
-               max: BUTTON_NAVIFRAME_TITLE_VISIBLE_ICON_RECT_MIN_MAX_INC;
-            }
-            description { state: "icononly" 0.0;
-               visible: 0;
-               min: BUTTON_NAVIFRAME_TITLE_VISIBLE_ICON_RECT_MIN_MAX_INC;
-               max: BUTTON_NAVIFRAME_TITLE_VISIBLE_ICON_RECT_MIN_MAX_INC;
+               align: 1.0 0.0;
             }
          }
-         part { name: "padding_after_icon";
+         part { name: "padding_text_bottom";
             type: RECT;
             scale: 1;
             mouse_events: 0;
-            description { state: "default" 0.0; //when only icon or no icon is there
+            description { state: "default" 0.0;
+               min: BUTTON_NAVIFRAME_TITLE_TEXT_PADDING_MIN_INC;
+               fixed: 1 1;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to: "elm.text";
+               }
+               rel2.to: "elm.text";
                align: 0.0 0.0;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to: "icon_rect";
-               }
-               rel2.to: "icon_rect";
-               fixed: 1 0;
-               min: 0 0;
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               min: BUTTON_NAVIFRAME_TITLE_VISIBLE_PADDING_ICON_TEXT_MIN_INC;
-            }
-            description { state: "icononly" 0.0;
-               inherit: "default" 0.0;
-            }
-         }
-         part { name: "padding_before_text";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description { state: "default" 0.0; //when only icon or no icon is there
-               align: 1.0 0.5;
-               rel1 {
-                  relative: 0.0 1.0;
-                  to_x: "elm.text";
-                  to_y: "padding_left_top";
-               }
-               rel2 {
-                  relative: 0.0 0.0;
-                  to_x: "elm.text";
-                  to_y: "padding_right_bottom";
-               }
-               fixed: 1 0;
-               min: BUTTON_NAVIFRAME_TITLE_VISIBLE_PADDING_ICON_TEXT_MIN_INC;
-               visible: 0;
-            }
-         }
-         part { name: "elm.swallow.content";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "icon_disabler";
-            description { state: "default" 0.0;
-               visible: 0;
-               align: 0.0 0.5;
-               rel1 {
-                  relative: 1.0 1.0;
-                  to: "padding_left_top";
-               }
-               rel2 {
-                  relative: 1.0 0.0;
-                  to_x: "padding_left_top";
-                  to_y: "padding_right_bottom";
-               }
-               fixed: 1 0;
-            }
-            description { state: "visible" 0.0;
-               fixed: 1 0;
-               min: BUTTON_NAVIFRAME_TITLE_VISIBLE_ICON_RECT_MIN_MAX_INC;
-               max: BUTTON_NAVIFRAME_TITLE_VISIBLE_ICON_RECT_MIN_MAX_INC;
-               align: 1.0 0.5;
-               rel1 {
-                  relative: 0.0 1.0;
-                  to_x: "padding_before_text";
-                  to_y: "padding_left_top";
-               }
-               rel2 {
-                  relative: 0.0 0.0;
-                  to_x: "padding_before_text";
-                  to_y: "padding_right_bottom";
-               }
-            }
-            description { state: "icononly" 0.0;
-               min: BUTTON_NAVIFRAME_TITLE_ICONONLY_ICON_MIN_MAX_INC;
-               max: BUTTON_NAVIFRAME_TITLE_ICONONLY_ICON_MIN_MAX_INC;
             }
          }
          part { name: "elm.text";
-            type: TEXTBLOCK;
+            type: TEXT;
             mouse_events: 0;
             effect: FAR_SHADOW BOTTOM;
             scale: 1;
-            clip_to: "clipper";
             description { state: "default" 0.0;
                visible: 0;
                fixed: 1 1;
-               max: BUTTON_NAVIFRAME_TITLE_TEXT_NORMAL_MAX_INC;
                rel1 {
-                  relative: 1.0 1.0;
-                  to_x: "padding_after_icon";
-                  to_y: "padding_left_top";
+                  relative: 1.0 0.0;
+                  to: "padding_left_top";
                }
                rel2 {
                   relative: 0.0 0.0;
@@ -10228,9 +10138,11 @@ group { name: "elm/button/base/searchbar/default";
                color: BUTTON_NAVIFRAME_TITLE_TEXT_NORMAL_COLOR_INC;
                color2: BUTTON_NAVIFRAME_TEXT_SHADOW_NORMAL_COLOR_INC;
                text {
-                   style: "btn_naviframe_style";
-                   min: 0 1;
-                   max: 0 1;
+                  font: "SLP:style=Bold";
+                  size: BUTTON_NAVIFRAME_TITLE_TEXT_FONT_SIZE_INC;
+                  min: 0 1;
+                  max: 1 1;
+                  text_class: "slp_medium";
                }
             }
             description { state: "visible" 0.0;
@@ -10258,135 +10170,29 @@ group { name: "elm/button/base/searchbar/default";
                color: BUTTON_NAVIFRAME_TITLE_TEXT_FOCUSED_COLOR_INC;
             }
          }
-         part { name: "elm.text.badge.bg";
-            mouse_events: 0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               visible: 0;
-               rel1 {
-                  to: "left.padding.text.badge";
-                  relative: 0.0 0.0;
-               }
-               rel2 {
-                  to: "right.padding.text.badge";
-                  relative: 1.0 1.0;
-               }
-               align: 1.0 0.0;
-               image {
-                  normal: "00_badge.png";
-                  border: 20 20 0 0;
-                  border_scale: 1;
-               }
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "left.padding.text.badge";
-            type: RECT;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               visible: 0;
-               fixed: 1 1;
-               min: 16 48;
-               rel1 {
-                  to: "elm.text.badge";
-                  relative: 0.0 0.0;
-               }
-               rel2 {
-                  to: "elm.text.badge";
-                  relative: 0.0 0.0;
-               }
-               align: 1.0 0.0;
-            }
-         }
-         part { name: "right.padding.text.badge";
-            type: RECT;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               visible: 0;
-               fixed: 1 1;
-               min: 16 48;
-               rel1 {
-                  to: "button_image";
-                  relative: 1.0 0.0;
-               }
-               rel2 {
-                  to: "button_image";
-                  relative: 1.0 0.0;
-               }
-               align: 1.0 0.0;
-            }
-         }
-         part { name: "elm.text.badge";
-            type: TEXT;
-            mouse_events: 0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               visible: 0;
-               min: 0 0;
-               rel1 {
-                  to: "button_image";
-                  relative: 0.0 0.0;
-               }
-               rel2 {
-                  to: "right.padding.text.badge";
-                  relative: 0.0 1.0;
-               }
-               align: 1.0 0.0;
-               color: 10 100 208 255;
-               text {
-                  font: "SLP:style=Bold";
-                  size: 26;
-                  min: 0 0;
-                  max: 1 1;
-               }
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
          part { name: "over2";
             type: RECT;
             repeat_events: 1;
             ignore_flags: ON_HOLD;
             description { state: "default" 0.0;
-               color: 0 0 0 0;
+               rel1.to: "button_image";
+               rel2.to: "button_image";
             }
          }
          part { name: "over3";
             type: RECT;
             repeat_events: 1;
             description { state: "default" 0.0;
+               rel1.to: "button_image";
+               rel2.to: "button_image";
                color: 0 0 0 0;
-            }
-         }
-         part { name: "clipper";
-            type: RECT;
-            description { state: "default" 0.0;
-               color: 255 255 255 255;
-            }
-         }
-         part { name: "icon_disabler";
-            type: RECT;
-            description { state: "default" 0.0;
-               rel1.to: "icon_rect";
-               rel2.to: "icon_rect";
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               color: 127 127 127 127;
             }
          }
          part { name: "disabler";
             type: RECT;
             description { state: "default" 0.0;
+               rel1.to: "button_image";
+               rel2.to: "button_image";
                color: 0 0 0 0;
                visible: 0;
             }
@@ -10406,16 +10212,7 @@ group { name: "elm/button/base/searchbar/default";
          program { name: "button_click_anim";
             action: STATE_SET "clicked" 0.0;
             target: "button_image";
-            after: "text_clicked";
-         }
-         program { name: "text_clicked";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.text", "clicked", 0.0);
-            }
+            target: "elm.text";
          }
          program { name: "button_unpress";
             action: SIGNAL_EMIT "elm,action,unpress" "";
@@ -10426,8 +10223,8 @@ group { name: "elm/button/base/searchbar/default";
             script {
                new st[31];
                new Float:vl;
-               get_state(PART:"elm.swallow.content", st, 30, vl);
-               if (strcmp(st, "icononly"))
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "clicked") || !strcmp(st, "focused"))
                  {
                     emit("elm,action,default,text,set", "");
                     set_state(PART:"elm.text", "visible", 0.0);
@@ -10446,33 +10243,10 @@ group { name: "elm/button/base/searchbar/default";
          program { name: "button_unclick3";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
-         program { name: "badge_text_show";
-            signal: "elm,state,elm.text.badge,visible";
-            source: "elm";
-            action:  STATE_SET "visible" 0.0;
-            target: "elm.text.badge";
-            target: "elm.text.badge.bg";
-         }
-         program { name: "badge_text_hide";
-            signal: "elm,state,elm.text.badge,hidden";
-            source: "elm";
-            action:  STATE_SET "default" 0.0;
-            target: "elm.text.badge";
-            target: "elm.text.badge.bg";
-         }
          program { name: "text_show";
             signal: "elm,state,text,visible";
             source: "elm";
             script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.swallow.content", st, 30, vl);
-               if (!strcmp(st, "icononly"))
-                 {
-                    set_state(PART:"elm.swallow.content", "visible", 0.0);
-                    set_state(PART:"icon_rect", "visible", 0.0);
-                    set_state(PART:"padding_after_icon", "visible", 0.0);
-                 }
                if (get_int(button_state) != BUTTON_STATE_DISABLED)
                  set_state(PART:"elm.text", "visible", 0.0);
                else
@@ -10482,47 +10256,8 @@ group { name: "elm/button/base/searchbar/default";
          program { name: "text_hide";
             signal: "elm,state,text,hidden";
             source: "elm";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.swallow.content", st, 30, vl);
-               if (!strcmp(st, "visible"))
-                 {
-                    set_state(PART:"elm.swallow.content", "icononly", 0.0);
-                    set_state(PART:"icon_rect", "icononly", 0.0);
-                    set_state(PART:"padding_after_icon", "icononly", 0.0);
-                 }
-               set_state(PART:"elm.text", "default", 0.0);
-            }
-         }
-         program { name: "icon_show";
-            signal: "elm,state,icon,visible";
-            source: "elm";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "visible"))
-                 {
-                    set_state(PART:"elm.swallow.content", "visible", 0.0);
-                    set_state(PART:"icon_rect", "visible", 0.0);
-                    set_state(PART:"padding_after_icon", "visible", 0.0);
-                 }
-               else
-                 {
-                    set_state(PART:"elm.swallow.content", "icononly", 0.0);
-                    set_state(PART:"icon_rect", "icononly", 0.0);
-                    set_state(PART:"padding_after_icon", "icononly", 0.0);
-                 }
-            }
-         }
-         program { name: "icon_hide";
-            signal: "elm,state,icon,hidden";
-            source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "elm.swallow.content";
-            target: "padding_after_icon";
-            target: "icon_rect";
+            target: "elm.text";
          }
          program { name: "disable";
             signal: "elm,state,disabled";
@@ -10530,7 +10265,6 @@ group { name: "elm/button/base/searchbar/default";
             action: STATE_SET "disabled" 0.0;
             target: "button_image";
             target: "disabler";
-            target: "icon_disabler";
             after: "disable_text";
          }
          program { name: "disable_text";
@@ -10551,7 +10285,6 @@ group { name: "elm/button/base/searchbar/default";
             action: STATE_SET "default" 0.0;
             target: "button_image";
             target: "disabler";
-            target: "icon_disabler";
             after: "enable_text";
          }
          program { name: "enable_text";
@@ -10578,9 +10311,6 @@ group { name: "elm/button/base/searchbar/default";
             //source: "elm";
             action: STATE_SET "default" 0.0;
             target: "button_image";
-            after: "unfocus_text";
-         }
-         program { name: "unfocus_text";
             action: STATE_SET "visible" 0.0;
             target: "elm.text";
          }
