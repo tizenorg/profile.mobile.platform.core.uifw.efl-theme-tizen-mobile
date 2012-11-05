@@ -215,7 +215,7 @@ group { name: "elm/label/base/popup/default";
    styles
      {
         style { name: "popup_desc_style";
-           base: "font=SLP:style=Roman font_size="POPUP_DESCRIPTION_DEFAULT_TEXT_FONT_SIZE_INC" align=center color="POPUP_DEFAULT_DESCRIPTION_TEXT_COLOR_INC" text_class=entry";
+           base: "font=SLP:style=Medium font_size="POPUP_DESCRIPTION_DEFAULT_TEXT_FONT_SIZE_INC" align=left color="POPUP_DEFAULT_DESCRIPTION_TEXT_COLOR_INC" text_class=slp";
            tag:  "br" "\n";
            tag:  "ps" "ps";
            tag:  "whitecolor" "+ color=#ffffff";
@@ -223,12 +223,39 @@ group { name: "elm/label/base/popup/default";
         }
      }
    parts {
+     part {
+         name:"desc_left_top_padding";
+         type:RECT;
+         scale: 1;
+         mouse_events: 0;
+         description {
+            min: POPUP_DESC_LEFT_PADDING POPUP_DESC_TOP_PADDING;
+            max: POPUP_DESC_LEFT_PADDING POPUP_DESC_TOP_PADDING;
+            align: 0 0;
+            fixed: 1 1;
+            visible: 0;
+         }
+      }
+      part {
+         name:"desc_right_bottom_padding";
+         type:RECT;
+         scale: 1;
+         mouse_events: 0;
+         description {
+            min: POPUP_DESC_RIGHT_PADDING POPUP_DESC_BOTTOM_PADDING;
+            max: POPUP_DESC_RIGHT_PADDING POPUP_DESC_BOTTOM_PADDING;
+            align: 1 1;
+            fixed: 1 1;
+            visible: 0;
+         }
+      }
       part { name: "elm.text";
          type: TEXTBLOCK;
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
-            min: POPUP_DESCRIPTION_DEFAULT_TEXT_MIN_INC;
+            rel1 { relative: 1 1; to: "desc_left_top_padding"; }
+            rel2 { relative: 0 0; to: "desc_right_bottom_padding"; }
             text {
                style: "popup_desc_style";
                min: 0 1;
@@ -242,18 +269,56 @@ group { name: "elm/label/base/popup/default";
 group { name: "elm/popup/base/default";
    alias: "elm/popup/base/transparent";
    images {
-      image: "00_popup_title_bg.png" COMP;
-      image: "00_popup_bottom_bg.png" COMP;
       image: "00_popup_bg.png" COMP;
    }
    styles {
       style { name: "popup_title_style";
-         base: "font=SLP:style=Medium font_size="POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC" align=center color=#ffffff wrap=mixed ellipsis=1.0 text_class=slp";
+         base: "font=SLP:style=Medium font_size="POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC" align=left color="POPUP_DEFAULT_TITLE_TEXT_COLOR_INC" wrap=mixed ellipsis=0.0 text_class=slp";
          tag:  "br" "\n";
          tag:  "tab" "\t";
       }
    }
    parts {
+      part {
+         name:"desc_left_top_padding";
+         type:RECT;
+         scale: 1;
+         mouse_events: 0;
+         description {
+            min: POPUP_DESC_LEFT_PADDING POPUP_DESC_TOP_PADDING;
+            max: POPUP_DESC_LEFT_PADDING POPUP_DESC_TOP_PADDING;
+            align: 0 0;
+            fixed: 1 1;
+            visible: 0;
+         }
+      }
+      part {
+         name:"desc_right_bottom_padding";
+         type:RECT;
+         scale: 1;
+         mouse_events: 0;
+         description {
+            min: POPUP_DESC_RIGHT_PADDING POPUP_DESC_BOTTOM_PADDING;
+            max: POPUP_DESC_RIGHT_PADDING POPUP_DESC_BOTTOM_PADDING;
+            align: 1 1;
+            fixed: 1 1;
+            visible: 0;
+         }
+      }
+      part {
+         name:"bottom_padding";
+         type:RECT;
+         scale: 1;
+         mouse_events: 0;
+         description {
+            min: 0 POPUP_DESC_BOTTOM_PADDING;
+            max: 0 POPUP_DESC_BOTTOM_PADDING;
+            rel2 { relative: 0.5 1.0; }
+            align: 1 1;
+            fixed: 1 1;
+            visible: 0;
+         }
+      }
       part { name: "base";
          type: IMAGE;
          scale : 1;
@@ -269,16 +334,14 @@ group { name: "elm/popup/base/default";
          }
       }
       part { name: "elm.bg.title";
-         type: IMAGE;
+         type: RECT;
          scale : 1;
          description { state: "default" 0.0;
             min: POPUP_BASE_DEFAULT_TITLE_DEFAULT_MIN_INC;
+            max: POPUP_BASE_DEFAULT_TITLE_DEFAULT_MIN_INC;
             fixed : 1 1;
             align: 0.5 0.0;
             visible: 0;
-            image.normal: "00_popup_title_bg.png";
-            image.border: POPUP_BASE_DEFAULT_TITLE_DEFAULT_IMAGE_BORDER_INC;
-            image.border_scale: 1;
             rel1 {
                relative: 0.5 0.0;
                to: "base";
@@ -290,31 +353,58 @@ group { name: "elm/popup/base/default";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
+            visible: 0;
          }
       }
-      part { name: "left_pad";
+      part { name: "label_top_padding";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            min: POPUP_BASE_DEFAULT_PADDING_MIN_MAX_INC;
-            max: POPUP_BASE_DEFAULT_PADDING_MIN_MAX_INC;
+            min: 0 (POPUP_LABEL_DESC_TOP_PADDING-POPUP_DESC_TOP_PADDING);
+            max: 0 (POPUP_LABEL_DESC_TOP_PADDING-POPUP_DESC_TOP_PADDING);
             fixed: 1 1;
+            align: 0.5 0.0;
+            visible: 0;
+            rel1 {
+               relative: 0.5 0.0;
+               to: "base";
+            }
+            rel2 {
+               relative: 0.5 0.0;
+               to: "base";
+            }
+         }
+      }
+      part { name: "label_bottom_padding";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 (POPUP_LABEL_DESC_BOTTOM_PADDING-POPUP_DESC_BOTTOM_PADDING);
+            max: 0 (POPUP_LABEL_DESC_BOTTOM_PADDING-POPUP_DESC_BOTTOM_PADDING);
+            fixed: 1 1;
+            align: 0.5 1.0;
+            visible: 0;
+            rel1 {
+               relative: 0.5 1.0;
+               to: "base";
+            }
+            rel2 {
+               relative: 0.5 1.0;
+               to: "base";
+            }
+         }
+      }
+      part { name: "padding_before_text";
+         type: RECT;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
             align: 0.0 0.0;
-            visible: 0;
             rel1.to: "elm.bg.title";
-         }
-      }
-      part { name: "right_pad";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: POPUP_BASE_DEFAULT_PADDING_MIN_MAX_INC;
-            max: POPUP_BASE_DEFAULT_PADDING_MIN_MAX_INC;
             fixed: 1 1;
-            align: 1.0 1.0;
+            min: POPUP_DESC_LEFT_PADDING POPUP_TITLE_TOP_PADDING;
+            max: POPUP_DESC_LEFT_PADDING POPUP_TITLE_TOP_PADDING;
             visible: 0;
-            rel2.to: "elm.bg.title";
          }
       }
       part { name: "icon_rect";
@@ -324,15 +414,15 @@ group { name: "elm/popup/base/default";
          description { state: "default" 0.0;
             visible: 0;
             min: 0 0;
-            fixed: 1 0;
+            fixed: 1 1;
             rel1 {
-               relative: 1.0 1.0;
-               to: "left_pad";
+               relative: 0.0 1.0;
+               to_x: "padding_after_icon";
+               to_y: "padding_before_text";
             }
             rel2 {
-               relative: 1.0 0.0;
-               to_x: "left_pad";
-               to_y: "right_pad";
+               relative: 0.0 1.0;
+               to: "padding_after_icon";
             }
             align: 0.0 0.5;
          }
@@ -342,18 +432,18 @@ group { name: "elm/popup/base/default";
             max: POPUP_BASE_DEFAULT_TITLE_ICON_DEFAULT_MIN_MAX_INC;
          }
       }
-      part { name: "padding_after_icon";
+      part { name: "padding_before_icon";
          type: RECT;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 {
-               relative: 1.0 0.0;
+            align: 0.0 1.0;
+            rel1.to: "icon_rect";
+            rel2 {
+               relative: 0.0 1.0;
                to: "icon_rect";
             }
-            rel2.to: "icon_rect";
-            fixed: 1 0;
+            fixed: 1 1;
             min: 0 0;
             visible: 0;
          }
@@ -362,42 +452,17 @@ group { name: "elm/popup/base/default";
             min: 10 0;
          }
       }
-      part { name: "padding_before_text";
+      part { name: "padding_after_icon";
          type: RECT;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            align: 1.0 0.5;
-            rel1 {
-               relative: 0.0 1.0;
-               to_x: "elm.text.title";
-               to_y: "left_pad";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "elm.text.title";
-               to_y: "right_pad";
-            }
-            fixed: 1 0;
-            min: 10 0;
+            align: 1.0 1.0;
+            rel2.to: "elm.bg.title";
+            fixed: 1 1;
+            min: POPUP_DESC_RIGHT_PADDING POPUP_TITLE_BOTTOM_PADDING;
+            max: POPUP_DESC_RIGHT_PADDING POPUP_TITLE_BOTTOM_PADDING;
             visible: 0;
-         }
-      }
-      part { name: "elm.swallow.title.icon";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            rel1 {
-               relative: 0.0 1.0;
-               to_x: "padding_before_text";
-               to_y: "left_pad";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "padding_before_text";
-               to_y: "right_pad";
-            }
          }
       }
       part { name: "elm.text.title";
@@ -408,18 +473,16 @@ group { name: "elm/popup/base/default";
             text {
               style: "popup_title_style";
               min: 0 1;
-              max: 1 1;
-              align: 0.5 0.0;
+              max: 0 1;
+              align: 0.0 0.0;
             }
-            color: POPUP_DEFAULT_TITLE_TEXT_COLOR_INC;
             rel1 {
-               relative: 1.0 0.0;
-               to_x: "padding_after_icon";
-               to_y: "left_pad";
+               relative: 1.0 1.0;
+               to: "padding_before_text";
             }
             rel2 {
-               relative: 0.0 0.0;
-               to: "right_pad";
+               relative: 0.0 1.0;
+               to: "padding_before_icon";
             }
          }
       }
@@ -430,12 +493,12 @@ group { name: "elm/popup/base/default";
             min: POPUP_BASE_DEFAULT_CONTENT_DEFAULT_MIN_MAX_INC;
             fixed: 1 0;
             rel1 {
-               relative: 0.5 0.0;
-               to: "base";
+               relative: 0.5 1.0;
+               to: "label_top_padding";
             }
             rel2 {
-               relative: 0.5 1.0;
-               to: "base";
+               relative: 0.5 0.0;
+               to: "label_bottom_padding";
             }
          }
          description { state: "show_title_area" 0.0;
@@ -444,9 +507,17 @@ group { name: "elm/popup/base/default";
                relative: 0.5 1.0;
                to: "elm.bg.title";
             }
+            rel2 {
+               relative: 0.5 1.0;
+               to: "base";
+            }
          }
          description { state: "show_action_area" 0.0;
             inherit: "default" 0.0;
+            rel1 {
+               relative: 0.5 0.0;
+               to: "base";
+            }
             rel2 {
                relative: 0.5 0.0;
                to: "elm.bg.action_area";
@@ -465,25 +536,27 @@ group { name: "elm/popup/base/default";
          }
       }
       part { name: "elm.bg.action_area";
-         type: IMAGE;
+         type: RECT;
          scale : 1;
          description { state: "default" 0.0;
             min: POPUP_BASE_DEFAULT_BUTTON_BG_DEFAULT_MIN_INC;
             fixed : 1 1;
             align: 0.5 1.0;
             visible: 0;
-            image.normal: "00_popup_bottom_bg.png";
-            image.border: POPUP_BASE_DEFAULT_BUTTON_BG_IMAGE_BORDER_INC;
-            image.border_scale: 1;
             rel1 {
-               relative: 0.0 1.0;
-               to: "base";
+               relative: 0.0 0.0;
+               to_x: "base";
+               to_y: "bottom_padding";
             }
-            rel2.to: "base";
+            rel2 {
+               relative: 1.0 0.0;
+               to_x: "base";
+               to_y: "bottom_padding";
+            }
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
+            visible: 0;
          }
       }
       part { name: "elm.swallow.action_area";
@@ -502,13 +575,13 @@ group { name: "elm/popup/base/default";
          source: "elm";
          action: STATE_SET "visible" 0.0;
          target: "icon_rect";
-         target: "padding_after_icon";
+         target: "padding_before_icon";
       }
       program { name: hide_title_icon;
          signal: "elm,state,title,icon,hidden";
          source: "elm";
          action: STATE_SET "default" 0.0;
-         target: "padding_after_icon";
+         target: "padding_before_icon";
          target: "icon_rect";
       }
       program { name: show_title_area;
@@ -581,7 +654,7 @@ group { name: "elm/popup/content/default";
          mouse_events: 0;
          description { state: "default" 0.0;
             align: 0.5 0.0;
-            min: POPUP_CONTENT_DEFAULT_PADDING_TOP_MIN_INC;
+            min: 0 POPUP_CONTENT_DEFAULT_PADDING_TOP_MIN_INC;
             fixed: 0 1;
             visible: 0;
             rel1 {
@@ -598,7 +671,7 @@ group { name: "elm/popup/content/default";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            min : POPUP_CONTENT_DEFAULT_PADDING_LEFT_MIN_INC;
+            min : POPUP_CONTENT_DEFAULT_PADDING_LEFT_MIN_INC 0;
             fixed: 1 0;
             rel2.relative: 0.0 1.0;
             visible: 0;
@@ -609,7 +682,7 @@ group { name: "elm/popup/content/default";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            min : POPUP_CONTENT_DEFAULT_PADDING_RIGHT_MIN_INC;
+            min : POPUP_CONTENT_DEFAULT_PADDING_RIGHT_MIN_INC 0;
             fixed: 1 0;
             rel1.relative: 1.0 0.0;
             visible: 0;
@@ -638,7 +711,7 @@ group { name: "elm/popup/content/default";
          mouse_events: 0;
          description { state: "default" 0.0;
             align: 0.5 1.0;
-            min: POPUP_CONTENT_DEFAULT_PADDING_BOTTOM_MIN_INC;
+            min: 0 POPUP_CONTENT_DEFAULT_PADDING_BOTTOM_MIN_INC;
             fixed: 0 1;
             visible: 0;
             rel1 {
@@ -1053,7 +1126,6 @@ group { name: "elm/popup/base/verticalbuttonstyle";
               max: 0 1;
               align: 0.5 0.0;
             }
-            color: POPUP_DEFAULT_TITLE_TEXT_COLOR_INC;
             visible:0;
             rel1.to:"elm.bg.title";
             rel2.to: "elm.bg.title";
@@ -1830,6 +1902,30 @@ group { name: "elm/popup/buttons2/default";
    alias: "elm/popup/buttons2/transparent";
    data.item: "action_area_height" POPUP_BUTTON_DEFAULT_ACTION_AREA_HEIGHT;
    parts{
+      part { name: "left_pad_btn";
+         type: RECT;
+         scale : 1;
+         description { state: "default" 0.0;
+            min: (POPUP_BUTTON2_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC+POPUP_CONTENT_DEFAULT_PADDING_LEFT_MIN_INC) POPUP_BUTTON2_DEFAULT_HEIGHT_INC;
+            max: (POPUP_BUTTON2_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC+POPUP_CONTENT_DEFAULT_PADDING_LEFT_MIN_INC) POPUP_BUTTON2_DEFAULT_HEIGHT_INC;
+            fixed : 1 1;
+            visible: 0;
+            align: 0 0.5;
+            rel1.relative: 0.0 0.0;
+         }
+      }
+      part { name: "right_pad_btn";
+         type: RECT;
+         scale : 1;
+         description { state: "default" 0.0;
+            min: (POPUP_BUTTON2_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC+POPUP_CONTENT_DEFAULT_PADDING_RIGHT_MIN_INC) POPUP_BUTTON2_DEFAULT_HEIGHT_INC;
+            max: (POPUP_BUTTON2_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC+POPUP_CONTENT_DEFAULT_PADDING_RIGHT_MIN_INC) POPUP_BUTTON2_DEFAULT_HEIGHT_INC;
+            fixed : 1 1;
+            visible: 0;
+            align: 1 0.5;
+            rel2.relative: 1.0 1.0;
+         }
+      }
       part{ name:"actionbtn1";
          type: SWALLOW;
          scale : 1;
@@ -1838,7 +1934,10 @@ group { name: "elm/popup/buttons2/default";
             max: POPUP_BUTTON2_DEFAULT_BUTTON_DEFAULT_MIN_MAX_INC;
             fixed : 1 1;
             align: 1.0 0.5;
-            rel1.to: "elm.rect.pad_btn";
+            rel1 {
+               relative: 1.0 0.0;
+               to: "left_pad_btn";
+            }
             rel2 {
                relative: 0.0 1.0;
                to: "elm.rect.pad_btn";
@@ -1869,7 +1968,10 @@ group { name: "elm/popup/buttons2/default";
                relative: 1.0 0.0;
                to: "elm.rect.pad_btn";
             }
-            rel2.to: "elm.rect.pad_btn";
+            rel2 {
+               relative: 0.0 1.0;
+               to: "right_pad_btn";
+            }
          }
       }
    }
@@ -1880,6 +1982,30 @@ group { name: "elm/popup/buttons3/default";
    alias: "elm/popup/buttons3/transparent";
    data.item: "action_area_height" POPUP_BUTTON_DEFAULT_ACTION_AREA_HEIGHT;
    parts{
+      part { name: "left_pad_btn";
+         type: RECT;
+         scale : 1;
+         description { state: "default" 0.0;
+            min: (POPUP_BUTTON3_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC+POPUP_CONTENT_DEFAULT_PADDING_LEFT_MIN_INC) POPUP_BUTTON3_DEFAULT_HEIGHT_INC;
+            max: (POPUP_BUTTON3_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC+POPUP_CONTENT_DEFAULT_PADDING_LEFT_MIN_INC) POPUP_BUTTON3_DEFAULT_HEIGHT_INC;
+            fixed : 1 1;
+            visible: 0;
+            align: 0 0.5;
+            rel1.relative: 0.0 0.0;
+         }
+      }
+      part { name: "right_pad_btn";
+         type: RECT;
+         scale : 1;
+         description { state: "default" 0.0;
+            min: (POPUP_BUTTON3_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC+POPUP_CONTENT_DEFAULT_PADDING_RIGHT_MIN_INC) POPUP_BUTTON3_DEFAULT_HEIGHT_INC;
+            max: (POPUP_BUTTON3_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC+POPUP_CONTENT_DEFAULT_PADDING_RIGHT_MIN_INC) POPUP_BUTTON3_DEFAULT_HEIGHT_INC;
+            fixed : 1 1;
+            visible: 0;
+            align: 1 0.5;
+            rel2.relative: 1.0 1.0;
+         }
+      }
       part{ name:"actionbtn1";
          type: SWALLOW;
          scale : 1;
@@ -1888,7 +2014,10 @@ group { name: "elm/popup/buttons3/default";
             max: POPUP_BUTTON3_DEFAULT_BUTTON_DEFAULT_MIN_MAX_INC;
             fixed : 1 1;
             align: 1.0 0.5;
-            rel1.to: "elm.rect.pad_btn";
+            rel1 {
+               relative: 1.0 0.0;
+               to: "left_pad_btn";
+            }
             rel2 {
                relative: 0.0 1.0;
                to: "elm.rect.pad_btn";
@@ -1948,7 +2077,10 @@ group { name: "elm/popup/buttons3/default";
                relative: 1.0 0.0;
                to: "elm.rect.pad_btn2";
             }
-            rel2.to: "elm.rect.pad_btn2";
+            rel2 {
+               relative: 0.0 1.0;
+               to: "right_pad_btn";
+            }
          }
       }
    }
@@ -2058,7 +2190,6 @@ group { name: "elm/popup/base/volumebarstyle";
               max: 0 1;
               align: 0.5 0.0;
             }
-            color: POPUP_DEFAULT_TITLE_TEXT_COLOR_INC;
             visible:0;
             rel1 {
                relative: 1.0 0.0;
@@ -2598,7 +2729,6 @@ group { name: "elm/popup/base/content_expand";
               max: 0 1;
               align: 0.5 0.0;
             }
-            color: POPUP_DEFAULT_TITLE_TEXT_COLOR_INC;
             visible:0;
             rel1 {
                relative: 1.0 0.0;
