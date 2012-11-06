@@ -30,8 +30,19 @@
       }
 
       styles {
-         style { name: "textblock_datetime_style";
+         style { name: "textblock_datetime_normal_style";
             base: "font=SLP:style=Roman font_size="DATETIME_TEXT_FONT_SIZE_INC" color="DATETIME_LABEL_TEXT_BLOCK_STYLE_COLOR_INC" text_class=slp";
+            tag:  "br" "\n";
+            tag:  "ps" "ps";
+            tag:  "hilight" "+ font=SLP:style=Bold";
+            tag:  "b" "+ font=SLP:style=Bold";
+            tag:  "tab" "\t";
+         }
+      }
+
+      styles {
+         style { name: "textblock_datetime_selected_style";
+            base: "font=SLP:style=Roman font_size="DATETIME_TEXT_FONT_SIZE_INC" color="DATETIME_LABEL_TEXT_BLOCK_STYLE_SELECTED_COLOR_INC" text_class=slp";
             tag:  "br" "\n";
             tag:  "ps" "ps";
             tag:  "hilight" "+ font=SLP:style=Bold";
@@ -647,11 +658,29 @@ base: "font=SLP:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT_B
                clip_to: "label.text.clip";
                description { state: "default" 0.0;
                   text {
-                     style: "textblock_datetime_style";
+                     style: "textblock_datetime_normal_style";
                      min: 1 0;
                      align: 0.0 0.5;
                   }
                }
+               description { state: "selected" 0.0;
+                  inherit: "default" 0.0;
+                  text.style: "textblock_datetime_selected_style";
+               }
+            }
+         }
+         programs {
+            program { name: "label_select";
+               signal: "elm,state,select";
+               source: "elm";
+               action: STATE_SET "selected" 0.0;
+               target: "elm.text";
+            }
+            program { name: "label_unselect";
+               signal: "elm,state,unselect";
+               source: "elm";
+               action: STATE_SET "default" 0.0;
+               target: "elm.text";
             }
          }
       }
