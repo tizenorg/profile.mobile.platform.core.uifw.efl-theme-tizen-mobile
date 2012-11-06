@@ -332,6 +332,12 @@
          param\
       }
 
+#define GENLIST_DATA_ITEM_NORMAL \
+      data.item: "stacking" "above"; \
+      data.item: "selectraise" "on"; \
+      data.item: "flips" "elm.flip.icon elm.flip.content"; \
+      data.item: "treesize" "16";
+
 //****************************************************************************//
 // ***************************** DISCLIP *****************************//
 //****************************************************************************//
@@ -353,10 +359,10 @@
 #define GENLIST_DIALOGUE_INHERIT_BODY( _PARTS ) \
       GENLIST_IMAGES_BG_IMAGE \
       parts { \
-         GENLIST_PART_BOTTOM_LINE_OFF \
          GENLIST_PART_BG_IMAGE_DIALOGUE \
+         GENLIST_PART_BOTTOM_LINE_OFF \
          GENLIST_PART_PADDING_LEFT_SIZE( DIALOGUE_PADDING_SIZE_LEFT ) \
-         GENLIST_PART_PADDING_RIGHT_SIZE( DIALOGUE_PADDING_SIZE_RIGHT ) \
+         GENLIST_PART_PADDING_RIGHT_EDITBTN_SIZE( DIALOGUE_PADDING_SIZE_RIGHT ) \
          _PARTS \
          GENLIST_PART_FLIP \
       }
@@ -435,6 +441,11 @@
                fixed: 1 0; \
                align: 1 0.5; \
                rel1.relative: 1 0; \
+            } \
+             description { state: "editmode" 0.0; \
+               inherit: "default" 0.0; \
+               min: (GENLIST_PADDING_SIZE_DEFAULT*2+GENLIST_ICON_BIG_SIZE) 0; \
+               max: (GENLIST_PADDING_SIZE_DEFAULT*2+GENLIST_ICON_BIG_SIZE) 0; \
             } \
          } \
          part { name: "bg_image"; \
@@ -814,6 +825,7 @@
        part { name: NAME; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { state: "default" 0.0; \
                min: SIZE 0; \
                fixed: 1 0; \
@@ -834,6 +846,7 @@
          part { name: "elm.padding.left"; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { state: "default" 0.0; \
                min: GENLIST_PADDING_SIZE_LEFT 0; \
                max: GENLIST_PADDING_SIZE_LEFT 0; \
@@ -850,6 +863,7 @@
        part { name: "elm.padding.right"; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { state: "default" 0.0; \
                min: GENLIST_PADDING_SIZE_RIGHT 0; \
                max: GENLIST_PADDING_SIZE_RIGHT 0; \
@@ -862,10 +876,114 @@
             } \
          }
 
+#define GENLIST_PART_PADDING_RIGHT_EDITBTN \
+       part { name: "elm.padding.right"; \
+            type: RECT; \
+            scale: 1; \
+            mouse_events: 0; \
+            description { state: "default" 0.0; \
+               min: GENLIST_PADDING_SIZE_RIGHT 0; \
+               max: GENLIST_PADDING_SIZE_RIGHT 0; \
+               fixed: 1 0; \
+               visible: 0; \
+               align: 1.0 0.5; \
+               rel1.to: "base"; \
+               rel2.to: "base"; \
+               rel1.relative: 1 0; \
+            } \
+            description { state: "editmode" 0.0; \
+               inherit: "default" 0.0; \
+               min: (DIALOGUE_PADDING_SIZE_RIGHT+GENLIST_ICON_BIG_SIZE+GENLIST_PADDING_SIZE_RIGHT) 0; \
+               max: (DIALOGUE_PADDING_SIZE_RIGHT+GENLIST_ICON_BIG_SIZE+GENLIST_PADDING_SIZE_RIGHT) 0; \
+            } \
+         } \
+         part { name: "elm.icon.edit"; \
+            type: SWALLOW; \
+            scale: 1; \
+            mouse_events: 0; \
+            GENLIST_DESCRIPTION_R("elm.padding.edit.right", \
+               fixed: 1 1; \
+               visible: 0; \
+               min: GENLIST_ICON_BIG_SIZE GENLIST_ICON_BIG_SIZE; \
+               max: GENLIST_ICON_BIG_SIZE GENLIST_ICON_BIG_SIZE; \
+            ) \
+            description { state: "editmode" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
+            } \
+         } \
+         part { name: "elm.padding.edit.right"; \
+            type: RECT; \
+            scale: 1; \
+            mouse_events: 0; \
+            description { state: "default" 0.0; \
+               visible: 0; \
+               fixed: 1 0; \
+               align: 1.0 0.5; \
+               rel1.to: "base"; \
+               rel2.to: "base"; \
+               rel1.relative: 1 0; \
+               min: GENLIST_PADDING_SIZE_RIGHT 0; \
+               max: GENLIST_PADDING_SIZE_RIGHT 0; \
+            } \
+         } \
+
+#define GENLIST_PART_PADDING_RIGHT_EDITBTN_SIZE( SIZE ) \
+       part { name: "elm.padding.right"; \
+            type: RECT; \
+            scale: 1; \
+            mouse_events: 0; \
+            description { state: "default" 0.0; \
+               min: SIZE 0; \
+               max: SIZE 0; \
+               fixed: 1 0; \
+               visible: 0; \
+               align: 1.0 0.5; \
+               rel1.to: "base"; \
+               rel2.to: "base"; \
+               rel1.relative: 1 0; \
+            } \
+            description { state: "editmode" 0.0; \
+               inherit: "default" 0.0; \
+               min: (DIALOGUE_PADDING_SIZE_RIGHT+SIZE+GENLIST_ICON_BIG_SIZE) 0; \
+               max: (DIALOGUE_PADDING_SIZE_RIGHT+SIZE+GENLIST_ICON_BIG_SIZE) 0; \
+            } \
+         } \
+         part { name: "elm.icon.edit"; \
+            type: SWALLOW; \
+            scale: 1; \
+            GENLIST_DESCRIPTION_R("elm.padding.edit.right", \
+               fixed: 1 1; \
+               visible: 0; \
+               min: GENLIST_ICON_BIG_SIZE GENLIST_ICON_BIG_SIZE; \
+               max: GENLIST_ICON_BIG_SIZE GENLIST_ICON_BIG_SIZE; \
+            ) \
+            description { state: "editmode" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
+            } \
+         } \
+         part { name: "elm.padding.edit.right"; \
+            type: RECT; \
+            scale: 1; \
+            mouse_events: 0; \
+            description { state: "default" 0.0; \
+               visible: 0; \
+               fixed: 1 0; \
+               align: 1.0 0.5; \
+               rel1.to: "base"; \
+               rel2.to: "base"; \
+               rel1.relative: 1 0; \
+               min: GENLIST_PADDING_SIZE_RIGHT 0; \
+               max: GENLIST_PADDING_SIZE_RIGHT 0; \
+            } \
+         } \
+
 #define GENLIST_PART_PADDING_TOP \
        part { name: "elm.padding.top"; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { \
                state: "default" 0.0; \
                min: 0 GENLIST_PADDING_SIZE_TOP; \
@@ -882,6 +1000,7 @@
        part { name: "elm.padding.bottom"; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { state: "default" 0.0; \
                min: 0 GENLIST_PADDING_SIZE_BOTTOM; \
                fixed: 0 1; \
@@ -897,6 +1016,7 @@
          part { name: "elm.padding.left"; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { state: "default" 0.0; \
                min: SIZE 0; \
                max: SIZE 0; \
@@ -913,6 +1033,7 @@
        part { name: "elm.padding.right"; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { state: "default" 0.0; \
                min: SIZE 0; \
                max: SIZE 0; \
@@ -929,6 +1050,7 @@
        part { name: "elm.padding.top"; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { \
                state: "default" 0.0; \
                min: 0 SIZE; \
@@ -945,6 +1067,7 @@
        part { name: "elm.padding.bottom"; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { state: "default" 0.0; \
                min: 0 SIZE; \
                fixed: 0 1; \
@@ -960,6 +1083,7 @@
        part { name: NAME; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { state: "default" 0.0; \
                visible: 0; \
                fixed: 1 0; \
@@ -980,6 +1104,7 @@
        part { name: NAME; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { state: "default" 0.0; \
                visible: 0; \
                fixed: 1 0; \
@@ -1000,6 +1125,7 @@
        part { name: NAME; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { state: "default" 0.0; \
                visible: 0; \
                fixed: 1 0; \
@@ -1020,6 +1146,7 @@
        part { name: NAME; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { state: "default" 0.0; \
                visible: 0; \
                fixed: 1 0; \
@@ -1041,6 +1168,7 @@
        part { name: NAME; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { state: "default" 0.0; \
                min: 0 SIZE; \
                fixed: 0 1; \
@@ -1061,6 +1189,7 @@
        part { name: NAME; \
             type: RECT; \
             scale: 1; \
+            mouse_events: 0; \
             description { state: "default" 0.0; \
                min: 0 SIZE; \
                fixed: 0 1; \
@@ -1660,6 +1789,24 @@
             TARGET \
          }
 
+#define GENLIST_PROGRAM_EDITMODE \
+         program { name: "edit_enabled"; \
+            signal:  "elm,state,edit,enabled"; \
+            source:  "*"; \
+            action:  STATE_SET "editmode" 0.0; \
+            target: "elm.padding.right"; \
+            target: "elm.icon.edit"; \
+            target: "bg_image_right"; \
+         } \
+         program { name: "edit_disabled"; \
+            signal:  "elm,state,edit,disabled"; \
+            source:  "*"; \
+            action:  STATE_SET "editmode" 0.0; \
+            target: "elm.padding.right"; \
+            target: "elm.icon.edit"; \
+            target: "bg_image_right"; \
+         }
+
 #define GENLIST_PROGRAMS_INDEX( TARGET ) \
          programs { \
             GENLIST_PROGRAM_DISABLED( TARGET ) \
@@ -1679,6 +1826,7 @@
             GENLIST_PROGRAM_SELECT_DIALOGUE( TARGET ) \
             GENLIST_PROGRAM_FLIP \
             GENLIST_PROGRAM_EXPAND( TARGET ) \
+            GENLIST_PROGRAM_EDITMODE \
          }
 
 #define GENLIST_PROGRAMS_MULTILINE( TARGET ) \
