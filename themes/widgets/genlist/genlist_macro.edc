@@ -358,6 +358,7 @@
 /******************************* Dialogue group ******************************/
 /*****************************************************************************/
 #define GENLIST_DIALOGUE_INHERIT_BODY( _PARTS ) \
+      data.item: "treesize" 0; \
       GENLIST_IMAGES_BG_IMAGE \
       parts { \
          GENLIST_PART_BG_IMAGE_DIALOGUE \
@@ -382,13 +383,16 @@
                inherit: "default" 0.0; \
                color: GENLIST_INDEX_LIST_PRESS_COLOR; \
             } \
-            GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
+            GENLIST_DESCRIPTION_FADEOUT \
          }
 
 #define GENLIST_PART_BG_IMAGE \
-         part { name: "2depth_clip"; \
+         part { name: "bg_image_clip"; \
             type: RECT; \
             description { state: "default" 0.0; \
+               color: 0 0 0 0; \
+            } \
+            description { state: "2depth" 0.0; \
                color: 0 0 0 0; \
             } \
          } \
@@ -404,7 +408,7 @@
             description { state: "disabled" 0.0; \
                color: GENLIST_LIST_DIM_COLOR; \
             } \
-            GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
+            GENLIST_DESCRIPTION_FADEOUT \
          }
 
 #define GENLIST_IMAGES_BG_IMAGE \
@@ -430,13 +434,12 @@
          }
 
 #define GENLIST_PART_BG_IMAGE_DIALOGUE \
-         part { name: "2depth_clip"; \
+         part { name: "bg_image_clip"; \
             type: RECT; \
             description { state: "default" 0.0; \
                color: 255 255 255 255; \
             } \
-            description { state: "2depth_color" 0.0; \
-               inherit: "default"; \
+            description { state: "2depth" 0.0; \
                color: 220 218 211 255; \
             } \
          } \
@@ -466,9 +469,9 @@
             } \
          } \
          part { name: "bg_image"; \
+            clip_to: "bg_image_clip"; \
             type: IMAGE; \
             mouse_events: 0; \
-            clip_to: "2depth_clip"; \
             description { state: "default" 0.0; \
                color: 255 255 255 255; \
                GENLIST_PARAM_BG_IMAGE_DIALOGUE \
@@ -539,7 +542,7 @@
                inherit: "default"; \
                color: 255 255 255 255; \
             } \
-            GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
+            GENLIST_DESCRIPTION_FADEOUT \
          }
 
 //****************************************************************************//
@@ -635,6 +638,7 @@
                inherit: "default" 0.0; \
                color: GENLIST_LIST_DIM_COLOR; \
             } \
+            GENLIST_DESCRIPTION_FADEOUT \
          } \
          part { name: "bottom_line2"; \
             type: RECT; \
@@ -663,6 +667,7 @@
                inherit: "default" 0.0; \
                color: GENLIST_LIST_DIM_COLOR; \
             } \
+            GENLIST_DESCRIPTION_FADEOUT \
          }
 
 #define GENLIST_PART_BOTTOM_LINE_OFF \
@@ -685,6 +690,7 @@
                inherit: "default" 0.0; \
                visible: 0; \
             } \
+            GENLIST_DESCRIPTION_FADEOUT_RECT \
          } \
          part { name: "bottom_line2"; \
             type: RECT; \
@@ -705,6 +711,7 @@
                inherit: "default" 0.0; \
                visible: 0; \
             } \
+            GENLIST_DESCRIPTION_FADEOUT_RECT \
          }
 
 #define GENLIST_PART_VERTICAL_LINE_L(LEFT) \
@@ -723,6 +730,7 @@
                inherit: "default" 0.0; \
                color: GENLIST_LIST_PRESS_COLOR; \
             } \
+            GENLIST_DESCRIPTION_FADEOUT_RECT \
          } \
          part { name: "vertical_line2"; \
             type: RECT; \
@@ -739,6 +747,7 @@
                inherit: "default" 0.0; \
                color: GENLIST_LIST_PRESS_COLOR; \
             } \
+            GENLIST_DESCRIPTION_FADEOUT_RECT \
          }
 
 #define GENLIST_PART_VERTICAL_LINE_R(RIGHT) \
@@ -757,6 +766,7 @@
                inherit: "default" 0.0; \
                color: GENLIST_LIST_PRESS_COLOR; \
             } \
+            GENLIST_DESCRIPTION_FADEOUT_RECT \
          } \
          part { name: "vertical_line2"; \
             type: RECT; \
@@ -773,6 +783,7 @@
                inherit: "default" 0.0; \
                color: GENLIST_LIST_PRESS_COLOR; \
             } \
+            GENLIST_DESCRIPTION_FADEOUT_RECT \
          }
 
 #define GENLIST_PART_CENTER_LINE_LT(LEFT, TOP) \
@@ -792,6 +803,7 @@
                inherit: "default" 0.0; \
                color: GENLIST_LIST_PRESS_COLOR; \
             } \
+            GENLIST_DESCRIPTION_FADEOUT_RECT \
          } \
          part { name: "center_line2"; \
             type: RECT; \
@@ -809,6 +821,7 @@
                inherit: "default" 0.0; \
                color: GENLIST_LIST_PRESS_COLOR; \
             } \
+            GENLIST_DESCRIPTION_FADEOUT_RECT \
          }
 
 #define GENLIST_PART_COLORBAR \
@@ -825,14 +838,17 @@
                rel2.relative: 1 0; \
                rel2.to_x: "elm.padding.left"; \
             } \
+            GENLIST_DESCRIPTION_FADEOUT \
          }
 
 #define GENLIST_PART_DIVIDER_R(NAME, RIGHT) \
    part { name: NAME; \
+      type: IMAGE; \
       GENLIST_DESCRIPTION_R(RIGHT, \
          min: 2 72; max: 2 72; fixed: 1 1; \
          image.normal: "00_winset_divider_line.png";\
       ) \
+      GENLIST_DESCRIPTION_FADEOUT_RECT \
    }
 
 //****************************************************************************//
@@ -1219,7 +1235,7 @@
          } \
       }
 
-#define GENLIST_DESCRIPTION_MAP( param_x, param_y, param_z ) \
+#define GENLIST_DESCRIPTION_ROTATE( param_x, param_y, param_z ) \
    description { state: "map_contracted" 0.0; \
       inherit: "default" 0.0; \
       map { \
@@ -1258,45 +1274,111 @@
       visible: 0; \
    }
 
-#define GENLIST_PROGRAM_MAP_ROTATE( EXPAND_SECOND, CONTRACT_SECOND, TARGET ) \
+#define GENLIST_PROGRAM_ROTATE( TARGET ) \
    program { name: "map_expand_start"; \
       signal: "flip_item"; \
       action: STATE_SET "map_contracted" 0.0; \
-      after: "map_expanding"; \
+      target: "bg_image"; \
       TARGET \
+      after: "map_expanding"; \
    } \
    program { name: "map_expanding"; \
-      action: STATE_SET "map_expanded" 0.0; \
-      transition: LINEAR EXPAND_SECOND; \
-      after: "map_expand_end"; \
+      action: STATE_SET "hide" 0.0; \
+      transition: LINEAR 0.2; \
+      target: "bg_image"; \
       TARGET \
+      after: "map_expand_end"; \
    } \
    program { name: "map_expand_end"; \
       action: STATE_SET "default" 0.0; \
+      target: "bg_image"; \
       TARGET \
-   } \
-   program { name: "2nd_depth"; \
-      action: STATE_SET "2depth_color" 0.0; \
-      target: "2depth_clip"; \
    } \
    program { name: "map_contract_start"; \
       signal: "elm,state,contract_flip"; \
       action: STATE_SET "map_expanded" 0.0; \
-      after: "map_contracting"; \
+      target: "bg_image"; \
       TARGET \
+      after: "map_contracting"; \
    } \
    program { name: "map_contracting"; \
       action: STATE_SET "map_contracted" 0.0; \
-      transition: LINEAR CONTRACT_SECOND; \
-      after: "map_contract_end"; \
+      transition: LINEAR 0.3; \
+      target: "bg_image"; \
       TARGET \
+      after: "map_contract_end"; \
    } \
    program { name: "map_contract_end"; \
       action: STATE_SET "hide" 0.0; \
+      target: "bg_image"; \
       TARGET \
    }
 
-#define GENLIST_PROGRAM_EXPAND_SRC( TARGET ) \
+// FIXME: swallow part cannot be fade out ???
+#define GENLIST_DESCRIPTION_FADEOUT_ICON \
+   description { state: "fadeout" 0.0; \
+      inherit: "default" 0.0; \
+      visible: 0; \
+   } \
+   description { state: "fadein" 0.0; \
+      inherit: "default" 0.0; \
+      visible: 0; \
+   } \
+
+#define GENLIST_DESCRIPTION_FADEOUT_RECT \
+   description { state: "fadeout" 0.0; \
+      inherit: "default" 0.0; \
+      color: 0 0 0 50; \
+      visible: 0; \
+   } \
+   description { state: "fadein" 0.0; \
+      inherit: "default" 0.0; \
+   } \
+
+#define GENLIST_DESCRIPTION_FADEOUT \
+   description { state: "fadeout" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 255 255 50; \
+      visible: 0; \
+   } \
+   description { state: "fadein" 0.0; \
+      inherit: "default" 0.0; \
+   } \
+
+#define GENLIST_PROGRAM_EXPAND_FADE( TARGET ) \
+   program { name: "expand"; \
+      signal: "flip_item"; \
+      action: STATE_SET "2depth" 0.0; \
+      target: "bg_image_clip"; \
+      after: "expand_start_fade"; \
+   } \
+   program { name: "expand_start_fade"; \
+      action: STATE_SET "fadeout" 0.0; \
+      after: "expand_end_fade"; \
+      target: "bg_image"; \
+      TARGET \
+   } \
+   program { name: "expand_end_fade"; \
+      action: STATE_SET "default" 0.0; \
+      transition: DECELERATE 0.3; \
+      target: "bg_image"; \
+      TARGET \
+   } \
+   program { name: "contract_fade"; \
+      signal: "elm,state,contract_flip"; \
+      action: STATE_SET "fadein" 0.0; \
+      after: "contract_end_fade"; \
+      target: "bg_image"; \
+      TARGET \
+   } \
+   program { name: "contract_end_fade"; \
+      action: STATE_SET "fadeout" 0.0; \
+      transition: ACCELERATE 0.3; \
+      target: "bg_image"; \
+      TARGET \
+   }
+
+#define GENLIST_PROGRAM_EXPAND_ROOT( TARGET ) \
          program { \
             name: "go_expanded"; \
             signal: "elm,state,expanded"; \
@@ -1312,11 +1394,7 @@
             action: STATE_SET "default" 0.0; \
             target: "bg_image"; \
             TARGET \
-         }
-
-#define  GENLIST_PROGRAM_EXPAND( TARGET ) \
-         GENLIST_PROGRAM_EXPAND_SRC( TARGET ) \
-         GENLIST_PROGRAM_MAP_ROTATE(0.2, 0.3, target: "bg_image";  TARGET) \
+         } \
          program { \
             name: "show"; \
             signal: "elm,state,show"; \
@@ -1339,7 +1417,6 @@
             SRC \
             action: SIGNAL_EMIT "elm,action,expand,toggle" "elm"; \
          } \
-
 
 // 2.2.7 Genlist_Edit mode (Rename)
 // FIXME: padding is not needed when swallow content is NULL.
@@ -1665,10 +1742,13 @@
          programs { \
             GENLIST_PROGRAM_DISABLED_BOTTOMLINE( TARGET ) \
             GENLIST_PROGRAM_SELECT_BOTTOMLINE( TARGET ) \
-            GENLIST_PROGRAM_EXPAND( TARGET ) \
+            GENLIST_PROGRAM_EXPAND_FADE( target: "bottom_line"; target: "bottom_line2"; TARGET ) \
             GENLIST_PROGRAM_FLIP \
          }
 
+// FIXME: inheritance !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+// if GENLIST_PROGRAM_EXPAND is here, expanda effect is something wrong.
+// because after can be duplicated when program inheriting.
 #define GENLIST_PROGRAMS_DIALOGUE( TARGET ) \
          programs { \
             GENLIST_PROGRAM_DISABLED( TARGET ) \
@@ -1749,7 +1829,7 @@
       scale: 1; \
       type: SWALLOW; \
       DESCRIPION \
-      GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
+      GENLIST_DESCRIPTION_FADEOUT_ICON \
    }
 
 #define GENLIST_PARAM_ICON_BIG \
@@ -1886,7 +1966,7 @@
       scale: 1; \
       type: IMAGE; \
       DESCRIPION \
-      GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
+      GENLIST_DESCRIPTION_FADEOUT \
    }
 
 #define GENLIST_PARAM_PASSWORD_IMAGE \
@@ -1914,7 +1994,7 @@
             min: 48 38; \
             max: -1 38; \
             fixed: 0 1;) \
-            GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
+            GENLIST_DESCRIPTION_FADEOUT \
          )
 
 #define GENLIST_IMAGES_EXPANDABLE_BTN \
@@ -1927,7 +2007,7 @@
          GENLIST_PART_ICON("touch_arrow", \
             ignore_flags: ON_HOLD; \
             GENLIST_DESCRIPTION_ENVELOP("arrow", ) \
-            GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
+            GENLIST_DESCRIPTION_FADEOUT \
          ) \
          GENLIST_PART_IMAGE("arrow", \
             ignore_flags: ON_HOLD; \
@@ -1942,7 +2022,7 @@
                inherit: "default" 0.0; \
                image.normal: "00_button_expand_opened.png"; \
             } \
-            GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
+            GENLIST_DESCRIPTION_FADEOUT \
          )
 /*****************************************************************************/
 /******************************* Genlist RECCT ********************************/
@@ -1952,7 +2032,7 @@
       scale: 1; \
       type: RECT; \
       DESCRIPION \
-      GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
+      GENLIST_DESCRIPTION_FADEOUT_RECT \
    }
 
 #define GENLIST_PART_INDEX_LINE(LEFT, RIGHT) \
@@ -1974,7 +2054,7 @@
       mouse_events: 0; \
       type: TEXT; \
       DESCRIPION \
-      GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
+      GENLIST_DESCRIPTION_FADEOUT \
    }
 
 #define GENLIST_PART_TEXTBLOCK(NAME, DESCRIPION) \
@@ -1983,7 +2063,7 @@
       mouse_events: 0; \
       type: TEXTBLOCK; \
       DESCRIPION \
-      GENLIST_DESCRIPTION_MAP(-90.0, 0.0, 0.0) \
+      GENLIST_DESCRIPTION_FADEOUT \
    }
 
 /*************************** parameters **********************************/
