@@ -394,7 +394,7 @@ group { name: "elm/popup/base/default";
             }
          }
       }
-      part { name: "padding_before_text";
+      part { name: "title_left_top_padding";
          type: RECT;
          scale: 1;
          mouse_events: 0;
@@ -407,52 +407,7 @@ group { name: "elm/popup/base/default";
             visible: 0;
          }
       }
-      part { name: "icon_rect";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            visible: 0;
-            min: 0 0;
-            fixed: 1 1;
-            rel1 {
-               relative: 0.0 1.0;
-               to_x: "padding_after_icon";
-               to_y: "padding_before_text";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "padding_after_icon";
-            }
-            align: 0.0 0.5;
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            min: POPUP_BASE_DEFAULT_TITLE_ICON_DEFAULT_MIN_MAX_INC;
-            max: POPUP_BASE_DEFAULT_TITLE_ICON_DEFAULT_MIN_MAX_INC;
-         }
-      }
-      part { name: "padding_before_icon";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            align: 0.0 1.0;
-            rel1.to: "icon_rect";
-            rel2 {
-               relative: 0.0 1.0;
-               to: "icon_rect";
-            }
-            fixed: 1 1;
-            min: 0 0;
-            visible: 0;
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            min: 10 0;
-         }
-      }
-      part { name: "padding_after_icon";
+      part { name: "title_right_bottom_padding";
          type: RECT;
          scale: 1;
          mouse_events: 0;
@@ -465,11 +420,57 @@ group { name: "elm/popup/base/default";
             visible: 0;
          }
       }
+      part { name: "icon_rect";
+         type: RECT;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            min: 0 0;
+            fixed: 1 1;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "title_left_top_padding";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               to_x: "title_left_top_padding";
+               to_y: "elm.bg.title";
+            }
+            align: 0.0 0.5;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            min: POPUP_BASE_DEFAULT_TITLE_ICON_DEFAULT_MIN_MAX_INC;
+            max: POPUP_BASE_DEFAULT_TITLE_ICON_DEFAULT_MIN_MAX_INC;
+         }
+      }
+      part { name: "padding_after_icon";
+         type: RECT;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            min: 0 0;
+            fixed: 1 1;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "icon_rect";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to: "icon_rect";
+            }
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            min: POPUP_TITLE_ICON_TEXT_PADDING_INC;
+         }
+      }
       part { name: "elm.swallow.title.icon";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0.5 0.5;
             rel1.to: "icon_rect";
             rel2.to: "icon_rect";
          }
@@ -481,18 +482,17 @@ group { name: "elm/popup/base/default";
             fixed: 1 1;
             text {
               style: "popup_title_style";
-              min: 0 1;
-              max: 0 1;
               align: 0.0 0.0;
             }
             rel1 {
-               relative: 1.0 1.0;
-               to: "padding_before_text";
+               relative: 1.0 0.0;
+               to: "padding_after_icon";
             }
             rel2 {
                relative: 0.0 1.0;
-               to: "padding_before_icon";
+               to: "title_right_bottom_padding";
             }
+            align: 0.0 0.5;
          }
       }
       part { name: "elm.swallow.content";
@@ -584,13 +584,13 @@ group { name: "elm/popup/base/default";
          source: "elm";
          action: STATE_SET "visible" 0.0;
          target: "icon_rect";
-         target: "padding_before_icon";
+         target: "padding_after_icon";
       }
       program { name: hide_title_icon;
          signal: "elm,state,title,icon,hidden";
          source: "elm";
          action: STATE_SET "default" 0.0;
-         target: "padding_before_icon";
+         target: "padding_after_icon";
          target: "icon_rect";
       }
       program { name: show_title_area;
