@@ -1,6 +1,6 @@
 Name:          efl-theme-tizen-hd
 Summary:       Tizen theme files
-Version:       1.0.72
+Version:       1.0.73
 Release:       1
 Group:         TO_BE/FILLED_IN
 License:       TO_BE/FILLED_IN
@@ -48,3 +48,4 @@ cp %{_builddir}/%{buildsubdir}/COPYING %{buildroot}/usr/share/license/%{name}
 %files -n efl-theme-tizen-devel
 %defattr(-,root,root,-)
 /opt/var/efl-theme-tizen-edc/*
+
