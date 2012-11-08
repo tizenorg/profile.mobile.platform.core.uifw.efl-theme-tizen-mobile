@@ -21,6 +21,13 @@
 
 /*popup widget specific notify style style*/
 group { name: "elm/notify/center/popup";
+   alias: "elm/notify/center/verticalbuttonstyle";
+   alias: "elm/notify/center/menustyle";
+   alias: "elm/notify/center/min_menustyle";
+   alias: "elm/notify/center/liststyle";
+   alias: "elm/notify/center/min_liststyle";
+   alias: "elm/notify/center/customstyle";
+   alias: "elm/notify/center/content_expand";
    parts {
        part { name: "base";
            type: RECT;
@@ -80,7 +87,7 @@ group { name: "elm/notify/center/popup";
                rel1.to: "base";
                rel2.to: "base";
                map {
-                  //on: 1;
+                  on: 1;
                   backface_cull: 1;
                   perspective: "persp";
                }
@@ -89,7 +96,7 @@ group { name: "elm/notify/center/popup";
                rel1.to: "base";
                rel2.to: "base";
                map {
-                  //on: 1;
+                  on: 1;
                   backface_cull: 1;
                   perspective: "persp1";
                }
@@ -98,7 +105,7 @@ group { name: "elm/notify/center/popup";
                rel1.to: "base";
                rel2.to: "base";
                map {
-                  //on: 0;
+                  on: 0;
                }
            }
        }
@@ -114,7 +121,7 @@ group { name: "elm/notify/center/popup";
             signal: "show";
             action: STATE_SET "visible" 0.0;
             target: "elm.swallow.content";
-            transition: LINEAR 0.2;
+            transition: ACCEL_FAC 0.5 0.8;
             after: "end";
        }
        program { name: "end";
@@ -131,10 +138,21 @@ group { name: "elm/notify/center/popup";
 }
 
 group { name: "elm/notify/block_events/popup";
+   alias: "elm/notify/block_events/verticalbuttonstyle";
+   alias: "elm/notify/block_events/menustyle";
+   alias: "elm/notify/block_events/min_menustyle";
+   alias: "elm/notify/block_events/liststyle";
+   alias: "elm/notify/block_events/min_liststyle";
+   alias: "elm/notify/block_events/customstyle";
+   alias: "elm/notify/block_events/volumebarstyle";
+   alias: "elm/notify/block_events/content_expand";
    parts {
       part { name: "block_events";
          type: RECT;
          description { state: "default" 0.0;
+            color: POPUP_DIM_BG_DEFAULT_COLOR_INC;
+         }
+         description { state: "show" 0.0;
             color: POPUP_DIM_BG_COLOR_INC;
          }
          description { state: "clicked" 0.0;
@@ -143,6 +161,13 @@ group { name: "elm/notify/block_events/popup";
       }
    }
    programs {
+      program { name: "load";
+         signal: "load";
+         source: "";
+         action: STATE_SET "show" 0.0;
+         transition: ACCEL_FAC 0.5 0.8;
+         target: "block_events";
+      }
       program { name: "block_clicked";
          signal: "mouse,clicked,1";
          source: "block_events";
@@ -158,7 +183,7 @@ group { name: "elm/notify/block_events/popup";
       }
       program {
          name: "default_block_color";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "show" 0.0;
          target: "block_events";
          transition: LINEAR 0.2;
       }
