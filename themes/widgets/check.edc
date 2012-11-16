@@ -70,6 +70,7 @@
             } \
          } \
          part { name: "check"; \
+            clip_to: "effect_clip"; \
             mouse_events: 0; \
             scale: 1; \
             description { state: "default" 0.0; \
@@ -86,6 +87,18 @@
                inherit: "default" 0.0; \
                visible: 1; \
                image.normal: "00_check_checking_dim.png"; \
+            } \
+         } \
+         part { name: "effect_clip"; \
+            type: RECT; \
+            mouse_events: 0; \
+            description { state: "default" 0.0; \
+               rel2.relative: 0.0 1.0; \
+               color: CHECK_DISCLIP_NORMAL_COLOR_INC; \
+            } \
+            description { state: "visible" 0.0; \
+               inherit: "default" 0.0; \
+               rel2.relative: 1.0 1.0; \
             } \
          } \
          part { name: "elm.swallow.content"; \
@@ -221,10 +234,14 @@
             signal: "mouse,out"; \
             source: "events2"; \
             script { \
-               if (get_int(check_state) == CHECK_STATE_VISIBLE) \
+               if (get_int(check_state) == CHECK_STATE_VISIBLE) { \
                  set_state(PART:"check", "visible", 0.0); \
-               else \
+                 run_program(PROGRAM:"check_effect"); \
+               } \
+               else { \
                  set_state(PART:"check", "default", 0.0); \
+                 set_state(PART:"effect_clip", "default", 0.0); \
+               } \
             } \
          } \
          program { name: "check_on"; \
@@ -233,6 +250,7 @@
             script { \
                set_int(check_state, CHECK_STATE_VISIBLE); \
                set_state(PART:"check", "visible", 0.0); \
+               run_program(PROGRAM:"check_effect"); \
             } \
          } \
          program { name: "check_off"; \
@@ -245,8 +263,14 @@
                  { \
                     set_int(check_state, CHECK_STATE_DEFAULT); \
                     set_state(PART:"check", "default", 0.0); \
+                    set_state(PART:"effect_clip", "default", 0.0); \
                  } \
             } \
+         } \
+         program { name: "check_effect"; \
+            action: STATE_SET "visible" 0.0; \
+            transition: LINEAR 0.267; \
+            target: "effect_clip"; \
          } \
          program { name: "text_show"; \
             signal: "elm,state,text,visible"; \
@@ -330,6 +354,7 @@
                if (!strcmp(st, "disabled_visible")) \
                  { \
                     set_state(PART:"check", "visible", 0.0); \
+                    run_program(PROGRAM:"check_effect"); \
                     set_int(check_state, CHECK_STATE_VISIBLE); \
                  } \
                else \

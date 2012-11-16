@@ -81,12 +81,14 @@
             description { state: "default" 0.0; \
                rel1.to: "bg"; \
                rel2.to: "bg"; \
+               max: 0 0; \
                image.normal: "00_button_radio_select.png"; \
                visible: 0; \
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
                visible: 1; \
+               max: RADIO_STYLE_DEFAULT_BG_MIN_MAX_INC; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
@@ -227,7 +229,7 @@
             signal: "elm,state,radio,on"; \
             source: "elm"; \
             script { \
-               set_state(PART:"radio", "visible", 0.0); \
+               run_program(PROGRAM:"radio_effect"); \
             } \
          } \
          program { name: "radio_off"; \
@@ -236,6 +238,11 @@
             script { \
                set_state(PART:"radio", "default", 0.0); \
             } \
+         } \
+         program { name: "radio_effect"; \
+            action: STATE_SET "visible" 0.0; \
+            transition: LINEAR 0.267; \
+            target: "radio"; \
          } \
          program { name: "text_show"; \
             signal: "elm,state,text,visible"; \
@@ -316,7 +323,7 @@
                  set_state(PART:"elm.swallow.content", "default", 0.0); \
                get_state(PART:"radio", st, 30, vl); \
                if (!strcmp(st, "disabled_visible")) \
-                 set_state(PART:"radio", "visible", 0.0); \
+                 run_program(PROGRAM:"radio_effect"); \
                else \
                  set_state(PART:"radio", "default", 0.0); \
             } \
