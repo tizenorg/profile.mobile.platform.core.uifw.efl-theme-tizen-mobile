@@ -24,7 +24,7 @@
          image: "00_splite_handler_v.png" COMP;
       }
       script {
-         public state_pair = 0; //0:both contents are not set, 1:both contents are set
+         public state_pair = 1; //0:both contents are not set, 1:both contents are set
       }
       parts
       {
@@ -46,15 +46,15 @@
             description {
                state: "default" 0.0;
                rel2.relative:0.0 1.0;
-               min: 0 0;
+               min: PANES_STYLE_DEFAULT_PADDING_LEFT_SIZE_INC 0;
                fixed: 1 0;
                align: 1.0 0.5;
                visible: 0;
             }
             description {
-               state: "visible" 0.0;
+               state: "hidden" 0.0;
                inherit: "default" 0.0;
-               min: PANES_STYLE_DEFAULT_PADDING_LEFT_SIZE_INC 0;
+               min: 0 0;
             }
          }
          part {
@@ -63,15 +63,15 @@
             description {
                state: "default" 0.0;
                rel1.relative: 1.0 0.0;
-               min: 0 0;
+               min: PANES_STYLE_DEFAULT_PADDING_RIGHT_SIZE_INC 0;
                fixed: 1 0;
                align: 0.0 0.5;
                visible: 0;
             }
             description {
-               state: "visible" 0.0;
+               state: "hidden" 0.0;
                inherit: "default" 0.0;
-               min: PANES_STYLE_DEFAULT_PADDING_RIGHT_SIZE_INC 0;
+               min: 0 0;
             }
          }
          //2 contents
@@ -145,7 +145,8 @@
             }
             scale: 1;
             description { state: "default" 0.0;
-               min: 0 999999;
+               min: PANES_STYLE_DEFAULT_MOVABLE_SIZE_INC 999999;
+               fixed: 0 1;
                align: 1.0 0.5;
                rel1.relative: 0.0 0.5;
                rel2.relative: 1.0 0.5;
@@ -153,22 +154,21 @@
             }
             description { state: "default" 0.1;
                inherit: "default" 0.0;
-               min: PANES_STYLE_DEFAULT_MOVABLE_SIZE_INC 999999;
+               min: 0 999999;
             }
             description { state: "disabled" 0.0;
                inherit:  "default" 0.0;
-               visible: 0;
+               min: PANES_STYLE_DEFAULT_FIXED_SIZE_INC 999999;
             }
             description { state: "disabled" 0.1;
                inherit:  "default" 0.1;
-               min: PANES_STYLE_DEFAULT_FIXED_SIZE_INC 999999;
             }
          }
          part { name: "pad_bar_left";
             type: RECT;
             mouse_events: 0;
             description { state: "default" 0.0;
-               min: 0 0;
+               min: PANES_STYLE_DEFAULT_PADDING_LEFT_SIZE_INC 0;
                align: 0.0 0.5;
                rel1.to_x: "elm.bar";
                rel2 {
@@ -179,16 +179,16 @@
                visible: 0;
             }
             description {
-               state: "visible" 0.0;
+               state: "hidden" 0.0;
                inherit: "default" 0.0;
-               min: PANES_STYLE_DEFAULT_PADDING_LEFT_SIZE_INC 0;
+               min: 0 0;
             }
          }
          part { name: "pad_bar_right";
             type: RECT;
             mouse_events: 0;
             description { state: "default" 0.0;
-               min: 0 0;
+               min: PANES_STYLE_DEFAULT_PADDING_RIGHT_SIZE_INC 0;
                align: 1.0 0.5;
                rel1 {
                   relative: 1.0 0.0;
@@ -199,9 +199,9 @@
                visible: 0;
             }
             description {
-               state: "visible" 0.0;
+               state: "hidden" 0.0;
                inherit: "default" 0.0;
-               min: PANES_STYLE_DEFAULT_PADDING_RIGHT_SIZE_INC 0;
+               min: 0 0;
             }
          }
          part { name: "bar_bg";
@@ -294,11 +294,11 @@
                new Float:vl;
                set_int(state_pair, 1);
                get_state(PART:"elm.bar", st, 30, vl);
-               set_state(PART:"elm.bar", st, 0.1);
-               set_state(PART:"pad_left", "visible", 0.0);
-               set_state(PART:"pad_right", "visible", 0.0);
-               set_state(PART:"pad_bar_left", "visible", 0.0);
-               set_state(PART:"pad_bar_right", "visible", 0.0);
+               set_state(PART:"elm.bar", st, 0.0);
+               set_state(PART:"pad_left", "default", 0.0);
+               set_state(PART:"pad_right", "default", 0.0);
+               set_state(PART:"pad_bar_left", "default", 0.0);
+               set_state(PART:"pad_bar_right", "default", 0.0);
             }
          }
          program {
@@ -310,11 +310,11 @@
                new Float:vl;
                set_int(state_pair, 0);
                get_state(PART:"elm.bar", st, 30, vl);
-               set_state(PART:"elm.bar", st, 0.0);
-               set_state(PART:"pad_left", "default", 0.0);
-               set_state(PART:"pad_right", "default", 0.0);
-               set_state(PART:"pad_bar_left", "default", 0.0);
-               set_state(PART:"pad_bar_right", "default", 0.0);
+               set_state(PART:"elm.bar", st, 0.1);
+               set_state(PART:"pad_left", "hidden", 0.0);
+               set_state(PART:"pad_right", "hidden", 0.0);
+               set_state(PART:"pad_bar_left", "hidden", 0.0);
+               set_state(PART:"pad_bar_right", "hidden", 0.0);
             }
          }
          program {
@@ -340,10 +340,6 @@
          program {
             name:   "button_unclick_anim";
             script {
-               if(get_int(state_pair) == 1)
-                 set_state(PART:"elm.bar", "default", 0.1);
-               else
-                 set_state(PART:"elm.bar", "default", 0.0);
                set_state(PART:"bar_bg", "default", 0.0);
             }
          }
@@ -403,7 +399,7 @@
          image: "00_splite_handler_h.png" COMP;
       }
       script {
-         public state_pair = 0; //0:both contents are not set, 1:both contents are set
+         public state_pair = 1; //0:both contents are not set, 1:both contents are set
       }
       parts
       {
@@ -425,15 +421,15 @@
             description {
                state: "default" 0.0;
                rel2.relative:1.0 0.0;
-               min: 0 0;
+               min: 0 PANES_STYLE_DEFAULT_PADDING_LEFT_SIZE_INC;
                fixed: 0 1;
                align: 0.5 1.0;
                visible: 0;
             }
             description {
-               state: "visible" 0.0;
+               state: "hidden" 0.0;
                inherit: "default" 0.0;
-               min: 0 PANES_STYLE_DEFAULT_PADDING_LEFT_SIZE_INC;
+               min: 0 0;
             }
          }
          part {
@@ -442,15 +438,15 @@
             description {
                state: "default" 0.0;
                rel1.relative: 0.0 1.0;
-               min: 0 0;
+               min: 0 PANES_STYLE_DEFAULT_PADDING_RIGHT_SIZE_INC;
                fixed: 0 1;
                align: 0.5 0.0;
                visible: 0;
             }
             description {
-               state: "visible" 0.0;
+               state: "hidden" 0.0;
                inherit: "default" 0.0;
-               min: 0 PANES_STYLE_DEFAULT_PADDING_RIGHT_SIZE_INC;
+               min: 0 0;
             }
          }
          //2 contents
@@ -524,7 +520,8 @@
             }
             scale: 1;
             description { state: "default" 0.0;
-               min: 999999 0;
+               min: 999999 PANES_STYLE_DEFAULT_MOVABLE_SIZE_INC;
+               fixed: 1 0;
                align: 0.5 0.0;
                rel1.relative: 0.5 0.0;
                rel2.relative: 0.5 1.0;
@@ -532,22 +529,22 @@
             }
             description { state: "default" 0.1;
                inherit: "default" 0.0;
-               min: 999999 PANES_STYLE_DEFAULT_MOVABLE_SIZE_INC;
+               min: 999999 0;
             }
             description { state: "disabled" 0.0;
                inherit:  "default" 0.0;
+               min: 999999 PANES_STYLE_DEFAULT_FIXED_SIZE_INC;
                visible: 0;
             }
             description { state: "disabled" 0.1;
                inherit:  "default" 0.1;
-               min: 999999 PANES_STYLE_DEFAULT_FIXED_SIZE_INC;
             }
          }
          part { name: "pad_bar_left";
             type: RECT;
             mouse_events: 0;
             description { state: "default" 0.0;
-               min: 0 0;
+               min: 0 PANES_STYLE_DEFAULT_PADDING_LEFT_SIZE_INC;
                align: 0.5 0.0;
                rel1.to_y: "elm.bar";
                rel2 {
@@ -558,16 +555,16 @@
                visible: 0;
             }
             description {
-               state: "visible" 0.0;
+               state: "hidden" 0.0;
                inherit: "default" 0.0;
-               min: 0 PANES_STYLE_DEFAULT_PADDING_LEFT_SIZE_INC;
+               min: 0 0;
             }
          }
          part { name: "pad_bar_right";
             type: RECT;
             mouse_events: 0;
             description { state: "default" 0.0;
-               min: 0 0;
+               min: 0 PANES_STYLE_DEFAULT_PADDING_RIGHT_SIZE_INC;
                align: 0.5 1.0;
                rel1 {
                   relative: 0.0 1.0;
@@ -580,7 +577,7 @@
             description {
                state: "visible" 0.0;
                inherit: "default" 0.0;
-               min: 0 PANES_STYLE_DEFAULT_PADDING_RIGHT_SIZE_INC;
+               min: 0 0;
             }
          }
          part { name: "bar_bg";
@@ -614,7 +611,7 @@
                   to_y: "bar_bg";
                   relative: 0.5 1.0;
                }
-               fixed: 0 1;
+               fixed: 1 0;
                min: PANES_STYLE_DEFAULT_MIDDLE_SIZE_INC 0;
                image.normal: "00_splite_handler_h.png";
             }
@@ -673,11 +670,11 @@
                new Float:vl;
                set_int(state_pair, 1);
                get_state(PART:"elm.bar", st, 30, vl);
-               set_state(PART:"elm.bar", st, 0.1);
-               set_state(PART:"pad_left", "visible", 0.0);
-               set_state(PART:"pad_right", "visible", 0.0);
-               set_state(PART:"pad_bar_left", "visible", 0.0);
-               set_state(PART:"pad_bar_right", "visible", 0.0);
+               set_state(PART:"elm.bar", st, 0.0);
+               set_state(PART:"pad_left", "default", 0.0);
+               set_state(PART:"pad_right", "default", 0.0);
+               set_state(PART:"pad_bar_left", "default", 0.0);
+               set_state(PART:"pad_bar_right", "default", 0.0);
             }
          }
          program {
@@ -689,11 +686,11 @@
                new Float:vl;
                set_int(state_pair, 0);
                get_state(PART:"elm.bar", st, 30, vl);
-               set_state(PART:"elm.bar", st, 0.0);
-               set_state(PART:"pad_left", "default", 0.0);
-               set_state(PART:"pad_right", "default", 0.0);
-               set_state(PART:"pad_bar_left", "default", 0.0);
-               set_state(PART:"pad_bar_right", "default", 0.0);
+               set_state(PART:"elm.bar", st, 0.1);
+               set_state(PART:"pad_left", "hidden", 0.0);
+               set_state(PART:"pad_right", "hidden", 0.0);
+               set_state(PART:"pad_bar_left", "hidden", 0.0);
+               set_state(PART:"pad_bar_right", "hidden", 0.0);
             }
          }
          program {
@@ -719,10 +716,6 @@
          program {
             name:   "button_unclick_anim";
             script {
-               if(get_int(state_pair) == 1)
-                 set_state(PART:"elm.bar", "default", 0.1);
-               else
-                 set_state(PART:"elm.bar", "default", 0.0);
                set_state(PART:"bar_bg", "default", 0.0);
             }
          }
