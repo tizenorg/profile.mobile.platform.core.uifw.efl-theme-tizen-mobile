@@ -20,6 +20,9 @@
 #define CHECK_STATE_VISIBLE 1
 #define CHECK_STATE_DISABLED_VISIBLE 2
 #define CHECK_STATE_DISABLED 3
+
+#define CHECK_HIDE 0
+#define CHECK_SHOW 1
 ////////////////////////////////////////////////////////////////////////////////
 #define CHECK_STYLE_DEFAULT(style_name, min_width, min_height) \
    group { name: "elm/check/base/"style_name; \
@@ -32,6 +35,7 @@
       } \
       script { \
          public check_state = CHECK_STATE_DEFAULT; \
+         public check_visible = CHECK_HIDE; \
       } \
       parts { \
          part { name: "back_bg"; \
@@ -213,6 +217,18 @@
          } \
       } \
       programs { \
+         program { name: "show"; \
+            signal: "show"; \
+            script { \
+               set_int(check_visible, CHECK_SHOW); \
+            } \
+         } \
+         program { name: "hide"; \
+            signal: "hide"; \
+            script { \
+               set_int(check_visible, CHECK_HIDE); \
+            } \
+         } \
          program { name: "click"; \
             signal: "mouse,clicked,1"; \
             source: "events1"; \
@@ -236,7 +252,7 @@
             script { \
                if (get_int(check_state) == CHECK_STATE_VISIBLE) { \
                  set_state(PART:"check", "visible", 0.0); \
-                 run_program(PROGRAM:"check_effect"); \
+                 set_state(PART:"effect_clip", "visible", 0.0); \
                } \
                else { \
                  set_state(PART:"check", "default", 0.0); \
@@ -250,7 +266,10 @@
             script { \
                set_int(check_state, CHECK_STATE_VISIBLE); \
                set_state(PART:"check", "visible", 0.0); \
-               run_program(PROGRAM:"check_effect"); \
+               if (get_int(check_visible) == CHECK_SHOW) \
+                 run_program(PROGRAM:"check_effect"); \
+               else \
+                 set_state(PART:"effect_clip", "visible", 0.0); \
             } \
          } \
          program { name: "check_off"; \
@@ -354,7 +373,7 @@
                if (!strcmp(st, "disabled_visible")) \
                  { \
                     set_state(PART:"check", "visible", 0.0); \
-                    run_program(PROGRAM:"check_effect"); \
+                    set_state(PART:"effect_clip", "visible", 0.0); \
                     set_int(check_state, CHECK_STATE_VISIBLE); \
                  } \
                else \
