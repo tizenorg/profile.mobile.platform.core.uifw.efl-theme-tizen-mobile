@@ -76,6 +76,7 @@
             } \
          } \
          part { name: "radio"; \
+            clip_to: "opacity_clip"; \
             mouse_events: 0; \
             scale: 1; \
             description { state: "default" 0.0; \
@@ -96,6 +97,17 @@
             description { state: "disabled_visible" 0.0; \
                inherit: "visible" 0.0; \
                image.normal: "00_button_radio_select_dim.png"; \
+            } \
+         } \
+         part { name: "opacity_clip"; \
+            type: RECT; \
+            mouse_events: 0; \
+            description { state: "default" 0.0; \
+               color: 255 255 255 0; \
+            } \
+            description { state: "visible" 0.0; \
+               inherit: "default" 0.0; \
+               color: 255 255 255 255; \
             } \
          } \
          part { name: "elm.swallow.content"; \
@@ -229,17 +241,24 @@
             signal: "elm,state,radio,on"; \
             source: "elm"; \
             script { \
-               run_program(PROGRAM:"radio_effect"); \
+               run_program(PROGRAM:"radio_show_effect"); \
+               run_program(PROGRAM:"radio_draw_effect"); \
             } \
          } \
          program { name: "radio_off"; \
             signal: "elm,state,radio,off"; \
             source: "elm"; \
             script { \
+               set_state(PART:"opacity_clip", "default", 0.0); \
                set_state(PART:"radio", "default", 0.0); \
             } \
          } \
-         program { name: "radio_effect"; \
+         program { name: "radio_show_effect"; \
+            action: STATE_SET "visible" 0.0; \
+            transition: LINEAR 0.233; \
+            target: "opacity_clip"; \
+         } \
+         program { name: "radio_draw_effect"; \
             action: STATE_SET "visible" 0.0; \
             transition: LINEAR 0.267; \
             target: "radio"; \
@@ -323,9 +342,15 @@
                  set_state(PART:"elm.swallow.content", "default", 0.0); \
                get_state(PART:"radio", st, 30, vl); \
                if (!strcmp(st, "disabled_visible")) \
-                 run_program(PROGRAM:"radio_effect"); \
+                 { \
+                    set_state(PART:"opacity_clip", "visible", 0.0); \
+                    set_state(PART:"radio", "visible", 0.0); \
+                 } \
                else \
-                 set_state(PART:"radio", "default", 0.0); \
+                 { \
+                    set_state(PART:"opacity_clip", "default", 0.0); \
+                    set_state(PART:"radio", "default", 0.0); \
+                 } \
             } \
          } \
       } \
