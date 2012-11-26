@@ -1340,7 +1340,7 @@
             name: "go_expanded"; \
             signal: "elm,state,expanded"; \
             source: "elm"; \
-            action: STATE_SET "active" 0.0; \
+            action: STATE_SET "expand_opened" 0.0; \
             TARGET \
          } \
          program { \
@@ -1614,20 +1614,90 @@
             action: PLAY_SAMPLE "button-pressed" 1.0; \
          }
 
-         #if 0
-         program { name: "flip_enabled"; \
-            signal:  "elm,state,flip,enabled"; \
-            source:  "elm"; \
-            action:  STATE_SET "flip_enabled" 0.0; \
-            after:   "flip_enabled_next"; \
+#define GENLIST_PROGRAM_SELECT_DIALOGUE_ARROW( TARGET ) \
+         program { name: "selected"; \
+            signal: "elm,state,selected"; \
+            source: "elm"; \
+            script { \
+               new st[31]; \
+               new Float:vl; \
+               get_state(PART:"bg_image", st, 30, vl); \
+               if (!strcmp(st, "top")) \
+                  set_state(PART:"bg_image", "top_selected", 0.0); \
+               else if (!strcmp(st, "center")) \
+                  set_state(PART:"bg_image", "center_selected", 0.0); \
+               else if (!strcmp(st, "bottom")) \
+                  set_state(PART:"bg_image", "bottom_selected", 0.0); \
+               else \
+                  set_state(PART:"bg_image", "selected", 0.0); \
+               get_state(PART:"arrow", st, 30, vl); \
+               if (!strcmp(st, "default")) \
+                  set_state(PART:"arrow", "default_press", 0.0); \
+               else if (!strcmp(st, "expand_opened")) \
+                  set_state(PART:"arrow", "expand_opened_press", 0.0); \
+            } \
+            after: "target_selected"; \
+            after: "play_button_press"; \
          } \
-         after:   "flip_disabled_next";
-         program { name:    "flip_disabled_next"; \
-            source:  "elm"; \
-            action:  STATE_SET "default" 0.0; \
-            target: "disclip"; \
+         program { name: "unselected"; \
+            signal: "elm,state,unselected"; \
+            source: "elm"; \
+            script { \
+               new st[31]; \
+               new Float:vl; \
+               get_state(PART:"bg_image", st, 30, vl); \
+               if (!strcmp(st, "top_selected")) \
+                  set_state(PART:"bg_image", "top", 0.0); \
+               else if (!strcmp(st, "center_selected"))  \
+                  set_state(PART:"bg_image", "center", 0.0); \
+               else if (!strcmp(st, "bottom_selected"))  \
+                  set_state(PART:"bg_image", "bottom", 0.0); \
+               else \
+                  set_state(PART:"bg_image", "default", 0.0); \
+               get_state(PART:"arrow", st, 30, vl); \
+               if (!strcmp(st, "default_press")) \
+                  set_state(PART:"arrow", "default", 0.0); \
+               else if (!strcmp(st, "expand_opened_press")) \
+                  set_state(PART:"arrow", "expand_opened", 0.0); \
+            } \
+            transition: LINEAR 0.1; \
+            after: "target_unselected"; \
+         } \
+         program { name: "target_selected"; \
+            action: STATE_SET "selected" 0.0; \
+            TARGET \
+         }\
+         program { name: "target_unselected"; \
+            action: STATE_SET "default" 0.0; \
+            TARGET \
+         }\
+         program { name: "bg_top"; \
+            signal: "elm,state,top"; \
+            source: "*"; \
+            action: STATE_SET "top" 0.0; \
+            target: "bg_image"; \
+         } \
+         program { name: "bg_center"; \
+            signal: "elm,state,center"; \
+            source: "*"; \
+            action: STATE_SET "center" 0.0; \
+            target: "bg_image"; \
+         } \
+         program { name: "bg_bottom"; \
+            signal: "elm,state,bottom"; \
+            source: "*"; \
+            action: STATE_SET "bottom" 0.0; \
+            target: "bg_image"; \
+         } \
+         program { name: "bg_default"; \
+            signal: "elm,state,default"; \
+            source: "*"; \
+            action: STATE_SET "default" 0.0; \
+            target: "bg_image"; \
+         } \
+         program { name: "play_button_press"; \
+            action: PLAY_SAMPLE "button-pressed" 1.0; \
          }
-         #endif
 
 #define GENLIST_PROGRAM_FLIP \
          program { name: "flip_enabled"; \
@@ -1973,9 +2043,17 @@
                max: 74 74; \
                image.normal: "00_button_expand_closed.png"; \
             ) \
-            description { state: "active" 0.0; \
+            description { state: "expand_opened" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "00_button_expand_opened.png"; \
+            } \
+            description { state: "expand_opened_press" 0.0; \
+               inherit: "expand_opened" 0.0; \
+               image.normal: "00_button_expand_opened_press.png"; \
+            } \
+            description { state: "default_press" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "00_button_expand_closed_press.png"; \
             } \
             GENLIST_DESCRIPTION_FADEOUT \
          )
