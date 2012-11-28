@@ -26,7 +26,6 @@
 #define CTXPOPUP_FRAME_CORNER_SIZE 4 4
 #define CTXPOPUP_FONT_COLOR 0 0 0 255
 #define CTXPOPUP_CLICKED_FONT_COLOR 255 255 255 255
-#define CTXPOPUP_ITEM_DISABLED_COLOR 200 200 200 127
 #define CTXPOPUP_LIST_PADDING 10
 #define CTXPOPUP_LIST_SHADOW_PADDING 3
 
@@ -1187,10 +1186,10 @@
 					align: 0.5 0.5;
 					rel1 {relative: 1.0 0.0; to_x: "left_padding"; to_y: "bg";}
 					rel2 {relative: 0.0 1.0; to_x: "right_padding"; to_y: "bg";}
-					color: CTXPOPUP_MAIN_TEXT_UNREAD_COLOR_INC;
+					color: CTXPOPUP_LIST_MAIN_TEXT_COLOR_INC;
 					text {
 						font: "SLP:style=Roman";
-						size: CTXPOPUP_ITEM_TEXT_SIZE_INC;
+						size: CTXPOPUP_LIST_MAIN_TEXT_SIZE_INC;
 						align: 0 0.5;
 						min: 1 1;
 						text_class: "list_item";
@@ -1207,7 +1206,17 @@
 				description {
 					state: "clicked" 0.0;
 					inherit: "default" 0.0;
-					color: CTXPOPUP_MAIN_TEXT_PRESS_COLOR_INC;
+					color: CTXPOPUP_LIST_MAIN_TEXT_PRESS_COLOR_INC;
+				}
+				description {
+					state: "disabled" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
+				}
+				description {
+					state: "compress_disabled" 0.0;
+					inherit: "compress" 0.0;
+					color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
 				}
 			}
 			part {
@@ -1265,15 +1274,33 @@
 				name: "disable";
 				signal: "elm,state,disabled";
 				source: "elm";
-				action: STATE_SET "disabled" 0.0;
-				target: "disclip";
+				script {
+					new st[31];
+					new Float:vl;
+					get_state(PART:"elm.text", st, 30, vl);
+					if ((!strcmp(st, "compress")) || (!strcmp(st, "compress_disabled")))
+						set_state(PART:"elm.text", "compress_disabled", 0.0);
+					else
+						set_state(PART:"elm.text", "disabled", 0.0);
+
+					set_state(PART:"disclip", "disabled", 0.0);
+				}
 			}
 			program {
 				name: "enable";
 				signal: "elm,state,enabled";
 				source: "elm";
-				action: STATE_SET "default" 0.0;
-				target: "disclip";
+				script {
+					new st[31];
+					new Float:vl;
+					get_state(PART:"elm.text", st, 30, vl);
+					if ((!strcmp(st, "compress")) || (!strcmp(st, "compress_disabled")))
+						set_state(PART:"elm.text", "compress", 0.0);
+					else
+						set_state(PART:"elm.text", "default", 0.0);
+
+					set_state(PART:"disclip", "default", 0.0);
+				}
 			}
 			program {
 				name: "default";
@@ -1289,7 +1316,13 @@
 				signal: "elm,state,compress";
 				source: "elm";
 				script {
-					set_state(PART:"elm.text", "compress", 0.0);
+					new st[31];
+					new Float:vl;
+					get_state(PART:"disclip", st, 30, vl);
+					if (!strcmp(st, "disabled"))
+						set_state(PART:"elm.text", "compress_disabled", 0.0);
+					else
+						set_state(PART:"elm.text", "compress", 0.0);
 				}
 			}
 			program {
@@ -1413,10 +1446,10 @@
 					align: 0.5 0.5;
 					rel1 {relative: 1.0 0.0; to: "left_padding"; }
 					rel2 {relative: 0.0 1.0; to: "right_padding"; }
-					color: CTXPOPUP_MAIN_TEXT_UNREAD_COLOR_INC;
+					color: CTXPOPUP_MAIN_TEXT_COLOR_INC;
 					text {
 						font: "SLP:style=Roman";
-						size: CTXPOPUP_ITEM_MAIN_TEXT_SIZE_INC;
+						size: CTXPOPUP_MAIN_TEXT_SIZE_INC;
 						align: 0.5 0.5;
 						min: 1 1;
 						text_class: "list_item";
@@ -1434,6 +1467,16 @@
 					state: "clicked" 0.0;
 					inherit: "default" 0.0;
 					color: CTXPOPUP_MAIN_TEXT_PRESS_COLOR_INC;
+				}
+				description {
+					state: "disabled" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_MAIN_TEXT_DIM_COLOR_INC;
+				}
+				description {
+					state: "compress_disabled" 0.0;
+					inherit: "compress" 0.0;
+					color: CTXPOPUP_MAIN_TEXT_DIM_COLOR_INC;
 				}
 			}
 			part {
@@ -1492,15 +1535,33 @@
 				name: "disable";
 				signal: "elm,state,disabled";
 				source: "elm";
-				action: STATE_SET "disabled" 0.0;
-				target: "disclip";
+				script {
+					new st[31];
+					new Float:vl;
+					get_state(PART:"elm.text", st, 30, vl);
+					if ((!strcmp(st, "compress")) || (!strcmp(st, "compress_disabled")))
+						set_state(PART:"elm.text", "compress_disabled", 0.0);
+					else
+						set_state(PART:"elm.text", "disabled", 0.0);
+
+					set_state(PART:"disclip", "disabled", 0.0);
+				}
 			}
 			program {
 				name: "enable";
 				signal: "elm,state,enabled";
 				source: "elm";
-				action: STATE_SET "default" 0.0;
-				target: "disclip";
+				script {
+					new st[31];
+					new Float:vl;
+					get_state(PART:"elm.text", st, 30, vl);
+					if ((!strcmp(st, "compress")) || (!strcmp(st, "compress_disabled")))
+						set_state(PART:"elm.text", "compress", 0.0);
+					else
+						set_state(PART:"elm.text", "default", 0.0);
+
+					set_state(PART:"disclip", "default", 0.0);
+				}
 			}
 			program {
 				name: "default";
@@ -1516,7 +1577,13 @@
 				signal: "elm,state,compress";
 				source: "elm";
 				script {
-					set_state(PART:"elm.text", "compress", 0.0);
+					new st[31];
+					new Float:vl;
+					get_state(PART:"disclip", st, 30, vl);
+					if (!strcmp(st, "disabled"))
+						set_state(PART:"elm.text", "compress_disabled", 0.0);
+					else
+						set_state(PART:"elm.text", "compress", 0.0);
 				}
 			}
 			program {
@@ -1886,10 +1953,10 @@
 					align: 0.5 0.5;
 					rel1 {relative: 1.0 0.0; to_x: "icon_right_padding"; to_y: "bg";}
 					rel2 {relative: 0.0 1.0; to_x: "text_right_padding"; to_y: "bg";}
-					color: CTXPOPUP_MAIN_TEXT_UNREAD_COLOR_INC;
+					color: CTXPOPUP_LIST_MAIN_TEXT_COLOR_INC;
 					text {
 						font: "SLP:style=Roman";
-						size: CTXPOPUP_ITEM_TEXT_SIZE_INC;
+						size: CTXPOPUP_LIST_MAIN_TEXT_SIZE_INC;
 						align: 0.0 0.5;
 						min: 1 1;
 						text_class: "list_item";
@@ -1906,7 +1973,17 @@
 				description {
 					state: "clicked" 0.0;
 					inherit: "default" 0.0;
-					color: CTXPOPUP_MAIN_TEXT_PRESS_COLOR_INC;
+					color: CTXPOPUP_LIST_MAIN_TEXT_PRESS_COLOR_INC;
+				}
+				description {
+					state: "disabled" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
+				}
+				description {
+					state: "compress_disabled" 0.0;
+					inherit: "compress" 0.0;
+					color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
 				}
 			}
 			part {
@@ -1964,15 +2041,33 @@
 				name: "disable";
 				signal: "elm,state,disabled";
 				source: "elm";
-				action: STATE_SET "disabled" 0.0;
-				target: "disclip";
+				script {
+					new st[31];
+					new Float:vl;
+					get_state(PART:"elm.text", st, 30, vl);
+					if ((!strcmp(st, "compress")) || (!strcmp(st, "compress_disabled")))
+						set_state(PART:"elm.text", "compress_disabled", 0.0);
+					else
+						set_state(PART:"elm.text", "disabled", 0.0);
+
+					set_state(PART:"disclip", "disabled", 0.0);
+				}
 			}
 			program {
 				name: "enable";
 				signal: "elm,state,enabled";
 				source: "elm";
-				action: STATE_SET "default" 0.0;
-				target: "disclip";
+				script {
+					new st[31];
+					new Float:vl;
+					get_state(PART:"elm.text", st, 30, vl);
+					if ((!strcmp(st, "compress")) || (!strcmp(st, "compress_disabled")))
+						set_state(PART:"elm.text", "compress", 0.0);
+					else
+						set_state(PART:"elm.text", "default", 0.0);
+
+					set_state(PART:"disclip", "default", 0.0);
+				}
 			}
 			program {
 				name: "default";
@@ -1988,7 +2083,13 @@
 				signal: "elm,state,compress";
 				source: "elm";
 				script {
-					set_state(PART:"elm.text", "compress", 0.0);
+					new st[31];
+					new Float:vl;
+					get_state(PART:"disclip", st, 30, vl);
+					if (!strcmp(st, "disabled"))
+						set_state(PART:"elm.text", "compress_disabled", 0.0);
+					else
+						set_state(PART:"elm.text", "compress", 0.0);
 				}
 			}
 			program {
@@ -2168,7 +2269,7 @@
 					align: 0.5 0.5;
 					rel1 {relative: 1.0 0.0; to_x: "icon_right_padding"; to_y: "bg";}
 					rel2 {relative: 0.0 1.0; to_x: "text_right_padding"; to_y: "bg";}
-					color: CTXPOPUP_MAIN_TEXT_UNREAD_COLOR_INC;
+					color: CTXPOPUP_LIST_MAIN_TEXT_COLOR_INC;
 					text {
 						font: "SLP:style=Medium";
 						size: CTXPOPUP_MORE_ITEM_TEXT_SIZE_INC;
@@ -2188,7 +2289,17 @@
 				description {
 					state: "clicked" 0.0;
 					inherit: "default" 0.0;
-					color: CTXPOPUP_MAIN_TEXT_PRESS_COLOR_INC;
+					color: CTXPOPUP_LIST_MAIN_TEXT_PRESS_COLOR_INC;
+				}
+				description {
+					state: "disabled" 0.0;
+					inherit: "default" 0.0;
+					color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
+				}
+				description {
+					state: "compress_disabled" 0.0;
+					inherit: "compress" 0.0;
+					color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
 				}
 			}
 			part {
@@ -2246,15 +2357,33 @@
 				name: "disable";
 				signal: "elm,state,disabled";
 				source: "elm";
-				action: STATE_SET "disabled" 0.0;
-				target: "disclip";
+				script {
+					new st[31];
+					new Float:vl;
+					get_state(PART:"elm.text", st, 30, vl);
+					if ((!strcmp(st, "compress")) || (!strcmp(st, "compress_disabled")))
+						set_state(PART:"elm.text", "compress_disabled", 0.0);
+					else
+						set_state(PART:"elm.text", "disabled", 0.0);
+
+					set_state(PART:"disclip", "disabled", 0.0);
+				}
 			}
 			program {
 				name: "enable";
 				signal: "elm,state,enabled";
 				source: "elm";
-				action: STATE_SET "default" 0.0;
-				target: "disclip";
+				script {
+					new st[31];
+					new Float:vl;
+					get_state(PART:"elm.text", st, 30, vl);
+					if ((!strcmp(st, "compress")) || (!strcmp(st, "compress_disabled")))
+						set_state(PART:"elm.text", "compress", 0.0);
+					else
+						set_state(PART:"elm.text", "default", 0.0);
+
+					set_state(PART:"disclip", "default", 0.0);
+				}
 			}
 			program {
 				name: "default";
@@ -2270,7 +2399,13 @@
 				signal: "elm,state,compress";
 				source: "elm";
 				script {
-					set_state(PART:"elm.text", "compress", 0.0);
+					new st[31];
+					new Float:vl;
+					get_state(PART:"disclip", st, 30, vl);
+					if (!strcmp(st, "disabled"))
+						set_state(PART:"elm.text", "compress_disabled", 0.0);
+					else
+						set_state(PART:"elm.text", "compress", 0.0);
 				}
 			}
 			program {
