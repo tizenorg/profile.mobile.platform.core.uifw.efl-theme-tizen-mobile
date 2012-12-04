@@ -30,7 +30,6 @@
    group { name:"elm/naviframe/item/basic/default";
       script {
          public tbar_bg = 0;     //Toolbar BG Show call count
-         public title_tbar_bg = 0;     //Title Toolbar BG Show call count
          public buttons_visible = 0; //when both buttons are visible
          public toolbar_buttons_visible = 0; //when both toolbar buttons are visible
          public title_toolbar_buttons_visible = 0; //when both title toolbar buttons are visible
@@ -58,18 +57,19 @@
             type: RECT;
             scale: 1;
             description { state: "default" 0.0;
-               min: 1 NAVIFRAME_TITLE_H_INC;
+               min: 0 0;
                fixed: 0 1;
                align: 0.0 0.0;
                rel1 { relative: 0.0 0.0; to: "base"; }
                rel2 { relative: 1.0 0.0; to: "base"; }
                color: NAVIFRAME_TITLE_BG_COLOR_INC;
+               visible: 0;
             }
-            description { state: "hide" 0.0;
+            description { state: "show" 0.0;
                inherit: "default" 0.0;
-               min: 0 0;
-               max: 0 0;
+               min: 1 NAVIFRAME_TITLE_H_INC;
                fixed: 1 1;
+               visible: 1;
             }
          }
          part { name: "title_toolbar_top_padding";
@@ -683,8 +683,9 @@
             signal: "elm,state,title,show";
             source: "elm";
             script {
+//FIXME: check the current title version(title or title toolbar) and only show it.
                set_state(PART:"title_bg", "default", 0.0);
-               set_state(PART:"title_toolbar_bg", "default", 0.0);
+               set_state(PART:"title_toolbar_bg", "show", 0.0);
             }
          }
          program { name: "title_hide";
@@ -692,7 +693,7 @@
             source: "elm";
             script {
                set_state(PART:"title_bg", "hide", 0.0);
-               set_state(PART:"title_toolbar_bg", "hide", 0.0);
+               set_state(PART:"title_toolbar_bg", "default", 0.0);
             }
          }
          program { name: "subtitle_show";
@@ -769,6 +770,7 @@
             script {
                set_state(PART:"title_bg", "hide", 0.0);
                set_state(PART:"elm.swallow.content", "sip_visible", 0.0);
+               set_state(PART:"title_toolbar_bg", "show", 0.0);
             }
          }
          program { name: "sip_hide";
@@ -777,41 +779,13 @@
             script {
                set_state(PART:"title_bg", "default", 0.0);
                set_state(PART:"elm.swallow.content", "default", 0.0);
-            }
-         }
-         program { name: "title_prev_btn_show";
-            signal: "elm,state,title_prev_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,title_toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "title_prev_btn_hide";
-            signal: "elm,state,title_prev_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,title_toolbar_bg,hide", "elm");
-            }
-         }
-         program { name: "title_more_btn_show";
-            signal: "elm,state,title_more_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,title_toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "title_more_btn_hide";
-            signal: "elm,state,title_more_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,title_toolbar_bg,hide", "elm");
+               set_state(PART:"title_toolbar_bg", "default", 0.0);
             }
          }
          program { name: "title_toolbar_button1_show";
             signal: "elm,state,title_toolbar_button1,show";
             source: "elm";
             script {
-               emit("elm,state,title_toolbar_bg,show", "elm");
                set_int(title_toolbar_buttons_visible, get_int(title_toolbar_buttons_visible) + 1);
                if (get_int(title_toolbar_buttons_visible) >= 2)
                  {
@@ -824,7 +798,6 @@
             signal: "elm,state,title_toolbar_button1,hide";
             source: "elm";
             script {
-               emit("elm,state,title_toolbar_bg,hide", "elm");
                set_int(title_toolbar_buttons_visible, get_int(title_toolbar_buttons_visible) - 1);
                set_state(PART:"title_toolbar_button1", "default", 0.0);
                set_state(PART:"title_toolbar_button2", "default", 0.0);
@@ -834,7 +807,6 @@
             signal: "elm,state,title_toolbar_button2,show";
             source: "elm";
             script {
-               emit("elm,state,title_toolbar_bg,show", "elm");
                set_int(title_toolbar_buttons_visible, get_int(title_toolbar_buttons_visible) + 1);
                if (get_int(title_toolbar_buttons_visible) >= 2)
                  {
@@ -847,27 +819,9 @@
             signal: "elm,state,title_toolbar_button2,hide";
             source: "elm";
             script {
-               emit("elm,state,title_toolbar_bg,hide", "elm");
                set_int(title_toolbar_buttons_visible, get_int(title_toolbar_buttons_visible) - 1);
                set_state(PART:"title_toolbar_button1", "default", 0.0);
                set_state(PART:"title_toolbar_button2", "default", 0.0);
-            }
-         }
-         program { name: "title_toolbar_bg_show";
-            signal: "elm,state,title_toolbar_bg,show";
-            source: "elm";
-            script {
-               set_state(PART:"title_toolbar_bg", "default", 0.0);
-               set_int(title_tbar_bg, get_int(title_tbar_bg) + 1);
-            }
-         }
-         program { name: "title_toolbar_bg_hide";
-            signal: "elm,state,title_toolbar_bg,hide";
-            source: "elm";
-            script {
-               set_int(title_tbar_bg, get_int(title_tbar_bg) - 1);
-               if (get_int(title_tbar_bg) <= 0)
-                 set_state(PART:"title_toolbar_bg", "hide", 0.0);
             }
          }
          program { name: "prev_btn_show";
@@ -1045,7 +999,6 @@
    group { name: "elm/naviframe/item/tabbar/default";
       script {
          public tbar_bg = 0;     //Controlbar BG Show call count
-         public title_tbar_bg = 0;     //Title Toolbar BG Show call count
          public toolbar_buttons_visible = 0; //when both toolbar buttons are visible
          public title_toolbar_buttons_visible = 0; //when both title toolbar buttons are visible
          public tbar_close = 0; //Toolbar lastest Open/Close status
@@ -1072,18 +1025,19 @@
             type: RECT;
             scale: 1;
             description { state: "default" 0.0;
-               min: 1 NAVIFRAME_TITLE_H_INC;
+               min: 0 0;
                fixed: 0 1;
                align: 0.0 0.0;
                rel1 { relative: 0.0 0.0; to: "base"; }
                rel2 { relative: 1.0 0.0; to: "base"; }
                color: NAVIFRAME_TITLE_BG_COLOR_INC;
+               visible: 0;
             }
-            description { state: "hide" 0.0;
+            description { state: "show" 0.0;
                inherit: "default" 0.0;
-               min: 0 0;
-               max: 0 0;
+               min: 1 NAVIFRAME_TITLE_H_INC;
                fixed: 1 1;
+               visible: 1;
             }
          }
          part { name: "title_toolbar_top_padding";
@@ -1577,8 +1531,9 @@
             signal: "elm,state,title,show";
             source: "elm";
             script {
+//FIXME: check the current title version(title or title toolbar) and only show it.
                set_state(PART:"title_bg", "default", 0.0);
-               set_state(PART:"title_toolbar_bg", "default", 0.0);
+               set_state(PART:"title_toolbar_bg", "show", 0.0);
             }
          }
          program { name: "title_hide";
@@ -1586,7 +1541,7 @@
             source: "elm";
             script {
                set_state(PART:"title_bg", "hide", 0.0);
-               set_state(PART:"title_toolbar_bg", "hide", 0.0);
+               set_state(PART:"title_toolbar_bg", "default", 0.0);
             }
          }
          program { name: "sip_show";
@@ -1595,6 +1550,7 @@
             script {
                set_state(PART:"title_bg", "hide", 0.0);
                set_state(PART:"elm.swallow.content", "sip_visible", 0.0);
+               set_state(PART:"title_toolbar_bg", "show", 0.0);
             }
          }
          program { name: "sip_hide";
@@ -1603,41 +1559,13 @@
             script {
                set_state(PART:"title_bg", "default", 0.0);
                set_state(PART:"elm.swallow.content", "default", 0.0);
-            }
-         }
-         program { name: "title_prev_btn_show";
-            signal: "elm,state,title_prev_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,title_toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "title_prev_btn_hide";
-            signal: "elm,state,title_prev_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,title_toolbar_bg,hide", "elm");
-            }
-         }
-         program { name: "title_more_btn_show";
-            signal: "elm,state,title_more_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,title_toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "title_more_btn_hide";
-            signal: "elm,state,title_more_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,title_toolbar_bg,hide", "elm");
+               set_state(PART:"title_toolbar_bg", "default", 0.0);
             }
          }
          program { name: "title_toolbar_button1_show";
             signal: "elm,state,title_toolbar_button1,show";
             source: "elm";
             script {
-               emit("elm,state,title_toolbar_bg,show", "elm");
                set_int(title_toolbar_buttons_visible, get_int(title_toolbar_buttons_visible) + 1);
                if (get_int(title_toolbar_buttons_visible) >= 2)
                  {
@@ -1650,7 +1578,6 @@
             signal: "elm,state,title_toolbar_button1,hide";
             source: "elm";
             script {
-               emit("elm,state,title_toolbar_bg,hide", "elm");
                set_int(title_toolbar_buttons_visible, get_int(title_toolbar_buttons_visible) - 1);
                set_state(PART:"title_toolbar_button1", "default", 0.0);
                set_state(PART:"title_toolbar_button2", "default", 0.0);
@@ -1660,7 +1587,6 @@
             signal: "elm,state,title_toolbar_button2,show";
             source: "elm";
             script {
-               emit("elm,state,title_toolbar_bg,show", "elm");
                set_int(title_toolbar_buttons_visible, get_int(title_toolbar_buttons_visible) + 1);
                if (get_int(title_toolbar_buttons_visible) >= 2)
                  {
@@ -1673,27 +1599,9 @@
             signal: "elm,state,title_toolbar_button2,hide";
             source: "elm";
             script {
-               emit("elm,state,title_toolbar_bg,hide", "elm");
                set_int(title_toolbar_buttons_visible, get_int(title_toolbar_buttons_visible) - 1);
                set_state(PART:"title_toolbar_button1", "default", 0.0);
                set_state(PART:"title_toolbar_button2", "default", 0.0);
-            }
-         }
-         program { name: "title_toolbar_bg_show";
-            signal: "elm,state,title_toolbar_bg,show";
-            source: "elm";
-            script {
-               set_state(PART:"title_toolbar_bg", "default", 0.0);
-               set_int(title_tbar_bg, get_int(title_tbar_bg) + 1);
-            }
-         }
-         program { name: "title_toolbar_bg_hide";
-            signal: "elm,state,title_toolbar_bg,hide";
-            source: "elm";
-            script {
-               set_int(title_tbar_bg, get_int(title_tbar_bg) - 1);
-               if (get_int(title_tbar_bg) <= 0)
-                 set_state(PART:"title_toolbar_bg", "hide", 0.0);
             }
          }
          program { name: "prev_btn_show";
@@ -1871,7 +1779,6 @@
    group { name:"elm/naviframe/item/empty/default";
       script {
          public tbar_bg = 0;     //Toolbar BG Show call count
-         public title_tbar_bg = 0;     //Title Toolbar BG Show call count
          public toolbar_buttons_visible = 0; //when both toolbar buttons are visible
          public title_toolbar_buttons_visible = 0; //when both title toolbar buttons are visible
          public tbar_close = 0; //Toolbar lastest Open/Close status
@@ -1898,18 +1805,19 @@
             type: RECT;
             scale: 1;
             description { state: "default" 0.0;
-               min: 1 NAVIFRAME_TITLE_H_INC;
+               min: 0 0;
                fixed: 0 1;
                align: 0.0 0.0;
                rel1 { relative: 0.0 0.0; to: "base"; }
                rel2 { relative: 1.0 0.0; to: "base"; }
                color: NAVIFRAME_TITLE_BG_COLOR_INC;
+               visible: 0;
             }
-            description { state: "hide" 0.0;
+            description { state: "show" 0.0;
                inherit: "default" 0.0;
-               min: 0 0;
-               max: 0 0;
+               min: 1 NAVIFRAME_TITLE_H_INC;
                fixed: 1 1;
+               visible: 1;
             }
          }
          part { name: "title_toolbar_top_padding";
@@ -2321,8 +2229,9 @@
             signal: "elm,state,title,show";
             source: "elm";
             script {
+//FIXME: check the current title version(title or title toolbar) and only show it.
                set_state(PART:"title_bg", "default", 0.0);
-               set_state(PART:"title_toolbar_bg", "default", 0.0);
+               set_state(PART:"title_toolbar_bg", "show", 0.0);
             }
          }
          program { name: "title_hide";
@@ -2330,7 +2239,7 @@
             source: "elm";
             script {
                set_state(PART:"title_bg", "hide", 0.0);
-               set_state(PART:"title_toolbar_bg", "hide", 0.0);
+               set_state(PART:"title_toolbar_bg", "default", 0.0);
             }
          }
          program { name: "sip_show";
@@ -2339,6 +2248,7 @@
             script {
                set_state(PART:"title_bg", "hide", 0.0);
                set_state(PART:"title", "hide", 0.0);
+               set_state(PART:"title_toolbar_bg", "show", 0.0);
                set_state(PART:"elm.swallow.content", "sip_visible", 0.0);
             }
          }
@@ -2348,42 +2258,14 @@
             script {
                set_state(PART:"title_bg", "default", 0.0);
                set_state(PART:"title", "default", 0.0);
+               set_state(PART:"title_toolbar_bg", "default", 0.0);
                set_state(PART:"elm.swallow.content", "default", 0.0);
-            }
-         }
-         program { name: "title_prev_btn_show";
-            signal: "elm,state,title_prev_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,title_toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "title_prev_btn_hide";
-            signal: "elm,state,title_prev_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,title_toolbar_bg,hide", "elm");
-            }
-         }
-         program { name: "title_more_btn_show";
-            signal: "elm,state,title_more_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,title_toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "title_more_btn_hide";
-            signal: "elm,state,title_more_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,title_toolbar_bg,hide", "elm");
             }
          }
          program { name: "title_toolbar_button1_show";
             signal: "elm,state,title_toolbar_button1,show";
             source: "elm";
             script {
-               emit("elm,state,title_toolbar_bg,show", "elm");
                set_int(title_toolbar_buttons_visible, get_int(title_toolbar_buttons_visible) + 1);
                if (get_int(title_toolbar_buttons_visible) >= 2)
                  {
@@ -2396,7 +2278,6 @@
             signal: "elm,state,title_toolbar_button1,hide";
             source: "elm";
             script {
-               emit("elm,state,title_toolbar_bg,hide", "elm");
                set_int(title_toolbar_buttons_visible, get_int(title_toolbar_buttons_visible) - 1);
                set_state(PART:"title_toolbar_button1", "default", 0.0);
                set_state(PART:"title_toolbar_button2", "default", 0.0);
@@ -2406,7 +2287,6 @@
             signal: "elm,state,title_toolbar_button2,show";
             source: "elm";
             script {
-               emit("elm,state,title_toolbar_bg,show", "elm");
                set_int(title_toolbar_buttons_visible, get_int(title_toolbar_buttons_visible) + 1);
                if (get_int(title_toolbar_buttons_visible) >= 2)
                  {
@@ -2419,27 +2299,9 @@
             signal: "elm,state,title_toolbar_button2,hide";
             source: "elm";
             script {
-               emit("elm,state,title_toolbar_bg,hide", "elm");
                set_int(title_toolbar_buttons_visible, get_int(title_toolbar_buttons_visible) - 1);
                set_state(PART:"title_toolbar_button1", "default", 0.0);
                set_state(PART:"title_toolbar_button2", "default", 0.0);
-            }
-         }
-         program { name: "title_toolbar_bg_show";
-            signal: "elm,state,title_toolbar_bg,show";
-            source: "elm";
-            script {
-               set_state(PART:"title_toolbar_bg", "default", 0.0);
-               set_int(title_tbar_bg, get_int(title_tbar_bg) + 1);
-            }
-         }
-         program { name: "title_toolbar_bg_hide";
-            signal: "elm,state,title_toolbar_bg,hide";
-            source: "elm";
-            script {
-               set_int(title_tbar_bg, get_int(title_tbar_bg) - 1);
-               if (get_int(title_tbar_bg) <= 0)
-                 set_state(PART:"title_toolbar_bg", "hide", 0.0);
             }
          }
          program { name: "prev_btn_show";
