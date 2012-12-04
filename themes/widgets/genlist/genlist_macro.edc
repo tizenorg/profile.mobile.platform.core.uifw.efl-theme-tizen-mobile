@@ -1604,10 +1604,14 @@
                else \
                   set_state(PART:"bg_image", "selected", 0.0); \
                get_state(PART:"arrow", st, 30, vl); \
-               if (!strcmp(st, "default")) \
+               if (!strcmp(st, "default")) { \
                   set_state(PART:"arrow", "default_press", 0.0); \
-               else if (!strcmp(st, "expand_opened")) \
+                  set_state(PART:"arrow_clip", "default_press", 0.0); \
+               } \
+               else if (!strcmp(st, "expand_opened")) { \
                   set_state(PART:"arrow", "expand_opened_press", 0.0); \
+                  set_state(PART:"arrow_clip", "expand_opened_press", 0.0); \
+               } \
             } \
             after: "target_selected"; \
             after: "play_button_press"; \
@@ -1628,10 +1632,14 @@
                else \
                   set_state(PART:"bg_image", "default", 0.0); \
                get_state(PART:"arrow", st, 30, vl); \
-               if (!strcmp(st, "default_press")) \
+               if (!strcmp(st, "default_press")) { \
                   set_state(PART:"arrow", "default", 0.0); \
-               else if (!strcmp(st, "expand_opened_press")) \
+                  set_state(PART:"arrow_clip", "default", 0.0); \
+               } \
+               else if (!strcmp(st, "expand_opened_press")) { \
                   set_state(PART:"arrow", "expand_opened", 0.0); \
+                  set_state(PART:"arrow_clip", "expand_opened", 0.0); \
+               } \
             } \
             transition: LINEAR 0.1; \
             after: "target_unselected"; \
@@ -2007,7 +2015,22 @@
             GENLIST_DESCRIPTION_ENVELOP("arrow", ) \
             GENLIST_DESCRIPTION_FADE \
          ) \
+         GENLIST_PART_RECT("arrow_clip", \
+            GENLIST_DESCRIPTION_ENVELOP("arrow", \
+               color: 101 101 101 255; \
+            ) \
+            description { state: "disabled" 0.0; \
+               color: 101 101 101 76; \
+            } \
+            description { state: "expand_opened_press" 0.0; \
+               color: 248 246 230 255; \
+            } \
+            description { state: "default_press" 0.0; \
+               color: 248 246 230 255; \
+            } \
+         ) \
          GENLIST_PART_IMAGE("arrow", \
+            clip_to: "arrow_clip"; \
             ignore_flags: ON_HOLD; \
             mouse_events: 0; \
             GENLIST_DESCRIPTION_R("elm.padding.right", \
@@ -2016,6 +2039,10 @@
                max: 74 74; \
                image.normal: "00_button_expand_closed.png"; \
             ) \
+            description { state: "default_press" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "00_button_expand_closed_press.png"; \
+            } \
             description { state: "expand_opened" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "00_button_expand_opened.png"; \
@@ -2023,10 +2050,6 @@
             description { state: "expand_opened_press" 0.0; \
                inherit: "expand_opened" 0.0; \
                image.normal: "00_button_expand_opened_press.png"; \
-            } \
-            description { state: "default_press" 0.0; \
-               inherit: "default" 0.0; \
-               image.normal: "00_button_expand_closed_press.png"; \
             } \
             GENLIST_DESCRIPTION_FADE \
          )
