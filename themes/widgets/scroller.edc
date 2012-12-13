@@ -63,7 +63,6 @@ group { name: "elm/scroller/base/default";
       public timer2(val) {
          emit("do-hide-vshadow", "");
          emit("do-hide-hshadow", "");
-         emit("do-default-content", "");
          set_int(edge_timer, 0);
          return 0;
       }
@@ -1092,29 +1091,7 @@ group { name: "elm/genlist/base/default";
             color: 0 0 0 0;
          }
       }
-      part { name: "elm.swallow.content";
-         description { state: "default_map" 0.0;
-            inherit: "default" 0.0;
-            map {
-               on: 1;
-               smooth: 1;
-               perspective_on: 1;
-               backface_cull: 1;
-               rotation {
-                  center: "point";
-                  x: 0;
-                  y: 0;
-                  z: 0;
-               }
-            }
-         }
-         description { state: "shrink" 0.0;
-            inherit: "default_map" 0.0;
-            map.rotation.x: 0.1;
-         }
-      }
       part { name: "vshadow_clip";
-         insert_after: "elm.swallow.content";
          type: RECT;
          mouse_events: 0;
          scale: 1;
@@ -1206,30 +1183,6 @@ group { name: "elm/genlist/base/default";
          transition: LINEAR 0.5;
          target: "vshadow_clip";
       }
-      program { name: "shrink_content";
-         signal: "do-shrink-content";
-         source: "";
-         action:  STATE_SET "default_map" 0.0;
-         target: "elm.swallow.content";
-         after: "shrink";
-      }
-      program { name: "shrink";
-         action:  STATE_SET "shrink" 0.0;
-         target: "elm.swallow.content";
-         transition: LINEAR 0.2;
-      }
-      program { name: "default_content";
-         signal: "do-default-content";
-         source: "";
-         action:  STATE_SET "default_map" 0.0;
-         transition: LINEAR 0.2;
-         target: "elm.swallow.content";
-         after: "default";
-      }
-      program { name: "default";
-         action:  STATE_SET "default" 0.0;
-         target: "elm.swallow.content";
-      }
       program { name: "scroll";
          signal: "elm,action,scroll";
          source: "elm";
@@ -1273,7 +1226,6 @@ group { name: "elm/genlist/base/default";
             v = get_int(edge_timer);
             if (!v) {
                 emit("do-show-vshadow", "");
-                emit("do-shrink-content", "");
             }
             if (v > 0) cancel_timer(v);
             v = timer(0.2, "timer2", 0);
@@ -1292,7 +1244,6 @@ group { name: "elm/genlist/base/default";
             v = get_int(edge_timer);
             if (!v) {
                 emit("do-show-vshadow", "");
-                emit("do-shrink-content", "");
             }
             if (v > 0) cancel_timer(v);
             v = timer(0.2, "timer2", 0);
