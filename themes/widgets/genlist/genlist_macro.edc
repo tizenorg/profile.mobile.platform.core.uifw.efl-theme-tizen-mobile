@@ -376,7 +376,7 @@
          }
 
 #define GENLIST_PART_BG_IMAGE \
-         part { name: "bg_image_clip"; \
+         part { name: "bg_image_depth_clip"; \
             type: RECT; \
             scale: 1; \
             mouse_events: 0; \
@@ -426,7 +426,7 @@
          }
 
 #define GENLIST_PART_BG_IMAGE_DIALOGUE \
-         part { name: "bg_image_clip"; \
+         part { name: "bg_image_depth_clip"; \
             type: RECT; \
             scale: 1; \
             mouse_events: 0; \
@@ -467,7 +467,7 @@
             } \
          } \
          part { name: "bg_image"; \
-            clip_to: "bg_image_clip"; \
+            clip_to: "bg_image_depth_clip"; \
             type: IMAGE; \
             scale: 1; \
             mouse_events: 0; \
@@ -489,6 +489,10 @@
                   border_scale: 1; \
                } \
             } \
+            description { state: "disabled" 0.0; \
+               inherit: "default"; \
+               color: 255 255 255 255; \
+            } \
             description { state: "top" 0.0; \
                GENLIST_PARAM_BG_IMAGE_DIALOGUE \
                image { \
@@ -504,6 +508,9 @@
                   border: 14 14 10 2; \
                   border_scale: 1; \
                } \
+            } \
+            description { state: "top_disabled" 0.0; \
+               inherit: "top"; \
             } \
             description { state: "center" 0.0; \
                GENLIST_PARAM_BG_IMAGE_DIALOGUE \
@@ -521,6 +528,9 @@
                   border_scale: 1; \
                } \
             } \
+            description { state: "center_disabled" 0.0; \
+               inherit: "center"; \
+            } \
             description { state: "bottom" 0.0; \
                GENLIST_PARAM_BG_IMAGE_DIALOGUE \
                image { \
@@ -537,9 +547,8 @@
                   border_scale: 1; \
                } \
             } \
-            description { state: "disabled" 0.0; \
-               inherit: "default"; \
-               color: 255 255 255 255; \
+            description { state: "bottom_disabled" 0.0; \
+               inherit: "bottom"; \
             } \
             GENLIST_DESCRIPTION_FADE \
          }
@@ -1272,7 +1281,7 @@
    program { name: "bg_color_change"; \
       signal: "bg_color_change"; \
       action: STATE_SET "2depth" 0.0; \
-      target: "bg_image_clip"; \
+      target: "bg_image_depth_clip"; \
       after: "expand_start_fade"; \
    } \
    program { name: "expand_start_fade"; \
@@ -1510,6 +1519,52 @@
          } \
          program { name: "play_button_press"; \
             action: PLAY_SAMPLE "button-pressed" 1.0; \
+         }
+
+#define GENLIST_PROGRAM_DISABLED_DIALOGUE( TARGET ) \
+         program { name: "enabled"; \
+            signal: "elm,state,enabled"; \
+            source: "elm"; \
+            script { \
+               new st[31]; \
+               new Float:vl; \
+               get_state(PART:"bg_image", st, 30, vl); \
+               if (!strcmp(st, "top_disabled")) \
+                  set_state(PART:"bg_image", "top", 0.0); \
+               else if (!strcmp(st, "center_disabled")) \
+                  set_state(PART:"bg_image", "center", 0.0); \
+               else if (!strcmp(st, "bottom_disabled")) \
+                  set_state(PART:"bg_image", "bottom", 0.0); \
+               else \
+                  set_state(PART:"bg_image", "default", 0.0); \
+            } \
+            after: "target_enabled"; \
+         } \
+         program { name: "target_enabled"; \
+            action: STATE_SET "default" 0.0; \
+            TARGET \
+         }\
+         program { name: "disabled"; \
+            signal: "elm,state,disabled"; \
+            source: "elm"; \
+            script { \
+               new st[31]; \
+               new Float:vl; \
+               get_state(PART:"bg_image", st, 30, vl); \
+               if (!strcmp(st, "top")) \
+                  set_state(PART:"bg_image", "top_disabled", 0.0); \
+               else if (!strcmp(st, "center"))  \
+                  set_state(PART:"bg_image", "center_disabled", 0.0); \
+               else if (!strcmp(st, "bottom"))  \
+                  set_state(PART:"bg_image", "bottom_disabled", 0.0); \
+               else \
+                  set_state(PART:"bg_image", "disabled", 0.0); \
+            } \
+            after: "target_disabled"; \
+         } \
+         program { name: "target_disabled"; \
+            action: STATE_SET "disabled" 0.0; \
+            TARGET \
          }
 
 #define GENLIST_PROGRAM_SELECT_DIALOGUE( TARGET ) \
@@ -1756,7 +1811,7 @@
 // because after can be duplicated when program inheriting.
 #define GENLIST_PROGRAMS_DIALOGUE( TARGET ) \
          programs { \
-            GENLIST_PROGRAM_DISABLED( TARGET ) \
+            GENLIST_PROGRAM_DISABLED_DIALOGUE( TARGET ) \
             GENLIST_PROGRAM_SELECT_DIALOGUE( TARGET ) \
             GENLIST_PROGRAM_FLIP \
             GENLIST_PROGRAM_EDITMODE \
@@ -1764,7 +1819,7 @@
 
 #define GENLIST_PROGRAMS_MULTILINE( TARGET ) \
          programs { \
-            GENLIST_PROGRAM_DISABLED( TARGET ) \
+            GENLIST_PROGRAM_DISABLED_DIALOGUE( TARGET ) \
             GENLIST_PROGRAM_SELECT_DIALOGUE( TARGET ) \
             GENLIST_PROGRAM_FLIP \
          }
