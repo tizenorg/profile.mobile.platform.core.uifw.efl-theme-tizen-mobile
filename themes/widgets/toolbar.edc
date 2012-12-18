@@ -21,7 +21,7 @@
 
 #define TOOLBAR_TEXT_STYLE(_font_size) \
    style { name: "toolbar_text_style_"_font_size; \
-      base: "font=SLP:style=Medium style=far_shadow,bottom shadow_color=#ffffffff font_size="_font_size" align=center color="TABBAR_ITEM_TEXTBLOCK_COLOR_INC" wrap=word ellipsis=1 text_class=slp"; \
+      base: "font=SLP:style=Medium style=far_shadow,bottom shadow_color=#ffffffff font_size="_font_size" align=center color="TABBAR_ITEM_TEXTBLOCK_COLOR_INC" wrap=word ellipsis=1 text_class=slp linegap=-10"; \
       tag: "br" "\n"; \
       tag: "ps" "ps"; \
       tag: "hilight" "+ font=SLP:style=Bold"; \
@@ -31,7 +31,7 @@
 
 #define TOOLBAR_SELECTED_TEXT_STYLE(_font_size) \
    style { name: "toolbar_selected_text_style_"_font_size; \
-      base: "font=SLP:style=Medium style=far_shadow,bottom shadow_color=#ffffffff font_size="_font_size" align=center color="TABBAR_ITEM_SELECTED_TEXTBLOCK_COLOR_INC" wrap=word ellipsis=1 text_class=slp"; \
+      base: "font=SLP:style=Medium style=far_shadow,bottom shadow_color=#ffffffff font_size="_font_size" align=center color="TABBAR_ITEM_SELECTED_TEXTBLOCK_COLOR_INC" wrap=word ellipsis=1 text_class=slp linegap=-10"; \
       tag: "br" "\n"; \
       tag: "ps" "ps"; \
       tag: "hilight" "+ font=SLP:style=Bold"; \
@@ -2100,7 +2100,13 @@ group { name: "elm/toolbar/item/tabbar";
                 else if (get_int(items_number) == 3)
                   set_state(PART:"elm.text", "visible", 0.28);
                 else if (get_int(items_number) >= 4)
-                  set_state(PART:"elm.text", "visible", 0.24);
+                  {
+                    get_state(PART:"bg", st, 30, vl);
+                    if (!strcmp(st, "icon_text"))
+                      set_state(PART:"elm.text", "visible", 0.28);
+                    else
+                      set_state(PART:"elm.text", "visible", 0.24);
+                  }
               }
          }
       }
@@ -2253,11 +2259,16 @@ group { name: "elm/toolbar/item/tabbar";
       program { name: "text_only_item_upper_4";
          script {
             new st[31];
+            new stb[31];
             new Float:vl;
             get_state(PART:"elm.text", st, 30, vl);
-            if (!strncmp(st, "visible", 7))
+            if (!strcmp(st, "visible") || !strcmp(st, "selected"))
               {
-                  set_state(PART:"elm.text", st, 0.24);
+                  get_state(PART:"bg", stb, 30, vl);
+                  if (!strcmp(stb, "icon_text"))
+                    set_state(PART:"elm.text", st, 0.28);
+                  else
+                    set_state(PART:"elm.text", st, 0.24);
               }
          }
       }
