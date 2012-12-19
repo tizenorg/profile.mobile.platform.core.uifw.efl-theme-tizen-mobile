@@ -900,6 +900,11 @@
                max: GENLIST_PADDING_SIZE_LEFT -1; \
                fixed: 1 0; \
             ) \
+            description { state: "decorate" 0.0; \
+               inherit: "default" 0.0; \
+               min: 0 0; \
+               max: 0 0; \
+            } \
          )
 
 #define GENLIST_PART_PADDING_LEFT_SIZE( SIZE ) \
@@ -910,6 +915,11 @@
                max: SIZE -1; \
                fixed: 1 0; \
             ) \
+            description { state: "decorate" 0.0; \
+               inherit: "default" 0.0; \
+               min: 0 0; \
+               max: 0 0; \
+            } \
          )
 
 #define GENLIST_PART_EDITBTN \
@@ -950,6 +960,11 @@
                rel2.to: "base"; \
                rel1.relative: 1 0; \
             } \
+            description { state: "decorate" 0.0; \
+               inherit: "default" 0.0; \
+               min: 0 0; \
+               max: 0 0; \
+            } \
          )
 
 #define GENLIST_PART_PADDING_RIGHT_SIZE( SIZE ) \
@@ -962,6 +977,11 @@
                rel1.to: "base"; \
                rel2.to: "base"; \
                rel1.relative: 1 0; \
+            } \
+            description { state: "decorate" 0.0; \
+               inherit: "default" 0.0; \
+               min: 0 0; \
+               max: 0 0; \
             } \
          )
 
@@ -981,6 +1001,11 @@
                min: (DIALOGUE_PADDING_SIZE_RIGHT+GENLIST_ICON_BIG_SIZE+GENLIST_PADDING_SIZE_RIGHT) 0; \
                max: (DIALOGUE_PADDING_SIZE_RIGHT+GENLIST_ICON_BIG_SIZE+GENLIST_PADDING_SIZE_RIGHT) -1; \
             } \
+            description { state: "decorate" 0.0; \
+               inherit: "default" 0.0; \
+               min: 0 0; \
+               max: 0 0; \
+            } \
          ) \
          GENLIST_PART_EDITBTN
 
@@ -999,6 +1024,11 @@
                inherit: "default" 0.0; \
                min: (DIALOGUE_PADDING_SIZE_RIGHT+SIZE+GENLIST_ICON_BIG_SIZE) 0; \
                max: (DIALOGUE_PADDING_SIZE_RIGHT+SIZE+GENLIST_ICON_BIG_SIZE) -1; \
+            } \
+            description { state: "decorate" 0.0; \
+               inherit: "default" 0.0; \
+               min: 0 0; \
+               max: 0 0; \
             } \
          ) \
          GENLIST_PART_EDITBTN
@@ -1803,6 +1833,7 @@
             GENLIST_PROGRAM_DISABLED_BOTTOMLINE( TARGET ) \
             GENLIST_PROGRAM_SELECT_BOTTOMLINE( TARGET ) \
             GENLIST_PROGRAM_EXPAND_FADE( target: "bottom_line"; target: "bottom_line2"; TARGET ) \
+            GENLIST_PROGRAMS_DECORATE \
             GENLIST_PROGRAM_FLIP \
          }
 
@@ -1880,6 +1911,38 @@
             } \
          } \
       }
+
+#define GENLIST_PROGRAMS_DECORATE \
+      program { name: "decorate_enabled_effect"; \
+            signal: "elm,state,decorate,enabled,effect";\
+            source: "elm";\
+            transition: DECELERATE 0.7;\
+            action:  STATE_SET "decorate" 0.0;\
+            target: "elm.padding.left"; \
+            target: "elm.padding.right"; \
+         }\
+         program { name: "decorate_disabled_effect";\
+            signal: "elm,state,decorate,disabled,effect";\
+            source: "elm";\
+            transition: ACCELERATE 0.7;\
+            action:  STATE_SET "default" 0.0;\
+            target: "elm.padding.left"; \
+            target: "elm.padding.right"; \
+         }\
+         program { name: "decorate_enabled";\
+            signal: "elm,state,decorate,enabled";\
+            source: "elm";\
+            action:  STATE_SET "decorate" 0.0;\
+            target: "elm.padding.left"; \
+            target: "elm.padding.right"; \
+         }\
+         program { name: "decorate_disabled";\
+            signal: "elm,state,decorate,disabled";\
+            source: "elm";\
+            action:  STATE_SET "default" 0.0;\
+            target: "elm.padding.left"; \
+            target: "elm.padding.right"; \
+         }
 
 //****************************************************************************//
 // *******************************  Icon Part ******************************//
@@ -2040,24 +2103,6 @@
 /*****************************************************************************/
 /******************************* Genlist Bubble ********************************/
 /*****************************************************************************/
-#define GENLIST_PARAM_BUBBLE \
-   image { \
-      normal: "00_list_bubble_bg.png"; \
-      border: 8 8 0 0; \
-   } \
-   rel1.offset: -10 0; \
-   rel2.offset: 10 0;
-
-#define GENLIST_PART_BUBBLE(TEXT_NAME) \
-         GENLIST_PART_IMAGE("elm.bubble", \
-            GENLIST_DESCRIPTION_ENVELOP(TEXT_NAME, \
-               GENLIST_PARAM_BUBBLE \
-               min: 48 38; \
-               max: -1 38; \
-               fixed: 0 1;) \
-            GENLIST_DESCRIPTION_FADE \
-         )
-
 #define GENLIST_IMAGES_EXPANDABLE_BTN \
          images { \
             image: "00_button_expand_closed.png" COMP; \
@@ -2726,13 +2771,27 @@
    }
 
 #define GENLIST_PART_LIST_BUBBLE_TEXT_RTB(NAME, HEIGHT, RIGHT, TOP, BOTTOM) \
-   GENLIST_PART_TEXT(NAME, \
-      GENLIST_DESCRIPTION_RTB(RIGHT, TOP, BOTTOM, \
-         min: 0 HEIGHT; \
-         GENLIST_PARAM_TEXT_LIMIT_RT \
-         GENLIST_PARAM_LIST_BUBBLE_TEXT \
-      ) \
-   )
+         GENLIST_PART_IMAGE("elm.bubble", \
+            GENLIST_DESCRIPTION_ENVELOP(NAME, \
+               image { \
+                  normal: "00_list_bubble_bg.png"; \
+                  border: 8 8 0 0; \
+               } \
+               rel1.offset: -10 0; \
+               rel2.offset: 10 0; \
+               min: 48 38; \
+               max: -1 38; \
+               fixed: 0 1; \
+            ) \
+            GENLIST_DESCRIPTION_FADE \
+         ) \
+         GENLIST_PART_TEXT(NAME, \
+            GENLIST_DESCRIPTION_RTB(RIGHT, TOP, BOTTOM, \
+               min: 0 HEIGHT; \
+               GENLIST_PARAM_TEXT_LIMIT_RT \
+               GENLIST_PARAM_LIST_BUBBLE_TEXT \
+            ) \
+         )
 
 #if 0
 #define GENLIST_PART_BASE__( param_item_height ) \
