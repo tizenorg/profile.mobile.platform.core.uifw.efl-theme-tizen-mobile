@@ -81,11 +81,9 @@ group {
          description {
             state: "default" 0.0;
             rel1 {
-               relative: 0.5 0.0;
                to: "day0";
             }
             rel2 {
-               relative: 0.5 1.0;
                to: "day6";
             }
             color: DAYSELECTOR_BACKGROUND_COLOR_INC;
@@ -225,6 +223,8 @@ group {
       public check_text_show() {
         if(get_int(check_state) == DAYSELECOR_DAY_STATE_SELECTED)
           set_state(PART:"elm.text", "selected", 0.0);
+        else if(get_int(check_state) == DAYSELECOR_DAY_STATE_PRESSED)
+          set_state(PART:"elm.text", "selected", 0.0);
         else {
           if(get_int(check_type) == DAYSELECOR_DAY_TYPE_WEEKDAY)
             set_state(PART:"elm.text", "default", 0.0);
@@ -354,7 +354,6 @@ group {
       part {
          name: "events";
          type: RECT;
-         ignore_flags: ON_HOLD;
          description {
             state: "default" 0.0;
             rel1.to: "bg";
@@ -371,6 +370,7 @@ group {
          script {
             set_int(check_state, DAYSELECOR_DAY_STATE_PRESSED);
             check_bg_show();
+            check_text_show();
          }
       }
       program {
