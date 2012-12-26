@@ -2603,6 +2603,7 @@
 // Multi line -------------------------------------------------------
 // -------------------------------------------------------------------
 // 2.2.3.5 (Email Style)
+// email list
    group { name: "elm/genlist/item/email.list/default";
       alias: "elm/genlist/item_odd/email.list/default";
       alias: "elm/genlist/item_compress/email.list/default";
@@ -2613,8 +2614,8 @@
       alias: "elm/genlist/tree_compress_odd/email.list/default";
 
       GENLIST_DATA_ITEM_NORMAL
-      data.item: "texts" "elm.text.1 elm.text.2 elm.text.3 elm.text.4 elm.text.5";
-      data.item: "contents" "elm.swallow.colorbar elm.icon.1 elm.icon.2 elm.icon.3";
+      data.item: "texts" "elm.text.1 elm.text.2 elm.text.3 elm.text.4";
+      data.item: "contents" "elm.swallow.colorbar elm.icon.1 elm.icon.2 elm.icon.3 elm.icon.4 elm.icon.4.touch";
 
       parts {
          GENLIST_PART_BG_IMAGE
@@ -2630,33 +2631,50 @@
          GENLIST_PART_PADDING_L("elm.padding.icon1.right", "elm.icon.1")
 
          GENLIST_PART_TEXT("elm.text.1",
-            GENLIST_DESCRIPTION_LRT("elm.padding.icon1.right", "elm.text.5", "elm.padding.top",
+            GENLIST_DESCRIPTION_LRT("elm.padding.icon1.right", "elm.text.limit", "elm.padding.top",
                GENLIST_PARAM_LISTITEM
                min: 0 GENLIST_HEIGHT_3LINE_MAIN;
-               fixed: 1 1;
+               fixed: 1 1; align: 0 0; text.max: 1 0;  // This limits text growing.
             )
             GENLIST_DESCRIPTION_LISTITEM_OTHERS
          )
-
+         // FIXME: because script cannot be inherited, text.5 is defined here and can be inherited
          GENLIST_PART_TEXT("elm.text.5",
-            GENLIST_DESCRIPTION_RTB("elm.icon.3", "elm.padding.top", "elm.text.2",
-               GENLIST_PARAM_LISTITEM
-               min: 0 GENLIST_HEIGHT_3LINE_MAIN;
-               text.min: 1 0;
-               fixed: 1 1;
+            GENLIST_DESCRIPTION_LTB("elm.text.1", "elm.padding.top", "elm.text.2",
+               visible: 0;
             )
-            GENLIST_DESCRIPTION_LISTITEM_OTHERS
+         )
+         // Virtual part for Maxmimum right X axis of TEXT
+         GENLIST_PART_SPACER("elm.text.limit",
+            GENLIST_DESCRIPTION_R("elm.icon.3",
+               min: 0 0;
+               max: 0 0;
+            )
          )
          GENLIST_PART_ICON("elm.icon.3",
-            GENLIST_DESCRIPTION_RTB("elm.padding.right", "elm.padding.top", "elm.text.2",)
+            GENLIST_DESCRIPTION_RTB("elm.padding.icon4.left", "elm.padding.top", "elm.text.2",)
          )
-
-         GENLIST_PART_TEXTBLOCK("elm.text.2",
+         GENLIST_PART_PADDING_R("elm.padding.icon4.left", "elm.icon.4")
+         GENLIST_PART_ICON("elm.icon.4",
+            GENLIST_DESCRIPTION_RTB("elm.padding.right", "elm.padding.top", "elm.text.2",
+               min: 38 38;
+               max: GENLIST_HEIGHT_3LINE_MAIN GENLIST_HEIGHT_3LINE_MAIN;
+               fixed: 1 1;
+            )
+         )
+         GENLIST_PART_ICON("elm.icon.4.touch",
+            GENLIST_DESCRIPTION_ENVELOP("elm.icon.4",
+               rel1.offset: -10 -17;
+               rel2.offset: 26 10;
+               fixed: 1 1;
+            )
+         )
+         GENLIST_PART_TEXT("elm.text.2",
             GENLIST_DESCRIPTION("elm.padding.icon1.right", "elm.padding.right", "elm.text.1", "elm.text.4",
                min: 0 GENLIST_HEIGHT_3LINE_SUB1;
-               GENLIST_PARAM_SUBITEM_DEFAULT_TB
+               GENLIST_PARAM_SUBITEM_DEFAULT
             )
-            GENLIST_DESCRIPTION_SUBITEM_DEFAULT_OTHERS_TB
+            GENLIST_DESCRIPTION_SUBITEM_DEFAULT_OTHERS
          )
 
          GENLIST_PART_ICON("elm.icon.2",
@@ -2674,11 +2692,50 @@
          )
          GENLIST_PART_FLIP
       }
-      GENLIST_PROGRAMS_READ_TEXT1( target: "elm.text.1"; target: "elm.text.2"; target: "elm.text.3"; target: "elm.text.4"; target: "elm.text.5";
-         target: "elm.swallow.colorbar"; target: "elm.icon.1"; target: "elm.icon.2"; target: "elm.icon.3";)
+      GENLIST_PROGRAMS_READ_TEXT1( target: "elm.text.1"; target: "elm.text.2"; target: "elm.text.3";
+         target: "elm.text.4"; target: "elm.text.5";
+         target: "elm.swallow.colorbar"; target: "elm.icon.1"; target: "elm.icon.2"; target: "elm.icon.3";
+         target: "elm.icon.4";
+      )
    }
 
-   // 2.2.3.13 (Email Style with outbox)
+// email list with conversation text
+   group { name: "elm/genlist/item/email.list.conversation/default";
+      alias: "elm/genlist/item_odd/email.list.conversation/default";
+      alias: "elm/genlist/item_compress/email.list.conversation/default";
+      alias: "elm/genlist/item_compress_odd/email.list.conversation/default";
+      alias: "elm/genlist/tree/email.list.conversation/default";
+      alias: "elm/genlist/tree_odd/email.list.conversation/default";
+      alias: "elm/genlist/tree_compress/email.list.conversation/default";
+      alias: "elm/genlist/tree_compress_odd/email.list.conversation/default";
+      inherit: "elm/genlist/item/email.list/default";
+
+      data.item: "texts" "elm.text.1 elm.text.2 elm.text.3 elm.text.4 elm.text.5";
+      parts {
+         GENLIST_PART_TEXT("elm.text.5",
+            GENLIST_DESCRIPTION_LTB("elm.text.1", "elm.padding.top", "elm.text.2",
+               GENLIST_PARAM_SUBITEM_SETTINGS
+               min: 45 GENLIST_HEIGHT_3LINE_MAIN;
+               max: 45 GENLIST_HEIGHT_3LINE_MAIN;
+               text.min: 1 0;
+               text.align: 0.5 0.65;
+               fixed: 1 1;
+               visible: 1;
+            )
+            GENLIST_DESCRIPTION_SUBITEM_SETTINGS_OTHERS
+         )
+         // Virtual part for Maxmimum right X axis of TEXT
+         GENLIST_PART_SPACER("elm.text.limit",
+            GENLIST_DESCRIPTION_RTB("elm.icon.3", "elm.padding.top", "elm.text.2",
+               min: 45 GENLIST_HEIGHT_3LINE_MAIN;
+               max: 45 GENLIST_HEIGHT_3LINE_MAIN;
+            )
+         )
+      }
+   }
+
+   // 2.2.3.13
+   // email outbox style
    group { name: "elm/genlist/item/email.outbox/default";
       alias: "elm/genlist/item_odd/email.outbox/default";
       alias: "elm/genlist/item_compress/email.outbox/default";
@@ -2689,8 +2746,8 @@
       alias: "elm/genlist/tree_compress_odd/email.outbox/default";
 
       GENLIST_DATA_ITEM_NORMAL
-      data.item: "texts" "elm.text.1 elm.text.2 elm.text.3 elm.text.4";
-      data.item: "contents" "elm.swallow.colorbar elm.icon.1 elm.icon.2 elm.icon.3 elm.icon.4";
+      data.item: "texts" "elm.text.1 elm.text.2 elm.text.3";
+      data.item: "contents" "elm.swallow.colorbar elm.icon.1 elm.icon.2 elm.icon.3 elm.icon.4 elm.icon.4.touch elm.icon.5";
 
       parts {
          GENLIST_PART_BG_IMAGE
@@ -2706,32 +2763,51 @@
          GENLIST_PART_PADDING_L("elm.padding.icon1.right", "elm.icon.1")
 
          GENLIST_PART_TEXT("elm.text.1",
-            GENLIST_DESCRIPTION_LRT("elm.padding.icon1.right", "elm.text.4", "elm.padding.top",
+            GENLIST_DESCRIPTION_LRT("elm.padding.icon1.right", "elm.text.limit", "elm.padding.top",
                GENLIST_PARAM_LISTITEM
                min: 0 GENLIST_HEIGHT_3LINE_MAIN;
+               fixed: 1 1; align: 0 0; text.max: 1 0;  // This limits text growing.
             )
             GENLIST_DESCRIPTION_LISTITEM_OTHERS
          )
+         // FIXME: because script cannot be inherited, text.5 is defined here and can be inherited
          GENLIST_PART_TEXT("elm.text.4",
-            GENLIST_DESCRIPTION_RTB("elm.icon.3", "elm.padding.top", "elm.text.2",
-               GENLIST_PARAM_LISTITEM
-               min: 0 GENLIST_HEIGHT_3LINE_MAIN;
-               text.min: 1 0;
+            GENLIST_DESCRIPTION_LTB("elm.text.1", "elm.padding.top", "elm.text.2",
+               visible: 0;
             )
-            GENLIST_DESCRIPTION_LISTITEM_OTHERS
+         )
+         // Virtual part for Maxmimum right X axis of TEXT
+         GENLIST_PART_SPACER("elm.text.limit",
+            GENLIST_DESCRIPTION_RTB("elm.icon.3", "elm.padding.top", "elm.text.2",
+               min: 0 0;
+               max: 0 0;
+            )
          )
          GENLIST_PART_ICON("elm.icon.3",
+            GENLIST_DESCRIPTION_RTB("elm.padding.icon4.left", "elm.padding.top", "elm.text.2",
+            )
+         )
+         GENLIST_PART_PADDING_R("elm.padding.icon4.left", "elm.icon.4")
+         GENLIST_PART_ICON("elm.icon.4",
             GENLIST_DESCRIPTION_RTB("elm.padding.right", "elm.padding.top", "elm.text.2",
+               min: 38 38;
+               max: GENLIST_HEIGHT_3LINE_MAIN GENLIST_HEIGHT_3LINE_MAIN;
                fixed: 1 1;
             )
          )
-
-         GENLIST_PART_TEXTBLOCK("elm.text.2",
+         GENLIST_PART_ICON("elm.icon.4.touch",
+            GENLIST_DESCRIPTION_ENVELOP("elm.icon.4",
+               rel1.offset: -10 -17;
+               rel2.offset: 26 10;
+               fixed: 1 1;
+            )
+         )
+         GENLIST_PART_TEXT("elm.text.2",
             GENLIST_DESCRIPTION("elm.padding.icon1.right", "elm.padding.icon4.left", "elm.text.1", "elm.text.3",
                min: 0 GENLIST_HEIGHT_3LINE_SUB1;
-               GENLIST_PARAM_SUBITEM_DEFAULT_TB
+               GENLIST_PARAM_SUBITEM_DEFAULT
             )
-            GENLIST_DESCRIPTION_SUBITEM_DEFAULT_OTHERS_TB
+            GENLIST_DESCRIPTION_SUBITEM_DEFAULT_OTHERS
          )
          GENLIST_PART_ICON("elm.icon.2",
             GENLIST_DESCRIPTION_LTB("elm.padding.icon1.right", "elm.text.2", "elm.padding.bottom",
@@ -2739,14 +2815,14 @@
             )
          )
          GENLIST_PART_TEXT("elm.text.3",
-            GENLIST_DESCRIPTION_LRB("elm.icon.2", "elm.padding.icon4.left", "elm.padding.bottom",
+            GENLIST_DESCRIPTION_LRB("elm.icon.2", "elm.padding.icon5.left", "elm.padding.bottom",
                GENLIST_PARAM_CONTENTS_TEXT
                min: 0 GENLIST_HEIGHT_3LINE_SUB2;
                fixed:1 1;
             )
          )
-         GENLIST_PART_PADDING_R("elm.padding.icon4.left", "elm.icon.4")
-         GENLIST_PART_ICON("elm.icon.4",
+         GENLIST_PART_PADDING_R("elm.padding.icon5.left", "elm.icon.5")
+         GENLIST_PART_ICON("elm.icon.5",
             GENLIST_DESCRIPTION_RTB("elm.padding.right", "elm.text.1", "elm.padding.bottom",
                min: 180 74;
                max: 180 74;
@@ -2755,9 +2831,46 @@
          )
          GENLIST_PART_FLIP
       }
-      GENLIST_PROGRAMS_READ_TEXT1( target: "elm.text.1"; target: "elm.text.2"; target: "elm.text.3"; target: "elm.text.4";
-         target: "elm.swallow.colorbar"; target: "elm.icon.1"; target: "elm.icon.2";
-         target: "elm.icon.3"; target: "elm.icon.4"; )
+      GENLIST_PROGRAMS_READ_TEXT1( target: "elm.text.1"; target: "elm.text.2"; target: "elm.text.3";
+         target: "elm.text.4";
+         target: "elm.swallow.colorbar"; target: "elm.icon.1"; target: "elm.icon.2"; target: "elm.icon.3";
+         target: "elm.icon.4"; target: "elm.icon.5";
+      )
+   }
+
+// email outbox style with conversation
+   group { name: "elm/genlist/item/email.outbox.conversation/default";
+      alias: "elm/genlist/item_odd/email.outbox.conversation/default";
+      alias: "elm/genlist/item_compress/email.outbox.conversation/default";
+      alias: "elm/genlist/item_compress_odd/email.outbox.conversation/default";
+      alias: "elm/genlist/tree/email.outbox.conversation/default";
+      alias: "elm/genlist/tree_odd/email.outbox.conversation/default";
+      alias: "elm/genlist/tree_compress/email.outbox.conversation/default";
+      alias: "elm/genlist/tree_compress_odd/email.outbox.conversation/default";
+      inherit: "elm/genlist/item/email.outbox/default";
+
+      data.item: "texts" "elm.text.1 elm.text.2 elm.text.3 elm.text.4";
+
+      parts {
+         GENLIST_PART_TEXT("elm.text.4",
+            GENLIST_DESCRIPTION_LTB("elm.text.1", "elm.padding.top", "elm.text.2",
+               GENLIST_PARAM_SUBITEM_SETTINGS
+               min: 45 GENLIST_HEIGHT_3LINE_MAIN;
+               max: 45 GENLIST_HEIGHT_3LINE_MAIN;
+               text.min: 1 0;
+               text.align: 0.5 0.65;
+               fixed: 1 1;
+               visible: 1;
+            )
+         )
+         GENLIST_PART_SPACER("elm.text.limit",
+            GENLIST_DESCRIPTION_RTB("elm.icon.3", "elm.padding.top", "elm.text.2",
+               min: 45 GENLIST_HEIGHT_3LINE_MAIN;
+               max: 45 GENLIST_HEIGHT_3LINE_MAIN;
+               fixed: 1 1;
+            )
+         )
+      }
    }
 
 // Reomve this later
