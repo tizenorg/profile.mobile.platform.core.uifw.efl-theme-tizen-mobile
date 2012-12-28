@@ -28,6 +28,9 @@
    }
 
    group { name:"elm/naviframe/item/basic/default";
+      images {
+         image: "M01_title_bubble.png" COMP;
+      }
       script {
          public tbar_bg = 0;     //Toolbar BG Show call count
          public buttons_visible = 0; //when both buttons are visible
@@ -327,6 +330,19 @@
                visible: 0;
             }
          }
+         part { name: "badge_padding";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: NAVIFRAME_BADGE_PADDING_INC;
+               fixed: 1 0;
+               align: 1.0 0.0;
+               rel1 { relative: 0.0 0.0; to: "padding_center_text2"; }
+               rel2 { relative: 0.0 1.0; to: "padding_center_text2"; }
+               visible: 0;
+            }
+         }
          part { name: "elm.text.title";
             type: TEXT;
             effect: FAR_SHADOW BOTTOM;
@@ -345,7 +361,7 @@
                align: 0.0 0.5;
                fixed: 1 1;
                rel1 { relative: 1.0 1.0; to_x: "padding_center_text1"; to_y: "top_padding"; }
-               rel2 { relative: 0.0 0.0; to_x: "padding_center_text2"; to_y: "padding_bottom_text"; }
+               rel2 { relative: 0.0 0.0; to_x: "badge_padding"; to_y: "padding_bottom_text"; }
             }
             description { state: "subtitle_is_set" 0.0;
                inherit: "default" 0.0;
@@ -412,6 +428,119 @@
                aspect: 1.0 1.0;
                aspect_preference: VERTICAL;
                align: 1.0 0.5;
+            }
+         }
+         part { name: "badge_left_padding";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               min: NAVIFRAME_PADDING2_INC;
+               fixed: 1 0;
+               rel1 { relative: 1.0 0.0; to: "elm.text.title"; }
+               rel2 { relative: 1.0 1.0; to: "elm.text.title"; }
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "badge_top_padding";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               min: NAVIFRAME_BADGE_BOTTOM_TEXT_PADDING_INC;
+               fixed: 0 1;
+               rel1 { relative: 1.0 0.0; to: "elm.text.title"; }
+               rel2 { relative: 0.0 0.0; to_x: "padding_center_text2"; to_y: "elm.text.title"; }
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "badge_bg";
+            type: IMAGE;
+            scale: 1;
+            clip_to: "title_clip";
+            description { state: "default" 0.0;
+               visible: 0;
+               min: 0 0;
+               fixed: 1 1;
+               rel1 { relative: 1.0 1.0; to_x: "badge_left_padding"; to_y: "badge_top_padding"; }
+               rel2 { relative: 1.0 1.0; to_x: "badge_left_padding"; to_y: "badge_top_padding"; }
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               align: 0.0 0.0;
+               image {
+                  normal: "M01_title_bubble.png";
+                  border: NAVIFRAME_BADGE_BG_IMAGE_BORDER_INC;
+                  border_scale: 1;
+               }
+            }
+            description { state: "show" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               min: NAVIFRAME_BADGE_BG_IMAGE_SIZE_INC;
+               fixed: 1 1;
+            }
+         }
+         part { name: "badge_left_text_padding";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               min: NAVIFRAME_BADGE_LEFT_TEXT_PADDING_INC;
+               fixed: 1 0;
+               align: 0.0 0.0;
+               rel1 { relative: 0.0 0.0; to: "badge_bg"; }
+               rel2 { relative: 0.0 1.0; to: "badge_bg"; }
+            }
+         }
+         part { name: "badge_right_text_padding";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               min: NAVIFRAME_BADGE_LEFT_TEXT_PADDING_INC;
+               fixed: 1 0;
+               align: 1.0 0.0;
+               rel1 { relative: 1.0 0.0; to: "badge_bg"; }
+               rel2 { relative: 1.0 1.0; to: "badge_bg"; }
+            }
+         }
+         part { name: "badge_bottom_text_padding";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               min: NAVIFRAME_BADGE_BOTTOM_TEXT_PADDING_INC;
+               fixed: 0 1;
+               align: 0.0 1.0;
+               rel1 { relative: 0.0 1.0; to: "badge_bg"; }
+               rel2 { relative: 1.0 1.0; to: "badge_bg"; }
+            }
+         }
+         part { name: "title_badge";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            clip_to: "title_clip";
+            description { state: "default" 0.0;
+               visible: 0;
+               min: 0 NAVIFRAME_BADGE_TEXT_H_INC;
+               fixed: 1 1;
+               rel1 { relative: 1.0 0.0; to_x: "badge_left_text_padding"; to_y: "badge_bottom_text_padding"; }
+               rel2 { relative: 0.0 0.0; to_x: "badge_right_text_padding"; to_y: "badge_bottom_text_padding"; }
+               align: 0.5 1.0;
+               color: 255 255 255 255;
+               text {
+                  font: "Tizen:style=Medium";
+                  size: 34;
+                  min: 0 0;
+                  max: 1 0;
+                  align: 0.5 0.5;
+                  text_class: "tizen";
+               }
+            }
+            description { state: "show" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
             }
          }
          part { name: "click_event_area";
@@ -998,6 +1127,24 @@
             script {
                if ((get_int(tbar_bg) > 0) && (get_int(tbar_close) == 0))
                   set_state(PART:"toolbar_bg", "visible", 0.0);
+            }
+         }
+         program {
+            name: "badge_show";
+            signal: "elm,state,title_badge,show";
+            source: "elm";
+            script {
+               set_state(PART:"badge_bg", "show", 0.0);
+               set_state(PART:"title_badge", "show", 0.0);
+            }
+         }
+         program {
+            name: "badge_hide";
+            signal: "elm,state,title_badge,hide";
+            source: "elm";
+            script {
+               set_state(PART:"badge_bg", "default", 0.0);
+               set_state(PART:"title_badge", "default", 0.0);
             }
          }
       }
