@@ -538,6 +538,10 @@
                inherit: "default" 0.0;
                visible: 0;
              }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               color: SLIDER_INDICATOR_TEXT_PRESSED_COLOR_INC;
+            }
          }
       }
       programs {
@@ -572,12 +576,32 @@
             source: "button_events";
             action:  STATE_SET "pressed" 0.0;
             target: "button0";
+            after: "text_pressed";
          }
          program { name: "mouse_up";
             signal: "mouse,up,*";
             source: "button_events";
             action:  STATE_SET "default" 0.0;
             target: "button0";
+            after: "text_unpressed";
+         }
+         program { name: "text_pressed";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.indicator", st, 30, vl);
+               if (!strcmp(st, "default"))
+                 set_state(PART:"elm.indicator", "pressed", 0.0);
+            }
+         }
+         program { name: "text_unpressed";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.indicator", st, 30, vl);
+               if (!strcmp(st, "pressed"))
+                 set_state(PART:"elm.indicator", "default", 0.0);
+            }
          }
       }
    }
