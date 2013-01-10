@@ -2642,10 +2642,116 @@
    }
 
 // -------------------------------------------------------------------
-// Multi line -------------------------------------------------------
+// Email Style -------------------------------------------------------
 // -------------------------------------------------------------------
+
+#define GENLIST_EMAIL_MAIN_TEXT_SIZE                        40
+#define GENLIST_EMAIL_MAIN_TEXT_UNREAD_COLOR                0 0 0 255
+#define GENLIST_EMAIL_MAIN_TEXT_UNREAD_COLOR_STYLE          "#000000FF"
+#define GENLIST_EMAIL_MAIN_TEXT_UNREAD_DIM_COLOR            0 0 0 102
+#define GENLIST_EMAIL_MAIN_TEXT_UNREAD_DIM_COLOR_STYLE      "#00000066"
+#define GENLIST_EMAIL_MAIN_TEXT_READ_COLOR                  128 128 128 255
+#define GENLIST_EMAIL_MAIN_TEXT_READ_DIM_COLOR              128 128 128 204
+#define GENLIST_EMAIL_TEXT_FOCUS_COLOR                      255 255 255 255
+#define GENLIST_EMAIL_TEXT_FOCUS_COLOR_STYLE                "#FFFFFFFF"
+
+#define GENLIST_EMAIL_SUB_TEXT_SIZE                         32
+#define GENLIST_EMAIL_SUB_TEXT_COLOR                        128 128 128 255
+#define GENLIST_EMAIL_SUB_TEXT_COLOR_STYLE                  "#808080FF"
+
+#define GENLIST_EMAIL_COUNT_TEXT_SIZE                       28
+#define GENLIST_EMAIL_COUNT_TEXT_UNREAD_COLOR               59 115 182 255
+#define GENLIST_EMAIL_COUNT_TEXT_UNREAD_COLOR_STYLE         "#3B73B6FF"
+#define GENLIST_EMAIL_COUNT_TEXT_READ_COLOR                 128 128 128 255
+#define GENLIST_EMAIL_COUNT_TEXT_READ_COLOR_STYLE           "#808080FF"
+
+#define GENLIST_EMAIL_CONTENTS_TEXT_SIZE                    28
+#define GENLIST_EMAIL_CONTENTS_TEXT_COLOR                   128 128 128 255
+#define GENLIST_EMAIL_CONTENTS_TEXT_COLOR_STYLE             "#808080FF"
+
+// email main text
+#define PARAM_EMAIL_MAIN \
+   color: GENLIST_EMAIL_MAIN_TEXT_UNREAD_COLOR; \
+   text { \
+      align: 0 0.5; \
+      min: 0 1; \
+      font: "Tizen:style=Regular"; \
+      size: GENLIST_EMAIL_MAIN_TEXT_SIZE; \
+      text_class: "list_item"; \
+   }
+
+#define DESCRIPTION_EMAIL_MAIN_OTHERS \
+   description { state: "disabled" 0.0; \
+      inherit: "default" 0.0; \
+      color: GENLIST_EMAIL_MAIN_TEXT_UNREAD_DIM_COLOR; \
+   } \
+   description { state: "read" 0.0; \
+      inherit: "default" 0.0; \
+      color: GENLIST_EMAIL_MAIN_TEXT_READ_COLOR; \
+   } \
+   description { state: "read,disabled" 0.0; \
+      inherit: "default" 0.0; \
+      color: GENLIST_EMAIL_MAIN_TEXT_READ_DIM_COLOR; \
+   } \
+   description { state: "selected" 0.0; \
+      inherit: "default" 0.0; \
+      color: GENLIST_EMAIL_TEXT_FOCUS_COLOR; \
+   }
+
+// email sub text
+#define PARAM_EMAIL_SUB \
+   color: GENLIST_EMAIL_SUB_TEXT_COLOR; \
+   text { \
+      align: 0 0.5; \
+      min: 0 1; \
+      font: "Tizen:style=Medium"; \
+      size: GENLIST_EMAIL_SUB_TEXT_SIZE; \
+      text_class: "tizen"; \
+   }
+
+#define DESCRIPTION_EMAIL_SUB_OTHERS \
+   description { state: "selected" 0.0; \
+      inherit: "default" 0.0; \
+      color: GENLIST_EMAIL_TEXT_FOCUS_COLOR; \
+   }
+
+// email contents text
+#define PARAM_EMAIL_COUNT \
+   color: GENLIST_EMAIL_COUNT_TEXT_UNREAD_COLOR; \
+   text { \
+      align: 0 0.5; \
+      min: 0 1; \
+      font: "Tizen:style=Medium"; \
+      size: GENLIST_EMAIL_COUNT_TEXT_SIZE; \
+      text_class: "tizen"; \
+   }
+
+#define DESCRIPTION_EMAIL_COUNT_OTHERS \
+   description { state: "read" 0.0; \
+      inherit: "default" 0.0; \
+      color: GENLIST_EMAIL_COUNT_TEXT_READ_COLOR; \
+   } \
+   description { state: "selected" 0.0; \
+      inherit: "default" 0.0; \
+      color: GENLIST_EMAIL_TEXT_FOCUS_COLOR; \
+   }
+
+// email contents text
+#define PARAM_EMAIL_CONTENTS \
+   color: GENLIST_EMAIL_CONTENTS_TEXT_COLOR; \
+   text { \
+      align: 0 0.5; \
+      min: 0 1; \
+      font: "Tizen:style=Medium"; \
+      size: GENLIST_EMAIL_CONTENTS_TEXT_SIZE; \
+      text_class: "tizen"; \
+   }
+
+#define HEIGHT_EMAIL_MAIN         54
+#define HEIGHT_EMAIL_SUB          42
+#define HEIGHT_EMAIL_CONTENTS      38
+
 // 2.2.3.5 (Email Style)
-// email list
    group { name: "elm/genlist/item/email.list/default";
       alias: "elm/genlist/item_odd/email.list/default";
       alias: "elm/genlist/item_compress/email.list/default";
@@ -2674,15 +2780,15 @@
 
          GENLIST_PART_TEXT("elm.text.1",
             GENLIST_DESCRIPTION_LRT("elm.padding.icon1.right", "elm.text.limit", "elm.padding.top",
-               GENLIST_PARAM_LISTITEM
-               min: 0 GENLIST_HEIGHT_3LINE_MAIN;
+               PARAM_EMAIL_MAIN
+               min: 0 HEIGHT_EMAIL_MAIN;
                fixed: 1 1; align: 0 0; text.max: 1 0;  // This limits text growing.
             )
-            GENLIST_DESCRIPTION_LISTITEM_OTHERS
+            DESCRIPTION_EMAIL_MAIN_OTHERS
          )
          // FIXME: because script cannot be inherited, text.5 is defined here and can be inherited
          GENLIST_PART_TEXT("elm.text.5",
-            GENLIST_DESCRIPTION_LTB("elm.text.1", "elm.padding.top", "elm.text.2",
+            GENLIST_DESCRIPTION_LT("elm.text.1", "elm.padding.top",
                visible: 0;
             )
          )
@@ -2694,13 +2800,13 @@
             )
          )
          GENLIST_PART_ICON("elm.icon.3",
-            GENLIST_DESCRIPTION_RTB("elm.padding.icon4.left", "elm.padding.top", "elm.text.2",)
+            GENLIST_DESCRIPTION_RTB("elm.padding.icon4.left", "elm.padding.top", "elm.text.3",)
          )
          GENLIST_PART_PADDING_R("elm.padding.icon4.left", "elm.icon.4")
          GENLIST_PART_ICON("elm.icon.4",
-            GENLIST_DESCRIPTION_RTB("elm.padding.right", "elm.padding.top", "elm.text.2",
+            GENLIST_DESCRIPTION_RTB("elm.padding.right", "elm.padding.top", "elm.text.3",
                min: 38 38;
-               max: GENLIST_HEIGHT_3LINE_MAIN GENLIST_HEIGHT_3LINE_MAIN;
+               max: HEIGHT_EMAIL_MAIN HEIGHT_EMAIL_MAIN;
                fixed: 1 1;
             )
          )
@@ -2711,26 +2817,30 @@
                fixed: 1 1;
             )
          )
-         GENLIST_PART_TEXT("elm.text.2",
-            GENLIST_DESCRIPTION("elm.padding.icon1.right", "elm.padding.right", "elm.text.1", "elm.text.4",
-               min: 0 GENLIST_HEIGHT_3LINE_SUB1;
-               GENLIST_PARAM_SUBITEM_DEFAULT
-            )
-            GENLIST_DESCRIPTION_SUBITEM_DEFAULT_OTHERS
-         )
-
          GENLIST_PART_ICON("elm.icon.2",
-            GENLIST_DESCRIPTION_LTB("elm.padding.icon1.right", "elm.text.2", "elm.padding.bottom",)
+            GENLIST_DESCRIPTION_LT("elm.padding.icon1.right", "elm.text.1", )
          )
          GENLIST_PART_TEXT("elm.text.3",
-            GENLIST_DESCRIPTION("elm.icon.2", "elm.text.4", "elm.text.2", "elm.padding.bottom",
-               GENLIST_PARAM_CONTENTS_TEXT
-               min: 0 GENLIST_HEIGHT_3LINE_SUB2;
-               fixed: 1 1;
+            GENLIST_DESCRIPTION_LRT("elm.icon.2", "elm.text.4", "elm.text.1",
+               PARAM_EMAIL_SUB
+               min: 0 HEIGHT_EMAIL_SUB;
+               fixed: 0 1;
+            )
+            DESCRIPTION_EMAIL_SUB_OTHERS
+         )
+         GENLIST_PART_TEXT("elm.text.4",
+            GENLIST_DESCRIPTION_RT("elm.padding.right", "elm.text.1",
+               PARAM_EMAIL_CONTENTS
+               GENLIST_PARAM_TEXT_LIMIT_RT
+               min: 0 HEIGHT_EMAIL_CONTENTS;
+               fixed: 0 1;
             )
          )
-         GENLIST_PART_SUBITEM_RB("elm.text.4", GENLIST_HEIGHT_3LINE_SUB2,
-               "elm.padding.right", "elm.padding.bottom"
+         GENLIST_PART_TEXT("elm.text.2",
+            GENLIST_DESCRIPTION("elm.padding.icon1.right", "elm.padding.right", "elm.text.3", "elm.padding.bottom",
+               PARAM_EMAIL_CONTENTS
+               min: 0 HEIGHT_EMAIL_CONTENTS;
+            )
          )
          GENLIST_PART_FLIP
       }
@@ -2755,22 +2865,22 @@
       data.item: "texts" "elm.text.1 elm.text.2 elm.text.3 elm.text.4 elm.text.5";
       parts {
          GENLIST_PART_TEXT("elm.text.5",
-            GENLIST_DESCRIPTION_LTB("elm.text.1", "elm.padding.top", "elm.text.2",
-               GENLIST_PARAM_SUBITEM_SETTINGS
-               min: 45 GENLIST_HEIGHT_3LINE_MAIN;
-               max: 45 GENLIST_HEIGHT_3LINE_MAIN;
+            GENLIST_DESCRIPTION_LT("elm.text.1", "elm.padding.top",
+               PARAM_EMAIL_COUNT
+               min: 45 HEIGHT_EMAIL_MAIN;
+               max: 45 HEIGHT_EMAIL_MAIN;
                text.min: 1 0;
                text.align: 0.5 0.65;
                fixed: 1 1;
                visible: 1;
             )
-            GENLIST_DESCRIPTION_SUBITEM_SETTINGS_OTHERS
+            DESCRIPTION_EMAIL_COUNT_OTHERS
          )
          // Virtual part for Maxmimum right X axis of TEXT
          GENLIST_PART_SPACER("elm.text.limit",
             GENLIST_DESCRIPTION_RTB("elm.icon.3", "elm.padding.top", "elm.text.2",
-               min: 45 GENLIST_HEIGHT_3LINE_MAIN;
-               max: 45 GENLIST_HEIGHT_3LINE_MAIN;
+               min: 45 HEIGHT_EMAIL_MAIN;
+               max: 45 HEIGHT_EMAIL_MAIN;
             )
          )
       }
@@ -2806,15 +2916,15 @@
 
          GENLIST_PART_TEXT("elm.text.1",
             GENLIST_DESCRIPTION_LRT("elm.padding.icon1.right", "elm.text.limit", "elm.padding.top",
-               GENLIST_PARAM_LISTITEM
-               min: 0 GENLIST_HEIGHT_3LINE_MAIN;
+               PARAM_EMAIL_MAIN
+               min: 0 HEIGHT_EMAIL_MAIN;
                fixed: 1 1; align: 0 0; text.max: 1 0;  // This limits text growing.
             )
-            GENLIST_DESCRIPTION_LISTITEM_OTHERS
+            DESCRIPTION_EMAIL_MAIN_OTHERS
          )
          // FIXME: because script cannot be inherited, text.5 is defined here and can be inherited
          GENLIST_PART_TEXT("elm.text.4",
-            GENLIST_DESCRIPTION_LTB("elm.text.1", "elm.padding.top", "elm.text.2",
+            GENLIST_DESCRIPTION_LTB("elm.text.1", "elm.padding.top", "elm.icon.5",
                visible: 0;
             )
          )
@@ -2826,14 +2936,14 @@
             )
          )
          GENLIST_PART_ICON("elm.icon.3",
-            GENLIST_DESCRIPTION_RTB("elm.padding.icon4.left", "elm.padding.top", "elm.text.2",
+            GENLIST_DESCRIPTION_RTB("elm.padding.icon4.left", "elm.padding.top", "elm.text.3",
             )
          )
          GENLIST_PART_PADDING_R("elm.padding.icon4.left", "elm.icon.4")
          GENLIST_PART_ICON("elm.icon.4",
-            GENLIST_DESCRIPTION_RTB("elm.padding.right", "elm.padding.top", "elm.text.2",
+            GENLIST_DESCRIPTION_RTB("elm.padding.right", "elm.padding.top", "elm.text.3",
                min: 38 38;
-               max: GENLIST_HEIGHT_3LINE_MAIN GENLIST_HEIGHT_3LINE_MAIN;
+               max: HEIGHT_EMAIL_MAIN HEIGHT_EMAIL_MAIN;
                fixed: 1 1;
             )
          )
@@ -2844,23 +2954,24 @@
                fixed: 1 1;
             )
          )
-         GENLIST_PART_TEXT("elm.text.2",
-            GENLIST_DESCRIPTION("elm.padding.icon1.right", "elm.padding.icon4.left", "elm.text.1", "elm.text.3",
-               min: 0 GENLIST_HEIGHT_3LINE_SUB1;
-               GENLIST_PARAM_SUBITEM_DEFAULT
-            )
-            GENLIST_DESCRIPTION_SUBITEM_DEFAULT_OTHERS
-         )
+
          GENLIST_PART_ICON("elm.icon.2",
-            GENLIST_DESCRIPTION_LTB("elm.padding.icon1.right", "elm.text.2", "elm.padding.bottom",
+            GENLIST_DESCRIPTION_LT("elm.padding.icon1.right", "elm.text.1",
                fixed: 1 1;
             )
          )
          GENLIST_PART_TEXT("elm.text.3",
-            GENLIST_DESCRIPTION_LRB("elm.icon.2", "elm.padding.icon5.left", "elm.padding.bottom",
-               GENLIST_PARAM_CONTENTS_TEXT
-               min: 0 GENLIST_HEIGHT_3LINE_SUB2;
-               fixed:1 1;
+            GENLIST_DESCRIPTION_LRT("elm.icon.2", "elm.padding.icon5.left", "elm.text.1",
+               PARAM_EMAIL_SUB
+               min: 0 HEIGHT_EMAIL_SUB;
+               fixed: 0 1;
+            )
+            DESCRIPTION_EMAIL_SUB_OTHERS
+         )
+         GENLIST_PART_TEXT("elm.text.2",
+            GENLIST_DESCRIPTION("elm.padding.icon1.right", "elm.padding.icon5.left", "elm.text.3", "elm.padding.bottom",
+               PARAM_EMAIL_CONTENTS
+               min: 0 HEIGHT_EMAIL_CONTENTS;
             )
          )
          GENLIST_PART_PADDING_R("elm.padding.icon5.left", "elm.icon.5")
@@ -2895,20 +3006,21 @@
 
       parts {
          GENLIST_PART_TEXT("elm.text.4",
-            GENLIST_DESCRIPTION_LTB("elm.text.1", "elm.padding.top", "elm.text.2",
-               GENLIST_PARAM_SUBITEM_SETTINGS
-               min: 45 GENLIST_HEIGHT_3LINE_MAIN;
-               max: 45 GENLIST_HEIGHT_3LINE_MAIN;
+            GENLIST_DESCRIPTION_LTB("elm.text.1", "elm.padding.top", "elm.icon.5",
+               PARAM_EMAIL_COUNT
+               min: 45 HEIGHT_EMAIL_MAIN;
+               max: 45 HEIGHT_EMAIL_MAIN;
                text.min: 1 0;
                text.align: 0.5 0.65;
                fixed: 1 1;
                visible: 1;
             )
+            DESCRIPTION_EMAIL_COUNT_OTHERS
          )
          GENLIST_PART_SPACER("elm.text.limit",
             GENLIST_DESCRIPTION_RTB("elm.icon.3", "elm.padding.top", "elm.text.2",
-               min: 45 GENLIST_HEIGHT_3LINE_MAIN;
-               max: 45 GENLIST_HEIGHT_3LINE_MAIN;
+               min: 45 HEIGHT_EMAIL_MAIN;
+               max: 45 HEIGHT_EMAIL_MAIN;
                fixed: 1 1;
             )
          )
@@ -2946,21 +3058,21 @@
          GENLIST_PART_TEXT("elm.text.1",
             GENLIST_DESCRIPTION_LRT("elm.padding.icon1.right", "elm.padding.icon3.left", "elm.padding.top",
                GENLIST_PARAM_LISTITEM
-               min: 0 GENLIST_HEIGHT_3LINE_MAIN; fixed:1 1;)
+               min: 0 HEIGHT_EMAIL_MAIN; fixed:1 1;)
             GENLIST_DESCRIPTION_LISTITEM_OTHERS
          )
          GENLIST_PART_PADDING_R("elm.padding.icon3.left", "elm.icon.3")
          GENLIST_PART_ICON_SMALL_RTB("elm.icon.3", "elm.padding.right", "elm.padding.top", "elm.icon.4")
 
-         GENLIST_PART_SUBITEM_("elm.text.2", GENLIST_HEIGHT_3LINE_SUB1,
+         GENLIST_PART_SUBITEM_("elm.text.2", HEIGHT_EMAIL_SUB,
             "elm.padding.icon1.right", "elm.padding.icon4.left", "elm.text.1", "elm.text.3",)
 
          GENLIST_PART_ICON_SMALL_LTB("elm.icon.2", "elm.padding.icon1.right", "elm.text.2", "elm.padding.bottom")
          GENLIST_PART_PADDING_L("elm.padding.icon2.right", "elm.icon.2")
          GENLIST_PART_TEXT("elm.text.3",
             GENLIST_DESCRIPTION_LRB("elm.padding.icon2.right", "elm.padding.icon4.left", "elm.padding.bottom",
-               GENLIST_PARAM_CONTENTS_TEXT
-               min: 0 GENLIST_HEIGHT_3LINE_SUB2; fixed:1 1;)
+               PARAM_EMAIL_CONTENTS
+               min: 0 HEIGHT_EMAIL_CONTENTS; fixed:1 1;)
          )
          GENLIST_PART_PADDING_R("elm.padding.icon4.left", "elm.icon.4")
          GENLIST_PART_ICON("elm.icon.4",
@@ -4531,7 +4643,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -5145,7 +5257,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6100,7 +6212,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6131,7 +6243,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6261,7 +6373,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6292,7 +6404,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6422,7 +6534,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6453,7 +6565,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6635,7 +6747,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6666,7 +6778,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6801,7 +6913,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6870,7 +6982,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -6994,7 +7106,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
          }
          part { name: "elm.divider1";
@@ -7356,7 +7468,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -7387,7 +7499,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -7522,7 +7634,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -7553,7 +7665,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -7690,7 +7802,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -7721,7 +7833,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -10804,7 +10916,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -11199,7 +11311,7 @@
             )
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -11224,7 +11336,7 @@
             )
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -11419,7 +11531,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -11450,7 +11562,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -11619,7 +11731,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -11789,7 +11901,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -11824,7 +11936,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -11995,7 +12107,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -12199,7 +12311,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -12253,7 +12365,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -12287,7 +12399,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -12418,7 +12530,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -12487,7 +12599,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -12535,7 +12647,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -12915,7 +13027,7 @@
             )
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_SUB_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -12971,7 +13083,7 @@
             )
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
             GENLIST_DESCRIPTION_FLIP_ENABLED
          }
@@ -13139,7 +13251,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: GENLIST_LIST_MAIN_TEXT_FOCUS_COLOR;
+               color: GENLIST_LIST_TEXT_FOCUS_COLOR;
             }
          }
          part { name: "elm.swallow.icon";
@@ -13194,7 +13306,7 @@
          GENLIST_PART_TEXT("elm.text.1",
             GENLIST_DESCRIPTION_LRT("elm.padding.icon1.right", "elm.padding.icon3.left", "elm.padding.top",
                GENLIST_PARAM_LISTITEM
-               min: 0 GENLIST_HEIGHT_3LINE_MAIN;
+               min: 0 HEIGHT_EMAIL_MAIN;
                fixed:1 1;)
             GENLIST_DESCRIPTION_LISTITEM_OTHERS
          )
@@ -13205,17 +13317,17 @@
          GENLIST_PART_PADDING_R_SIZE("elm.padding.icon5.left", "elm.icon.5", 10)
          GENLIST_PART_ICON_STAR_RTB("elm.icon.5", "elm.padding.right", "elm.padding.top", "elm.text.2")
 
-         GENLIST_PART_SUBITEM_("elm.text.2", GENLIST_HEIGHT_3LINE_SUB1,
+         GENLIST_PART_SUBITEM_("elm.text.2", HEIGHT_EMAIL_SUB,
             "elm.padding.icon1.right", "elm.text.3", "elm.text.1", "elm.text.4",)
-         GENLIST_PART_SUBITEM_RTB("elm.text.3", GENLIST_HEIGHT_3LINE_SUB1,
+         GENLIST_PART_SUBITEM_RTB("elm.text.3", HEIGHT_EMAIL_SUB,
             "elm.padding.right", "elm.text.1", "elm.text.4")
          GENLIST_PART_ICON_SMALL_LTB("elm.icon.2", "elm.padding.icon1.right", "elm.text.3", "elm.padding.bottom")
 
          GENLIST_PART_PADDING_L("elm.padding.icon2.right", "elm.icon.2")
          GENLIST_PART_TEXT("elm.text.4",
             GENLIST_DESCRIPTION_LRB("elm.padding.icon2.right", "elm.padding.right", "elm.padding.bottom",
-               GENLIST_PARAM_CONTENTS_TEXT
-               min: 0 GENLIST_HEIGHT_3LINE_SUB2; fixed:1 1;)
+               PARAM_EMAIL_CONTENTS
+               min: 0 HEIGHT_EMAIL_CONTENTS; fixed:1 1;)
          )
          GENLIST_PART_FLIP
       }
@@ -13257,7 +13369,7 @@
          GENLIST_PART_TEXT("elm.text.1",
             GENLIST_DESCRIPTION_LRT("elm.padding.icon1.right", "elm.padding.icon3.left", "elm.padding.top",
                GENLIST_PARAM_LISTITEM
-               min: 0 GENLIST_HEIGHT_3LINE_MAIN; fixed:1 1;)
+               min: 0 HEIGHT_EMAIL_MAIN; fixed:1 1;)
             GENLIST_DESCRIPTION_LISTITEM_OTHERS
          )
          GENLIST_PART_PADDING_R("elm.padding.icon3.left", "elm.icon.3")
@@ -13265,17 +13377,17 @@
          GENLIST_PART_PADDING_R_SIZE("elm.padding.icon4.left", "elm.icon.4", 10)
          GENLIST_PART_ICON_STAR_RTB("elm.icon.4", "elm.padding.right", "elm.padding.top", "elm.text.2")
 
-         GENLIST_PART_SUBITEM_("elm.text.2", GENLIST_HEIGHT_3LINE_SUB1,
+         GENLIST_PART_SUBITEM_("elm.text.2", HEIGHT_EMAIL_SUB,
             "elm.padding.icon1.right", "elm.text.3", "elm.text.1", "elm.text.4",)
-         GENLIST_PART_SUBITEM_RTB("elm.text.3", GENLIST_HEIGHT_3LINE_SUB1,
+         GENLIST_PART_SUBITEM_RTB("elm.text.3", HEIGHT_EMAIL_SUB,
             "elm.padding.right", "elm.text.1", "elm.text.4")
          GENLIST_PART_ICON_SMALL_LTB("elm.icon.2", "elm.padding.icon1.right", "elm.text.3", "elm.padding.bottom")
 
          GENLIST_PART_PADDING_L("elm.padding.icon2.right", "elm.icon.2")
          GENLIST_PART_TEXT("elm.text.4",
             GENLIST_DESCRIPTION_LRB("elm.padding.icon2.right", "elm.padding.right", "elm.padding.bottom",
-               GENLIST_PARAM_CONTENTS_TEXT
-               min: 0 GENLIST_HEIGHT_3LINE_SUB2; fixed:1 1;)
+               PARAM_EMAIL_CONTENTS
+               min: 0 HEIGHT_EMAIL_CONTENTS; fixed:1 1;)
          )
          GENLIST_PART_FLIP
       }
@@ -13316,7 +13428,7 @@
          GENLIST_PART_TEXT("elm.text.1",
             GENLIST_DESCRIPTION_LRT("elm.padding.icon1.right", "elm.padding.icon2.left", "elm.padding.top",
                GENLIST_PARAM_LISTITEM
-               min: 0 GENLIST_HEIGHT_3LINE_MAIN; fixed:1 1;)
+               min: 0 HEIGHT_EMAIL_MAIN; fixed:1 1;)
             GENLIST_DESCRIPTION_LISTITEM_OTHERS
          )
          GENLIST_PART_PADDING_R("elm.padding.icon2.left", "elm.icon.2")
@@ -13326,14 +13438,14 @@
          GENLIST_PART_PADDING_R_SIZE("elm.padding.icon4.left", "elm.icon.4", 10)
          GENLIST_PART_ICON_STAR_RTB("elm.icon.4", "elm.padding.right", "elm.padding.top", "elm.text.2")
 
-         GENLIST_PART_SUBITEM_("elm.text.2", GENLIST_HEIGHT_3LINE_SUB1,
+         GENLIST_PART_SUBITEM_("elm.text.2", HEIGHT_EMAIL_SUB,
             "elm.padding.icon1.right", "elm.text.3", "elm.text.1", "elm.text.4",)
-         GENLIST_PART_SUBITEM_RTB("elm.text.3", GENLIST_HEIGHT_3LINE_SUB1,
+         GENLIST_PART_SUBITEM_RTB("elm.text.3", HEIGHT_EMAIL_SUB,
             "elm.padding.right", "elm.text.1", "elm.text.4")
          GENLIST_PART_TEXT("elm.text.4",
             GENLIST_DESCRIPTION_LRB("elm.padding.icon1.right", "elm.padding.right", "elm.padding.bottom",
-               GENLIST_PARAM_CONTENTS_TEXT
-               min: 0 GENLIST_HEIGHT_3LINE_SUB2; fixed:1 1;)
+               PARAM_EMAIL_CONTENTS
+               min: 0 HEIGHT_EMAIL_CONTENTS; fixed:1 1;)
          )
          GENLIST_PART_FLIP
       }
@@ -13374,7 +13486,7 @@
          GENLIST_PART_TEXT("elm.text.1",
             GENLIST_DESCRIPTION_LRT("elm.padding.icon1.right", "elm.padding.icon2.left", "elm.padding.top",
                GENLIST_PARAM_LISTITEM
-               min: 0 GENLIST_HEIGHT_3LINE_MAIN; fixed:1 1;)
+               min: 0 HEIGHT_EMAIL_MAIN; fixed:1 1;)
             GENLIST_DESCRIPTION_LISTITEM_OTHERS
          )
          GENLIST_PART_PADDING_R("elm.padding.icon2.left", "elm.icon.2")
@@ -13382,14 +13494,14 @@
          GENLIST_PART_PADDING_R_SIZE("elm.padding.icon3.left", "elm.icon.3", 10)
          GENLIST_PART_ICON_STAR_RTB("elm.icon.3", "elm.padding.right", "elm.padding.top", "elm.text.2")
 
-         GENLIST_PART_SUBITEM_("elm.text.2", GENLIST_HEIGHT_3LINE_SUB2,
+         GENLIST_PART_SUBITEM_("elm.text.2", HEIGHT_EMAIL_CONTENTS,
             "elm.padding.icon1.right", "elm.text.3", "elm.text.1", "elm.text.4", )
-         GENLIST_PART_SUBITEM_RTB("elm.text.3", GENLIST_HEIGHT_3LINE_SUB2,
+         GENLIST_PART_SUBITEM_RTB("elm.text.3", HEIGHT_EMAIL_CONTENTS,
             "elm.padding.right", "elm.text.1", "elm.text.4")
          GENLIST_PART_TEXT("elm.text.4",
             GENLIST_DESCRIPTION_LRB("elm.padding.icon1.right", "elm.padding.right", "elm.padding.bottom",
-               GENLIST_PARAM_CONTENTS_TEXT
-               min: 0 GENLIST_HEIGHT_3LINE_SUB2; fixed:1 1;)
+               PARAM_EMAIL_CONTENTS
+               min: 0 HEIGHT_EMAIL_CONTENTS; fixed:1 1;)
          )
          GENLIST_PART_FLIP
       }
