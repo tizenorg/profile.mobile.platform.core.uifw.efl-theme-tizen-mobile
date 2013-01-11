@@ -33,7 +33,6 @@
       }
       script {
          public tbar_bg = 0;     //Toolbar BG Show call count
-         public buttons_visible = 0; //when both buttons are visible
          public toolbar_buttons_visible = 0; //when both toolbar buttons are visible
          public title_toolbar_buttons_visible = 0; //when both title toolbar buttons are visible
          public tbar_close = 0; //Toolbar lastest Open/Close status
@@ -195,6 +194,20 @@
                align: 0.0 0.0;
                rel1 { relative: 0.0 0.0; to: "title_bg"; }
                rel2 { relative: 1.0 0.0; to: "title_bg"; }
+               visible: 0;
+            }
+         }
+         part { name: "right_padding";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min: NAVIFRAME_TITLE_RIGHT_PADDING_INC;
+               fixed: 1 0;
+               align: 1.0 0.0;
+               rel1 { relative: 1.0 0.0; to: "title_bg"; }
+               rel2 { relative: 1.0 1.0; to: "title_bg"; }
                visible: 0;
             }
          }
@@ -467,41 +480,6 @@
                visible: 1;
             }
          }
-         part { name: "title_btns_padding";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               min: 0 0;
-               fixed: 1 1;
-               align: 1 0.5;
-               visible: 0;
-               rel1 { relative: 0.0 0.0; to: "title_right_btn_bg"; }
-               rel2 { relative: 0.0 1.0; to: "title_right_btn_bg"; }
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_PADDING2_INC;
-            }
-         }
-         part { name: "bottom_right_padding";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               min: 0 0;
-               fixed: 1 1;
-               align: 1.0 1.0;
-               rel1 { relative: 1.0 1.0; to: "title_bg"; }
-               rel2 { relative: 1.0 1.0; to: "title_bg"; }
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_BOTTOM_RIGHT_PADDING_INC;
-            }
-         }
          part { name: "click_event_area";
              ignore_flags: ON_HOLD;
              description { state: "default" 0.0;
@@ -550,11 +528,15 @@
             clip_to: "title_clip";
             description { state: "default" 0.0;
                visible: 0;
+               min: 0 0;
+               fixed: 1 0;
+               align: 1.0 0.5;
+               rel1 { relative: 0.0 0.0; to: "title_right_btn_bg"; }
+               rel2 { relative: 0.0 1.0; to: "title_right_btn_bg"; }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
                min: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
-               fixed: 1 1;
-               align: 1 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_btns_padding"; }
-               rel2 { relative: 0.0 1.0; to: "title_btns_padding"; }
             }
          }
          part { name: "title_left_btn";
@@ -564,7 +546,7 @@
             description { state: "default" 0.0;
                max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
                fixed: 1 1;
-               align: 0.5 1.0;
+               align: 0.5 0.5;
                rel1 { to: "title_left_btn_bg"; }
                rel2 { to: "title_left_btn_bg"; }
             }
@@ -627,11 +609,15 @@
             clip_to: "title_clip";
             description { state: "default" 0.0;
                visible: 0;
+               min: 0 0;
+               fixed: 1 0;
+               align: 1.0 0.5;
+               rel1 { relative: 0.0 0.0; to: "right_padding"; }
+               rel2 { relative: 0.0 1.0; to: "right_padding"; }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
                min: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
-               align: 1 0.5;
-               fixed: 1 1;
-               rel1 { relative: 1.0 1.0; to_x: "title_bg"; to_y: "top_padding"; }
-               rel2 { relative: 0.0 0.0; to: "bottom_right_padding"; }
             }
          }
          part { name: "title_right_btn";
@@ -640,7 +626,7 @@
             clip_to: "title_clip";
             description { state: "default" 0.0;
                max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
-               align: 0.5 1.0;
+               align: 0.5 0.5;
                fixed: 1 1;
                rel1 { to: "title_right_btn_bg"; }
                rel2 { to: "title_right_btn_bg"; }
@@ -897,42 +883,28 @@
             signal: "elm,state,title_left_btn,show";
             source: "elm";
             script {
-               set_int(buttons_visible, get_int(buttons_visible) + 1);
-               set_state(PART:"bottom_right_padding", "visible", 0.0);
-               if (get_int(buttons_visible) >= 2)
-                 set_state(PART:"title_btns_padding", "visible", 0.0);
+               set_state(PART:"title_left_btn_bg", "visible", 0.0);
             }
          }
          program { name: "left_btn_hide";
             signal: "elm,state,title_left_btn,hide";
             source: "elm";
             script {
-               set_int(buttons_visible, get_int(buttons_visible) - 1);
-               set_state(PART:"title_btns_padding", "default", 0.0);
-               if (get_int(buttons_visible) == 0)
-                 set_state(PART:"bottom_right_padding", "default", 0.0);
+                 set_state(PART:"title_left_btn_bg", "default", 0.0);
             }
          }
          program { name: "right_btn_show";
             signal: "elm,state,title_right_btn,show";
             source: "elm";
-            action: STATE_SET "visible" 0.0;
             script {
-               set_int(buttons_visible, get_int(buttons_visible) + 1);
-               set_state(PART:"bottom_right_padding", "visible", 0.0);
-               if (get_int(buttons_visible) >= 2)
-                 set_state(PART:"title_btns_padding", "visible", 0.0);
+               set_state(PART:"title_right_btn_bg", "visible", 0.0);
             }
          }
          program { name: "right_btn_hide";
             signal: "elm,state,title_right_btn,hide";
             source: "elm";
-            action: STATE_SET "default" 0.0;
             script {
-               set_int(buttons_visible, get_int(buttons_visible) - 1);
-               set_state(PART:"title_btns_padding", "default", 0.0);
-               if (get_int(buttons_visible) == 0)
-                 set_state(PART:"bottom_right_padding", "default", 0.0);
+                 set_state(PART:"title_right_btn_bg", "default", 0.0);
             }
          }
          program { name: "sip_show";
