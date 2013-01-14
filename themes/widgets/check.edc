@@ -1527,25 +1527,27 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
             script {
                new Float:dx, Float:dy;
                get_drag(PART:"button", dx, dy);
-               if (dx > 0.5)
-                 {
-                    set_drag(PART:"button", 1.0, 0.0);
-                    set_state(PART:"bg_image", "visible", 0.0);
-                 }
-               else
-                 {
-                    set_drag(PART:"button", 0.0, 0.0);
-                    set_state(PART:"bg_image", "default", 0.0);
-                 }
-               if (((get_int(is_rtl) == 1) && (dx <= 0.5)) ||
-                   (get_int(is_rtl) == 0) && (dx > 0.5)) {
-                  emit("elm,action,check,on", "");
+               if (get_int(is_drag)) {
+                  if (dx > 0.5)
+                    {
+                       set_drag(PART:"button", 1.0, 0.0);
+                       set_state(PART:"bg_image", "visible", 0.0);
+                    }
+                  else
+                    {
+                       set_drag(PART:"button", 0.0, 0.0);
+                       set_state(PART:"bg_image", "default", 0.0);
+                    }
+                  if (((get_int(is_rtl) == 1) && (dx <= 0.5)) ||
+                      (get_int(is_rtl) == 0) && (dx > 0.5)) {
+                     emit("elm,action,check,on", "");
+                  }
+                  else {
+                     emit("elm,action,check,off", "");
+                  }
+                  set_int(was_drag, get_int(is_drag));
+                  set_int(is_drag, 0);
                }
-               else {
-                  emit("elm,action,check,off", "");
-               }
-               set_int(was_drag, get_int(is_drag));
-               set_int(is_drag, 0);
             }
          }
          program { name: "check_on";
