@@ -599,15 +599,19 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                   set_float(g_duration, duration);
                }
             }
+            public slide_end_pending(val, Float:pos) {
+               if (pos >= 1.0) {
+                  stop_slide();
+                  emit("elm,state,slide,end", "");
+               }
+            }
             public slide_to_end_anim(val, Float:pos) {
                new stopflag;
                stopflag = get_int(g_stopslide);
                if (stopflag == 1) return;
                set_tween_state(PART:"elm.text", pos, "slide_begin", 0.0, "slide_end", 0.0);
-               if (pos >= 1.0) {
-                  stop_slide();
-                  emit("elm,state,slide,end", "");
-               }
+               if (pos >= 1.0)
+                 anim(1, "slide_end_pending", 1);
             }
             public slide_to_end() {
                new stopflag;
