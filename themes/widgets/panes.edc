@@ -23,9 +23,6 @@
          image: "00_splite_handler_bg_press.png" COMP;
          image: "00_splite_handler_v.png" COMP;
       }
-      script {
-         public state_pair = 1; //0:both contents are not set, 1:both contents are set
-      }
       parts
       {
          part
@@ -94,6 +91,12 @@
                   relative: 0.0 1.0;
                }
             }
+            description
+            {
+               state: "hide" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 0;
+            }
          }
          part
          {
@@ -105,6 +108,13 @@
                state: "default" 0.0;
                rel1.to: "whole_left";
                rel2.to: "whole_left";
+            }
+            description
+            {
+               state: "hide" 0.0;
+               inherit: "default" 0.0;
+               rel1.relative: -1.0 0.0;
+               rel2.relative: 0.0 1.0;
             }
          }
          part
@@ -288,7 +298,62 @@
             }
          }
       }
+      script {
+         public state_pair = 1; //0:both contents are not set, 1:both contents are set
+         public frame_num, whole_drag;
+
+         public drag_effect(val) {
+            new Float:time, Float:cur_drag, Float:drag;
+            new num;
+
+            num = get_int(frame_num);
+            drag = get_float(whole_drag);
+
+            num += 1;
+            time = 0.06 * num; // decide speed
+            cur_drag = drag - drag * sin(time * 90, DEGREES);
+
+            set_int(frame_num, num);
+
+            if (time < 1.0 && cur_drag > 0.0) {
+               set_drag(PART:"elm.bar", cur_drag, 0.0);
+               timer(0.02, "drag_effect", val);
+            }
+            else {
+               set_drag(PART:"elm.bar", 0.0, 0.0);
+               run_program(PROGRAM:"left_content_reset");
+            }
+         }
+      }
       programs {
+         program {
+            name: "drag_effect_start";
+            signal: "elm,panes,left,hide";
+            source: "";
+            script {
+               new Float:x, Float:y;
+
+               get_drag(PART:"elm.bar", x, y);
+               set_float(whole_drag, x);
+               set_int(frame_num, 0);
+
+               timer(0.02, "drag_effect", 0);
+            }
+            after: "left_content_hide";
+         }
+         program {
+            name: "left_content_hide";
+            action: STATE_SET "hide" 0.0;
+            transition: DECELERATE 0.4;
+            target: "elm.swallow.left";
+            target: "whole_left";
+         }
+         program {
+            name: "left_content_reset";
+            action: STATE_SET "default" 0.0;
+            target: "elm.swallow.left";
+            target: "whole_left";
+         }
          program {
             name:   "panes_pair";
             signal: "elm,panes,pair";
