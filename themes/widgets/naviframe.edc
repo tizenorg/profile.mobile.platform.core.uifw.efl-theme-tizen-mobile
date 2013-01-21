@@ -37,6 +37,8 @@
          public title_toolbar_buttons_visible = 0; //when both title toolbar buttons are visible
          public tbar_close = 0; //Toolbar lastest Open/Close status
          public sip_visible = 0; //SIP latest visible/hidden status
+         public title_badge_visible = 0; //Title badge visible/hidden status
+         public title_slide_visible = 0; //Title slide visible/hidden status
       }
       parts {
          part { name: "base";
@@ -397,6 +399,11 @@
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
                min: NAVIFRAME_PADDING2_INC;
+            }
+            description { state: "title_slide_is_set" 0.0;
+               inherit: "visible" 0.0;
+               rel1 { relative: 1.0 1.0; to_x: "elm.swallow.title"; to_y: "badge_top_padding"; }
+               rel2 { relative: 1.0 0.5; to_x: "elm.swallow.title"; to_y: "title_bg"; }
             }
          }
          part { name: "left.padding.text";
@@ -1171,29 +1178,54 @@
             }
          }
          program {
-            name: "badge_show";
+            name: "title_badge_show";
             signal: "elm,state,title_badge,show";
             source: "elm";
             script {
+               if (get_int(title_slide_visible) == 0)
+                  set_state(PART:"badge_left_padding", "visible", 0.0);
+               else
+                  set_state(PART:"badge_left_padding", "title_slide_is_set", 0.0);
                set_state(PART:"badge_padding", "visible", 0.0);
-               set_state(PART:"badge_left_padding", "visible", 0.0);
                set_state(PART:"left.padding.text", "visible", 0.0);
                set_state(PART:"right.padding.text", "visible", 0.0);
                set_state(PART:"badge_bg", "visible", 0.0);
                set_state(PART:"title_badge", "visible", 0.0);
+               set_int(title_badge_visible, 1);
             }
          }
          program {
-            name: "badge_hide";
+            name: "title_badge_hide";
             signal: "elm,state,title_badge,hide";
             source: "elm";
             script {
-               set_state(PART:"badge_padding", "default", 0.0);
                set_state(PART:"badge_left_padding", "default", 0.0);
+               set_state(PART:"badge_padding", "default", 0.0);
                set_state(PART:"left.padding.text", "default", 0.0);
                set_state(PART:"right.padding.text", "default", 0.0);
                set_state(PART:"badge_bg", "default", 0.0);
                set_state(PART:"title_badge", "default", 0.0);
+               set_int(title_badge_visible, 0);
+            }
+         }
+         program {
+            name: "title_slide_show";
+            signal: "elm,state,elm.swallow.title,show";
+            source: "elm";
+            script {
+               if (get_int(title_badge_visible) == 1)
+                  set_state(PART:"badge_left_padding", "title_slide_is_set", 0.0);
+               set_int(title_slide_visible, 1);
+            }
+         }
+         program {
+            name: "title_slide_hide";
+            signal: "elm,state,elm.swallow.title,hide";
+            source: "elm";
+            script {
+               if (get_int(title_badge_visible) == 1)
+                  set_state(PART:"badge_left_padding", "visible", 0.0);
+               set_int(title_slide_visible, 0);
             }
          }
       }
