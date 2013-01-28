@@ -194,6 +194,19 @@ group { name: "elm/notify/block_events/popup";
             inherit: "default" 0.0;
          }
       }
+      part { name: "block_events_color";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: POPUP_DIM_BG_COLOR_INC;
+         }
+         description { state: "show" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
+         }
+      }
    }
    programs {
       program { name: "load";
@@ -202,10 +215,11 @@ group { name: "elm/notify/block_events/popup";
          action: STATE_SET "show" 0.0;
          transition: ACCEL_FAC 0.5 0.8;
          target: "block_events";
+         target: "block_events_color";
       }
       program { name: "block_clicked";
          signal: "mouse,clicked,1";
-         source: "block_events";
+         source: "block_events_color";
          action: SIGNAL_EMIT "elm,action,click" "elm";
          after: "deeper_block_color";
       }
@@ -213,6 +227,7 @@ group { name: "elm/notify/block_events/popup";
          name: "deeper_block_color";
          action: STATE_SET "clicked" 0.0;
          target: "block_events";
+         source: "block_events_color";
          transition: LINEAR 0.2;
          after: "default_block_color";
       }
@@ -220,6 +235,7 @@ group { name: "elm/notify/block_events/popup";
          name: "default_block_color";
          action: STATE_SET "show" 0.0;
          target: "block_events";
+         target: "block_events_color";
          transition: LINEAR 0.2;
       }
    }
