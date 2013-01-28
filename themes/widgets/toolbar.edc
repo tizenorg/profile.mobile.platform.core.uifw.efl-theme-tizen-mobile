@@ -1131,6 +1131,7 @@ group { name: "elm/toolbar/base/tabbar";
          clip_to: "left_shadow_clip";
          type: IMAGE;
          scale: 1;
+         repeat_events: 1;
          description { state: "default" 0.0;
             min: 162 0;
             fixed: 1 1;
@@ -1145,6 +1146,7 @@ group { name: "elm/toolbar/base/tabbar";
          clip_to: "right_shadow_clip";
          type: IMAGE;
          scale: 1;
+         repeat_events: 1;
          description { state: "default" 0.0;
             min: 162 0;
             fixed: 1 1;
@@ -2027,6 +2029,10 @@ group { name: "elm/toolbar/item/tabbar";
       part { name: "event";
          type: RECT;
          mouse_events: 1;
+         dragable {
+            x: 1 0 0;
+            y: 1 0 0;
+         }
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
@@ -2080,11 +2086,28 @@ group { name: "elm/toolbar/item/tabbar";
          action:  STATE_SET "pressed" 0.0;
          target:  "bg_cover";
       }
+      program {
+         name: "drag";
+         signal: "drag";
+         source: "event";
+         script {
+            new Float:dx, Float:dy;
+            get_drag(PART:"event", dx, dy);
+            if ((abs(dx)*abs(dx))+(abs(dy)*abs(dy)) > 400)
+              {
+                set_drag(PART:"event", 0.0, 0.0);
+                set_state(PART:"bg_cover", "default", 0.0);
+              }
+            set_drag(PART:"event", 0.0, 0.0);
+          }
+      }
       program { name: "unpressed";
          signal:  "mouse,up,1";
          source:  "event";
-         action:  STATE_SET "default" 0.0;
-         target:  "bg_cover";
+         script {
+            set_drag(PART:"event", 0.0, 0.0);
+            set_state(PART:"bg_cover", "default", 0.0);
+         }
       }
       program { name: "go";
          signal:  "mouse,clicked,1";
