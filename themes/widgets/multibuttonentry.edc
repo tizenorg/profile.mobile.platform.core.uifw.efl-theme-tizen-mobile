@@ -21,6 +21,7 @@ group {
 
    data.item: "horizontal_pad" MULTIBUTTONENTRY_BOX_HORIZONTAL_PAD_INC;
    data.item: "vertical_pad" MULTIBUTTONENTRY_BOX_VERTICAL_PAD_INC;
+   data.item: "closed_button_type" "label"; /* image, label, default: label */
 
    parts {
       part {
@@ -52,7 +53,7 @@ group {
          }
       }
       part {
-         name: "elm.swallow.box";
+         name: "box.swallow";
          type: SWALLOW;
          description {
             state: "default" 0.0;
@@ -97,14 +98,14 @@ group {
       program {
          name: "event_allow";
          signal: "elm,state,event,allow";
-         source: "elm";
+         source: "";
          action: STATE_SET "invisible" 0.0;
          target: "block_events";
       }
       program {
          name: "event_block";
          signal: "elm,state,event,block";
-         source: "elm";
+         source: "";
          action: STATE_SET "default" 0.0;
          target: "block_events";
       }
@@ -112,59 +113,7 @@ group {
 }
 
 group {
-   name: "elm/multibuttonentry/label/default";
-
-   styles {
-      style {
-         name: "multibuttonentry_label_style";
-         base: "font=SLP:style=Regular font_size="MULTIBUTTONENTRY_LABEL_TEXT_SIZE_INC" color="MULTIBUTTONENTRY_LABEL_TEXT_COLOR_INC" wrap=char text_class=slp";
-         tag:  "br" "\n";
-         tag:  "ps" "ps";
-         tag:  "hilight" "+ font=SLP:style=Bold";
-         tag:  "b" "+ font=SLP:style=Bold";
-         tag:  "tab" "\t";
-      }
-   }
-
-   parts {
-      part {
-         name: "right.pad";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: MULTIBUTTONENTRY_LABEL_PAD_INC 0;
-            fixed: 1 0;
-            rel1.relative: 1.0 0.0;
-            align: 1.0 0.5;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "elm.text";
-         type: TEXTBLOCK;
-         mouse_events: 0;
-         multiline: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: 0 MULTIBUTTONENTRY_LABEL_HEIGHT_INC;
-            text {
-               style: "multibuttonentry_label_style";
-               min: 1 0;
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "right.pad";
-            }
-         }
-      }
-   }
-}
-
-group {
-   name: "elm/multibuttonentry/guide/default";
+   name: "elm/multibuttonentry/guidetext/default";
 
    styles {
       style {
@@ -183,33 +132,29 @@ group {
          name: "elm.text";
          type: TEXTBLOCK;
          mouse_events: 0;
-         multiline: 0;
          scale: 1;
          description {
             state: "default" 0.0;
             min: 0 MULTIBUTTONENTRY_GUIDE_HEIGHT_INC;
-            text {
-               style: "multibuttonentry_guide_style";
-               min: 1 0;
-            }
+            text.style: "multibuttonentry_guide_style";
          }
       }
    }
 }
 
 group {
-   name: "elm/multibuttonentry/button/default";
+   name: "elm/multibuttonentry/btn/default";
 
    images {
       image: "00_contacts_button.png" COMP;
       image: "00_contacts_button_press.png" COMP;
    }
 
-   data.item: "max_size" MULTIBUTTONENTRY_BUTTON_MAX_INC;
+   data.item: "button_max_size" MULTIBUTTONENTRY_BUTTON_MAX_INC;
 
    parts {
       part {
-         name: "bg";
+         name: "elm.btn.bg";
          type: IMAGE;
          mouse_events: 0;
          scale: 1;
@@ -229,7 +174,7 @@ group {
          }
       }
       part {
-         name: "left.pad";
+         name: "left.padding";
          type: RECT;
          mouse_events: 0;
          scale: 1;
@@ -243,7 +188,7 @@ group {
          }
       }
       part {
-         name: "right.pad";
+         name: "right.padding";
          type: RECT;
          mouse_events: 0;
          scale: 1;
@@ -257,7 +202,7 @@ group {
          }
       }
       part {
-         name: "elm.text";
+         name: "elm.btn.text";
          type: TEXT;
          mouse_events: 0;
          scale: 1;
@@ -272,17 +217,16 @@ group {
             }
             rel1 {
                relative: 1.0 0.0;
-               to: "left.pad";
+               to: "left.padding";
             }
             rel2 {
                relative: 0.0 1.0;
-               to: "right.pad";
+               to: "right.padding";
             }
          }
          description {
             state: "ellipsis" 0.0;
             inherit: "default" 0.0;
-            min: MULTIBUTTONENTRY_BUTTON_TEXT_MAX_INC 0;
             text.min: 0 0;
          }
       }
@@ -299,24 +243,24 @@ group {
       program {
          name: "text_ellipsis";
          signal: "elm,state,text,ellipsis";
-         source: "elm";
+         source: "";
          action: STATE_SET "ellipsis" 0.0;
-         target: "elm.text";
+         target: "elm.btn.text";
       }
       program {
          name: "focused";
-         signal: "elm,state,bg,focus";
-         source: "elm";
+         signal: "focused";
+         source: "";
          action: STATE_SET "focused" 0.0;
-         target: "bg";
+         target: "elm.btn.bg";
          after: "selected";
       }
       program {
          name: "unfocused";
-         signal: "elm,state,bg,unfocus";
-         source: "elm";
+         signal: "default";
+         source: "";
          action: STATE_SET "default" 0.0;
-         target: "bg";
+         target: "elm.btn.bg";
       }
       program {
          name: "clicked";
@@ -367,6 +311,88 @@ group {
             rel1 {
                relative: 1.0 0.0;
                to: "left.pad";
+            }
+         }
+      }
+   }
+}
+
+group {
+   name: "elm/multibuttonentry/closedbutton/default";
+
+   images {
+      image: "00_circle_button.png" COMP;
+      image: "00_button_expand_closed.png" COMP;
+   }
+
+   parts {
+      part {
+         name: "closed_button_bg";
+         scale: 1;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: MULTIBUTTONENTRY_CLOSEDBUTTON_SIZE_INC MULTIBUTTONENTRY_CLOSEDBUTTON_SIZE_INC;
+            image.normal: "00_circle_button.png";
+         }
+      }
+      part {
+         name: "closed_button";
+         scale: 1;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            image.normal: "00_button_expand_closed.png";
+         }
+      }
+   }
+}
+
+group {
+   name: "elm/multibuttonentry/label/default";
+
+   styles {
+      style {
+         name: "multibuttonentry_label_style";
+         base: "font=SLP:style=Regular font_size="MULTIBUTTONENTRY_LABEL_TEXT_SIZE_INC" color="MULTIBUTTONENTRY_LABEL_TEXT_COLOR_INC" wrap=char text_class=slp";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "hilight" "+ font=SLP:style=Bold";
+         tag:  "b" "+ font=SLP:style=Bold";
+         tag:  "tab" "\t";
+      }
+   }
+
+   parts {
+      part {
+         name: "mbe.label.right.padding";
+         type: RECT;
+         mouse_events: 0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: MULTIBUTTONENTRY_LABEL_PAD_INC 0;
+            fixed: 1 0;
+            rel1.relative: 1.0 0.0;
+            align: 1.0 0.5;
+            color: 0 0 0 0;
+         }
+      }
+      part {
+         name: "mbe.label";
+         type: TEXTBLOCK;
+         mouse_events: 0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 MULTIBUTTONENTRY_LABEL_HEIGHT_INC;
+            text {
+               style: "multibuttonentry_label_style";
+               min: 1 0;
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to: "mbe.label.right.padding";
             }
          }
       }
