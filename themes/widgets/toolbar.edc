@@ -1410,15 +1410,11 @@ group { name: "elm/toolbar/item/tabbar";
          mouse_events: 0;
          description { state: "default" 0.0;
             min: 172 0;
-            color: 248 246 239 255;
+            visible: 0;
          }
          description { state: "icon_text" 0.0;
             inherit: "default" 0.0;
             min: 229 0;
-         }
-         description { state: "moving" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
          }
       }
       part { name: "bg_cover";
@@ -2077,7 +2073,6 @@ group { name: "elm/toolbar/item/tabbar";
          signal:  "elm,state,moving";
          source:  "elm";
          action:  STATE_SET "moving" 0.0;
-         target:  "bg";
          target:  "bg_cover";
       }
       program { name: "pressed";
@@ -2091,14 +2086,20 @@ group { name: "elm/toolbar/item/tabbar";
          signal: "drag";
          source: "event";
          script {
+            new st[31];
+            new Float:vl;
             new Float:dx, Float:dy;
-            get_drag(PART:"event", dx, dy);
-            if ((abs(dx)*abs(dx))+(abs(dy)*abs(dy)) > 400)
+            get_state(PART:"bg_cover", st, 30, vl);
+            if (strcmp(st, "moving"))
               {
+                get_drag(PART:"event", dx, dy);
+                if ((abs(dx)*abs(dx))+(abs(dy)*abs(dy)) > 400)
+                  {
+                    set_drag(PART:"event", 0.0, 0.0);
+                    set_state(PART:"bg_cover", "default", 0.0);
+                  }
                 set_drag(PART:"event", 0.0, 0.0);
-                set_state(PART:"bg_cover", "default", 0.0);
               }
-            set_drag(PART:"event", 0.0, 0.0);
           }
       }
       program { name: "unpressed";
