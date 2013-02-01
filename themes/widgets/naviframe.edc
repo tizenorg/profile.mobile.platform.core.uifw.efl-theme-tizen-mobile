@@ -314,6 +314,21 @@
                min: NAVIFRAME_BADGE_PADDING_INC;
             }
          }
+         part { name: "title_text_bg";
+            type: RECT;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               fixed: 1 1;
+               rel1 { relative: 1.0 1.0; to_x: "padding_center_text1"; to_y: "top_padding"; }
+               rel2 { relative: 0.0 0.0; to_x: "padding_center_text2"; to_y: "padding_bottom_text"; }
+            }
+            description { state: "subtitle_is_set" 0.0;
+               inherit: "default" 0.0;
+               rel1 { relative: 1.0 1.0; to_x: "padding_center_text1"; to_y: "top_padding2"; }
+               rel2 { relative: 0.0 0.0; to_x: "padding_center_text2"; to_y: "subtitle_text_bg"; }
+            }
+         }
          part { name: "elm.text.title";
             type: TEXT;
             effect: FAR_SHADOW BOTTOM;
@@ -329,10 +344,10 @@
                }
                color: NAVIFRAME_TITLE_TEXT_COLOR_INC;
                color3: 255 255 255 255;
-               align: 0.0 0.0;
                fixed: 1 1;
-               rel1 { relative: 1.0 1.0; to_x: "padding_center_text1"; to_y: "top_padding"; }
-               rel2 { relative: 0.0 0.0; to_x: "badge_padding"; to_y: "padding_bottom_text"; }
+               align: 0.0 0.5;
+               rel1 { to: "title_text_bg"; }
+               rel2 { relative: 0.0 1.0; to_x: "badge_padding"; to_y: "title_text_bg"; }
             }
             description { state: "subtitle_is_set" 0.0;
                inherit: "default" 0.0;
@@ -343,9 +358,23 @@
                   align: 0.0 0.5;
                   text_class: "tizen";
                }
-               align: 0.0 0.0;
-               rel1 { relative: 1.0 1.0; to_x: "padding_center_text1"; to_y: "top_padding2"; }
-               rel2 { relative: 0.0 0.0; to_x: "badge_padding"; to_y: "elm.text.subtitle"; }
+            }
+         }
+         part { name: "subtitle_text_bg";
+            type: RECT;
+            scale: 1;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               min: 0 0;
+               fixed: 1 1;
+               align: 0.0 1.0;
+               rel1 { relative: 1.0 0.0; to_x: "padding_center_text1"; to_y: "padding_bottom_text"; }
+               rel2 { relative: 0.0 0.0; to_x: "padding_center_text2"; to_y: "padding_bottom_text"; }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: NAVIFRAME_SUBTITLE_HEIGHT_INC;
             }
          }
          part { name: "elm.text.subtitle";
@@ -361,19 +390,10 @@
                   text_class: "tizen";
                }
                color: NAVIFRAME_SUBTITLE_TEXT_COLOR_INC;
-               min: NAVIFRAME_SUBTITLE_HEIGHT_INC;
-               align: 0.0 1.0;
                fixed: 1 1;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to_x: "padding_center_text1";
-                  to_y: "padding_bottom_text";
-               }
-               rel2 {
-                  relative: 0.0 0.0;
-                  to_x: "padding_center_text2";
-                  to_y: "padding_bottom_text";
-               }
+               align: 0.0 0.5;
+               rel1.to: "subtitle_text_bg";
+               rel2.to: "subtitle_text_bg";
             }
          }
          part { name: "padding_before_text";
@@ -534,13 +554,23 @@
          part { name: "elm.swallow.title";
             type: SWALLOW;
             scale: 1;
-            clip_to: "title_clip";
             repeat_events: 1;
+            clip_to: "title_clip";
             description { state: "default" 0.0;
                fixed: 1 1;
-               align: 0.0 0.5;
-               rel1 { relative: 1.0 1.0; to_x: "padding_center_text1"; to_y: "top_padding"; }
-               rel2 { relative: 0.0 0.0; to_x: "badge_padding"; to_y: "padding_bottom_text"; }
+               rel1 { to: "title_text_bg"; }
+               rel2 { to: "title_text_bg"; }
+            }
+         }
+         part { name: "elm.swallow.subtitle";
+            type: SWALLOW;
+            scale: 1;
+            repeat_events: 1;
+            clip_to: "title_clip";
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1 { to: "subtitle_text_bg"; }
+               rel2 { to: "subtitle_text_bg"; }
             }
          }
          part { name: "access.title";
@@ -878,14 +908,18 @@
             signal: "elm,state,subtitle,show";
             source: "elm";
             script {
+               set_state(PART:"title_text_bg", "subtitle_is_set", 0.0);
                set_state(PART:"elm.text.title", "subtitle_is_set", 0.0);
+               set_state(PART:"subtitle_text_bg", "visible", 0.0);
             }
          }
          program { name: "subtitle_hide";
             signal: "elm,state,subtitle,hide";
             source: "elm";
             script {
+               set_state(PART:"title_text_bg", "default", 0.0);
                set_state(PART:"elm.text.title", "default", 0.0);
+               set_state(PART:"subtitle_text_bg", "default", 0.0);
             }
          }
          program { name: "icon_show";
@@ -1180,6 +1214,24 @@
                if (get_int(title_badge_visible) == 1)
                   set_state(PART:"badge_left_padding", "visible", 0.0);
                set_int(title_slide_visible, 0);
+            }
+         }
+         program {
+            name: "subtitle_slide_show";
+            signal: "elm,state,elm.swallow.subtitle,show";
+            source: "elm";
+            script {
+               set_state(PART:"title_text_bg", "subtitle_is_set", 0.0);
+               set_state(PART:"subtitle_text_bg", "visible", 0.0);
+            }
+         }
+         program {
+            name: "subtitle_slide_hide";
+            signal: "elm,state,elm.swallow.subtitle,hide";
+            source: "elm";
+            script {
+               set_state(PART:"title_text_bg", "default", 0.0);
+               set_state(PART:"subtitle_text_bg", "default", 0.0);
             }
          }
       }
