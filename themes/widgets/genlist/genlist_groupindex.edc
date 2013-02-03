@@ -21,26 +21,56 @@
 
 #define GROUPINDEX_PADDING_SIZE_LEFT 26
 #define GROUPINDEX_PADDING_SIZE_RIGHT 26
+#define GROUPINDEX_TEXT_HEIGHT 38
+#define GROUPINDEX_ICON_SIZE 64
+
+
+#define GENLIST_PART_INDEX_BG \
+      GENLIST_PART_BG(GENLIST_GROUPINDEX_LIST_BG_COLOR, \
+         GENLIST_GROUPINDEX_LIST_PRESS_COLOR, \
+         GENLIST_GROUPINDEX_LIST_BG_COLOR \
+      )
+
+ // group index
+#define GENLIST_DESCRIPTION_INDEX_LIST \
+   description { state: "selected" 0.0; \
+      inherit: "default" 0.0; \
+      color: GENLIST_GROUPINDEX_LIST_FOCUS_COLOR; \
+   }
+
+#define GENLIST_PART_INDEX_LINE(LEFT, RIGHT, TOP, BOTTOM) \
+         GENLIST_PART_RECT("index_line", \
+            GENLIST_DESCRIPTION(LEFT, RIGHT, TOP, BOTTOM, \
+               color: GENLIST_GROUPINDEX_LINE_COLOR; \
+               min: 0 4; \
+               max: -1 4; \
+            ) \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               color: GENLIST_GROUPINDEX_LINE_FOCUS_COLOR; \
+            } \
+         )
+
+// Group Index
+#define GENLIST_PARAM_INDEX_LIST \
+   color: GENLIST_GROUPINDEX_LIST_COLOR; \
+   text { \
+      align: 0 0.5; \
+      min: 0 1; \
+      font: "Tizen:style=Bold"; \
+      size: GENLIST_GROUPINDEX_LIST_SIZE; \
+      text_class: "list_item"; \
+   }
 
 // 2.1.1
-   group { name: "elm/genlist/item/groupindex/default";
-      alias: "elm/genlist/item_odd/groupindex/default";
-      alias: "elm/genlist/item_compress/groupindex/default";
-      alias: "elm/genlist/item_compress_odd/groupindex/default";
-	   alias: "elm/genlist/item/grouptitle/default";
-      alias: "elm/genlist/item_odd/grouptitle/default";
-      alias: "elm/genlist/item_compress/grouptitle/default";
-      alias: "elm/genlist/item_compress_odd/grouptitle/default";
+   group { GENLIST_NAME("groupindex/default")
+      GENLIST_PROLOG
 
-      data.item: "stacking" "above";
-      data.item: "selectraise" "on";
       data.item: "texts" "elm.text";
-      data.item: "treesize" "GENLIST_TREESIZE_DEFAULT";
 
-      GENLIST_IMAGE_GROUPINDEX
       parts {
          GENLIST_PART_BASE
-         GENLIST_PART_INDEX_BG_IMAGE
+         GENLIST_PART_INDEX_BG
          GENLIST_PART_PADDING_LEFT_SIZE(GROUPINDEX_PADDING_SIZE_LEFT)
          GENLIST_PART_PADDING_RIGHT_SIZE(GROUPINDEX_PADDING_SIZE_RIGHT)
          GENLIST_PART_PADDING_TOP_SIZE(20)
@@ -48,7 +78,9 @@
          GENLIST_PART_TEXT("elm.text",
             GENLIST_DESCRIPTION_LRT("elm.padding.left", "elm.padding.right", "elm.padding.top",
                GENLIST_PARAM_INDEX_LIST
-               min: 0 38; fixed: 1 1;)
+               min: 0 GROUPINDEX_TEXT_HEIGHT;
+               fixed: 0 1;
+            )
             GENLIST_DESCRIPTION_INDEX_LIST
          )
          GENLIST_PART_INDEX_LINE("elm.padding.left", "elm.padding.right", "elm.text", "elm.padding.bottom")
@@ -60,34 +92,34 @@
    }
 
 //2.1.3
-   group { name: "elm/genlist/item/groupindex.icon/default";
-      alias: "elm/genlist/item_odd/groupindex.icon/default";
-      alias: "elm/genlist/item_compress/groupindex.icon/default";
-      alias: "elm/genlist/item_compress_odd/groupindex.icon/default";
+   group { GENLIST_NAME("groupindex.icon/default")
+      GENLIST_PROLOG
 
-      data.item: "stacking" "above";
-      data.item: "selectraise" "on";
-      data.item: "treesize" "GENLIST_TREESIZE_DEFAULT";
       data.item: "texts" "elm.text";
       data.item: "contents" "elm.icon";
 
-      GENLIST_IMAGE_GROUPINDEX
       parts {
-         GENLIST_PART_INDEX_BG_IMAGE
          GENLIST_PART_BASE
+         GENLIST_PART_INDEX_BG
          GENLIST_PART_PADDING_LEFT_SIZE(GROUPINDEX_PADDING_SIZE_LEFT)
          GENLIST_PART_PADDING_RIGHT_SIZE(GROUPINDEX_PADDING_SIZE_RIGHT)
          GENLIST_PART_PADDING_TOP_SIZE(6)
          GENLIST_PART_PADDING_BOTTOM_SIZE(6)
          GENLIST_PART_ICON("elm.icon",
-            GENLIST_DESCRIPTION_L("elm.padding.left",
-            min: 64 64; max: 64 64; )
+            GENLIST_DESCRIPTION_LTB("elm.padding.left",
+               "elm.padding.top", "elm.padding.bottom",
+               min: GROUPINDEX_ICON_SIZE GROUPINDEX_ICON_SIZE;
+               max: GROUPINDEX_ICON_SIZE GROUPINDEX_ICON_SIZE;
+               fixed: 1 0;
+            )
          )
          GENLIST_PART_PADDING_L_SIZE("elm.padding.icon.right", "elm.icon", 16)
          GENLIST_PART_TEXT("elm.text",
             GENLIST_DESCRIPTION_LRT("elm.padding.icon.right", "elm.padding.right", "elm.padding.top",
                GENLIST_PARAM_INDEX_LIST
-               min: 0 36; fixed: 0 1;)
+               min: 0 GROUPINDEX_TEXT_HEIGHT;
+               fixed: 0 1;
+            )
             GENLIST_DESCRIPTION_INDEX_LIST
          )
          GENLIST_PART_INDEX_LINE("elm.padding.icon.right", "elm.padding.right", "elm.text", "elm.padding.bottom")
@@ -114,11 +146,11 @@
       }
       parts {
          GENLIST_PART_DISCLIP
-         GENLIST_PART_BG_IMAGE
+         GENLIST_PART_BG_NORMAL
          GENLIST_PART_BASE
          GENLIST_PART_BOTTOM_LINE
          GENLIST_PART_PADDING_LEFT
-         GENLIST_PART_PADDING_RIGHT_SIZE_EDIT( 23 )
+         GENLIST_PART_PADDING_RIGHT_EDIT
          //GENLIST_PART_TEXT_INDEX_LIST("elm.text", "elm.padding.left", "elm.divider")
          part { name: "elm.divider";
             scale: 1;
@@ -147,7 +179,7 @@
          }
       }
       programs {
-         GENLIST_PROGRAM_DISABLED_BOTTOMLINE( target: "elm.text"; )
+         GENLIST_PROGRAM_DISABLED
          GENLIST_PROGRAM_SELECT_BOTTOMLINE( target: "elm.text";)
          GENLIST_PROOGRAM_EXPAND("arrow", target: "arrow"; )
       }
@@ -169,11 +201,11 @@
       }
       parts {
          GENLIST_PART_DISCLIP
-         GENLIST_PART_BG_IMAGE
+         GENLIST_PART_BG_NORMAL
          GENLIST_PART_BASE
          GENLIST_PART_BOTTOM_LINE
          GENLIST_PART_PADDING_LEFT
-         GENLIST_PART_PADDING_RIGHT_SIZE_EDIT( 23 )
+         GENLIST_PART_PADDING_RIGHT_EDIT
          GENLIST_PART_ICON("elm.icon", GENLIST_DESCRIPTION_L("elm.padding.left", ))
          GENLIST_PART_PADDING_L_SIZE("elm.padding.icon.right", "elm.icon", GENLIST_PADDING_SIZE_DEFAULT)
          //GENLIST_PART_TEXT_INDEX_LIST("elm.text", "elm.padding.icon.right", "elm.divider")
@@ -204,7 +236,7 @@
          }
       }
       programs {
-         GENLIST_PROGRAM_DISABLED_BOTTOMLINE( target: "elm.text"; )
+         GENLIST_PROGRAM_DISABLED
          GENLIST_PROGRAM_SELECT_BOTTOMLINE( target: "elm.text";)
          GENLIST_PROOGRAM_EXPAND("arrow", target: "arrow"; )
       }
@@ -236,7 +268,7 @@
             }
          }
          GENLIST_PART_PADDING_LEFT_SIZE( GENLIST_PADDING_24_INC )
-         GENLIST_PART_PADDING_RIGHT_SIZE_EDIT( GENLIST_PADDING_24_INC )
+         GENLIST_PART_PADDING_RIGHT_EDIT
          part { name: "text_base";
             type: RECT;
             repeat_events: 1;
@@ -299,7 +331,7 @@
             }
          }
          GENLIST_PART_PADDING_LEFT_SIZE( GENLIST_PADDING_24_INC )
-         GENLIST_PART_PADDING_RIGHT_SIZE_EDIT( GENLIST_PADDING_24_INC )
+         GENLIST_PART_PADDING_RIGHT_EDIT
          part { name: "text_base";
             type: RECT;
             repeat_events: 1;
