@@ -22,8 +22,8 @@
         public indicator_visible = 0;     //Indicator visible check
         public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent
         public indicator_overlap = 1;     //check indicator overlap/nooverlap
-        public clipboard_enable  = 1;     //check clipboard enable/disable
-        public keypad_enable = 1;  //check virtualkeypad enable/disable
+        public clipboard_disable  = 0;     //check clipboard enable/disable
+        public keypad_disable = 0;  //check virtualkeypad enable/disable
      }
      parts {
         part { name: "elm.swallow.bg";
@@ -242,11 +242,11 @@
            script {
               set_int(indicator_overlap, 1);
               set_state(PART:"elm.swallow.ug", "overlap", 0.0);
-              if (get_int(clipboard_enable) == 1)
+              if (get_int(clipboard_disable) == 0)
                 set_state(PART:"elm.swallow.content", "overlap_enable_clipboard", 0.0);
               else
                 {
-                   if (get_int(keypad_enable) == 1)
+                   if (get_int(keypad_disable) == 0)
                      set_state(PART:"elm.swallow.content", "overlap_disable_clipboard_enable_keypad", 0.0);
                    else
                      set_state(PART:"elm.swallow.content", "overlap_disable_clipboard_disable_keypad", 0.0);
@@ -260,11 +260,11 @@
            script {
               set_int(indicator_overlap, 0);
               set_state(PART:"elm.swallow.ug", "default", 0.0);
-              if (get_int(clipboard_enable) == 1)
+              if (get_int(clipboard_disable) == 0)
                 set_state(PART:"elm.swallow.content", "default", 0.0);
               else
                 {
-                   if (get_int(keypad_enable) == 1)
+                   if (get_int(keypad_disable) == 0)
                      set_state(PART:"elm.swallow.content", "nooverlap_disable_clipboard_enable_keypad", 0.0);
                    else
                      set_state(PART:"elm.swallow.content", "nooverlap_disable_clipboard_disable_keypad", 0.0);
@@ -275,14 +275,14 @@
            signal: "elm,state,clipboard,enable";
            source: "";
            script {
-              set_int(clipboard_enable, 1);
+              set_int(clipboard_disable, 0);
               //set content state
               if (get_int(indicator_overlap) == 0)
                 set_state(PART:"elm.swallow.content", "default", 0.0);
               else
                 set_state(PART:"elm.swallow.content", "overlap_enable_clipboard", 0.0);
               //set clipboard state
-              if (get_int(keypad_enable) == 0)
+              if (get_int(keypad_disable) == 1)
                 set_state(PART:"elm.swallow.clipboard", "disable_keypad", 0.0);
               else
                 set_state(PART:"elm.swallow.clipboard", "default", 0.0);
@@ -292,18 +292,18 @@
            signal: "elm,state,clipboard,disable";
            source: "";
            script {
-              set_int(clipboard_enable, 0);
+              set_int(clipboard_disable, 1);
               set_state(PART:"elm.swallow.clipboard", "default", 0.0);
               if (get_int(indicator_overlap) == 0)
                 {
-                   if (get_int(keypad_enable) == 0)
+                   if (get_int(keypad_disable) == 1)
                      set_state(PART:"elm.swallow.content", "nooverlap_disable_clipboard_disable_keypad", 0.0);
                    else
                      set_state(PART:"elm.swallow.content", "nooverlap_disable_clipboard_enable_keypad", 0.0);
                 }
               else
                 {
-                   if (get_int(keypad_enable) == 0)
+                   if (get_int(keypad_disable) == 1)
                      set_state(PART:"elm.swallow.content", "overlap_disable_clipboard_disable_keypad", 0.0);
                    else
                      set_state(PART:"elm.swallow.content", "overlap_disable_clipboard_enable_keypad", 0.0);
@@ -314,9 +314,9 @@
            signal: "elm,state,virtualkeypad,enable";
            source: "";
            script {
-              set_int(keypad_enable, 1);
+              set_int(keypad_disable, 0);
               set_state(PART:"elm.swallow.clipboard", "default", 0.0);
-              if (get_int(clipboard_enable) == 0)
+              if (get_int(clipboard_disable) == 1)
                 {
                    if (get_int(indicator_overlap) == 0)
                      set_state(PART:"elm.swallow.content", "nooverlap_disable_clipboard_enable_keypad", 0.0);
@@ -336,8 +336,8 @@
            signal: "elm,state,virtualkeypad,disable";
            source: "";
            script {
-              set_int(keypad_enable, 0);
-              if (get_int(clipboard_enable) == 0)
+              set_int(keypad_disable, 1);
+              if (get_int(clipboard_disable) == 1)
                 {
                    set_state(PART:"elm.swallow.clipboard", "default", 0.0);
                    if (get_int(indicator_overlap) == 0)
