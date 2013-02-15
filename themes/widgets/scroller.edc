@@ -440,9 +440,6 @@ group { name: "elm/scroller/base/default";
 }
 
 group { name: "elm/scroller/base/handler";
-
-   alias: "elm/list/base/handler";
-   alias: "elm/genlist/base/handler";
    alias: "elm/carousel/base/handler";
 
    data {
@@ -450,6 +447,7 @@ group { name: "elm/scroller/base/handler";
    }
    script {
       public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
+      public sh_timer, edge_timer;
       public timer0(val) {
          new v;
          v = get_int(sbvis_v);
@@ -469,6 +467,18 @@ group { name: "elm/scroller/base/handler";
             }
          }
          set_int(sbvis_timer, 0);
+         return 0;
+      }
+      public timer1(val) {
+         emit("do-hide-vshadow", "");
+         emit("do-hide-hshadow", "");
+         set_int(sh_timer, 0);
+         return 0;
+      }
+      public timer2(val) {
+         emit("do-hide-vshadow", "");
+         emit("do-hide-hshadow", "");
+         set_int(edge_timer, 0);
          return 0;
       }
    }
@@ -1244,6 +1254,305 @@ group { name: "elm/genlist/base/default";
             v = get_int(sbvis_timer);
             if (v > 0) cancel_timer(v);
             v = timer(1, "timer0", 0);
+            set_int(sbvis_timer, v);
+
+            v = get_int(edge_timer);
+            if (!v) {
+               set_state(PART:"shadow_top", "default", 0.0);
+               set_state(PART:"shadow_bottom", "default", 0.0);
+               set_state(PART:"shadow_left", "default", 0.0);
+               set_state(PART:"shadow_right", "default", 0.0);
+               emit("do-show-vshadow", "");
+               v = get_int(sh_timer);
+               if (v > 0) cancel_timer(v);
+               v = timer(0.2, "timer1", 0);
+               set_int(sh_timer, v);
+            }
+         }
+      }
+      program { name: "edge_top";
+         signal: "elm,edge,top";
+         source: "elm";
+         after: "edge";
+      }
+      program { name: "edge_bottom";
+         signal: "elm,edge,bottom";
+         source: "elm";
+         after: "edge";
+      }
+      program { name: "edge_left";
+         signal: "elm,edge,left";
+         source: "elm";
+         after: "edge";
+      }
+      program { name: "edge_right";
+         signal: "elm,edge,right";
+         source: "elm";
+         after: "edge";
+      }
+      program { name: "edge";
+         script {
+            new v;
+            v = get_int(sh_timer);
+            if (v > 0) cancel_timer(v);
+            set_state(PART:"shadow_top", "edge", 0.0);
+            set_state(PART:"shadow_bottom", "edge", 0.0);
+            set_state(PART:"shadow_left", "edge", 0.0);
+            set_state(PART:"shadow_right", "edge", 0.0);
+            v = get_int(edge_timer);
+            if (!v) {
+                emit("do-show-vshadow", "");
+            }
+            if (v > 0) cancel_timer(v);
+            v = timer(0.2, "timer2", 0);
+            set_int(edge_timer, v);
+         }
+      }
+      program { name: "show";
+         signal: "show";
+         source: "";
+         script {
+            new v;
+            emit("do-show-vbar", "");
+            set_int(sbvis_v, 1);
+            v = get_int(sbalways_v);
+            if (!v) {
+              v = get_int(sbvis_timer);
+              if (v > 0) cancel_timer(v);
+              v = timer(1.0, "timer0", 0);
+              set_int(sbvis_timer, v);
+            }
+            emit("do-show-hbar", "");
+            set_int(sbvis_h, 1);
+            v = get_int(sbalways_h);
+            if (!v) {
+              v = get_int(sbvis_timer);
+              if (v > 0) cancel_timer(v);
+              v = timer(1.0, "timer0", 0);
+              set_int(sbvis_timer, v);
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/genlist/base/handler";
+   alias: "elm/genscroller/base/handler";
+   alias: "elm/gengrid/base/handler";
+   alias: "elm/list/base/handler";
+   inherit: "elm/scroller/base/handler";
+
+   images {
+      image: "00_overscrolling_top.png" COMP;
+      image: "00_overscrolling_bottom.png" COMP;
+      image: "00_overscrolling_left.png" COMP;
+      image: "00_overscrolling_right.png" COMP;
+   }
+
+   parts {
+      part { name: "shadow_clip";
+         type: RECT;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+         }
+         description { state: "hidden" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "shadow_top";
+         clip_to: "shadow_clip";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 30;
+            fixed: 1 1;
+            align: 0.5 0.0;
+            color: 255 255 255 100;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            image.normal: "00_overscrolling_top.png";
+         }
+         description { state: "edge" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "shadow_bottom";
+         clip_to: "shadow_clip";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 30;
+            fixed: 1 1;
+            align: 0.5 1.0;
+            color: 255 255 255 100;
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 1.0;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            image.normal: "00_overscrolling_bottom.png";
+         }
+         description { state: "edge" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "shadow_left";
+         clip_to: "shadow_clip";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 30 0;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            color: 255 255 255 100;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            image.normal: "00_overscrolling_left.png";
+         }
+         description { state: "edge" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "shadow_right";
+         clip_to: "shadow_clip";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 30 0;
+            fixed: 1 1;
+            align: 1.0 0.5;
+            color: 255 255 255 100;
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            image.normal: "00_overscrolling_right.png";
+         }
+         description { state: "edge" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+   }
+   programs {
+      program { name: "load";
+         signal: "load";
+         source: "";
+         script {
+            set_state(PART:"sb_hbar_clip", "hidden", 0.0);
+            set_state(PART:"sb_vbar_clip", "hidden", 0.0);
+            set_state(PART:"shadow_clip", "hidden", 0.0);
+            set_int(sbvis_h, 0);
+            set_int(sbvis_v, 0);
+            set_int(sbalways_v, 0);
+            set_int(sbalways_h, 0);
+            set_int(sbvis_timer, 0);
+            set_int(sh_timer, 0);
+            set_int(edge_timer, 0);
+         }
+      }
+      program { name: "vbar_show_always";
+         signal: "elm,action,show_always,vbar";
+         source: "elm";
+         script {
+            new v;
+            v = get_int(sbvis_v);
+            v |= get_int(sbalways_v);
+            if (!v) {
+               set_int(sbalways_v, 1);
+               emit("do-show-vbar", "");
+               set_int(sbvis_v, 1);
+            }
+         }
+      }
+      program { name: "vbar_show_notalways";
+         signal: "elm,action,show_notalways,vbar";
+         source: "elm";
+         script {
+            new v;
+            v = get_int(sbalways_v);
+            if (v) {
+               set_int(sbalways_v, 0);
+               v = get_int(sbvis_v);
+               if (!v) {
+                  emit("do-hide-vbar", "");
+                  set_int(sbvis_v, 0);
+               }
+            }
+         }
+      }
+      program { name: "hbar_show_always";
+         signal: "elm,action,show_always,hbar";
+         source: "elm";
+         script {
+            new v;
+            v = get_int(sbvis_h);
+            v |= get_int(sbalways_h);
+            if (!v) {
+               set_int(sbalways_h, 1);
+               emit("do-show-hbar", "");
+               set_int(sbvis_h, 1);
+            }
+         }
+      }
+      program { name: "hbar_show_notalways";
+         signal: "elm,action,show_notalways,hbar";
+         source: "elm";
+         script {
+            new v;
+            v = get_int(sbalways_h);
+            if (v) {
+               set_int(sbalways_h, 0);
+               v = get_int(sbvis_h);
+               if (!v) {
+                  emit("do-hide-hbar", "");
+                  set_int(sbvis_h, 0);
+               }
+            }
+         }
+      }
+      program { name: "vshadow_show";
+         signal: "do-show-vshadow";
+         source: "";
+         action:  STATE_SET "default" 0.0;
+         transition: LINEAR 0.5;
+         target: "shadow_clip";
+      }
+      program { name: "vshadow_hide";
+         signal: "do-hide-vshadow";
+         source: "";
+         action:  STATE_SET "hidden" 0.0;
+         transition: LINEAR 0.5;
+         target: "shadow_clip";
+      }
+      program { name: "scroll";
+         signal: "elm,action,scroll";
+         source: "elm";
+         script {
+            new v;
+            v = get_int(sbvis_v);
+            v |= get_int(sbalways_v);
+            if (!v) {
+               emit("do-show-vbar", "");
+               set_int(sbvis_v, 1);
+            }
+            v = get_int(sbvis_h);
+            v |= get_int(sbalways_h);
+            if (!v) {
+               emit("do-show-hbar", "");
+               set_int(sbvis_h, 1);
+            }
+            v = get_int(sbvis_timer);
+            if (v > 0) cancel_timer(v);
+            v = timer(1.0, "timer0", 0);
             set_int(sbvis_timer, v);
 
             v = get_int(edge_timer);
