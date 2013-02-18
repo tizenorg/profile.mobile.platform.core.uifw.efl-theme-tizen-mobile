@@ -51,6 +51,30 @@
             tag:  "b" "+ font=Tizen:style=Bold";
             tag:  "tab" "\t";
          }
+         style { name: "naviframe_landscape_title_style";
+            base: "font=Tizen:style=Medium font_size="NAVIFRAME_LANDSCAPE_TITLE_FONT_SIZE_INC" color="NAVIFRAME_TITLE_STYLE_COLOR_INC" text_class=tizen";
+            tag:  "br" "\n";
+            tag:  "ps" "ps";
+            tag:  "hilight" "+ font=Tizen:style=Bold";
+            tag:  "b" "+ font=Tizen:style=Bold";
+            tag:  "tab" "\t";
+         }
+         style { name: "naviframe_landscape_maintitle_style";
+            base: "font=Tizen:style=Medium font_size="NAVIFRAME_LANDSCAPE_TITLE_SMALL_FONT_SIZE_INC" color="NAVIFRAME_TITLE_STYLE_COLOR_INC" text_class=tizen";
+            tag:  "br" "\n";
+            tag:  "ps" "ps";
+            tag:  "hilight" "+ font=Tizen:style=Bold";
+            tag:  "b" "+ font=Tizen:style=Bold";
+            tag:  "tab" "\t";
+         }
+         style { name: "naviframe_landscape_subtitle_style";
+            base: "font=Tizen:style=Medium font_size="NAVIFRAME_LANDSCAPE_SUBTITLE_FONT_SIZE_INC" color="NAVIFRAME_TITLE_STYLE_COLOR_INC" text_class=tizen";
+            tag:  "br" "\n";
+            tag:  "ps" "ps";
+            tag:  "hilight" "+ font=Tizen:style=Bold";
+            tag:  "b" "+ font=Tizen:style=Bold";
+            tag:  "tab" "\t";
+         }
          /* label doesn't use it */
          style { name: "textblock_charwrap_style";
 base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT_BLOCK_STYLE_COLOR_INC" text_class=tizen";
@@ -592,7 +616,7 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
 
       group { name: "elm/label/base/naviframe_title";
          script {
-            public g_duration = 0, g_stopslide, g_timer_id, g_anim_id;
+            public g_duration = 0, g_stopslide, g_timer_id, g_anim_id, g_landscape = 0;
 
             public message(Msg_Type:type, id, ...) {
                if (type == MSG_FLOAT_SET) {
@@ -600,8 +624,12 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                   duration = getfarg(2);
                   if (id == 0)
                     set_float(g_duration, duration);
-                  else
-                    set_float(g_duration, duration / NAVIFRAME_TITLE_FONT_SIZE_INC * SLIDE_SPEED_WEIGHT);
+                  else {
+                     if (!get_int(g_landscape))
+                       set_float(g_duration, duration / NAVIFRAME_TITLE_FONT_SIZE_INC * SLIDE_SPEED_WEIGHT);
+                     else
+                       set_float(g_duration, duration / NAVIFRAME_LANDSCAPE_TITLE_FONT_SIZE_INC * SLIDE_SPEED_WEIGHT);
+                  }
                }
             }
             public slide_end_pending(val, Float:pos) {
@@ -614,7 +642,10 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                new stopflag;
                stopflag = get_int(g_stopslide);
                if (stopflag == 1) return;
-                  set_tween_state(PART:"elm.text", pos, "slide_begin", 0.0, "slide_end", 0.0);
+               if (!get_int(g_landscape))
+                 set_tween_state(PART:"elm.text", pos, "slide_begin", 0.0, "slide_end", 0.0);
+               else
+                 set_tween_state(PART:"elm.text", pos, "slide_begin_landscape", 0.0, "slide_end_landscape", 0.0);
                if (pos >= 1.0)
                  anim(1, "slide_end_pending", 1);
             }
@@ -633,13 +664,19 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                new id;
                stopflag = get_int(g_stopslide);
                if (stopflag == 1) return;
-                  set_state(PART:"elm.text", "slide_begin", 0.0);
+               if (!get_int(g_landscape))
+                 set_state(PART:"elm.text", "slide_begin", 0.0);
+               else
+                 set_state(PART:"elm.text", "slide_begin_landscape", 0.0);
                id = timer(0.5, "slide_to_end", 1);
                set_int(g_timer_id, id);
             }
             public start_slide() {
                set_int(g_stopslide, 0);
-                  set_state(PART:"elm.text", "slide_begin", 0.0);
+               if (!get_int(g_landscape))
+                 set_state(PART:"elm.text", "slide_begin", 0.0);
+               else
+                 set_state(PART:"elm.text", "slide_begin_landscape", 0.0);
                slide_to_end();
             }
             public stop_slide() {
@@ -649,7 +686,10 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                cancel_anim(id);
                id = get_int(g_timer_id);
                cancel_timer(id);
-                  set_state(PART:"elm.text", "default", 0.0);
+               if (!get_int(g_landscape))
+                 set_state(PART:"elm.text", "default", 0.0);
+               else
+                 set_state(PART:"elm.text", "default_landscape", 0.0);
             }
          }
          parts {
@@ -688,6 +728,35 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                   align: 0.0 0.0;
                   text {
                      style: "naviframe_title_style";
+                     min: 1 1;
+                  }
+               }
+               description { state: "default_landscape" 0.0;
+                  rel1.relative: 0.0 0.0;
+                  rel2.relative: 1.0 1.0;
+                  align: 0.0 0.0;
+                  text {
+                     style: "naviframe_landscape_title_style";
+                     min: 0 1;
+                  }
+               }
+               description { state: "slide_end_landscape" 0.0;
+                  inherit: "default" 0.0;
+                  rel1.relative: 1.0 0.0;
+                  rel2.relative: 1.0 1.0;
+                  align: 1.0 0.0;
+                  text {
+                     style: "naviframe_landscape_title_style";
+                     min: 1 1;
+                  }
+               }
+               description { state: "slide_begin_landscape" 0.0;
+                  inherit: "default" 0.0;
+                  rel1.relative: 0.0 0.0;
+                  rel2.relative: 0.0 1.0;
+                  align: 0.0 0.0;
+                  text {
+                     style: "naviframe_landscape_title_style";
                      min: 1 1;
                   }
                }
@@ -712,7 +781,7 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
       }
       group { name: "elm/label/base/naviframe_maintitle";
          script {
-            public g_duration = 0, g_stopslide, g_timer_id, g_anim_id;
+            public g_duration = 0, g_stopslide, g_timer_id, g_anim_id, g_landscape = 0;
 
             public message(Msg_Type:type, id, ...) {
                if (type == MSG_FLOAT_SET) {
@@ -720,8 +789,12 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                   duration = getfarg(2);
                   if (id == 0)
                     set_float(g_duration, duration);
-                  else
-                    set_float(g_duration, duration / NAVIFRAME_TITLE_SMALL_FONT_SIZE_INC * SLIDE_SPEED_WEIGHT);
+                  else {
+                     if (!get_int(g_landscape))
+                       set_float(g_duration, duration / NAVIFRAME_TITLE_SMALL_FONT_SIZE_INC * SLIDE_SPEED_WEIGHT);
+                     else
+                       set_float(g_duration, duration / NAVIFRAME_LANDSCAPE_TITLE_SMALL_FONT_SIZE_INC * SLIDE_SPEED_WEIGHT);
+                  }
                }
             }
             public slide_end_pending(val, Float:pos) {
@@ -734,7 +807,10 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                new stopflag;
                stopflag = get_int(g_stopslide);
                if (stopflag == 1) return;
-               set_tween_state(PART:"elm.text", pos, "slide_begin", 0.0, "slide_end", 0.0);
+               if (!get_int(g_landscape))
+                 set_tween_state(PART:"elm.text", pos, "slide_begin", 0.0, "slide_end", 0.0);
+               else
+                 set_tween_state(PART:"elm.text", pos, "slide_begin_landscape", 0.0, "slide_end_landscape", 0.0);
                if (pos >= 1.0)
                  anim(1, "slide_end_pending", 1);
             }
@@ -753,13 +829,19 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                new id;
                stopflag = get_int(g_stopslide);
                if (stopflag == 1) return;
-               set_state(PART:"elm.text", "slide_begin", 0.0);
+               if (!get_int(g_landscape))
+                 set_state(PART:"elm.text", "slide_begin", 0.0);
+               else
+                 set_state(PART:"elm.text", "slide_begin_landscape", 0.0);
                id = timer(0.5, "slide_to_end", 1);
                set_int(g_timer_id, id);
             }
             public start_slide() {
                set_int(g_stopslide, 0);
-               set_state(PART:"elm.text", "slide_begin", 0.0);
+               if (!get_int(g_landscape))
+                 set_state(PART:"elm.text", "slide_begin", 0.0);
+               else
+                 set_state(PART:"elm.text", "slide_begin_landscape", 0.0);
                slide_to_end();
             }
             public stop_slide() {
@@ -769,7 +851,10 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                cancel_anim(id);
                id = get_int(g_timer_id);
                cancel_timer(id);
-               set_state(PART:"elm.text", "default", 0.0);
+               if (!get_int(g_landscape))
+                 set_state(PART:"elm.text", "default", 0.0);
+               else
+                 set_state(PART:"elm.text", "default_landscape", 0.0);
             }
          }
          parts {
@@ -808,6 +893,35 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                   align: 0.0 0.0;
                   text {
                      style: "naviframe_maintitle_style";
+                     min: 1 1;
+                  }
+               }
+               description { state: "default_landscape" 0.0;
+                  rel1.relative: 0.0 0.0;
+                  rel2.relative: 1.0 1.0;
+                  align: 0.0 0.0;
+                  text {
+                     style: "naviframe_landscape_maintitle_style";
+                     min: 0 1;
+                  }
+               }
+               description { state: "slide_end_landscape" 0.0;
+                  inherit: "default" 0.0;
+                  rel1.relative: 1.0 0.0;
+                  rel2.relative: 1.0 1.0;
+                  align: 1.0 0.0;
+                  text {
+                     style: "naviframe_landscape_maintitle_style";
+                     min: 1 1;
+                  }
+               }
+               description { state: "slide_begin_landscape" 0.0;
+                  inherit: "default" 0.0;
+                  rel1.relative: 0.0 0.0;
+                  rel2.relative: 0.0 1.0;
+                  align: 0.0 0.0;
+                  text {
+                     style: "naviframe_landscape_maintitle_style";
                      min: 1 1;
                   }
                }
@@ -832,7 +946,7 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
       }
       group { name: "elm/label/base/naviframe_subtitle";
          script {
-            public g_duration = 0, g_stopslide, g_timer_id, g_anim_id;
+            public g_duration = 0, g_stopslide, g_timer_id, g_anim_id, g_landscape = 0;
 
             public message(Msg_Type:type, id, ...) {
                if (type == MSG_FLOAT_SET) {
@@ -840,8 +954,12 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                   duration = getfarg(2);
                   if (id == 0)
                     set_float(g_duration, duration);
-                  else
-                    set_float(g_duration, duration / NAVIFRAME_SUBTITLE_FONT_SIZE_INC * SLIDE_SPEED_WEIGHT);
+                  else {
+                     if (!get_int(g_landscape))
+                       set_float(g_duration, duration / NAVIFRAME_SUBTITLE_FONT_SIZE_INC * SLIDE_SPEED_WEIGHT);
+                     else
+                       set_float(g_duration, duration / NAVIFRAME_LANDSCAPE_SUBTITLE_FONT_SIZE_INC * SLIDE_SPEED_WEIGHT);
+                  }
                }
             }
             public slide_end_pending(val, Float:pos) {
@@ -854,7 +972,10 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                new stopflag;
                stopflag = get_int(g_stopslide);
                if (stopflag == 1) return;
-               set_tween_state(PART:"elm.text", pos, "slide_begin", 0.0, "slide_end", 0.0);
+               if (!get_int(g_landscape))
+                 set_tween_state(PART:"elm.text", pos, "slide_begin", 0.0, "slide_end", 0.0);
+               else
+                 set_tween_state(PART:"elm.text", pos, "slide_begin_landscape", 0.0, "slide_end_landscape", 0.0);
                if (pos >= 1.0)
                  anim(1, "slide_end_pending", 1);
             }
@@ -873,13 +994,19 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                new id;
                stopflag = get_int(g_stopslide);
                if (stopflag == 1) return;
-               set_state(PART:"elm.text", "slide_begin", 0.0);
+               if (!get_int(g_landscape))
+                 set_state(PART:"elm.text", "slide_begin", 0.0);
+               else
+                 set_state(PART:"elm.text", "slide_begin_landscape", 0.0);
                id = timer(0.5, "slide_to_end", 1);
                set_int(g_timer_id, id);
             }
             public start_slide() {
                set_int(g_stopslide, 0);
-               set_state(PART:"elm.text", "slide_begin", 0.0);
+               if (!get_int(g_landscape))
+                 set_state(PART:"elm.text", "slide_begin", 0.0);
+               else
+                 set_state(PART:"elm.text", "slide_begin_landscape", 0.0);
                slide_to_end();
             }
             public stop_slide() {
@@ -889,7 +1016,10 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                cancel_anim(id);
                id = get_int(g_timer_id);
                cancel_timer(id);
-               set_state(PART:"elm.text", "default", 0.0);
+               if (!get_int(g_landscape))
+                 set_state(PART:"elm.text", "default", 0.0);
+               else
+                 set_state(PART:"elm.text", "default_landscape", 0.0);
             }
          }
          parts {
@@ -928,6 +1058,35 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                   align: 0.0 0.0;
                   text {
                      style: "naviframe_subtitle_style";
+                     min: 1 1;
+                  }
+               }
+               description { state: "default_landscape" 0.0;
+                  rel1.relative: 0.0 0.0;
+                  rel2.relative: 1.0 1.0;
+                  align: 0.0 0.0;
+                  text {
+                     style: "naviframe_landscape_subtitle_style";
+                     min: 0 1;
+                  }
+               }
+               description { state: "slide_end_landscape" 0.0;
+                  inherit: "default" 0.0;
+                  rel1.relative: 1.0 0.0;
+                  rel2.relative: 1.0 1.0;
+                  align: 1.0 0.0;
+                  text {
+                     style: "naviframe_landscape_subtitle_style";
+                     min: 1 1;
+                  }
+               }
+               description { state: "slide_begin_landscape" 0.0;
+                  inherit: "default" 0.0;
+                  rel1.relative: 0.0 0.0;
+                  rel2.relative: 0.0 1.0;
+                  align: 0.0 0.0;
+                  text {
+                     style: "naviframe_landscape_subtitle_style";
                      min: 1 1;
                   }
                }
