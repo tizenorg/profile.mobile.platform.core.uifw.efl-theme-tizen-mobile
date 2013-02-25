@@ -3014,6 +3014,148 @@
 ///////////////////////////////////////////////////////////////////////////////////////
    BUTTON_EDIT_MINUS_STYLES("icon_minus/extended", BUTTON_EDIT_EXTENDED_MIN_WIDTH_INC, BUTTON_EDIT_EXTENDED_MIN_HEIGHT_INC)
 
+///////////////////////////////////////////////////////////////////////////////////////
+#define BUTTON_SCROLL_JUMPTO(style_name, image_normal)\
+   group { name: "elm/button/base/"style_name; \
+      images { \
+         image: "00_button_01.png" COMP; \
+         image: "00_button_01_press.png" COMP; \
+         image: "00_button_01_dim.png" COMP; \
+         image: image_normal COMP; \
+      }\
+      parts { \
+         part { name: "button_image";\
+            type: IMAGE; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               min: BUTTON_JUMP_STYLE_BG_MIN_INC; \
+               image { \
+                  normal: "00_button_01.png"; \
+                  border: BUTTON_DEFAULT_STYLE_BG_BORDER_INC; \
+                  border_scale: 1; \
+               } \
+            } \
+            description { state: "clicked" 0.0; \
+             inherit: "default" 0.0; \
+             image.normal: "00_button_01_press.png"; \
+            } \
+            description { state: "disabled" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "00_button_01_dim.png"; \
+            } \
+         } \
+         part { name: "padding_left_top"; \
+            type: SPACER; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               align: 0.0 0.0; \
+               rel2.relative: 0.0 0.0; \
+               min: BUTTON_DEFAULT_STYLE_PADDING_MIN_INC; \
+               fixed: 1 1; \
+            } \
+         } \
+         part { name: "padding_right_bottom"; \
+            type: SPACER; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               align: 1.0 1.0; \
+               rel1.relative: 1.0 1.0; \
+               min: BUTTON_DEFAULT_STYLE_PADDING_MIN_INC; \
+               fixed: 1 1; \
+            } \
+         } \
+         part { name: "jump_image"; \
+            type: IMAGE; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               min: BUTTON_DEFAULT_STYLE_ICONONLY_ICON_MIN_INC; \
+               max: 45 45; \
+               rel1 { \
+                  relative: 1.0 0.0; \
+                  to_x: "padding_left_top"; \
+               } \
+               rel2 { \
+                  relative: 0.0 1.0; \
+                  to_x: "padding_right_bottom"; \
+               } \
+               image.normal: image_normal; \
+               aspect: 1.0 1.0; \
+               aspect_preference: VERTICAL; \
+               color: BUTTON_JUMP_ICON_NORMAL_COLOR_INC; \
+            } \
+            description { state: "clicked" 0.0; \
+               inherit: "default" 0.0; \
+               color: BUTTON_JUMP_ICON_PRESSED_COLOR_INC; \
+            } \
+            description { state: "disabled" 0.0; \
+               inherit: "default" 0.0; \
+               color: BUTTON_JUMP_ICON_DIM_COLOR_INC; \
+            } \
+         } \
+         part { name: "over1"; \
+            type: RECT; \
+            repeat_events: 1; \
+            ignore_flags: ON_HOLD; \
+            description { state: "default" 0.0; \
+               color: 0 0 0 0; \
+               rel1.relative: 0.0 0.0; \
+               rel2.relative: 1.0 1.0; \
+            } \
+         } \
+      } \
+      programs { \
+         program { name: "button_click"; \
+            signal: "mouse,down,1"; \
+            source: "over1"; \
+            action: SIGNAL_EMIT "elm,action,press" ""; \
+            after: "button_click_anim"; \
+         } \
+         program { name: "button_click_anim"; \
+            action: STATE_SET "clicked" 0.0; \
+            target: "button_image"; \
+            target: "jump_image"; \
+         } \
+         program { name: "button_unclick"; \
+            signal: "mouse,up,1"; \
+            source: "over1"; \
+            action: SIGNAL_EMIT "elm,action,unpress" ""; \
+            after: "button_unclick_anim"; \
+         } \
+         program { name: "button_unclick_anim"; \
+            action: STATE_SET "default" 0.0; \
+            target: "button_image"; \
+            target: "jump_image"; \
+         } \
+         program { name: "touch_snd"; \
+            signal: "mouse,clicked,1"; \
+            source: "over1"; \
+            action: PLAY_SAMPLE "touch_sound" 1.0; \
+            after: button_unclick3; \
+         } \
+         program { name: "button_unclick3"; \
+            action: SIGNAL_EMIT "elm,action,click" ""; \
+         } \
+         program { name: "disable"; \
+            signal: "elm,state,disabled"; \
+            source: "elm"; \
+            action: STATE_SET "disabled" 0.0; \
+            target: "button_image"; \
+            target: "jump_image"; \
+         } \
+         program { name: "enable"; \
+            signal: "elm,state,enabled"; \
+            source: "elm"; \
+            action: STATE_SET "default" 0.0; \
+            target: "button_image"; \
+            target: "jump_image"; \
+         } \
+      } \
+   }
+
+////////////////////////////////////////////////////////////////////////
+BUTTON_SCROLL_JUMPTO("jumpto_top", "00_icon_jump.png")
+////////////////////////////////////////////////////////////////////////
+BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
 
 ////////////////////////////////////////////////////////////////////////
    group { name: "elm/button/base/default";
