@@ -31,17 +31,15 @@ group { name: "elm/notify/center/popup";
    alias: "elm/notify/center/volumebarstyle_text";
    alias: "elm/notify/center/content_expand";
    parts {
-       part { name: "base";
-           type: RECT;
-           scale: 1;
-           mouse_events: 0;
-           repeat_events: 1;
-           description { state: "default" 0.0;
-               color: 0 0 0 0;
-               rel1.relative: 0.0 0.0;
-               rel2.relative: 1.0 1.0;
-           }
-       }
+      part { name: "base";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
       part { name: "persp";
         type: RECT;
         description { state: "default" 0.0;
@@ -70,39 +68,52 @@ group { name: "elm/notify/center/popup";
            }
         }
      }
-       part { name: "elm.swallow.content";
-           type: SWALLOW;
-           scale: 1;
-           description { state: "default" 0.0;
-               rel1.to: "base";
-               rel2.to: "base";
-               map {
-                  on: 1;
-                  backface_cull: 1;
-                  perspective: "persp";
-                  smooth: 0;
-               }
+     part { name: "elm.swallow.content";
+        type: SWALLOW;
+        scale: 1;
+        clip_to: "clipper";
+        description { state: "default" 0.0;
+           rel1.to: "base";
+           rel2.to: "base";
+           map {
+              on: 1;
+              backface_cull: 1;
+              perspective: "persp";
+              smooth: 0;
            }
-           description { state: "visible" 0.0;
-               rel1.to: "base";
-               rel2.to: "base";
-               map {
-                  on: 1;
-                  backface_cull: 1;
-                  perspective: "persp1";
-                  smooth: 0;
-
-               }
+        }
+        description { state: "visible" 0.0;
+           rel1.to: "base";
+           rel2.to: "base";
+           map {
+              on: 1;
+              backface_cull: 1;
+              perspective: "persp1";
+              smooth: 0;
            }
-           description { state: "end" 0.0;
-               rel1.to: "base";
-               rel2.to: "base";
-               map {
-                  on: 0;
-                  smooth: 0;
-               }
+        }
+        description { state: "end" 0.0;
+           rel1.to: "base";
+           rel2.to: "base";
+           map {
+              on: 0;
+              smooth: 0;
            }
-       }
+        }
+     }
+     part { name: "clipper";
+        type: RECT;
+        scale: 1;
+        description { state: "default" 0.0;
+           color: 255 255 255 0;
+        }
+        description { state: "visible" 0.0;
+           color: 255 255 255 255;
+        }
+        description { state: "end" 0.0;
+           color: 255 255 255 255;
+        }
+     }
    }
    programs {
        program { name: "show";
@@ -115,15 +126,27 @@ group { name: "elm/notify/center/popup";
             signal: "show";
             action: STATE_SET "default" 0.0;
             target: "elm.swallow.content";
-            after: "show_2";
-       }
-       program { name: "show_2";
-            action: STATE_SET "visible" 0.0;
-            target: "elm.swallow.content";
-            transition: ACCEL_FAC 0.5 0.8;
+            target: "clipper";
             after: "end";
+            after: "end1";
        }
        program { name: "end";
+           action: STATE_SET "visible" 0.0;
+           target: "elm.swallow.content";
+           transition: SIN_FAC 0.33 1.4;
+           after: "end2";
+       }
+       program { name: "end1";
+           action: STATE_SET "visible" 0.0;
+           target: "clipper";
+           transition: SIN_FAC 0.33 0.5;
+           after: "end3";
+       }
+       program { name: "end3";
+           action: STATE_SET "end" 0.0;
+           target: "clipper";
+       }
+       program { name: "end2";
            action: STATE_SET "end" 0.0;
            target: "elm.swallow.content";
        }
@@ -196,22 +219,30 @@ group { name: "elm/notify/block_events/popup";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            color: POPUP_DIM_BG_COLOR_INC;
+            color: POPUP_DIM_BG_DEFAULT_COLOR_INC;
          }
          description { state: "show" 0.0;
             inherit: "default" 0.0;
+            color: POPUP_DIM_BG_COLOR_INC;
          }
          description { state: "clicked" 0.0;
             inherit: "default" 0.0;
+            color: POPUP_DIM_BG_COLOR_INC;
          }
       }
    }
    programs {
-      program { name: "load";
-         signal: "load";
-         source: "";
+       program { name: "show";
+           signal: "elm,action,show";
+           source: "elm";
+           action: STATE_SET "default" 0.0;
+           target: "block_events";
+           target: "block_events_color";
+       }
+      program { name: "show1";
+         signal: "show";
          action: STATE_SET "show" 0.0;
-         transition: ACCEL_FAC 0.5 0.8;
+         transition: SIN_FAC 0.33 0.5;
          target: "block_events";
          target: "block_events_color";
       }
