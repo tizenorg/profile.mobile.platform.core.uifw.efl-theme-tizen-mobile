@@ -1510,6 +1510,12 @@
             TARGET \
             after: "play_button_press"; \
          } \
+         program { name: "selected,nosound"; \
+            signal: "elm,state,selected"; \
+            source: "elm,nosound"; \
+            action: STATE_SET "selected" 0.0; \
+            TARGET \
+         } \
          program { name: "unselected"; \
             signal: "elm,state,unselected"; \
             source: "elm"; \
@@ -1555,6 +1561,24 @@
                run_program(PROGRAM:"target_selected"); \
             } \
             after: "play_button_press"; \
+         } \
+         program { name: "selected,nosound"; \
+            signal: "elm,state,selected"; \
+            source: "elm,nosound"; \
+            script { \
+               new st[31]; \
+               new Float:vl; \
+               get_state(PART:"bg_dialogue", st, 30, vl); \
+               if (!strcmp(st, "top")) \
+                  set_state(PART:"bg_dialogue", "top_selected", 0.0); \
+               else if (!strcmp(st, "center")) \
+                  set_state(PART:"bg_dialogue", "center_selected", 0.0); \
+               else if (!strcmp(st, "bottom")) \
+                  set_state(PART:"bg_dialogue", "bottom_selected", 0.0); \
+               else if (!strcmp(st, "default")) \
+                  set_state(PART:"bg_dialogue", "selected", 0.0); \
+               run_program(PROGRAM:"target_selected"); \
+            } \
          } \
          program { name: "unselected"; \
             signal: "elm,state,unselected"; \
@@ -1877,6 +1901,16 @@
          target: "bg_reorder"; \
          TARGET \
          after: "play_button_press"; \
+      } \
+      program { name: "selected,nosound"; \
+         signal: "elm,state,selected"; \
+         source: "elm,nosound"; \
+         action: STATE_SET "selected" 0.0; \
+         target: "bg"; \
+         target: "bottom_line"; \
+         target: "bottom_line2"; \
+         target: "bg_reorder"; \
+         TARGET \
       } \
       program { name: "unselected"; \
          signal: "elm,state,unselected"; \
