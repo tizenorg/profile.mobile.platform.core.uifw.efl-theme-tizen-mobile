@@ -21,9 +21,12 @@
      script {
         public indicator_visible = 0;     //Indicator visible check
         public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent
-        public indicator_overlap = 1;     //check indicator overlap/nooverlap
+        public indicator_overlap = 0;     //check indicator overlap/nooverlap
         public clipboard_disable  = 0;     //check clipboard enable/disable
         public keypad_disable = 0;  //check virtualkeypad enable/disable
+        public landscape = 0; //Landscape mode status
+        public portrait_overlap = 0; //save portrait_overlap mode
+        public portrait_opacity = 0; //save portrait_opacity
      }
      parts {
         part { name: "elm.swallow.bg";
@@ -366,6 +369,64 @@
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "access";
+         }
+         program {
+            name: "change_to_landscape";
+            signal: "elm,state,landscape";
+            source: "elm";
+            script {
+               if (get_int(landscape) == 0) {
+                  set_int(portrait_overlap, get_int(indicator_overlap));
+                  set_int(landscape, 1);
+                  set_int(portrait_opacity, get_int(indicator_visible));
+                  run_program(PROGRAM:"overlap_indicator");
+                  run_program(PROGRAM:"transparent_indicator");
+               }
+            }
+         }
+         program {
+            name: "change_to_portrait";
+            signal: "elm,state,portrait";
+            source: "elm";
+            script {
+               if (get_int(landscape) == 1) {  //content start (0, indicator height)
+                  set_int(indicator_overlap, get_int(portrait_overlap));
+                  set_int(indicator_opacity, get_int(portrait_opacity));
+                  if (get_int(indicator_overlap) == 0) { //start (0,60)
+                     run_program(PROGRAM:"nooverlap_indicator");
+                  }
+                  else { //content start (0, 0)
+                     run_program(PROGRAM:"overlap_indicator");
+                  }
+                  if (get_int(portrait_opacity) == 2) //transparent
+                     run_program(PROGRAM:"transparent_indicator");
+                  else if (get_int(portrait_opacity) == 1) //translucent
+                     run_program(PROGRAM:"translucent_indicator");
+                  else
+                     run_program(PROGRAM:"opaque_indicator");
+                  set_int(landscape, 0);
+               }
+            }
+         }
+         program { name: "landscape_mode";
+            source: "elm";
+            signal: "elm,state,orient,90";
+            action: SIGNAL_EMIT "elm,state,landscape" "elm";
+         }
+         program { name: "landscape_mode2";
+            source: "elm";
+            signal: "elm,state,orient,270";
+            action: SIGNAL_EMIT "elm,state,landscape" "elm";
+         }
+         program { name: "portrait_mode";
+            source: "elm";
+            signal: "elm,state,orient,0";
+            action: SIGNAL_EMIT "elm,state,portrait" "elm";
+         }
+         program { name: "portrait_mode2";
+            source: "elm";
+            signal: "elm,state,orient,180";
+            action: SIGNAL_EMIT "elm,state,portrait" "elm";
          }
      }
   }
