@@ -16,6 +16,14 @@
  *
  */
 
+/* genlist multisense sample/tone listing */
+   sounds {
+      sample {
+         name: "button-pressed" RAW;
+         source: "button-pressed.wav";
+      }
+   }
+
 //****************************************************************************//
 // *******************************  Default size macro **********************//
 //**************************************************************************//
@@ -45,10 +53,15 @@
 #define DIALOGUE_PADDING_SIZE_LEFT        16+20
 #define DIALOGUE_PADDING_SIZE_RIGHT       16+20
 
-#define GENLIST_ICON_BIG_SIZE             72
 #define GENLIST_ICON_SMALL_SIZE           45
 #define GENLIST_ICON_STAR_SIZE            45
-#define GENLIST_ICON_THUMBNAIL1_SIZE      104
+#define GENLIST_ICON_MEDIUM_SIZE          72
+#define GENLIST_ICON_LARGE_SIZE           99
+
+#define GENLIST_ICON_MEDIUM_MASK_SIZE     84
+#define GENLIST_ICON_LARGE_MASK_SIZE      108
+#define GENLIST_ICON_THUMB_MASK_SIZE      132
+
 #define GENLIST_BTN_01_HEIGHT             74
 #define GENLIST_BTN_02_SIZE               72
 #define GENLIST_ICON_ONOFF_WIDTH          132
@@ -388,6 +401,138 @@
          GENLIST_PART_FLIP \
       }
 
+#define GENLIST_INHERIT_THUMB_CIRCLE(SIZE_PREFIX, MASK_SIZE, PARENT) \
+     images { \
+         image: "thumbnail/"SIZE_PREFIX"/00_list_circle_thumbnail_normal.png" COMP; \
+         image: "thumbnail/"SIZE_PREFIX"/00_list_circle_thumbnail_press.png" COMP; \
+         image: "thumbnail/"SIZE_PREFIX"/00_list_circle_thumbnail_dim.png" COMP; \
+      } \
+      parts { \
+         GENLIST_PART_IMAGE("elm.thumb", \
+            GENLIST_DESCRIPTION_ENVELOP(PARENT, \
+               image.normal: "thumbnail/"SIZE_PREFIX"/00_list_circle_thumbnail_normal.png"; \
+               min: MASK_SIZE MASK_SIZE; \
+               fixed:1 1; \
+            ) \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "thumbnail/"SIZE_PREFIX"/00_list_circle_thumbnail_press.png"; \
+            } \
+            description { state: "disabled" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "thumbnail/"SIZE_PREFIX"/00_list_circle_thumbnail_dim.png"; \
+            } \
+         ) \
+      }
+
+#define GENLIST_INHERIT_THUMB_SQUARE(SIZE_PREFIX, MASK_SIZE, PARENT) \
+      images { \
+         image: "thumbnail/"SIZE_PREFIX"/00_list_square_thumbnail_normal.png" COMP; \
+         image: "thumbnail/"SIZE_PREFIX"/00_list_square_thumbnail_press.png" COMP; \
+         image: "thumbnail/"SIZE_PREFIX"/00_list_square_thumbnail_dim.png" COMP; \
+      } \
+      parts { \
+         GENLIST_PART_IMAGE("elm.thumb", \
+            GENLIST_DESCRIPTION_ENVELOP(PARENT, \
+               image.normal: "thumbnail/"SIZE_PREFIX"/00_list_square_thumbnail_normal.png"; \
+               min: MASK_SIZE MASK_SIZE; \
+               max: MASK_SIZE MASK_SIZE; \
+               fixed:1 1; \
+            ) \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "thumbnail/"SIZE_PREFIX"/00_list_square_thumbnail_press.png"; \
+            } \
+            description { state: "disabled" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "thumbnail/"SIZE_PREFIX"/00_list_square_thumbnail_dim.png"; \
+            } \
+         ) \
+      }
+
+
+#define GENLIST_INHERIT_THUMB_CIRCLE_DIALOGUE(SIZE_PREFIX, MASK_SIZE, PARENT) \
+     images { \
+         image: "thumbnail/"SIZE_PREFIX"/00_dialogue_circle_thumbnail_normal.png" COMP; \
+         image: "thumbnail/"SIZE_PREFIX"/00_dialogue_circle_thumbnail_press.png" COMP; \
+         image: "thumbnail/"SIZE_PREFIX"/00_dialogue_circle_thumbnail_dim.png" COMP; \
+      } \
+      parts { \
+         GENLIST_PART_IMAGE("elm.thumb", \
+            GENLIST_DESCRIPTION_ENVELOP(PARENT, \
+               image.normal: "thumbnail/"SIZE_PREFIX"/00_dialogue_circle_thumbnail_normal.png"; \
+               min: MASK_SIZE MASK_SIZE; \
+               max: MASK_SIZE MASK_SIZE; \
+               fixed:1 1; \
+            ) \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "thumbnail/"SIZE_PREFIX"/00_dialogue_circle_thumbnail_press.png"; \
+            } \
+         ) \
+      }
+
+#define GENLIST_INHERIT_THUMB_SQUARE_DIALOGUE(SIZE_PREFIX, MASK_SIZE, PARENT) \
+      images { \
+         image: "thumbnail/"SIZE_PREFIX"/00_dialogue_square_thumbnail_normal.png" COMP; \
+         image: "thumbnail/"SIZE_PREFIX"/00_dialogue_square_thumbnail_press.png" COMP; \
+         image: "thumbnail/"SIZE_PREFIX"/00_dialogue_square_thumbnail_dim.png" COMP; \
+      } \
+      parts { \
+         GENLIST_PART_IMAGE("elm.thumb", \
+            GENLIST_DESCRIPTION_ENVELOP(PARENT, \
+               image.normal: "thumbnail/"SIZE_PREFIX"/00_dialogue_square_thumbnail_normal.png"; \
+               min: MASK_SIZE MASK_SIZE; \
+               fixed:1 1; \
+            ) \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "thumbnail/"SIZE_PREFIX"/00_dialogue_square_thumbnail_press.png"; \
+            } \
+         ) \
+      }
+
+#define GENLIST_INHERIT_THUMB_CIRCLE_MEDIUM(PARENT) \
+   GENLIST_INHERIT_THUMB_CIRCLE("72x72", GENLIST_ICON_MEDIUM_MASK_SIZE, PARENT)
+
+// FIXME: 72x72 squre image is not ready yet. UX team!!!!!!?@!#!!
+#define GENLIST_INHERIT_THUMB_SQUARE_MEDIUM(PARENT) \
+   GENLIST_INHERIT_THUMB_SQUARE("99x99", GENLIST_ICON_MEDIUM_MASK_SIZE, PARENT)
+
+#define GENLIST_INHERIT_THUMB_CIRCLE_LARGE(PARENT) \
+   GENLIST_INHERIT_THUMB_CIRCLE("99x99", GENLIST_ICON_LARGE_MASK_SIZE, PARENT)
+
+#define GENLIST_INHERIT_THUMB_SQUARE_LARGE(PARENT) \
+   GENLIST_INHERIT_THUMB_SQUARE("99x99", GENLIST_ICON_LARGE_MASK_SIZE, PARENT)
+
+#define GENLIST_INHERIT_THUMB_CIRCLE_THUMB(PARENT) \
+   GENLIST_INHERIT_THUMB_CIRCLE("126x126", GENLIST_ICON_THUMB_MASK_SIZE, PARENT)
+
+// FIXME: 72x72 squre image is not ready yet. UX team!!!!!!?@!#!!
+#define GENLIST_INHERIT_THUMB_SQUARE_THUMB(PARENT) \
+   GENLIST_INHERIT_THUMB_SQUARE("99x99", GENLIST_ICON_THUMB_MASK_SIZE, PARENT)
+
+
+#define GENLIST_INHERIT_THUMB_CIRCLE_MEDIUM_DIALOGUE(PARENT) \
+   GENLIST_INHERIT_THUMB_CIRCLE_DIALOGUE("72x72", GENLIST_ICON_MEDIUM_MASK_SIZE, PARENT)
+
+// FIXME: 72x72 squre image is not ready yet. UX team!!!!!!?@!#!!
+#define GENLIST_INHERIT_THUMB_SQUARE_MEDIUM_DIALOGUE(PARENT) \
+   GENLIST_INHERIT_THUMB_SQUARE_DIALOGUE("99x99", GENLIST_ICON_MEDIUM_MASK_SIZE, PARENT)
+
+#define GENLIST_INHERIT_THUMB_CIRCLE_LARGE_DIALOGUE(PARENT) \
+   GENLIST_INHERIT_THUMB_CIRCLE_DIALOGUE("99x99", GENLIST_ICON_LARGE_MASK_SIZE, PARENT)
+
+#define GENLIST_INHERIT_THUMB_SQUARE_LARGE_DIALOGUE(PARENT) \
+   GENLIST_INHERIT_THUMB_SQUARE_DIALOGUE("99x99", GENLIST_ICON_LARGE_MASK_SIZE, PARENT)
+
+#define GENLIST_INHERIT_THUMB_CIRCLE_THUMB_DIALOGUE(PARENT) \
+   GENLIST_INHERIT_THUMB_CIRCLE_DIALOGUE("126x126", GENLIST_ICON_THUMB_MASK_SIZE, PARENT)
+
+// FIXME: 72x72 squre image is not ready yet. UX team!!!!!!?@!#!!
+#define GENLIST_INHERIT_THUMB_SQUARE_THUMB_DIALOGUE(PARENT) \
+   GENLIST_INHERIT_THUMB_SQUARE_DIALOGUE("99x99", GENLIST_ICON_THUMB_MASK_SIZE, PARENT)
+
 //****************************************************************************//
 // ****************************** BG Image **********************************//
 //****************************************************************************//
@@ -546,8 +691,8 @@
       } \
       description { state: "editmode" 0.0; \
          inherit: "default" 0.0; \
-         min: (GENLIST_PADDING_SIZE_DEFAULT*2+GENLIST_ICON_BIG_SIZE) 0; \
-         max: (GENLIST_PADDING_SIZE_DEFAULT*2+GENLIST_ICON_BIG_SIZE) 0; \
+         min: (GENLIST_PADDING_SIZE_DEFAULT*2+GENLIST_ICON_MEDIUM_SIZE) 0; \
+         max: (GENLIST_PADDING_SIZE_DEFAULT*2+GENLIST_ICON_MEDIUM_SIZE) 0; \
       } \
    ) \
    GENLIST_PART_IMAGE("bg_dialogue", \
@@ -974,8 +1119,8 @@
       GENLIST_DESCRIPTION_R("elm.padding.edit.right", \
          fixed: 1 1; \
          visible: 0; \
-         min: GENLIST_ICON_BIG_SIZE GENLIST_ICON_BIG_SIZE; \
-         max: GENLIST_ICON_BIG_SIZE GENLIST_ICON_BIG_SIZE; \
+         min: GENLIST_ICON_MEDIUM_SIZE GENLIST_ICON_MEDIUM_SIZE; \
+         max: GENLIST_ICON_MEDIUM_SIZE GENLIST_ICON_MEDIUM_SIZE; \
       ) \
       description { state: "editmode" 0.0; \
          inherit: "default" 0.0; \
@@ -1033,8 +1178,8 @@
             } \
             description { state: "editmode" 0.0; \
                inherit: "default" 0.0; \
-               min: (GENLIST_PADDING_SIZE_DEFAULT+GENLIST_ICON_BIG_SIZE) 0; \
-               max: (GENLIST_PADDING_SIZE_DEFAULT+GENLIST_ICON_BIG_SIZE) -1; \
+               min: (GENLIST_PADDING_SIZE_DEFAULT+GENLIST_ICON_MEDIUM_SIZE) 0; \
+               max: (GENLIST_PADDING_SIZE_DEFAULT+GENLIST_ICON_MEDIUM_SIZE) -1; \
             } \
          ) \
          GENLIST_PART_SPACER("elm.padding.right", \
@@ -1535,7 +1680,6 @@
          program { name: "unselected"; \
             signal: "elm,state,unselected"; \
             source: "elm"; \
-            transition: LINEAR 0.1; \
             action: STATE_SET "default" 0.0; \
             TARGET \
          } \
@@ -1599,7 +1743,6 @@
          program { name: "unselected"; \
             signal: "elm,state,unselected"; \
             source: "elm"; \
-            transition: LINEAR 0.1; \
             script { \
                new st[31]; \
                new Float:vl; \
@@ -1672,7 +1815,6 @@
          program { name: "unselected_arrow"; \
             signal: "elm,state,unselected"; \
             source: "elm"; \
-            transition: LINEAR 0.1; \
             script { \
                new st[31]; \
                new Float:vl; \
@@ -1941,7 +2083,6 @@
       program { name: "unselected"; \
          signal: "elm,state,unselected"; \
          source: "elm"; \
-         transition: LINEAR 0.1;  \
          action: STATE_SET "default" 0.0; \
          target: "bg"; \
          target: "bottom_line"; \
@@ -1949,7 +2090,6 @@
          target: "bg_reorder"; \
       } \
       program { name: "unselected_target"; \
-         transition: LINEAR 0.1;  \
          action: STATE_SET "default" 0.0; \
          TARGET \
       } \
@@ -2074,8 +2214,8 @@
    }
 
 #define GENLIST_PARAM_ICON_BIG \
-         min: GENLIST_ICON_BIG_SIZE GENLIST_ICON_BIG_SIZE; \
-         max: GENLIST_ICON_BIG_SIZE GENLIST_ICON_BIG_SIZE;
+         min: GENLIST_ICON_MEDIUM_SIZE GENLIST_ICON_MEDIUM_SIZE; \
+         max: GENLIST_ICON_MEDIUM_SIZE GENLIST_ICON_MEDIUM_SIZE;
 
 #define GENLIST_PARAM_ICON_SMALL \
          min: GENLIST_ICON_SMALL_SIZE GENLIST_ICON_SMALL_SIZE; \
@@ -2094,8 +2234,8 @@
          max: GENLIST_ICON_ONOFF_WIDTH GENLIST_ICON_ONOFF_HEIGHT;
 
 #define GENLIST_PARAM_ICON_THUMBNAIL1\
-         min: GENLIST_ICON_THUMBNAIL1_SIZE GENLIST_ICON_THUMBNAIL1_SIZE; \
-         max: GENLIST_ICON_THUMBNAIL1_SIZE GENLIST_ICON_THUMBNAIL1_SIZE;
+         min: GENLIST_ICON_LARGE_SIZE GENLIST_ICON_LARGE_SIZE; \
+         max: GENLIST_ICON_LARGE_SIZE GENLIST_ICON_LARGE_SIZE;
 
 #define GENLIST_PARAM_ICON_CHECK_RADIO \
          min: GENLIST_ICON_CHECK_RADIO_SIZE GENLIST_ICON_CHECK_RADIO_SIZE; \
