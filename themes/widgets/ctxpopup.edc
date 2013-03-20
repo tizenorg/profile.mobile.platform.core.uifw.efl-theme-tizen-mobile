@@ -30,9 +30,15 @@
 #define CTXPOPUP_LIST_SHADOW_PADDING 3
 
 ///////////////////////////////////////////////////////////////////////////////
+	sounds {
+		sample {
+			name: "touch_sound" RAW;
+			source: "button-pressed.wav";
+		}
+	}
 	group {
 		name: "elm/ctxpopup/layout/default";
-		max: CTXPOPUP_WIDTH_MAX_INC 802;
+		max: (CTXPOPUP_WIDTH_MAX_INC+CTXPOPUP_SHADOW_LEFT_PADDING+CTXPOPUP_SHADOW_RIGHT_PADDING) ((CTXPOPUP_ITEM_HEIGHT_MIN_INC*7)+CTXPOPUP_SHADOW_TOP_PADDING+CTXPOPUP_SHADOW_BOTTOM_PADDING+(CTXPOPUP_SEPARATOR_PXLINE_SIZE_INC*12)-CTXPOPUP_CONTENT_PADDING);
 		parts {
 			part {
 				name:"top_padding";
@@ -658,7 +664,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 	group {
 		name: "elm/ctxpopup/layout/more/default";
-		max: CTXPOPUP_MORE_WIDTH_INC 802;
+		max: CTXPOPUP_MORE_WIDTH_INC ((CTXPOPUP_ITEM_HEIGHT_MIN_INC*7)+CTXPOPUP_SHADOW_TOP_PADDING+CTXPOPUP_SHADOW_BOTTOM_PADDING+(CTXPOPUP_SEPARATOR_PXLINE_SIZE_INC*12)-CTXPOPUP_CONTENT_PADDING);
 		parts {
 			part {
 				name:"top_padding";
@@ -1965,6 +1971,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 	group {
 		name: "elm/ctxpopup/text_style_item/default";
+
+		data.item: "item_max_size" CTXPOPUP_TEXT_MAX_INC;
+
 		parts {
 			part {
 				name: "event_blocker";
@@ -1989,14 +1998,14 @@
 				}
 				description {
 					state: "clicked" 0.0;
+					inherit: "default" 0.0;
 					color: CTXPOPUP_BG_PRESS_COLOR_INC;
-					visible: 1;
 				}
 				description {
 					state: "clicked_separator" 0.0;
+					inherit: "default" 0.0;
 					rel1 { relative: 0.0 1.0; to_y: "separator2"; }
 					color: CTXPOPUP_BG_PRESS_COLOR_INC;
-					visible: 1;
 				}
 			}
 			part {
@@ -2088,6 +2097,7 @@
 					state: "clicked" 0.0;
 					inherit: "default" 0.0;
 					color: CTXPOPUP_LIST_MAIN_TEXT_PRESS_COLOR_INC;
+					text.min: 0 0;
 				}
 				description {
 					state: "disabled" 0.0;
@@ -2098,6 +2108,12 @@
 					state: "compress_disabled" 0.0;
 					inherit: "compress" 0.0;
 					color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
+				}
+				description {
+					state: "ellipsis" 0.0;
+					inherit: "default" 0.0;
+					min: CTXPOPUP_TEXT_MAX_INC CTXPOPUP_ITEM_HEIGHT_MIN_INC;
+					text.min: 0 0;
 				}
 			}
 			part {
@@ -2156,10 +2172,22 @@
 		}
 		programs {
 			program {
+				name: "text_ellipsis";
+				signal: "elm,state,text,ellipsis";
+				source: "elm";
+				action: STATE_SET "ellipsis" 0.0;
+				target: "elm.text";
+			}
+			program {
 				name: "item_unclick";
 				signal: "mouse,clicked,1";
 				source: "over1";
 				action: SIGNAL_EMIT "elm,action,click" "";
+				after: "touch_snd";
+			}
+			program {
+				name: "touch_snd";
+				action: PLAY_SAMPLE "touch_sound" 1.0;
 			}
 			program {
 				name: "disable";
@@ -2464,6 +2492,11 @@
 				signal: "mouse,clicked,1";
 				source: "over1";
 				action: SIGNAL_EMIT "elm,action,click" "";
+				after: "touch_snd";
+			}
+			program {
+				name: "touch_snd";
+				action: PLAY_SAMPLE "touch_sound" 1.0;
 			}
 			program {
 				name: "disable";
@@ -2749,6 +2782,11 @@
 				signal: "mouse,clicked,1";
 				source: "over1";
 				action: SIGNAL_EMIT "elm,action,click" "";
+				after: "touch_snd";
+			}
+			program {
+				name: "touch_snd";
+				action: PLAY_SAMPLE "touch_sound" 1.0;
 			}
 			program {
 				name: "disable";
@@ -2807,6 +2845,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 	group {
 		name: "elm/ctxpopup/icon_text_style_item/default";
+
+		data.item: "item_max_size" CTXPOPUP_TEXT_MAX_INC;
+
 		parts {
 			part {
 				name: "event_blocker";
@@ -2979,6 +3020,7 @@
 					state: "clicked" 0.0;
 					inherit: "default" 0.0;
 					color: CTXPOPUP_LIST_MAIN_TEXT_PRESS_COLOR_INC;
+					text.min: 0 0;
 				}
 				description {
 					state: "disabled" 0.0;
@@ -2989,6 +3031,12 @@
 					state: "compress_disabled" 0.0;
 					inherit: "compress" 0.0;
 					color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
+				}
+				description {
+					state: "ellipsis" 0.0;
+					inherit: "default" 0.0;
+					min: (CTXPOPUP_WIDTH_MAX_INC-CTXPOPUP_ITEM_TEXT_PADDING_INC-CTXPOPUP_ICON_WIDTH_INC-(CTXPOPUP_ITEM_ICON_PADDING_INC*2)) CTXPOPUP_ITEM_HEIGHT_MIN_INC;
+					text.min: 0 0;
 				}
 			}
 			part {
@@ -3047,10 +3095,22 @@
 		}
 		programs {
 			program {
+				name: "text_ellipsis";
+				signal: "elm,state,text,ellipsis";
+				source: "elm";
+				action: STATE_SET "ellipsis" 0.0;
+				target: "elm.text";
+			}
+			program {
 				name: "item_unclick";
 				signal: "mouse,clicked,1";
 				source: "over1";
 				action: SIGNAL_EMIT "elm,action,click" "";
+				after: "touch_snd";
+			}
+			program {
+				name: "touch_snd";
+				action: PLAY_SAMPLE "touch_sound" 1.0;
 			}
 			program {
 				name: "disable";
@@ -3209,7 +3269,6 @@
 					rel1 {to:"frame_shadow_left_top_padding";}
 					rel2 {to:"frame_shadow_right_bottom_padding";}
 					min: CTXPOPUP_MORE_WIDTH_INC 0;
-					//max: CTXPOPUP_MORE_WIDTH_INC 806;
 					image {
 						normal: "00_popup_bubble_bg.png";
 						border: CTXPOPUP_BUBBLE_BG_IMAGE_BORDER;
@@ -3578,6 +3637,11 @@
 				signal: "mouse,clicked,1";
 				source: "over1";
 				action: SIGNAL_EMIT "elm,action,click" "";
+				after: "touch_snd";
+			}
+			program {
+				name: "touch_snd";
+				action: PLAY_SAMPLE "touch_sound" 1.0;
 			}
 			program {
 				name: "disable";
@@ -4381,6 +4445,11 @@
 				signal: "mouse,up,1";
 				source: "over1";
 				action: SIGNAL_EMIT "elm,action,click" "";
+				after: "touch_snd";
+			}
+			program {
+				name: "touch_snd";
+				action: PLAY_SAMPLE "touch_sound" 1.0;
 			}
 			program {
 				name: "disable";
@@ -4539,6 +4608,11 @@
 				signal: "mouse,up,1";
 				source: "over1";
 				action: SIGNAL_EMIT "elm,action,click" "";
+				after: "touch_snd";
+			}
+			program {
+				name: "touch_snd";
+				action: PLAY_SAMPLE "touch_sound" 1.0;
 			}
 			program {
 				name: "disable";
@@ -4951,6 +5025,11 @@ group {
 			signal: "mouse,up,1";
 			source: "over1";
 			action: SIGNAL_EMIT "elm,action,click" "";
+			after: "touch_snd";
+		}
+		program {
+			name: "touch_snd";
+			action: PLAY_SAMPLE "touch_sound" 1.0;
 		}
 		program {
 			name: "item_click";
@@ -5168,6 +5247,11 @@ group {
 				signal: "mouse,clicked,1";
 				source: "over1";
 				action: SIGNAL_EMIT "elm,action,click" "";
+				after: "touch_snd";
+			}
+			program {
+				name: "touch_snd";
+				action: PLAY_SAMPLE "touch_sound" 1.0;
 			}
 			program {
 				name: "disable";
