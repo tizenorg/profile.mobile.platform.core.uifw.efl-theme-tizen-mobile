@@ -1692,6 +1692,22 @@
             } \
          }
 
+#define GENLIST_PROGRAM_SOUND( SRC ) \
+         program { name: "play_sound"SRC; \
+            signal: "mouse,clicked,1"; \
+            source: SRC; \
+            script { \
+               new st[31]; \
+               new Float:vl; \
+               get_state(PART:"base", st, 30, vl); \
+               if (strcmp(st, "disabled")) \
+                  run_program(PROGRAM:"play_button_press"SRC); \
+            } \
+         } \
+         program { name: "play_button_press"SRC; \
+            action: PLAY_SAMPLE "button-pressed" 1.0; \
+         }
+
 #define GENLIST_PROGRAM_SELECT( TARGET ) \
          program { name: "selected"; \
             signal: "elm,state,selected"; \
@@ -1699,44 +1715,9 @@
             action: STATE_SET "selected" 0.0; \
             TARGET \
          } \
-         program { name: "selected,nosound"; \
-            signal: "elm,state,selected"; \
-            source: "elm,nosound"; \
-            action: STATE_SET "selected" 0.0; \
-            TARGET \
-         } \
          program { name: "unselected"; \
             signal: "elm,state,unselected"; \
             source: "elm"; \
-            action: STATE_SET "default" 0.0; \
-            TARGET \
-         } \
-         program { name: "play_sound_base"; \
-            signal: "mouse,clicked,1"; \
-            source: "base"; \
-            script { \
-               new st[31]; \
-               new Float:vl; \
-               get_state(PART:"base", st, 30, vl); \
-               if (strcmp(st, "disabled")) \
-                  run_program(PROGRAM:"play_button_press"); \
-            } \
-         } \
-         program { name: "play_button_press"; \
-            action: PLAY_SAMPLE "button-pressed" 1.0; \
-         }
-
-#define GENLIST_PROGRAM_SELECT_NOSOUND( TARGET ) \
-         program { name: "selected"; \
-            signal: "elm,state,selected"; \
-            source: "elm"; \
-            action: STATE_SET "selected" 0.0; \
-            TARGET \
-         } \
-         program { name: "unselected"; \
-            signal: "elm,state,unselected"; \
-            source: "elm"; \
-            transition: LINEAR 0.1; \
             action: STATE_SET "default" 0.0; \
             TARGET \
          }
@@ -1745,25 +1726,6 @@
          program { name: "selected"; \
             signal: "elm,state,selected"; \
             source: "elm"; \
-            script { \
-               new st[31]; \
-               new Float:vl; \
-               get_state(PART:"bg_dialogue", st, 30, vl); \
-               if (!strcmp(st, "top")) \
-                  set_state(PART:"bg_dialogue", "top_selected", 0.0); \
-               else if (!strcmp(st, "center")) \
-                  set_state(PART:"bg_dialogue", "center_selected", 0.0); \
-               else if (!strcmp(st, "bottom")) \
-                  set_state(PART:"bg_dialogue", "bottom_selected", 0.0); \
-               else if (!strcmp(st, "default")) \
-                  set_state(PART:"bg_dialogue", "selected", 0.0); \
-               run_program(PROGRAM:"target_selected"); \
-            } \
-            after: "play_button_press"; \
-         } \
-         program { name: "selected,nosound"; \
-            signal: "elm,state,selected"; \
-            source: "elm,nosound"; \
             script { \
                new st[31]; \
                new Float:vl; \
@@ -1801,9 +1763,6 @@
             action: STATE_SET "selected" 0.0; \
             TARGET \
          }\
-         program { name: "play_button_press"; \
-            action: PLAY_SAMPLE "button-pressed" 1.0; \
-         } \
          program { name: "target_unselected"; \
             action: STATE_SET "default" 0.0; \
             TARGET \
@@ -2019,6 +1978,7 @@
          target: "bottom_line2"; \
          target: "bg_reorder"; \
       ) \
+      GENLIST_PROGRAM_SOUND("base") \
       GENLIST_PROGRAM_EXPAND_FADE( TARGET \
          target: "bg"; \
          target: "bottom_line"; \
@@ -2060,6 +2020,7 @@
          action: STATE_SET "2depth" 0.0; \
          target: "bg_dialogue_clip"; \
       } \
+      GENLIST_PROGRAM_SOUND("base") \
       GENLIST_PROGRAM_EXPAND_FADE( TARGET \
          target: "bg_dialogue"; \
       ) \
@@ -2091,53 +2052,14 @@
          target: "bg_reorder"; \
          TARGET \
       ) \
-      program { name: "selected"; \
-         signal: "elm,state,selected"; \
-         source: "elm"; \
-         action: STATE_SET "selected" 0.0; \
+      GENLIST_PROGRAM_SELECT( \
          target: "bg"; \
          target: "bottom_line"; \
          target: "bottom_line2"; \
          target: "bg_reorder"; \
          TARGET \
-         after: "play_button_press"; \
-      } \
-      program { name: "selected,nosound"; \
-         signal: "elm,state,selected"; \
-         source: "elm,nosound"; \
-         action: STATE_SET "selected" 0.0; \
-         target: "bg"; \
-         target: "bottom_line"; \
-         target: "bottom_line2"; \
-         target: "bg_reorder"; \
-         TARGET \
-      } \
-      program { name: "unselected"; \
-         signal: "elm,state,unselected"; \
-         source: "elm"; \
-         action: STATE_SET "default" 0.0; \
-         target: "bg"; \
-         target: "bottom_line"; \
-         target: "bottom_line2"; \
-         target: "bg_reorder"; \
-      } \
-      program { name: "unselected_target"; \
-         action: STATE_SET "default" 0.0; \
-         TARGET \
-      } \
-      program { name: "unselected_read"; \
-         signal: "elm,state,unselected"; \
-         source: "elm"; \
-         script { \
-            if (get_int(readed) == 1) \
-               run_program(PROGRAM:"go_read_target"); \
-            else \
-               run_program(PROGRAM:"unselected_target"); \
-         } \
-      } \
-      program { name: "play_button_press"; \
-         action: PLAY_SAMPLE "button-pressed" 1.0; \
-      } \
+      ) \
+      GENLIST_PROGRAM_SOUND("base") \
       GENLIST_PROGRAM_EXPAND_FADE( \
          target: "bg"; \
          target: "bottom_line"; \
@@ -2158,6 +2080,20 @@
          target: "elm.padding.left"; \
          target: "elm.padding.right"; \
       ) \
+      program { name: "unselected_target"; \
+         action: STATE_SET "default" 0.0; \
+         TARGET \
+      } \
+      program { name: "unselected_read"; \
+         signal: "elm,state,unselected"; \
+         source: "elm"; \
+         script { \
+            if (get_int(readed) == 1) \
+               run_program(PROGRAM:"go_read_target"); \
+            else \
+               run_program(PROGRAM:"unselected_target"); \
+         } \
+      } \
       program { name: "go_read"; \
          signal: "elm,state,read"; \
          source: "*"; \
@@ -2166,10 +2102,6 @@
            run_program(PROGRAM:"go_read_target"); \
          } \
       } \
-      program { name: "go_read_target"; \
-         action: STATE_SET "read" 0.0; \
-         TARGET \
-      } \
       program { name: "go_unread"; \
          signal: "elm,state,unread"; \
          source: "*"; \
@@ -2177,6 +2109,10 @@
            set_int(readed, 0); \
            run_program(PROGRAM:"go_unread_target"); \
          } \
+      } \
+      program { name: "go_read_target"; \
+         action: STATE_SET "read" 0.0; \
+         TARGET \
       } \
       program { name: "go_unread_target"; \
          action: STATE_SET "unread" 0.0; \
