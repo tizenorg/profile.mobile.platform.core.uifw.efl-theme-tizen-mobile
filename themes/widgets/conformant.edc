@@ -38,34 +38,24 @@
         part { name: "elm.swallow.content";
            type: SWALLOW;
            scale: 1;
-           description { state: "default" 0.0; //indi:nooverlap, clipboard: enable, keypad: enable/disable
+           description { state: "default" 0.0; //indi: nooverlap, sip: enable
               align: 0.5 0.5;
               rel1.relative: 0.0 1.0;
               rel1.to: "elm.swallow.indicator";
               rel2.relative: 1.0 0.0;
-              rel2.to: "elm.swallow.clipboard";
+              rel2.to: "sip_area";
            }
-           description { state: "nooverlap_disable_clipboard_enable_keypad" 0.0; //indi:nooverlap, clipboard: disable, keypad: enable
-              inherit: "default" 0.0;
-              rel2.to: "elm.swallow.virtualkeypad";
-           }
-           description { state: "nooverlap_disable_clipboard_disable_keypad" 0.0; //indi:nooverlap, clipboard: disable, keypad: disable
+           description { state: "nooverlap_disable_sip" 0.0; //indi: nooverlap, sip: disable
               inherit: "default" 0.0;
               rel2.relative: 1.0 1.0;
               rel2.to: "elm.swallow.bg";
            }
-           description { state: "overlap_enable_clipboard" 0.0; //indi:overlap, clipboard: enable, keypad: enable/disable
+           description { state: "overlap" 0.0; //indi: overlap, sip: enable
               inherit: "default" 0.0;
               rel1.relative: 0.0 0.0;
               rel1.to: "elm.swallow.indicator";
            }
-           description { state: "overlap_disable_clipboard_enable_keypad" 0.0; //indi:overlap, clipboard: disable, keypad: enable
-              inherit: "default" 0.0;
-              rel1.relative: 0.0 0.0;
-              rel1.to: "elm.swallow.indicator";
-              rel2.to: "elm.swallow.virtualkeypad";
-           }
-           description { state: "overlap_disable_clipboard_disable_keypad" 0.0; //indi:overlap, clipboard: disable, keypad: enable
+           description { state: "overlap_disable_sip" 0.0; //indi: overlap, sip: disable
               inherit: "default" 0.0;
               rel1.relative: 0.0 0.0;
               rel1.to: "elm.swallow.indicator";
@@ -81,7 +71,7 @@
               rel1.relative: 0.0 1.0;
               rel1.to: "elm.swallow.indicator";
               rel2.relative: 1.0 0.0;
-              rel2.to: "elm.swallow.clipboard";
+              rel2.to: "sip_area";
            }
            description { state: "overlap" 0.0;
               inherit: "default" 0.0;
@@ -89,7 +79,7 @@
               rel1.relative: 0.0 0.0;
               rel1.to: "elm.swallow.indicator";
               rel2.relative: 1.0 0.0;
-              rel2.to: "elm.swallow.clipboard";
+              rel2.to: "sip_area";
            }
         }
         part { name: "indicator_bg";
@@ -155,22 +145,29 @@
               visible: 1;
            }
         }
+        part { name: "sip_area";
+           type: RECT;
+           description { state: "default" 0.0;
+              fixed: 0 1;
+              min: 0 0;
+              rel1.relative: 0.0 0.0;
+              rel1.to_y: "elm.swallow.virtualkeypad";
+              rel2.relative: 1.0 1.0;
+              rel2.to_y: "elm.swallow.virtualkeypad";
+              visible: 0;
+           }
+           description { state: "clipboard_on" 0.0;
+              inherit: "default" 0.0;
+              rel1.to_y: "elm.swallow.clipboard";
+              rel2.to_y: "elm.swallow.clipboard";
+           }
+        }
         part { name: "elm.swallow.clipboard";
            type: SWALLOW;
            description { state: "default" 0.0;
               fixed: 0 1;
               align: 0.0 1.0;
-              rel1.relative: 0.0 0.0;
-              rel1.to_y: "elm.swallow.virtualkeypad";
-              rel2.relative: 1.0 0.0;
-              rel2.to_y: "elm.swallow.virtualkeypad";
-           }
-           description { state: "disable_keypad" 0.0;
-              inherit: "default" 0.0;
               rel1.relative: 0.0 1.0;
-              rel1.to_y: "elm.swallow.bg";
-              rel2.relative: 1.0 1.0;
-              rel2.to_y: "elm.swallow.bg";
            }
         }
         part { name: "elm.swallow.virtualkeypad";
@@ -245,15 +242,10 @@
            script {
               set_int(indicator_overlap, 1);
               set_state(PART:"elm.swallow.ug", "overlap", 0.0);
-              if (get_int(clipboard_disable) == 0)
-                set_state(PART:"elm.swallow.content", "overlap_enable_clipboard", 0.0);
+              if ((get_int(keypad_disable) == 1) && (get_int(clipboard_disable) == 1))
+                set_state(PART:"elm.swallow.content", "overlap_disable_sip", 0.0);
               else
-                {
-                   if (get_int(keypad_disable) == 0)
-                     set_state(PART:"elm.swallow.content", "overlap_disable_clipboard_enable_keypad", 0.0);
-                   else
-                     set_state(PART:"elm.swallow.content", "overlap_disable_clipboard_disable_keypad", 0.0);
-                }
+                set_state(PART:"elm.swallow.content", "overlap", 0.0);
           }
         }
         program {
@@ -261,16 +253,16 @@
            signal: "elm,state,indicator,nooverlap";
            source: "";
            script {
-              set_int(indicator_overlap, 0);
-              set_state(PART:"elm.swallow.ug", "default", 0.0);
-              if (get_int(clipboard_disable) == 0)
-                set_state(PART:"elm.swallow.content", "default", 0.0);
-              else
+              //Only portrait state get nooverlap mode
+              set_int(portrait_overlap, 0);
+              if (get_int(landscape) == 0)
                 {
-                   if (get_int(keypad_disable) == 0)
-                     set_state(PART:"elm.swallow.content", "nooverlap_disable_clipboard_enable_keypad", 0.0);
-                   else
-                     set_state(PART:"elm.swallow.content", "nooverlap_disable_clipboard_disable_keypad", 0.0);
+                   set_int(indicator_overlap, 0);
+                   set_state(PART:"elm.swallow.ug", "default", 0.0);
+              if ((get_int(keypad_disable) == 1) && (get_int(clipboard_disable) == 1))
+                set_state(PART:"elm.swallow.content", "nooverlap_disable_sip", 0.0);
+              else
+                set_state(PART:"elm.swallow.content", "default", 0.0);
                 }
            }
         }
@@ -283,12 +275,7 @@
               if (get_int(indicator_overlap) == 0)
                 set_state(PART:"elm.swallow.content", "default", 0.0);
               else
-                set_state(PART:"elm.swallow.content", "overlap_enable_clipboard", 0.0);
-              //set clipboard state
-              if (get_int(keypad_disable) == 1)
-                set_state(PART:"elm.swallow.clipboard", "disable_keypad", 0.0);
-              else
-                set_state(PART:"elm.swallow.clipboard", "default", 0.0);
+                set_state(PART:"elm.swallow.content", "overlap", 0.0);
            }
         }
         program { name: "disable_clipboard";
@@ -296,20 +283,20 @@
            source: "";
            script {
               set_int(clipboard_disable, 1);
-              set_state(PART:"elm.swallow.clipboard", "default", 0.0);
+              set_state(PART:"sip_area", "default", 0.0);
               if (get_int(indicator_overlap) == 0)
                 {
                    if (get_int(keypad_disable) == 1)
-                     set_state(PART:"elm.swallow.content", "nooverlap_disable_clipboard_disable_keypad", 0.0);
+                     set_state(PART:"elm.swallow.content", "nooverlap_disable_sip", 0.0);
                    else
-                     set_state(PART:"elm.swallow.content", "nooverlap_disable_clipboard_enable_keypad", 0.0);
+                     set_state(PART:"elm.swallow.content", "default", 0.0);
                 }
               else
                 {
                    if (get_int(keypad_disable) == 1)
-                     set_state(PART:"elm.swallow.content", "overlap_disable_clipboard_disable_keypad", 0.0);
+                     set_state(PART:"elm.swallow.content", "overlap_disable_sip", 0.0);
                    else
-                     set_state(PART:"elm.swallow.content", "overlap_disable_clipboard_enable_keypad", 0.0);
+                     set_state(PART:"elm.swallow.content", "overlap", 0.0);
                 }
            }
         }
@@ -318,21 +305,10 @@
            source: "";
            script {
               set_int(keypad_disable, 0);
-              set_state(PART:"elm.swallow.clipboard", "default", 0.0);
-              if (get_int(clipboard_disable) == 1)
-                {
-                   if (get_int(indicator_overlap) == 0)
-                     set_state(PART:"elm.swallow.content", "nooverlap_disable_clipboard_enable_keypad", 0.0);
-                   else
-                     set_state(PART:"elm.swallow.content", "overlap_disable_clipboard_enable_keypad", 0.0);
-                }
+              if (get_int(indicator_overlap) == 0)
+                set_state(PART:"elm.swallow.content", "default", 0.0);
               else
-                {
-                   if (get_int(indicator_overlap) == 0)
-                     set_state(PART:"elm.swallow.content", "default", 0.0);
-                   else
-                     set_state(PART:"elm.swallow.content", "overlap_enable_clipboard", 0.0);
-                }
+                set_state(PART:"elm.swallow.content", "overlap", 0.0);
            }
         }
         program { name: "disable_virtualkeypad";
@@ -342,29 +318,28 @@
               set_int(keypad_disable, 1);
               if (get_int(clipboard_disable) == 1)
                 {
-                   set_state(PART:"elm.swallow.clipboard", "default", 0.0);
+                   set_state(PART:"sip_area", "clipboard_on", 0.0);
                    if (get_int(indicator_overlap) == 0)
-                     set_state(PART:"elm.swallow.content", "nooverlap_disable_clipboard_disable_keypad", 0.0);
+                     set_state(PART:"elm.swallow.content", "nooverlap_disable_sip", 0.0);
                    else
-                     set_state(PART:"elm.swallow.content", "overlap_disable_clipboard_disable_keypad", 0.0);
+                     set_state(PART:"elm.swallow.content", "overlap_disable_sip", 0.0);
                 }
               else
                 {
-                   set_state(PART:"elm.swallow.clipboard", "disable_keypad", 0.0);
                    if (get_int(indicator_overlap) == 0)
                      set_state(PART:"elm.swallow.content", "default", 0.0);
                    else
-                     set_state(PART:"elm.swallow.content", "overlap_enable_clipboard", 0.0);
+                     set_state(PART:"elm.swallow.content", "overlap", 0.0);
                 }
            }
         }
-         program { name: "access_on";
+        program { name: "access_on";
             signal: "elm,state,access,on";
             source: "elm";
             action: STATE_SET "visible" 0.0;
             target: "access";
-         }
-         program { name: "access_off";
+        }
+        program { name: "access_off";
             signal: "elm,state,access,off";
             source: "elm";
             action: STATE_SET "default" 0.0;
@@ -377,8 +352,8 @@
             script {
                if (get_int(landscape) == 0) {
                   set_int(portrait_overlap, get_int(indicator_overlap));
+                  set_int(portrait_opacity, get_int(indicator_opacity));
                   set_int(landscape, 1);
-                  set_int(portrait_opacity, get_int(indicator_visible));
                   run_program(PROGRAM:"overlap_indicator");
                   run_program(PROGRAM:"transparent_indicator");
                }
@@ -392,8 +367,10 @@
                if (get_int(landscape) == 1) {  //content start (0, indicator height)
                   set_int(indicator_overlap, get_int(portrait_overlap));
                   set_int(indicator_opacity, get_int(portrait_opacity));
+                  set_int(landscape, 0);
                   if (get_int(indicator_overlap) == 0) { //start (0,60)
                      run_program(PROGRAM:"nooverlap_indicator");
+
                   }
                   else { //content start (0, 0)
                      run_program(PROGRAM:"overlap_indicator");
@@ -404,7 +381,6 @@
                      run_program(PROGRAM:"translucent_indicator");
                   else
                      run_program(PROGRAM:"opaque_indicator");
-                  set_int(landscape, 0);
                }
             }
          }
@@ -427,7 +403,21 @@
             source: "elm";
             signal: "elm,state,orient,180";
             action: SIGNAL_EMIT "elm,state,portrait" "elm";
-         }
+        }
+        program {
+            name: "clipboard_on";
+            signal: "elm,state,clipboard,on";
+            source: "elm";
+            action: STATE_SET "clipboard_on" 0.0;
+            target: "sip_area";
+        }
+        program {
+            name: "clipboard_off";
+            signal: "elm,state,clipboard,off";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "sip_area";
+        }
      }
   }
  group { name: "elm/conformant/base/indicator_overlap";
@@ -448,7 +438,7 @@
            description { state: "default" 0.0;
               align: 0.5 0.5;
               rel2.relative: 1.0 0.0;
-              rel2.to: "elm.swallow.clipboard";
+              rel2.to: "sip_area";
            }
         }
         part { name: "elm.swallow.ug";
@@ -459,7 +449,7 @@
               rel1.relative: 0.0 1.0;
               rel1.to: "elm.swallow.indicator";
               rel2.relative: 1.0 0.0;
-              rel2.to: "elm.swallow.clipboard";
+              rel2.to: "sip_area";
            }
         }
         part { name: "indicator_bg";
@@ -511,15 +501,29 @@
               min: 0 0;
            }
         }
+        part { name: "sip_area";
+           type: RECT;
+           description { state: "default" 0.0;
+              fixed: 0 1;
+              min: 0 0;
+              rel1.relative: 0.0 0.0;
+              rel1.to_y: "elm.swallow.virtualkeypad";
+              rel2.relative: 1.0 1.0;
+              rel2.to_y: "elm.swallow.virtualkeypad";
+              visible: 0;
+           }
+           description { state: "clipboard_on" 0.0;
+              inherit: "default" 0.0;
+              rel1.to_y: "elm.swallow.clipboard";
+              rel2.to_y: "elm.swallow.clipboard";
+           }
+        }
         part { name: "elm.swallow.clipboard";
            type: SWALLOW;
            description { state: "default" 0.0;
               fixed: 0 1;
               align: 0.0 1.0;
-              rel1.relative: 0.0 0.0;
-              rel1.to_y: "elm.swallow.virtualkeypad";
-              rel2.relative: 1.0 0.0;
-              rel2.to_y: "elm.swallow.virtualkeypad";
+              rel1.relative: 0.0 1.0;
            }
         }
         part { name: "elm.swallow.virtualkeypad";
@@ -586,6 +590,20 @@
                if (get_int(indicator_visible) == 1)
                   set_state(PART:"indicator_bg", "transparent", 0.0);
             }
+        }
+        program {
+            name: "clipboard_on";
+            signal: "elm,state,clipboard,on";
+            source: "elm";
+            action: STATE_SET "clipboard_on" 0.0;
+            target: "sip_area";
+        }
+        program {
+            name: "clipboard_off";
+            signal: "elm,state,clipboard,off";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "sip_area";
         }
      }
   }
