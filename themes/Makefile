@@ -14,7 +14,22 @@ all: $(TARGET)
 
 $(TARGET): clean
 	cp -f ./inc/$(@:.edj=-inc.edc) ./inc/$(TMP_INC)
-	edje_cc $(EDJE_FLAGS_$(V)) -id ./images/$(@:.edj=) -sd ./sounds -fd ../objects $(SRC) $@
+	edje_cc $(EDJE_FLAGS_$(V))\
+	 -id ./images/$(@:.edj=)\
+	 -id ./images/$(@:.edj=)/Content_views\
+	 -id ./images/$(@:.edj=)/Content_views/Gengrid\
+	 -id ./images/$(@:.edj=)/Controls\
+	 -id ./images/$(@:.edj=)/Controls/00_progress_circle_bg\
+	 -id ./images/$(@:.edj=)/Controls/button\
+	 -id ./images/$(@:.edj=)/Controls/Check_box\
+	 -id ./images/$(@:.edj=)/Controls/Radio_button\
+	 -id ./images/$(@:.edj=)/GUI_Style_Guide\
+	 -id ./images/$(@:.edj=)/Naviframe\
+	 -id ./images/$(@:.edj=)/Naviframe/icon\
+	 -id ./images/$(@:.edj=)/Others\
+	 -id ./images/$(@:.edj=)/Overscrolling\
+	 -id ./images/$(@:.edj=)/Popup\
+	 -sd ./sounds -fd ../objects $(SRC) $@
 
 clean:
 	rm -f *.edj
