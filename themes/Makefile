@@ -23,6 +23,7 @@ $(TARGET): clean
 	 -id ./images/$(@:.edj=)/Controls/button\
 	 -id ./images/$(@:.edj=)/Controls/Check_box\
 	 -id ./images/$(@:.edj=)/Controls/Radio_button\
+	 -id ./images/$(@:.edj=)/Focus\
 	 -id ./images/$(@:.edj=)/GUI_Style_Guide\
 	 -id ./images/$(@:.edj=)/Naviframe\
 	 -id ./images/$(@:.edj=)/Naviframe/icon\
