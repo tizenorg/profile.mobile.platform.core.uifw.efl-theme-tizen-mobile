@@ -910,6 +910,23 @@
 #define GENLIST_PART_BASE \
          GENLIST_PART_BASE_SIZE(0)
 
+
+#define GENLIST_PART_FOCUS \
+   GENLIST_PART_IMAGE("focus_part", \
+      mouse_events: 0; \
+      description { state: "default" 0.0; \
+         visible: 0; \
+         image { \
+            normal: "00_focus.png"; \
+            border: 7 7 7 7; \
+         } \
+      } \
+      description { state: "focused" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 1; \
+      } \
+   )
+
 //****************************************************************************//
 // ****************************** LINE ********************************//
 //****************************************************************************//
@@ -1668,6 +1685,20 @@
             TARGET \
          }
 
+#define GENLIST_PROGRAM_FOCUS \
+      program { name: "focused"; \
+         signal: "elm,state,focused"; \
+         source: "elm"; \
+         action: STATE_SET "focused" 0.0; \
+         target: "focus_part"; \
+      } \
+      program { name: "unfocused"; \
+         signal: "elm,state,unfocused"; \
+         source: "elm"; \
+         action: STATE_SET "default" 0.0; \
+         target: "focus_part"; \
+      }
+
 // If check is swallowed, genlist selected/unselected should be synched with check.
 #define GENLIST_PROGRAM_CHECK(CHECK) \
          program { name: "selected"CHECK; \
@@ -2084,6 +2115,7 @@
          target: "bottom_line2"; \
          target: "bg_reorder"; \
       ) \
+      GENLIST_PROGRAM_FOCUS \
       GENLIST_PROGRAM_SELECT( TARGET \
          target: "bg"; \
          target: "bottom_line"; \
@@ -2114,6 +2146,7 @@
          target: "elm.padding.right"; \
       ) \
       GENLIST_PROGRAM_DISABLED( TARGET ) \
+      GENLIST_PROGRAM_FOCUS \
       GENLIST_PROGRAM_SELECT_DIALOGUE( TARGET ) \
       program { name: "bg_color_change"; \
          signal: "bg_color_change"; \
@@ -2148,6 +2181,7 @@
          target: "bottom_line2"; \
          target: "bg_reorder"; \
       ) \
+      GENLIST_PROGRAM_FOCUS \
       GENLIST_PROGRAM_SELECT( TARGET \
          target: "bg"; \
          target: "bottom_line"; \
