@@ -1395,6 +1395,7 @@ group { name: "elm/toolbar/item/tabbar";
    images {
       image: "00_tab_press.png" COMP;
       image: "00_badge_bg.png" COMP;
+      image: "00_focus.png" COMP;
    }
 
    data.item: "transition_animation_on" "1";
@@ -2047,6 +2048,20 @@ group { name: "elm/toolbar/item/tabbar";
             }
          }
       }
+      part { name: "highlight";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            visible: 0;
+            image {
+                normal: "00_focus.png";
+                border: 8 8 8 8;
+            }
+         }
+         description { state: "highlighted" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
       part { name: "event";
          type: RECT;
          mouse_events: 1;
@@ -2490,6 +2505,18 @@ group { name: "elm/toolbar/item/tabbar";
          source: "elm";
          action: STATE_SET "hidden" 0.0;
          target: "divider";
+      }
+      program { name: "highlight_on";
+         signal: "elm,highlight,on";
+         source: "elm";
+         action: STATE_SET "highlighted" 0.0;
+         target: "highlight";
+      }
+      program { name: "highlight_off";
+         signal: "elm,highlight,off";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "highlight";
       }
    }
 }
