@@ -31,6 +31,8 @@
          image: "00_check_dim_bg.png" COMP; \
          image: "00_check_dim.png" COMP; \
          image: "00_check_Activated.png" COMP; \
+         image: "00_check_press_bg.png" COMP; \
+         image: "00_check_press.png" COMP; \
       } \
       script { \
          public check_state = CHECK_STATE_DEFAULT; \
@@ -63,6 +65,10 @@
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
             } \
+            description { state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "00_check_press_bg.png"; \
+            } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "00_check_dim_bg.png"; \
@@ -88,6 +94,12 @@
                inherit: "default" 0.0; \
                visible: 1; \
                image.normal: "00_check_dim.png"; \
+               color: 255 255 255 255; \
+            } \
+            description { state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
+               image.normal: "00_check_press.png"; \
                color: 255 255 255 255; \
             } \
          } \
@@ -235,6 +247,20 @@
          } \
          program { name: "touch_sound"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
+         } \
+         program { name: "bg_normal"; \
+            signal: "mouse,up,1"; \
+            source: "events2"; \
+            action: STATE_SET "default" 0.0; \
+            target: "bg"; \
+            target: "check"; \
+         } \
+         program { name: "pressed"; \
+            signal: "mouse,down,1"; \
+            source: "events2"; \
+            action: STATE_SET "pressed" 0.0; \
+            target: "bg"; \
+            target: "check"; \
          } \
          program { name: "mouse,out"; \
             signal: "mouse,out"; \
