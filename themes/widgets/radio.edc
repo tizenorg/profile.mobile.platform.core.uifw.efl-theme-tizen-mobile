@@ -37,11 +37,12 @@
 #define RADIO_STYLE_DEFAULT(style_name, min_width, min_height) \
    group { name: "elm/radio/base/"style_name; \
       images { \
-         image: "00_button_radio_dim.png" COMP; \
+         image: "00_button_radio_Activated_dim.png" COMP; \
          image: "00_button_radio_Activated.png" COMP; \
          image: "00_button_radio_bg.png" COMP; \
          image: "00_button_radio_dim_bg.png" COMP; \
          image: "00_button_radio_press_bg.png" COMP; \
+         image: "00_button_radio_press.png" COMP; \
       } \
       parts { \
          part { name: "back_bg"; \
@@ -96,7 +97,11 @@
             } \
             description { state: "disabled_visible" 0.0; \
                inherit: "visible" 0.0; \
-               image.normal: "00_button_radio_dim.png"; \
+               image.normal: "00_button_radio_Activated_dim.png"; \
+            } \
+            description { state: "pressed" 0.0; \
+               inherit: "visible" 0.0; \
+               image.normal: "00_button_radio_press.png"; \
             } \
          } \
          part { name: "opacity_clip"; \
@@ -233,14 +238,44 @@
          program { name: "bg_normal"; \
             signal: "mouse,up,1"; \
             source: "over2"; \
-            action: STATE_SET "default" 0.0; \
-            target: "bg"; \
+            script { \
+               new st[31]; \
+               new Float:vl; \
+               get_state(PART:"radio", st, 30, vl); \
+               if (!strcmp(st, "pressed")) \
+                 set_state(PART:"radio", "visible", 0.0); \
+               else \
+                 set_state(PART:"radio", "default", 0.0); \
+               set_state(PART:"bg", "default", 0.0); \
+            } \
          } \
          program { name: "pressed"; \
             signal: "mouse,down,1"; \
             source: "over2"; \
-            action: STATE_SET "pressed" 0.0; \
-            target: "bg"; \
+            script { \
+               new st[31]; \
+               new Float:vl; \
+               get_state(PART:"radio", st, 30, vl); \
+               if (!strcmp(st, "visible")) \
+                 set_state(PART:"radio", "pressed", 0.0); \
+               else \
+                 set_state(PART:"radio", "default", 0.0); \
+               set_state(PART:"bg", "pressed", 0.0); \
+            } \
+         } \
+         program { name: "mouse,out"; \
+            signal: "mouse,out"; \
+            source: "over2"; \
+            script { \
+               new st[31]; \
+               new Float:vl; \
+               get_state(PART:"radio", st, 30, vl); \
+               if (!strcmp(st, "visible")) \
+                 set_state(PART:"radio", "visible", 0.0); \
+               else \
+                 set_state(PART:"radio", "default", 0.0); \
+               set_state(PART:"bg", "default", 0.0); \
+            } \
          } \
          program { name: "radio_on"; \
             signal: "elm,state,radio,on"; \
