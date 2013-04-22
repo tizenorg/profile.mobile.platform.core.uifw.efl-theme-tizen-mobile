@@ -18,10 +18,10 @@
 
    group { name: "elm/index/base/vertical/default";
       script {
-         public timer_flag;
+         public timer_id, timer_flag;
          public index_hide_timer(val) {
             if (get_int(timer_flag) == 1)
-               run_program(PROGRAM:"index0.inactive");
+               run_program(PROGRAM:"index0.hide");
             return 0;
          }
       }
@@ -367,7 +367,6 @@
             source: "";
             script {
                run_program(PROGRAM:"initial.index0.active");
-               timer(2.0, "index_hide_timer", 0);
             }
          }
          program { name: "drag2";
@@ -391,14 +390,25 @@
          program { name: "initial.index0.active";
             action: STATE_SET "active" 0.0;
             target: "clip";
-            after: "enable_timer";
+            after: "index0.inactive";
          }
          program { name: "index0.inactive";
             signal: "elm,state,inactive";
             source: "elm";
+            script {
+               new v;
+               v = get_int(timer_id);
+               if (v > 0) cancel_timer(v);
+               run_program(PROGRAM:"enable_timer");
+               v = timer(2.0, "index_hide_timer", 0);
+               set_int(timer_id, v);
+            }
+         }
+         program { name: "index0.hide";
             action: STATE_SET "default" 0.0;
             transition: DECELERATE 0.3;
             target: "clip";
+            after: "disable_timer";
          }
          program { name: "index.active";
             signal: "elm,indicator,state,active";
