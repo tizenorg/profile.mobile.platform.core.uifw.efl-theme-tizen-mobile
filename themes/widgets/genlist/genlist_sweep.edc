@@ -86,6 +86,7 @@
          }
       }
    }
+
 // 2.2.5.2
    group { name: "elm/genlist/item/mode/slide2/default";
       alias: "elm/genlist/item_odd/mode/slide2/default";
@@ -111,6 +112,25 @@
          )
       }
    }
+
+#define GENLIST_PART_PADDING_TO( NAME, SIZE, TO, ALIGN, REL1, REL2 ) \
+      GENLIST_PART_SPACER(NAME, \
+         description { state: "default" 0.0; \
+            min: SIZE 0; \
+            max: SIZE -1; \
+            fixed: 1 0; \
+            align: ALIGN; \
+            rel1 { \
+               relative: REL1; \
+               to: TO; \
+            } \
+            rel2 { \
+               relative: REL2; \
+               to: TO; \
+            } \
+         } \
+      )
+
 // 2.2.5.3
    group { name: "elm/genlist/item/mode/slide3/default";
       alias: "elm/genlist/item_odd/mode/slide3/default";
@@ -119,8 +139,11 @@
       inherit: "elm/genlist/item/mode/slide2/default";
       data.item: "contents" "elm.slide.swallow.1 elm.slide.swallow.2 elm.slide.swallow.3";
       parts {
-         GENLIST_PART_PADDING("elm.padding.center", GENLIST_PADDING_SIZE_DEFAULT, 0.333 0, 0.333 1)
-         GENLIST_PART_PADDING("elm.padding.center1", GENLIST_PADDING_SIZE_DEFAULT, 0.666 0, 0.666 1)
+         GENLIST_PART_SPACER("dummy",
+            GENLIST_DESCRIPTION_LR("elm.padding.left", "elm.padding.right", )
+         )
+         GENLIST_PART_PADDING_TO("elm.padding.center", GENLIST_PADDING_SIZE_DEFAULT, "dummy",  0.666 0.5, 0.333 0, 0.333 1)
+         GENLIST_PART_PADDING_TO("elm.padding.center1", GENLIST_PADDING_SIZE_DEFAULT, "dummy", 0.333 0.5, 0.666 0, 0.666 1)
          GENLIST_PART_ICON("elm.slide.swallow.1",
             GENLIST_DESCRIPTION_LR("elm.padding.left", "elm.padding.center",
                min: 0 GENLIST_BTN_01_HEIGHT;
@@ -147,9 +170,9 @@
       inherit: "elm/genlist/item/mode/slide3/default";
       data.item: "contents" "elm.slide.swallow.1 elm.slide.swallow.2 elm.slide.swallow.3 elm.slide.swallow.4";
       parts {
-         GENLIST_PART_PADDING("elm.padding.center", GENLIST_PADDING_SIZE_DEFAULT, 0.25 0, 0.25 1)
-         GENLIST_PART_PADDING("elm.padding.center1", GENLIST_PADDING_SIZE_DEFAULT, 0.5 0, 0.5 1)
-         GENLIST_PART_PADDING("elm.padding.center2", GENLIST_PADDING_SIZE_DEFAULT, 0.75 0, 0.75 1)
+         GENLIST_PART_PADDING_TO("elm.padding.center", GENLIST_PADDING_SIZE_DEFAULT,  "dummy", 0.75 0.5, 0.25 0, 0.25 1)
+         GENLIST_PART_PADDING_TO("elm.padding.center1", GENLIST_PADDING_SIZE_DEFAULT, "dummy", 0.50 0.5, 0.5 0,  0.5 1)
+         GENLIST_PART_PADDING_TO("elm.padding.center2", GENLIST_PADDING_SIZE_DEFAULT, "dummy", 0.25 0.5, 0.75 0, 0.75 1)
          GENLIST_PART_ICON("elm.slide.swallow.1",
             GENLIST_DESCRIPTION_LR("elm.padding.left", "elm.padding.center",
                min: 0 GENLIST_BTN_01_HEIGHT;
