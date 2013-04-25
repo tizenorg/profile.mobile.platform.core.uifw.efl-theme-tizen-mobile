@@ -1402,6 +1402,8 @@ group { name: "elm/toolbar/item/tabbar";
    script {
       public item_state = ITEM_STATE_ENABLED;
       public items_number = 0;
+      public selected = 0;
+      public temp;
    }
    parts {
       part { name: "bg";
@@ -2088,6 +2090,7 @@ group { name: "elm/toolbar/item/tabbar";
          script{
             new st[31];
             new Float:vl;
+            set_int(selected, 1);
             get_state(PART:"elm.text", st, 30, vl);
             if (!strcmp(st, "visible"))
               set_state(PART:"elm.text", "selected", vl);
@@ -2106,6 +2109,7 @@ group { name: "elm/toolbar/item/tabbar";
          script{
             new st[31];
             new Float:vl;
+            set_int(selected, 0);
             get_state(PART:"elm.text", st, 30, vl);
             if (!strcmp(st, "selected"))
               set_state(PART:"elm.text", "visible", vl);
@@ -2297,17 +2301,23 @@ group { name: "elm/toolbar/item/tabbar";
             get_state(PART:"elm.text", st, 30, vl);
             if (!strcmp(st, "default"))
               {
+                if (get_int(selected))
+                  set_str(temp, "selected");
+                else
+                  set_str(temp, "visible");
+                get_str(temp, st, 31);
+
                 if (get_int(items_number) <= 2)
-                  set_state(PART:"elm.text", "visible", 0.30);
+                  set_state(PART:"elm.text", st, 0.30);
                 else if (get_int(items_number) == 3)
-                  set_state(PART:"elm.text", "visible", 0.28);
+                  set_state(PART:"elm.text", st, 0.28);
                 else if (get_int(items_number) >= 4)
                   {
                     get_state(PART:"bg", st, 30, vl);
                     if (!strcmp(st, "icon_text"))
-                      set_state(PART:"elm.text", "visible", 0.28);
+                      set_state(PART:"elm.text", st, 0.28);
                     else
-                      set_state(PART:"elm.text", "visible", 0.24);
+                      set_state(PART:"elm.text", st, 0.24);
                   }
               }
          }
