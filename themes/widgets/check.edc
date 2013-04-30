@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Samsung Electronics Co., Ltd All Rights Reserved 
+ * Copyright (c) 2010 Samsung Electronics Co., Ltd All Rights Reserved
  *
  * PROPRIETARY/CONFIDENTIAL
  *
@@ -455,6 +455,10 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
             } \
+            description { state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "00_check_press_bg.png"; \
+            } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "00_check_dim_bg.png"; \
@@ -480,6 +484,12 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                inherit: "default" 0.0; \
                visible: 1; \
                image.normal: "00_check_Activated_dim.png"; \
+               color: 255 255 255 255; \
+            } \
+            description { state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
+               image.normal: "00_check_press.png"; \
                color: 255 255 255 255; \
             } \
          } \
@@ -603,6 +613,36 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             signal: "hide"; \
             script { \
                set_int(check_visible, CHECK_HIDE); \
+            } \
+         } \
+         program { name: "bg_normal"; \
+            signal: "elm,state,mouse,up"; \
+            source: "elm"; \
+            action: STATE_SET "default" 0.0; \
+            target: "bg"; \
+            target: "check"; \
+         } \
+         program { name: "pressed"; \
+            signal: "elm,state,mouse,down"; \
+            source: "elm"; \
+            action: STATE_SET "pressed" 0.0; \
+            target: "bg"; \
+            target: "check"; \
+         } \
+         program { name: "mouse,out"; \
+            signal: "mouse,out"; \
+            source: "events2"; \
+            script { \
+               if (get_int(check_state) == CHECK_STATE_VISIBLE) \
+                 { \
+                    set_state(PART:"check", "visible", 0.0); \
+                    set_state(PART:"sequence_clip", "visible", 0.0); \
+                 } \
+               else \
+                 { \
+                    set_state(PART:"check", "default", 0.0); \
+                    set_state(PART:"sequence_clip", "default", 0.0); \
+                 } \
             } \
          } \
          program { name: "check_on"; \
@@ -739,6 +779,7 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
    }
 ////////////////////////////////////////////////////////////////////////////////
 CHECK_STYLE_DEFAULT_GENLIST_EDITMODE("default/genlist_editmode", CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC)
+CHECK_STYLE_DEFAULT_GENLIST_EDITMODE("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC)
 ////////////////////////////////////////////////////////////////////////////////
 
 #define CHECK_STYLE_FOR_GENLIST(style_name, min_width, min_height) \
