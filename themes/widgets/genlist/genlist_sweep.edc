@@ -26,14 +26,24 @@
       alias: "elm/genlist/item_compress_odd/mode/slide/default";
 
       GENLIST_PROLOG
+      images {
+         image: "00_quick_menu_bg.png" COMP;
+      }
 
       data.item: "contents" "elm.slide.swallow.1";
       data.item: "mode_part" "elm.swallow.origin";
 
       parts {
-         GENLIST_PART_BG_NORMAL
+         GENLIST_PART_IMAGE("bg_sweep",
+            description { state: "default" 0.0;
+               image {
+                  normal: "00_quick_menu_bg.png";
+                  border: 3 4 3 4;
+                  border_scale: 1;
+               }
+            }
+         )
          GENLIST_PART_BASE
-         GENLIST_PART_BOTTOM_LINE
          GENLIST_PART_PADDING_LEFT
          GENLIST_PART_PADDING_RIGHT
          GENLIST_PART_PADDING_L_SIZE("elm.padding.btn.left", "elm.padding.left", 171)
@@ -44,6 +54,32 @@
                min: 326 GENLIST_BTN_01_HEIGHT;
                max: -1 GENLIST_BTN_01_HEIGHT; )
          )
+         GENLIST_PART_RECT("overlay",
+            description { state: "default" 0.0;
+               color: 0 0 0 128;
+            }
+            description { state: "slide" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         )
+         /*
+         GENLIST_PART_RECT("elm.shadow.left",
+            description { state: "default" 0.0;
+               rel1 {
+                  to: "elm.swallow.origin";
+                  relative: 0 0;
+               }
+               rel2 {
+                  to: "elm.swallow.origin";
+                  relative: 0 1;
+               }
+               align: 1 0.5;
+               min: 20 0;
+               color: 0 0 0 128;
+            }
+         )
+         */
          // Swallow part for original genlist item
          GENLIST_PART_ICON("elm.swallow.origin";,
             repeat_events: 0;
@@ -68,15 +104,16 @@
             source: "elm";
             action: STATE_SET "slide" 0.0;
             target: "elm.swallow.origin";
+            target: "overlay";
             transition: ACCELERATE 0.5;
          }
-
          program {
             name: "slide_left";
             signal: "elm,state,slide,passive";
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "elm.swallow.origin";
+            target: "overlay";
             transition: DECELERATE 0.5;
             after: "signal";
          }

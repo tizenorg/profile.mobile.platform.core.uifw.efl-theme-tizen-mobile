@@ -19,14 +19,14 @@ $(TARGET): clean
 	 -id ./images/$(@:.edj=)/Content_views\
 	 -id ./images/$(@:.edj=)/Content_views/Gengrid\
 	 -id ./images/$(@:.edj=)/Controls\
-	 -id ./images/$(@:.edj=)/Controls/00_progress_circle_bg\
-	 -id ./images/$(@:.edj=)/Controls/button\
+	 -id ./images/$(@:.edj=)/Controls/00_Progress_circle_bg\
+	 -id ./images/$(@:.edj=)/Controls/Button\
 	 -id ./images/$(@:.edj=)/Controls/Check_box\
 	 -id ./images/$(@:.edj=)/Controls/Radio_button\
 	 -id ./images/$(@:.edj=)/Focus\
 	 -id ./images/$(@:.edj=)/GUI_Style_Guide\
 	 -id ./images/$(@:.edj=)/Naviframe\
-	 -id ./images/$(@:.edj=)/Naviframe/icon\
+	 -id ./images/$(@:.edj=)/Naviframe/Icon\
 	 -id ./images/$(@:.edj=)/Others\
 	 -id ./images/$(@:.edj=)/Overscrolling\
 	 -id ./images/$(@:.edj=)/Popup\
