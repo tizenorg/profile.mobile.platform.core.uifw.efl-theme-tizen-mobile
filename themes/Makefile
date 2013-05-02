@@ -30,6 +30,7 @@ $(TARGET): clean
 	 -id ./images/$(@:.edj=)/Others\
 	 -id ./images/$(@:.edj=)/Overscrolling\
 	 -id ./images/$(@:.edj=)/Popup\
+	 -id ./images/$(@:.edj=)/Process\
 	 -sd ./sounds -fd ../objects $(SRC) $@
 
 clean:
