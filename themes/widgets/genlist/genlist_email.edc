@@ -252,6 +252,80 @@
 #define HEIGHT_EMAIL_SUB          42
 #define HEIGHT_EMAIL_CONTENTS      38
 
+
+#define GENLIST_PROGRAMS_EMAIL( TARGET ) \
+   programs { \
+      GENLIST_PROGRAM_DEFAULT( TARGET \
+         target: "bg"; \
+         target: "bg_clip"; \
+         target: "bottom_line"; \
+         target: "bottom_line2"; \
+         target: "bottom_line_clip"; \
+         target: "bg_reorder"; \
+         target: "elm.padding.left"; \
+         target: "elm.padding.right"; \
+      ) \
+      GENLIST_PROGRAM_DISABLED( TARGET \
+         target: "bg"; \
+         target: "bottom_line"; \
+         target: "bottom_line2"; \
+         target: "bg_reorder"; \
+      ) \
+      GENLIST_PROGRAM_FOCUS \
+      GENLIST_PROGRAM_SELECT( TARGET \
+         target: "bg"; \
+         target: "bottom_line"; \
+         target: "bottom_line2"; \
+         target: "bg_reorder"; \
+      ) \
+      GENLIST_PROGRAM_SOUND("bg") \
+      GENLIST_PROGRAM_DECORATE_REORDER( "normal", \
+         target: "bg_clip"; \
+         target: "bg_reorder_clip"; \
+         target: "bottom_line_clip"; \
+         target: "elm.padding.left"; \
+         target: "elm.padding.right"; \
+      ) \
+      program { name: "unselected_target"; \
+         action: STATE_SET "default" 0.0; \
+         TARGET \
+      } \
+      program { name: "unselected_read"; \
+         signal: "elm,state,unselected"; \
+         source: "elm"; \
+         script { \
+            if (get_int(readed) == 1) \
+               run_program(PROGRAM:"go_read_target"); \
+            else \
+               run_program(PROGRAM:"unselected_target"); \
+         } \
+      } \
+      program { name: "go_read"; \
+         signal: "elm,state,read"; \
+         source: "*"; \
+         script { \
+           set_int(readed, 1); \
+           run_program(PROGRAM:"go_read_target"); \
+         } \
+      } \
+      program { name: "go_unread"; \
+         signal: "elm,state,unread"; \
+         source: "*"; \
+         script { \
+           set_int(readed, 0); \
+           run_program(PROGRAM:"go_unread_target"); \
+         } \
+      } \
+      program { name: "go_read_target"; \
+         action: STATE_SET "read" 0.0; \
+         TARGET \
+      } \
+      program { name: "go_unread_target"; \
+         action: STATE_SET "unread" 0.0; \
+         TARGET \
+      } \
+   }
+
 // 2.2.3.5 (Email Style)
    group { GENLIST_NAME("email.list/default")
       GENLIST_PROLOG_NORMAL
@@ -362,10 +436,9 @@
             )
             DESCRIPTION_EMAIL_CONTENTS_OTHERS
          )
-         GENLIST_PART_FLIP
          GENLIST_PART_FOCUS
       }
-      GENLIST_PROGRAMS_READ_TEXT( target: "elm.text.1";
+      GENLIST_PROGRAMS_EMAIL( target: "elm.text.1";
          target: "elm.text.2"; target: "elm.text.3";
          target: "elm.text.4"; target: "elm.text.5";
          target: "elm.swallow.colorbar";
@@ -514,18 +587,13 @@
                fixed: 1 1;
             )
          )
-         GENLIST_PART_FLIP
          GENLIST_PART_FOCUS
       }
-      GENLIST_PROGRAMS_READ_TEXT( target: "elm.text.1"; target: "elm.text.2"; target: "elm.text.3";
+      GENLIST_PROGRAMS_EMAIL( target: "elm.text.1"; target: "elm.text.2"; target: "elm.text.3";
          target: "elm.text.4";
          target: "elm.swallow.colorbar"; target: "elm.icon.1"; target: "elm.icon.2"; target: "elm.icon.3";
          target: "elm.icon.4"; target: "elm.icon.5";
       )
-      GENLIST_PROGRAM_SOUND("elm.icon.4.touch")
-      GENLIST_PROGRAM_SOUND("elm.text.1")
-      GENLIST_PROGRAM_SOUND("elm.text.2")
-      GENLIST_PROGRAM_SOUND("elm.text.3")
    }
 
 // email outbox style with conversation
