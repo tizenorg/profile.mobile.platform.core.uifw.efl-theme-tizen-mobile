@@ -373,6 +373,9 @@
          image : "00_list_group_bg_center_press.png" COMP; \
          image : "00_list_group_bg_bottom.png" COMP; \
          image : "00_list_group_bg_bottom_press.png" COMP; \
+         image : "00_list_group_bg_top_focus.png" COMP; \
+         image : "00_list_group_bg_center_focus.png" COMP; \
+         image : "00_list_group_bg_bottom_focus.png" COMP; \
       }
 
 #define GENLIST_NAME(NAME) \
@@ -398,6 +401,7 @@
          GENLIST_PART_PADDING_RIGHT_EDIT \
          _PARTS \
          GENLIST_PART_FLIP \
+         GENLIST_PART_FOCUS_DIALOGUE \
       }
 
 #define GENLIST_INHERIT_THUMB_CIRCLE(SIZE_PREFIX, MASK_SIZE, PARENT) \
@@ -924,6 +928,46 @@
       description { state: "focused" 0.0; \
          inherit: "default" 0.0; \
          visible: 1; \
+      } \
+   )
+
+#define GENLIST_PART_FOCUS_DIALOGUE \
+   GENLIST_PART_IMAGE("focus_part", \
+      mouse_events: 0; \
+      GENLIST_DESCRIPTION_LR("bg_dialogue_left", "bg_dialogue_right", \
+         visible: 0; \
+         image { \
+            normal: "00_focus.png"; \
+            border: 7 7 7 7; \
+         } \
+      ) \
+      description { state: "focused" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 1; \
+      } \
+      description { state: "top_focused" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 1; \
+         image { \
+            normal: "00_list_group_bg_top_focus.png"; \
+            border: 7 7 7 7; \
+         } \
+      } \
+      description { state: "center_focused" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 1; \
+         image { \
+            normal: "00_list_group_bg_center_focus.png"; \
+            border: 7 7 7 7; \
+         } \
+      } \
+      description { state: "bottom_focused" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 1; \
+         image { \
+            normal: "00_list_group_bg_bottom_focus.png"; \
+            border: 7 7 7 7; \
+         } \
       } \
    )
 
@@ -1700,6 +1744,31 @@
          target: "focus_part"; \
       }
 
+#define GENLIST_PROGRAM_FOCUS_DIALOGUE \
+      program { name: "focused"; \
+         signal: "elm,state,focused"; \
+         source: "elm"; \
+         script { \
+            new st[31]; \
+            new Float:vl; \
+            get_state(PART:"bg_dialogue", st, 30, vl); \
+            if (!strcmp(st, "top") || !strcmp(st, "top_selected")) \
+               set_state(PART:"focus_part", "top_focused", 0.0); \
+            else if (!strcmp(st, "center") || !strcmp(st, "center_selected")) \
+               set_state(PART:"focus_part", "center_focused", 0.0); \
+            else if (!strcmp(st, "bottom") || !strcmp(st, "bottom_selected")) \
+               set_state(PART:"focus_part", "bottom_focused", 0.0); \
+            else if (!strcmp(st, "default") || !strcmp(st, "selected")) \
+               set_state(PART:"focus_part", "focused", 0.0); \
+         } \
+      } \
+      program { name: "unfocused"; \
+         signal: "elm,state,unfocused"; \
+         source: "elm"; \
+         action: STATE_SET "default" 0.0; \
+         target: "focus_part"; \
+      }
+
 #define GENLIST_PROGRAM_SOUND( SRC ) \
          program { name: "play_sound"SRC; \
             signal: "mouse,clicked,1"; \
@@ -2122,7 +2191,7 @@
          target: "elm.padding.right"; \
       ) \
       GENLIST_PROGRAM_DISABLED( TARGET ) \
-      GENLIST_PROGRAM_FOCUS \
+      GENLIST_PROGRAM_FOCUS_DIALOGUE \
       GENLIST_PROGRAM_SELECT_DIALOGUE( TARGET ) \
       program { name: "bg_color_change"; \
          signal: "bg_color_change"; \
