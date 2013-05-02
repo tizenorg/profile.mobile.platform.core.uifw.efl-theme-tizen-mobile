@@ -416,7 +416,7 @@ CHECK_STYLE_DEFAULT("default", CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_WIDTH_IN
 CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MIN_HEIGHT_INC)
 ////////////////////////////////////////////////////////////////////////////////
 
-#define CHECK_STYLE_DEFAULT_GENLIST_EDITMODE(style_name, min_width, min_height) \
+#define CHECK_STYLE_DEFAULT_GENLIST(style_name, min_width, min_height) \
    group { name: "elm/check/base/"style_name; \
       images { \
          image: "00_check_bg.png" COMP; \
@@ -618,16 +618,29 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
          program { name: "bg_normal"; \
             signal: "elm,state,mouse,up"; \
             source: "elm"; \
-            action: STATE_SET "default" 0.0; \
-            target: "bg"; \
-            target: "check"; \
+            script { \
+               if (CHECK_SHOW == get_int(check_visible)) \
+                 { \
+                    set_state(PART:"check", "visible", 0.0); \
+                 } \
+               else \
+                 { \
+                    set_state(PART:"check", "default", 0.0); \
+                 } \
+               set_state(PART:"bg", "default", 0.0); \
+            } \
          } \
          program { name: "pressed"; \
             signal: "elm,state,mouse,down"; \
             source: "elm"; \
             action: STATE_SET "pressed" 0.0; \
-            target: "bg"; \
-            target: "check"; \
+            script { \
+               if (CHECK_SHOW == get_int(check_visible)) \
+                 { \
+                    set_state(PART:"check", "pressed", 0.0); \
+                 } \
+               set_state(PART:"bg", "pressed", 0.0); \
+            } \
          } \
          program { name: "mouse,out"; \
             signal: "mouse,out"; \
@@ -778,8 +791,8 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
       } \
    }
 ////////////////////////////////////////////////////////////////////////////////
-CHECK_STYLE_DEFAULT_GENLIST_EDITMODE("default/genlist_editmode", CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC)
-CHECK_STYLE_DEFAULT_GENLIST_EDITMODE("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC)
+CHECK_STYLE_DEFAULT_GENLIST("default/genlist_editmode", CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC)
+CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC)
 ////////////////////////////////////////////////////////////////////////////////
 
 #define CHECK_STYLE_FOR_GENLIST(style_name, min_width, min_height) \
@@ -1940,7 +1953,7 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
 ////////////////////////////////////////////////////////////////////////////////
 CHECK_STYLE_FAVORITE("favorite", "00_icon_favorite_on_72x72.png", "00_icon_favorite_on_72x72_dim.png", "00_icon_favorite_off_72x72.png", "00_icon_favorite_off_72x72_dim.png", CHECK_STYLE_FAVORITE_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_FAVORITE_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC)
 ////////////////////////////////////////////////////////////////////////////////
-CHECK_STYLE_FAVORITE("favorite_small", "00_icon_favorite_on_45x45.png", "00_icon_favorite_on_45x45.png", "00_icon_favorite_off_45x45.png", "00_icon_favorite_off_45x45.png", CHECK_STYLE_FAVORITE_SMALL_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_FAVORITE_SMALL_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC)
+CHECK_STYLE_FAVORITE("favorite_small", "00_icon_favorite_on_45x45.png", "00_icon_favorite_on_45x45_dim.png", "00_icon_favorite_off_45x45.png", "00_icon_favorite_off_45x45_dim.png", CHECK_STYLE_FAVORITE_SMALL_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_FAVORITE_SMALL_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC)
 ////////////////////////////////////////////////////////////////////////////////
 CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_icon_favorite_on_72x72_dim.png", "00_icon_favorite_off_72x72.png", "00_icon_favorite_off_72x72_dim.png", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE_MIN_HEIGHT_INC)
 ////////////////////////////////////////////////////////////////////////////////
