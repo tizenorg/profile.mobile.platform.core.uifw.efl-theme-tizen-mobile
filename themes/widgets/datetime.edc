@@ -73,8 +73,7 @@
       description {\
          state: "default" 0.0;\
          visible: 0;\
-         min: 0 0;\
-         max: 0 99999;\
+         min: DATETIME_SEPARATOR_MIN_SIZE_INC;\
          align: 0.0 0.5;\
          fixed: 1 1;\
          rel1 {\
@@ -88,7 +87,7 @@
          color: DATETIME_SEPARATOR_TEXT_COLOR_INC;\
          text {\
             font: "Tizen:style=Regular";\
-            size: DATETIME_TEXT_FONT_SIZE_INC;\
+            size: DATETIME_SEPARATOR_TEXT_FONT_SIZE_INC;\
             min: 1 0; \
             text_class: "tizen";\
          }\
@@ -96,13 +95,17 @@
       description { state: "enable" 0.0;\
          inherit: "default" 0.0;\
          visible: 1;\
-         min: DATETIME_SEPARATOR_MIN_SIZE_INC;\
+      }\
+      description { state: "hide" 0.0;\
+         inherit: "default" 0.0;\
+         min: 0 0;\
+         max: 0 0;\
       }\
    }\
    programs {\
       program {\
          name: "separator"#_pos",enabled";\
-         signal: "field"#_pos",enable";\
+         signal: "field"#_pos",separator,enable";\
          source: "elm";\
          action: STATE_SET "enable" 0.0;\
          target: "separator"#_pos;\
@@ -111,7 +114,21 @@
          name: "separator"#_pos",disabled";\
          signal: "field"#_pos",separator,disable";\
          source: "elm";\
-         action: STATE_SET "default" 0.0;\
+         script {\
+            new st[31];\
+            new Float:vl;\
+            get_state(PART:"separator"#_pos, st, 30, vl);\
+            if (strcmp(st, "hide")) \
+            {\
+               set_state(PART:"separator"#_pos, "default", 0.0);\
+            }\
+         }\
+      }\
+      program {\
+         name: "separator"#_pos",hide";\
+         signal: "field"#_pos",disable";\
+         source: "elm";\
+         action: STATE_SET "hide" 0.0;\
          target: "separator"#_pos;\
       }\
    }
@@ -129,6 +146,26 @@ group { name: "elm/datetime/base/default";
          }
       }
       part {
+         name: "left.padding";
+         type: RECT;
+         scale: 1;
+         clip_to: "clipper";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: DATETIME_LEFT_PADDING_SIZE_INC;
+            max: DATETIME_LEFT_PADDING_SIZE_INC;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1.to: "bg";
+            rel2 {
+               relative: 0.0 1.0;
+               to: "bg";
+            }
+         }
+      }
+      part {
          name: "field0";
          type: SWALLOW;
          scale: 1;
@@ -140,10 +177,13 @@ group { name: "elm/datetime/base/default";
             min: 0 0;
             align: 0.0 0.5;
             fixed: 1 0;
-            rel1.to: "bg";
+            rel1 {
+               relative: 0.5 0.0;
+               to_x: "left.padding";
+            }
             rel2 {
-               relative: 0.0 1.0;
-               to: "bg";
+               relative: 0.5 1.0;
+               to_x: "left.padding";
             }
          }
          description { state: "enable" 0.0;
@@ -164,11 +204,29 @@ group { name: "elm/datetime/base/default";
       DATETIME_FIELD(5, 4)
       DATETIME_SEPARATOR(5)
       part {
+         name: "right.padding";
+         type: RECT;
+         scale: 1;
+         clip_to: "clipper";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: DATETIME_LEFT_PADDING_SIZE_INC;
+            max: DATETIME_LEFT_PADDING_SIZE_INC;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel2 {
+               relative: 1.0 0.0;
+               to: "bg";
+            }
+            rel2.to: "bg";
+         }
+      }
+      part {
          name: "clipper";
          type: RECT;
          description { state: "default" 0.0;
-            rel1.to: "field0";
-            rel2.to: "separator5";
             color: 255 255 255 255;
          }
          description { state: "visible" 0.0;
