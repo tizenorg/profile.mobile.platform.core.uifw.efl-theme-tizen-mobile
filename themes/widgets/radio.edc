@@ -16,10 +16,8 @@
  *
  */
 
-#define RADIO_STATE_DEFAULT 0
-#define RADIO_STATE_VISIBLE 1
-#define RADIO_STATE_DISABLED_VISIBLE 2
-#define RADIO_STATE_DISABLED 3
+#define RADIO_STATE_DEFAULT 0 // radio is off
+#define RADIO_STATE_VISIBLE 1 // radio is on
 
    styles {
       style { name: "radio_label_textblock_style";
@@ -43,6 +41,9 @@
          image: "00_button_radio_dim_bg.png" COMP; \
          image: "00_button_radio_press_bg.png" COMP; \
          image: "00_button_radio_press.png" COMP; \
+      } \
+      script { \
+         public radio_state = RADIO_STATE_DEFAULT; \
       } \
       parts { \
          part { name: "back_bg"; \
@@ -239,13 +240,10 @@
             signal: "mouse,up,1"; \
             source: "over2"; \
             script { \
-               new st[31]; \
-               new Float:vl; \
-               get_state(PART:"radio", st, 30, vl); \
-               if (!strcmp(st, "pressed")) \
-                 set_state(PART:"radio", "visible", 0.0); \
+               if (get_int(radio_state) == RADIO_STATE_VISIBLE) \
+                  set_state(PART:"radio", "visible", 0.0); \
                else \
-                 set_state(PART:"radio", "default", 0.0); \
+                  set_state(PART:"radio", "default", 0.0); \
                set_state(PART:"bg", "default", 0.0); \
             } \
          } \
@@ -253,13 +251,10 @@
             signal: "mouse,down,1"; \
             source: "over2"; \
             script { \
-               new st[31]; \
-               new Float:vl; \
-               get_state(PART:"radio", st, 30, vl); \
-               if (!strcmp(st, "visible")) \
-                 set_state(PART:"radio", "pressed", 0.0); \
+               if (get_int(radio_state) == RADIO_STATE_VISIBLE) \
+                  set_state(PART:"radio", "pressed", 0.0); \
                else \
-                 set_state(PART:"radio", "default", 0.0); \
+                  set_state(PART:"radio", "default", 0.0); \
                set_state(PART:"bg", "pressed", 0.0); \
             } \
          } \
@@ -267,13 +262,10 @@
             signal: "mouse,out"; \
             source: "over2"; \
             script { \
-               new st[31]; \
-               new Float:vl; \
-               get_state(PART:"radio", st, 30, vl); \
-               if (!strcmp(st, "visible")) \
-                 set_state(PART:"radio", "visible", 0.0); \
+               if (get_int(radio_state) == RADIO_STATE_VISIBLE) \
+                  set_state(PART:"radio", "visible", 0.0); \
                else \
-                 set_state(PART:"radio", "default", 0.0); \
+                  set_state(PART:"radio", "default", 0.0); \
                set_state(PART:"bg", "default", 0.0); \
             } \
          } \
@@ -281,6 +273,7 @@
             signal: "elm,state,radio,on"; \
             source: "elm"; \
             script { \
+               set_int(radio_state, RADIO_STATE_VISIBLE); \
                run_program(PROGRAM:"radio_show_effect"); \
                run_program(PROGRAM:"radio_draw_effect"); \
             } \
@@ -289,6 +282,7 @@
             signal: "elm,state,radio,off"; \
             source: "elm"; \
             script { \
+               set_int(radio_state, RADIO_STATE_DEFAULT); \
                set_state(PART:"opacity_clip", "default", 0.0); \
                set_state(PART:"radio", "default", 0.0); \
             } \
@@ -406,5 +400,3 @@ RADIO_STYLE_DEFAULT("default/extended", RADIO_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
 
 #undef RADIO_STATE_DEFAULT
 #undef RADIO_STATE_VISIBLE
-#undef RADIO_STATE_DISABLED_VISIBLE
-#undef RADIO_STATE_DISABLED
