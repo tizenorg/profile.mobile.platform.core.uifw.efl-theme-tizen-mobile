@@ -49,14 +49,12 @@ styles{
 }
 
 group { name: "elm/toolbar/base/default";
-   images {
-      image: "00_winset_control_toolbar_bg.png" COMP;
-   }
    parts {
       part { name: "base";
+         type: RECT;
          mouse_events: 1;
          description { state: "default" 0.0;
-            image.normal: "00_winset_control_toolbar_bg.png";
+            color: 248 246 239 255;
          }
       }
       part { name: "clipper";
@@ -96,7 +94,7 @@ group { name: "elm/toolbar/base/default";
 
 group { name: "elm/toolbar/item/default";
    images {
-      image: "00_winset_toolbar_press.png" COMP;
+      image: "00_tab_press.png" COMP;
    }
 
    data.item: "transition_animation_on" "1";
@@ -119,7 +117,7 @@ group { name: "elm/toolbar/item/default";
                offset: TOOLBAR_ITEM_BG_REL2_OFFSET_INC;
             }
             image {
-               normal: "00_winset_toolbar_press.png";
+               normal: "00_tab_press.png";
                border: TOOLBAR_ITEM_BG_SELECTED_BORDER_INC;
             }
             image.middle: SOLID;
@@ -992,22 +990,49 @@ group { name: "elm/toolbar/item/item_horizontal";
 }
 
 group { name: "elm/toolbar/separator/default";
-   images {
-      image: "00_winset_divider_line.png" COMP;
-   }
    parts {
-      part { name: "base";
-         type: IMAGE;
+      part { name: "divider";
+         type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            min: 4 48;
+            min: 4 26;
             max: 4 9999;
             fixed: 1 1;
-            rel1.relative: 0.0 0.5;
-            rel2.relative: 0.0 0.5;
-            image {
-                normal: "00_winset_divider_line.png";
-                border: 0 0 2 2;
+            rel1 {
+                relative: 0.5 0.5;
+            }
+            rel2 {
+                relative: 0.5 0.5;
+            }
+         }
+      }
+      part { name: "divider_left";
+         type: RECT;
+         clip_to: "divider";
+         description { state: "default" 0.0;
+            color: TABBAR_ITEM_DIVIDER_LEFT_COLOR_INC;
+            rel1 {
+                relative: 0.0 0.0;
+                to: "divider";
+            }
+            rel2 {
+                relative: 0.5 1.0;
+                to: "divider";
+            }
+         }
+      }
+      part { name: "divider_right";
+         type: RECT;
+         clip_to: "divider";
+         description { state: "default" 0.0;
+            color: TABBAR_ITEM_DIVIDER_RIGHT_COLOR_INC;
+            rel1 {
+                relative: 0.5 0.0;
+                to: "divider";
+            }
+            rel2 {
+                relative: 1.0 1.0;
+                to: "divider";
             }
          }
       }
@@ -1220,173 +1245,6 @@ group { name: "elm/toolbar/base/tabbar";
             v = timer(0.5, "r_timer", 0);
             set_int(right_timer, v);
          }
-      }
-   }
-}
-
-group { name: "elm/toolbar/more/tabbar";
-   images {
-      image: "00_winset_control_tab_h_line_h.png" COMP;
-   }
-   parts {
-      part { name: "base";
-         type: RECT;
-         mouse_events: 1;
-         description { state: "default" 0.0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 0.0;
-            color: 248 246 239 255;
-         }
-         description { state: "open" 0.0;
-            inherit: "default" 0.0;
-            rel2.relative: 1.0 1.0;
-         }
-         description { state: "open2" 0.0;
-            inherit: "default" 0.0;
-            rel2.relative: 1.0 2.0;
-         }
-      }
-      part { name: "clipper";
-         type: RECT;
-         mouse_events: 0;
-         description {
-            state: "default" 0.0;
-            fixed: 1 1;
-            rel1 {
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
-         }
-         description { state: "open" 0.0;
-            inherit: "default" 0.0;
-            rel2.relative: 1.0 1.0;
-         }
-         description { state: "open2" 0.0;
-            inherit: "default" 0.0;
-            rel2.relative: 1.0 0.5;
-         }
-      }
-      part { name: "clipper2";
-         type: RECT;
-         mouse_events: 0;
-         description {
-            state: "default" 0.0;
-            fixed: 1 1;
-            rel1 {
-               relative: 0.0 0.5;
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
-         }
-         description { state: "open" 0.0;
-            inherit: "default" 0.0;
-            rel1.relative: 0.0 1.0;
-         }
-         description { state: "open2" 0.0;
-            inherit: "default" 0.0;
-            rel1.relative: 0.0 0.5;
-         }
-      }
-      part { name: "elm.swallow.content";
-         clip_to: "clipper";
-         type: SWALLOW;
-         description {
-            state: "default" 0.0;
-            fixed: 1 1;
-            rel1.to: "clipper";
-            rel2.to: "clipper";
-         }
-      }
-      part { name: "elm.swallow.content2";
-         clip_to: "clipper2";
-         type: SWALLOW;
-         description {
-            state: "default" 0.0;
-            fixed: 1 1;
-            rel1.to: "clipper2";
-            rel2.to: "clipper2";
-         }
-      }
-      part { name: "separator";
-         clip_to: "clipper";
-         description { state: "default" 0.0;
-            min: 2 3;
-            max: 9999 3;
-            fixed: 1 1;
-            rel1 {
-                relative: 0.0 0.0;
-                offset: 0 0;
-                to: "clipper";
-            }
-            rel2 {
-                relative: 1.0 0.0;
-                offset: -1 3;
-                to: "clipper";
-            }
-            image {
-               normal: "00_winset_control_tab_h_line_h.png";
-               border: 1 1 1 1;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-      }
-      part { name: "separator2";
-         clip_to: "clipper2";
-         description { state: "default" 0.0;
-            min: 2 3;
-            max: 9999 3;
-            fixed: 1 1;
-            rel1 {
-                relative: 0.0 0.0;
-                offset: 0 0;
-                to: "clipper2";
-            }
-            rel2 {
-                relative: 1.0 0.0;
-                offset: -1 3;
-                to: "clipper2";
-            }
-            image {
-               normal: "00_winset_control_tab_h_line_h.png";
-               border: 1 1 1 1;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-      }
-   }
-   programs {
-      program { name: "open";
-         signal:  "elm,state,open";
-         source:  "elm";
-         action:  STATE_SET "open" 0.0;
-         target:  "base";
-         target:  "clipper";
-         target:  "clipper2";
-         transition: LINEAR 0.2;
-      }
-      program { name: "open2";
-         signal:  "elm,state,open2";
-         source:  "elm";
-         action:  STATE_SET "open2" 0.0;
-         target:  "base";
-         target:  "clipper";
-         target:  "clipper2";
-         transition: LINEAR 0.2;
-      }
-      program { name: "close";
-         signal:  "elm,state,close";
-         source:  "elm";
-         action:  STATE_SET "default" 0.0;
-         target:  "base";
-         transition: LINEAR 0.2;
       }
    }
 }
