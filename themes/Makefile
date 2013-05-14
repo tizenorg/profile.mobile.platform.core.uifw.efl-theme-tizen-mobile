@@ -26,6 +26,7 @@ $(TARGET): clean
 	 -id ./images/$(@:.edj=)/Copy_Paste\
 	 -id ./images/$(@:.edj=)/Focus\
 	 -id ./images/$(@:.edj=)/GUI_Style_Guide\
+	 -id ./images/$(@:.edj=)/Map\
 	 -id ./images/$(@:.edj=)/Naviframe\
 	 -id ./images/$(@:.edj=)/Naviframe/Icon\
 	 -id ./images/$(@:.edj=)/Others\
