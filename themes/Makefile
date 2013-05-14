@@ -29,10 +29,10 @@ $(TARGET): clean
 	 -id ./images/$(@:.edj=)/Map\
 	 -id ./images/$(@:.edj=)/Naviframe\
 	 -id ./images/$(@:.edj=)/Naviframe/Icon\
-	 -id ./images/$(@:.edj=)/Others\
 	 -id ./images/$(@:.edj=)/Overscrolling\
 	 -id ./images/$(@:.edj=)/Popup\
 	 -id ./images/$(@:.edj=)/Process\
+	 -id ./images/$(@:.edj=)/Screen_Reader\
 	 -sd ./sounds -fd ../objects $(SRC) $@
 
 clean:
