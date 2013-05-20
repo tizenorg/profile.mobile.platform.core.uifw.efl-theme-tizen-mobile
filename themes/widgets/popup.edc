@@ -343,10 +343,6 @@ group { name: "elm/notify/block_events/transparent";
             rel2.relative: 1.0 0.0;
             color: POPUP_DIM_BG_TRANS_COLOR_INC;
          }
-         description { state: "clicked" 0.0;
-            inherit: "default" 0.0;
-            color: POPUP_DIM_BG_CLICKED_TRANS_COLOR_INC;
-         }
       }
       part { name: "block_events";
          type: RECT;
@@ -357,39 +353,6 @@ group { name: "elm/notify/block_events/transparent";
             }
             color: POPUP_DIM_BG_TRANS_COLOR_INC;
          }
-         description { state: "clicked" 0.0;
-            inherit: "default" 0.0;
-            color: POPUP_DIM_BG_CLICKED_TRANS_COLOR_INC;
-         }
-      }
-   }
-   programs {
-      program { name: "block_clicked";
-         signal: "mouse,clicked,1";
-         source: "block_events";
-         action: SIGNAL_EMIT "elm,action,click" "elm";
-         after: "deeper_block_color";
-      }
-      program { name: "indicator_clicked";
-         signal: "mouse,clicked,1";
-         source: "popup_indicator";
-         action: SIGNAL_EMIT "elm,action,click" "elm";
-         after: "deeper_block_color";
-      }
-      program {
-         name: "deeper_block_color";
-         action: STATE_SET "clicked" 0.0;
-         target: "block_events";
-         target: "popup_indicator";
-         transition: LINEAR 0.2;
-         after: "default_block_color";
-      }
-      program {
-         name: "default_block_color";
-         action: STATE_SET "default" 0.0;
-         target: "block_events";
-         target: "popup_indicator";
-         transition: LINEAR 0.2;
       }
    }
 }
@@ -408,10 +371,6 @@ group { name: "elm/notify/block_events/dimrect";
             rel2.relative: 1.0 0.0;
             color: POPUP_DIM_BG_COLOR_INC;
          }
-         description { state: "clicked" 0.0;
-            inherit: "default" 0.0;
-            color: POPUP_DIM_BG_COLOR_INC;
-         }
       }
       part { name: "block_events";
          type: RECT;
@@ -420,10 +379,6 @@ group { name: "elm/notify/block_events/dimrect";
                relative: 0.0 1.0;
                to: "popup_indicator";
             }
-            color: POPUP_DIM_BG_COLOR_INC;
-         }
-         description { state: "clicked" 0.0;
-            inherit: "default" 0.0;
             color: POPUP_DIM_BG_COLOR_INC;
          }
       }
@@ -704,8 +659,11 @@ group { name: "elm/popup/base/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel1.to: "elm.bg.title";
-            rel2.to:"elm.bg.title";
+            rel1.to: "base";
+            rel2 {
+               to_x: "base";
+               to_y: "elm.bg.title";
+            }
             color: 0 0 0 0;
          }
       }
