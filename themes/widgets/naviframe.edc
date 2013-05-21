@@ -3124,6 +3124,7 @@
          public tbar_bg = 0;     //Toolbar BG Show call count
          public toolbar_buttons_visible = 0; //when both toolbar buttons are visible
          public tbar_close = 0; //Toolbar lastest Open/Close status
+         public title_buttons_visible = 0; //when both title buttons are visible
          public landscape = 0; //Landscape mode status
       }
       parts {
@@ -3273,17 +3274,23 @@
                visible: 0;
             }
          }
-         part { name: "text_area_center_padding";
+         part { name: "title1_max_area";
             type: RECT;
             mouse_events: 0;
             scale: 1;
             description { state: "default" 0.0;
-               max: 30 -1;
-               align: 0.5 0.0;
+               min: NAVIFRAME_DUAL_TITLE1_MAX_W_WITH_ONE_BUTTON_INC 0;
+               max: NAVIFRAME_DUAL_TITLE1_MAX_W_WITH_ONE_BUTTON_INC -1;
+               align: 0.0 0.5;
                fixed: 1 1;
                rel1 { relative: 1.0 1.0; to_x: "padding_center_text1"; to_y: "top_padding"; }
-               rel2 { relative: 0.0 0.0; to_x: "padding_center_text2"; to_y: "padding_bottom_text"; }
+               rel2 { relative: 1.0 0.0; to_x: "padding_center_text1"; to_y: "padding_bottom_text"; }
                visible: 0;
+            }
+            description { state: "buttons_set" 0.0;
+               inherit: "default" 0.0;
+               min: NAVIFRAME_DUAL_TITLE1_MAX_W_WITH_TWO_BUTTON_INC 0;
+               max: NAVIFRAME_DUAL_TITLE1_MAX_W_WITH_TWO_BUTTON_INC -1;
             }
          }
          part { name: "elm.text.title";
@@ -3303,8 +3310,8 @@
                color3: 255 255 255 255;
                align: 0.0 0.5;
                fixed: 1 1;
-               rel1 { relative: 1.0 1.0; to_x: "padding_center_text1"; to_y: "top_padding"; }
-               rel2 { relative: 0.0 0.0; to_x: "text_area_center_padding"; to_y: "padding_bottom_text"; }
+               rel1 { to: "title1_max_area"; }
+               rel2 { to: "title1_max_area"; }
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
@@ -3326,13 +3333,16 @@
             }
          }
          part { name: "click_event_title1_area";
-             type: RECT;
-             ignore_flags: ON_HOLD;
-             description { state: "default" 0.0;
-                rel1 { to: "elm.text.title"; }
-                rel2 { to: "elm.text.title"; }
-                color: 0 0 0 0;
-             }
+            type: RECT;
+            ignore_flags: ON_HOLD;
+            description { state: "default" 0.0;
+               min: NAVIFRAME_DUAL_TITLE1_MIN_W_INC 0;
+               align: 0.0 0.5;
+               fixed: 1 1;
+               rel1 { to: "elm.text.title"; }
+               rel2 { to: "elm.text.title"; }
+               color: 0 0 0 0;
+            }
          }
          part { name: "text.padding";
             type: RECT;
@@ -3342,8 +3352,8 @@
                min: 30 0;
                align: 0.0 0.0;
                fixed: 1 0;
-               rel1 { relative: 1.0 0.0; to: "elm.text.title"; }
-               rel2 { relative: 1.0 1.0; to: "elm.text.title"; }
+               rel1 { relative: 1.0 0.0; to: "click_event_title1_area"; }
+               rel2 { relative: 1.0 1.0; to: "click_event_title1_area"; }
                visible: 0;
             }
          }
@@ -3937,6 +3947,40 @@
             source: "elm";
             script {
                set_state(PART:"title_bg", "hide", 0.0);
+            }
+         }
+         program { name: "title_left_btn_show";
+            signal: "elm,state,title_left_btn,show";
+            source: "elm";
+            script {
+               set_int(title_buttons_visible, get_int(title_buttons_visible) + 1);
+               if (get_int(title_buttons_visible) >= 2)
+                 set_state(PART:"title1_max_area", "buttons_set", 0.0);
+            }
+         }
+         program { name: "title_left_btn_hide";
+            signal: "elm,state,title_left_btn,hide";
+            source: "elm";
+            script {
+               set_int(title_buttons_visible, get_int(title_buttons_visible) - 1);
+               set_state(PART:"title1_max_area", "default", 0.0);
+            }
+         }
+         program { name: "title_right_btn_show";
+            signal: "elm,state,title_right_btn,show";
+            source: "elm";
+            script {
+               set_int(title_buttons_visible, get_int(title_buttons_visible) + 1);
+               if (get_int(title_buttons_visible) >= 2)
+                 set_state(PART:"title1_max_area", "buttons_set", 0.0);
+            }
+         }
+         program { name: "title_right_btn_hide";
+            signal: "elm,state,title_right_btn,hide";
+            source: "elm";
+            script {
+               set_int(title_buttons_visible, get_int(title_buttons_visible) - 1);
+               set_state(PART:"title1_max_area", "default", 0.0);
             }
          }
          program { name: "prev_btn_show";
