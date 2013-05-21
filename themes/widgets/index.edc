@@ -18,10 +18,15 @@
 
    group { name: "elm/index/base/vertical/default";
       script {
-         public timer_id, timer_flag;
+         public timer_id, timer_flag, timer_id_2, timer_flag_2;
          public index_hide_timer(val) {
             if (get_int(timer_flag) == 1)
                run_program(PROGRAM:"index0.hide");
+            return 0;
+         }
+         public left_line_hide_timer(val) {
+            if (get_int(timer_flag_2) == 1)
+               run_program(PROGRAM:"left.line.dim");
             return 0;
          }
       }
@@ -123,15 +128,9 @@
             clip_to: "clip";
             scale: 1;
             description { state: "default" 0.0;
-               rel1 {
-                  to: "index.top.padding";
-               }
-               rel2 {
-                  to: "index.bottom.padding";
-               }
-               image {
-                  normal: "00_fast_scroll_rollover_bg.png";
-               }
+               rel1.to: "index.top.padding";
+               rel2.to: "index.bottom.padding";
+               image.normal: "00_fast_scroll_rollover_bg.png";
             }
          }
          part { name: "left.line";
@@ -150,6 +149,10 @@
                   to: "bg";
                   relative: 0.0 1.0;
                }
+               color: INDEX_DIVIDER_COLOR_INC;
+            }
+            description { state: "active" 0.0;
+               inherit: "default" 0.0;
                color: INDEX_LEFT_LINE_COLOR_INC;
             }
          }
@@ -367,6 +370,7 @@
             source: "";
             script {
                run_program(PROGRAM:"initial.index0.active");
+               run_program(PROGRAM:"initial.left.line.active");
             }
          }
          program { name: "drag2";
@@ -380,17 +384,17 @@
                set_state_val(PART:"elm.dragable.index.1", STATE_ALIGNMENT, 0.5, dy);
             }
          }
+         program { name: "initial.index0.active";
+            action: STATE_SET "active" 0.0;
+            target: "clip";
+            after: "index0.inactive";
+         }
          program { name: "index0.active";
             signal: "elm,state,active";
             source: "elm";
             action: STATE_SET "active" 0.0;
             target: "clip";
             after: "disable_timer";
-         }
-         program { name: "initial.index0.active";
-            action: STATE_SET "active" 0.0;
-            target: "clip";
-            after: "index0.inactive";
          }
          program { name: "index0.inactive";
             signal: "elm,state,inactive";
@@ -409,6 +413,36 @@
             transition: DECELERATE 0.3;
             target: "clip";
             after: "disable_timer";
+         }
+         program { name: "initial.left.line.active";
+            action: STATE_SET "active" 0.0;
+            target: "left.line";
+            after: "left.line.inactive";
+         }
+         program { name: "left.line.active";
+            signal: "mouse,down,1";
+            source: "elm.swallow.event.0";
+            action: STATE_SET "active" 0.0;
+            target: "left.line";
+            after: "disable_timer_2";
+         }
+         program { name: "left.line.inactive";
+            signal: "mouse,up,1";
+            source: "elm.swallow.event.0";
+            script {
+               new v;
+               v = get_int(timer_id_2);
+               if (v > 0) cancel_timer(v);
+               run_program(PROGRAM:"enable_timer_2");
+               v = timer(2.0, "left_line_hide_timer", 0);
+               set_int(timer_id_2, v);
+            }
+         }
+         program { name: "left.line.dim";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.3;
+            target: "left.line";
+            after: "disable_timer_2";
          }
          program { name: "index.active";
             signal: "elm,indicator,state,active";
@@ -447,6 +481,16 @@
                set_int(timer_flag, 1);
             }
          }
+         program { name: "disable_timer_2";
+            script {
+               set_int(timer_flag_2, 0);
+            }
+         }
+         program { name: "enable_timer_2";
+            script {
+               set_int(timer_flag_2, 1);
+            }
+         }
       }
    }
 
@@ -455,7 +499,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       images {
-         image: "00_fast_scroll_rollover_bg_focus.png" COMP;
+         image: "00_fast_scroll_rollover_bg.png" COMP;
          image: "00_fast_scroll_rollover_bg_line_focus.png" COMP;
       }
       parts {
@@ -467,7 +511,7 @@
                rel1.to: "elm.text";
                rel2.to: "elm.text";
                image {
-                  normal: "00_fast_scroll_rollover_bg_focus.png";
+                  normal: "00_fast_scroll_rollover_bg.png";
                }
                visible: 0;
             }
@@ -476,7 +520,7 @@
                visible: 1;
             }
          }
-         part { name: "bottom.line";
+         part { name: "divider";
             type: RECT;
             mouse_events: 0;
             scale: 1;
@@ -493,7 +537,7 @@
                   relative: 1.0 1.0;
                   offset: -3 0;
                }
-               color: INDEX_BOTTOM_LINE_COLOR_INC;
+               color: INDEX_DIVIDER_COLOR_INC;
             }
             description {
                state: "inactive" 0.0;
@@ -530,11 +574,11 @@
                fixed: 1 1;
                visible: 0;
                rel1 {
-                  to: "bottom.line";
+                  to: "divider";
                   relative: 0.0 0.0;
                }
                rel2 {
-                  to: "bottom.line";
+                  to: "divider";
                   relative: 1.0 0.0;
                }
             }
@@ -592,12 +636,8 @@
                min: INDEX_ITEM_WIDTH_INC INDEX_ITEM_HEIGHT_INC;
                align: 0.5 0.5;
                state: "default" 0.0;
-               rel1 {
-                  relative: 0.0  0.0;
-               }
-               rel2 {
-                  relative: 1.0  1.0;
-               }
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
                color: INDEX_ROLLOVER_TEXT_COLOR_INC;
                text {
                   font: "Tizen:style=Bold";
@@ -635,7 +675,7 @@
             signal: "elm,last,item";
             source: "elm";
             action: STATE_SET "inactive" 0.0;
-            target: "bottom.line";
+            target: "divider";
          }
       }
    }
