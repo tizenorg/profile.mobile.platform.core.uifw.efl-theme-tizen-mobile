@@ -215,6 +215,7 @@ group { name: "elm/notify/block_events/popup";
    alias: "elm/notify/block_events/content_no_vhpad";
    images {
       image: "00_popup_dim_lighting.png" COMP;
+      image: "00_popup_dim_lighting_h.png" COMP;
    }
    parts {
       part { name: "block_events";
@@ -225,11 +226,9 @@ group { name: "elm/notify/block_events/popup";
             image.normal: "00_popup_dim_lighting.png";
             fill.smooth: 0;
          }
-         description { state: "show" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "clicked" 0.0;
-            inherit: "default" 0.0;
+         description { state: "landscape" 0.0;
+            image.normal: "00_popup_dim_lighting_h.png";
+            fill.smooth: 0;
          }
       }
       part {name: "popup_indicator";
@@ -274,18 +273,17 @@ group { name: "elm/notify/block_events/popup";
    }
    programs {
       program { name: "show";
-          signal: "elm,action,show";
-          source: "elm";
-          action: STATE_SET "default" 0.0;
-          target: "block_events";
-          target: "block_events_color";
-          target: "popup_indicator";
+         signal: "elm,action,show";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "block_events";
+         target: "block_events_color";
+         target: "popup_indicator";
        }
       program { name: "show1";
          signal: "show";
          action: STATE_SET "show" 0.0;
          transition: SIN_FAC 0.33 0.5;
-         target: "block_events";
          target: "block_events_color";
          target: "popup_indicator";
       }
@@ -304,7 +302,6 @@ group { name: "elm/notify/block_events/popup";
       program {
          name: "deeper_block_color";
          action: STATE_SET "clicked" 0.0;
-         target: "block_events";
          target: "block_events_color";
          target: "popup_indicator";
          transition: LINEAR 0.2;
@@ -313,10 +310,33 @@ group { name: "elm/notify/block_events/popup";
       program {
          name: "default_block_color";
          action: STATE_SET "show" 0.0;
-         target: "block_events";
          target: "block_events_color";
          target: "popup_indicator";
          transition: LINEAR 0.2;
+      }
+      program { name: "landscape_mode";
+         source: "elm";
+         signal: "elm,state,orient,90";
+         action: STATE_SET "landscape" 0.0;
+         target: "block_events";
+      }
+      program { name: "landscape_mode2";
+         source: "elm";
+         signal: "elm,state,orient,270";
+         action: STATE_SET "landscape" 0.0;
+         target: "block_events";
+      }
+      program { name: "portrait_mode";
+         source: "elm";
+         signal: "elm,state,orient,0";
+         action: STATE_SET "default" 0.0;
+         target: "block_events";
+      }
+      program { name: "portrait_mode2";
+         source: "elm";
+         signal: "elm,state,orient,180";
+         action: STATE_SET "default" 0.0;
+         target: "block_events";
       }
    }
 }
@@ -525,8 +545,8 @@ group { name: "elm/popup/base/default";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: 0 (POPUP_LABEL_DESC_TOP_PADDING-POPUP_CONTENT_DEFAULT_PADDING_TOP_MIN_INC);
-            max: 0 (POPUP_LABEL_DESC_TOP_PADDING-POPUP_CONTENT_DEFAULT_PADDING_TOP_MIN_INC);
+            min: 0 0;
+            max: 0 0;
             fixed: 1 1;
             align: 0.5 0.0;
             rel1 {
@@ -543,8 +563,8 @@ group { name: "elm/popup/base/default";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: 0 (POPUP_LABEL_DESC_BOTTOM_PADDING-POPUP_CONTENT_DEFAULT_PADDING_BOTTOM_MIN_INC);
-            max: 0 (POPUP_LABEL_DESC_BOTTOM_PADDING-POPUP_CONTENT_DEFAULT_PADDING_BOTTOM_MIN_INC);
+            min: 0 0;
+            max: 0 0;
             fixed: 1 1;
             align: 0.5 1.0;
             rel1 {
@@ -1019,6 +1039,25 @@ group { name: "elm/popup/content/content_no_vhpad";
    inherit: "elm/popup/content/default";
    alias: "elm/popup/content/min_menustyle";
    parts {
+      part { name: "pad_t";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 0 POPUP_ACTION_DESC_TOP_PADDING;
+            max: 0 POPUP_ACTION_DESC_TOP_PADDING;
+            fixed: 0 1;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "pad_l";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to_x: "pad_r";
+            }
+         }
+      }
       part { name: "pad_l";
          type: SPACER;
          scale: 1;
@@ -1039,6 +1078,21 @@ group { name: "elm/popup/content/content_no_vhpad";
             fixed: 1 0;
             rel1.relative: 1.0 0.0;
             align: 1.0 0.0;
+         }
+      }
+      part { name: "pad_b";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 POPUP_ACTION_DESC_TOP_PADDING;
+            max: 0 POPUP_ACTION_DESC_TOP_PADDING;
+            fixed: 0 1;
+            rel1 {
+               relative: 0.0 1.0;
+               to_x: "pad_l";
+            }
+            rel2.to_x: "pad_r";
          }
       }
    }
