@@ -18,6 +18,8 @@
 
 #define BUTTON_STATE_ENABLED 0
 #define BUTTON_STATE_DISABLED 1
+#define BUTTON_LANDSCAPE_DISABLED 0
+#define BUTTON_LANDSCAPE_ENABLED 1
 
    sounds {
       sample {
@@ -4417,9 +4419,11 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
       }
       script {
          public button_state = BUTTON_STATE_ENABLED;
+         public landscape_state = BUTTON_LANDSCAPE_DISABLED;
       }
       parts {
-         part { name: "button_image";
+         part { name: "button_bg";
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
                min: BUTTON_NAVIFRAME_TITLE_TEXT_BG_NORMAL_MIN_INC;
@@ -4427,6 +4431,18 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                fixed: 1 1;
                rel1.to: "padding_text_left_top";
                rel2.to: "padding_text_right_bottom";
+            }
+            description { state: "landscape" 0.0;
+               inherit: "default" 0.0;
+               min: BUTTON_NAVIFRAME_TITLE_TEXT_LANDSCAPE_BG_NORMAL_MIN_INC;
+               max: BUTTON_NAVIFRAME_TITLE_TEXT_LANDSCAPE_BG_NORMAL_MAX_INC;
+            }
+         }
+         part { name: "button_image";
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1.to: "button_bg";
+               rel2.to: "button_bg";
                image {
                   normal: "00_toolbar_button.png";
                   border: BUTTON_NAVIFRAME_TITLE_TEXT_BG_PRESSED_BORDER_INC;
@@ -4525,8 +4541,16 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                   style: "btn_naviframe_toolbar";
                }
             }
+            description { state: "landscape" 0.0;
+               inherit: "default" 0.0;
+               min: BUTTON_NAVIFRAME_TITLE_LANDSCAPE_TEXTBLOCK_MIN_INC;
+            }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
+               visible: 1;
+            }
+            description { state: "landscape_visible" 0.0;
+               inherit: "landscape" 0.0;
                visible: 1;
             }
             description { state: "clicked" 0.0;
@@ -4536,8 +4560,18 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                   style: "btn_naviframe_toolbar_pressed";
                }
             }
+            description { state: "landscape_clicked" 0.0;
+               inherit: "landscape" 0.0;
+               visible: 1;
+               text {
+                  style: "btn_naviframe_toolbar_pressed";
+               }
+            }
             description { state: "disabled" 0.0;
                inherit: "default" 0.0;
+            }
+            description { state: "landscape_disabled" 0.0;
+               inherit: "landscape" 0.0;
             }
             description { state: "disabled_visible" 0.0;
                inherit: "default" 0.0;
@@ -4546,8 +4580,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                   style: "btn_naviframe_toolbar_disabled";
                }
             }
+            description { state: "landscape_disabled_visible" 0.0;
+               inherit: "landscape" 0.0;
+               visible: 1;
+               text {
+                  style: "btn_naviframe_toolbar_disabled";
+               }
+            }
             description { state: "focused" 0.0;
                inherit: "default" 0.0;
+               visible: 1;
+               text {
+                  style: "btn_naviframe_toolbar_pressed";
+               }
+            }
+            description { state: "landscape_focused" 0.0;
+               inherit: "landscape" 0.0;
                visible: 1;
                text {
                   style: "btn_naviframe_toolbar_pressed";
@@ -4605,9 +4653,13 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             after: "button_click_anim";
          }
          program { name: "button_click_anim";
-            action: STATE_SET "clicked" 0.0;
-            target: "button_image";
-            target: "elm.text";
+            script {
+               if (get_int(landscape_state) != BUTTON_LANDSCAPE_DISABLED)
+                  set_state(PART:"elm.text", "landscape_clicked", 0.0);
+               else
+                  set_state(PART:"elm.text", "clicked", 0.0);
+               set_state(PART:"button_image", "clicked", 0.0);
+            }
          }
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
@@ -4623,11 +4675,23 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             script {
                new st[31];
                new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "clicked") || !strcmp(st, "focused"))
+               if (get_int(landscape_state) != BUTTON_LANDSCAPE_DISABLED)
                  {
-                    emit("elm,action,default,text,set", "");
-                    set_state(PART:"elm.text", "visible", 0.0);
+                    get_state(PART:"elm.text", st, 30, vl);
+                    if (!strcmp(st, "landscape_clicked") || !strcmp(st, "landscape_focused"))
+                      {
+                         emit("elm,action,default,text,set", "");
+                         set_state(PART:"elm.text", "landscape_visible", 0.0);
+                      }
+                 }
+               else
+                 {
+                    get_state(PART:"elm.text", st, 30, vl);
+                    if (!strcmp(st, "clicked") || !strcmp(st, "focused"))
+                      {
+                         emit("elm,action,default,text,set", "");
+                         set_state(PART:"elm.text", "visible", 0.0);
+                      }
                  }
                if (get_int(button_state) != BUTTON_STATE_DISABLED)
                  set_state(PART:"button_image", "default", 0.0);
@@ -4648,16 +4712,30 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             source: "elm";
             script {
                if (get_int(button_state) != BUTTON_STATE_DISABLED)
-                 set_state(PART:"elm.text", "visible", 0.0);
+                 {
+                    if (get_int(landscape_state) != BUTTON_LANDSCAPE_DISABLED)
+                      set_state(PART:"elm.text", "landscape_visible", 0.0);
+                    else
+                      set_state(PART:"elm.text", "visible", 0.0);
+                 }
                else
-                 set_state(PART:"elm.text", "disabled_visible", 0.0);
+                 {
+                    if (get_int(landscape_state) != BUTTON_LANDSCAPE_DISABLED)
+                      set_state(PART:"elm.text", "landscape_disabled_visible", 0.0);
+                    else
+                      set_state(PART:"elm.text", "disabled_visible", 0.0);
+                 }
             }
          }
          program { name: "text_hide";
             signal: "elm,state,text,hidden";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "elm.text";
+            script {
+               if (get_int(landscape_state) != BUTTON_LANDSCAPE_DISABLED)
+                 set_state(PART:"elm.text", "landscape", 0.0);
+               else
+                 set_state(PART:"elm.text", "default", 0.0);
+            }
          }
          program { name: "disable";
             signal: "elm,state,disabled";
@@ -4672,11 +4750,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             script {
                new st[31];
                new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.text", "disabled_visible", 0.0);
+               if (get_int(landscape_state) != BUTTON_LANDSCAPE_DISABLED)
+                 {
+                    get_state(PART:"elm.text", st, 30, vl);
+                    if (!strcmp(st, "landscape_visible"))
+                      set_state(PART:"elm.text", "landscape_disabled_visible", 0.0);
+                    else
+                      set_state(PART:"elm.text", "landscape_disabled", 0.0);
+                 }
                else
-                 set_state(PART:"elm.text", "disabled", 0.0);
+                 {
+                    get_state(PART:"elm.text", st, 30, vl);
+                    if (!strcmp(st, "visible"))
+                      set_state(PART:"elm.text", "disabled_visible", 0.0);
+                    else
+                      set_state(PART:"elm.text", "disabled", 0.0);
+                 }
                set_int(button_state, BUTTON_STATE_DISABLED);
             }
          }
@@ -4693,13 +4782,86 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             script {
                new st[31];
                new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "disabled_visible"))
-                 set_state(PART:"elm.text", "visible", 0.0);
+               if (get_int(landscape_state) != BUTTON_LANDSCAPE_DISABLED)
+                 {
+                    get_state(PART:"elm.text", st, 30, vl);
+                    if (!strcmp(st, "landscape_disabled_visible"))
+                      set_state(PART:"elm.text", "landscape_visible", 0.0);
+                    else
+                      set_state(PART:"elm.text", "landscape", 0.0);
+                 }
                else
-                 set_state(PART:"elm.text", "default", 0.0);
+                 {
+                    get_state(PART:"elm.text", st, 30, vl);
+                    if (!strcmp(st, "disabled_visible"))
+                      set_state(PART:"elm.text", "visible", 0.0);
+                    else
+                      set_state(PART:"elm.text", "default", 0.0);
+                 }
                set_int(button_state, BUTTON_STATE_ENABLED);
             }
+         }
+         program { name: "change_to_landscape";
+            signal: "elm,state,landscape";
+            source: "elm";
+            script {
+               new st[31];
+               new Float:vl;
+               set_int(landscape_state, BUTTON_LANDSCAPE_ENABLED);
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "default"))
+                 set_state(PART:"elm.text", "landscape", 0.0);
+               else if (!strcmp(st, "clicked"))
+                 set_state(PART:"elm.text", "landscape_clicked", 0.0);
+               else if (!strcmp(st, "disabled"))
+                 set_state(PART:"elm.text", "landscape_disabled", 0.0);
+               else if (!strcmp(st, "disabled_visible"))
+                 set_state(PART:"elm.text", "landscape_disabled_visible", 0.0);
+               else
+                 set_state(PART:"elm.text", "landscape_visible", 0.0);
+               set_state(PART:"button_bg", "landscape", 0.0);
+            }
+         }
+         program { name: "change_to_portrait";
+            signal: "elm,state,portrait";
+            source: "elm";
+            script {
+               new st[31];
+               new Float:vl;
+               set_int(landscape_state, BUTTON_LANDSCAPE_DISABLED);
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "landscape"))
+                 set_state(PART:"elm.text", "default", 0.0);
+               else if (!strcmp(st, "landscape_clicked"))
+                 set_state(PART:"elm.text", "clicked", 0.0);
+               else if (!strcmp(st, "landscape_disabled"))
+                 set_state(PART:"elm.text", "disabled", 0.0);
+               else if (!strcmp(st, "landscape_disabled_visible"))
+                 set_state(PART:"elm.text", "disabled_visible", 0.0);
+               else
+                 set_state(PART:"elm.text", "visible", 0.0);
+               set_state(PART:"button_bg", "default", 0.0);
+            }
+         }
+         program { name: "landscape_mode";
+            source: "elm";
+            signal: "elm,state,orient,90";
+            action: SIGNAL_EMIT "elm,state,landscape" "elm";
+         }
+         program { name: "landscape_mode2";
+            source: "elm";
+            signal: "elm,state,orient,270";
+            action: SIGNAL_EMIT "elm,state,landscape" "elm";
+         }
+         program { name: "portrait_mode";
+            source: "elm";
+            signal: "elm,state,orient,0";
+            action: SIGNAL_EMIT "elm,state,portrait" "elm";
+         }
+         program { name: "portrait_mode2";
+            source: "elm";
+            signal: "elm,state,orient,180";
+            action: SIGNAL_EMIT "elm,state,portrait" "elm";
          }
          program { name: "focused";
             //signal: "elm,action,focus";
@@ -4723,7 +4885,8 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
    group { name: "elm/button/base/naviframe/toolbar/left";
       inherit: "elm/button/base/naviframe/toolbar/default";
       parts {
-         part { name: "button_image";
+         part { name: "button_bg";
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
                min: BUTTON_NAVIFRAME_TITLE_TEXT_BG_NORMAL_MIN_INC;
@@ -4732,23 +4895,11 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                rel1.to: "padding_text_left_top";
                rel2.to: "padding_text_right_bottom";
                align: 1.0 0.5;
-               image {
-                  normal: "00_toolbar_button.png";
-                  border: BUTTON_NAVIFRAME_TITLE_TEXT_BG_PRESSED_BORDER_INC;
-                  border_scale: 1;
-               }
             }
-            description { state: "clicked" 0.0;
+            description { state: "landscape" 0.0;
                inherit: "default" 0.0;
-               image.normal: "00_toolbar_button_press.png";
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "00_toolbar_button_dim.png";
-            }
-            description { state: "focused" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "00_toolbar_button_press.png";
+               min: BUTTON_NAVIFRAME_TITLE_TEXT_LANDSCAPE_BG_NORMAL_MIN_INC;
+               max: BUTTON_NAVIFRAME_TITLE_TEXT_LANDSCAPE_BG_NORMAL_MAX_INC;
             }
          }
          part { name: "elm.text";
@@ -4775,8 +4926,16 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                   style: "btn_naviframe_toolbar";
                }
             }
+            description { state: "landscape" 0.0;
+               inherit: "default" 0.0;
+               min: BUTTON_NAVIFRAME_TITLE_LANDSCAPE_TEXTBLOCK_MIN_INC;
+            }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
+               visible: 1;
+            }
+            description { state: "landscape_visible" 0.0;
+               inherit: "landscape" 0.0;
                visible: 1;
             }
             description { state: "clicked" 0.0;
@@ -4786,8 +4945,18 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                   style: "btn_naviframe_toolbar_pressed";
                }
             }
+            description { state: "landscape_clicked" 0.0;
+               inherit: "landscape" 0.0;
+               visible: 1;
+               text {
+                  style: "btn_naviframe_toolbar_pressed";
+               }
+            }
             description { state: "disabled" 0.0;
                inherit: "default" 0.0;
+            }
+            description { state: "landscape_disabled" 0.0;
+               inherit: "landscape" 0.0;
             }
             description { state: "disabled_visible" 0.0;
                inherit: "default" 0.0;
@@ -4796,8 +4965,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                   style: "btn_naviframe_toolbar_disabled";
                }
             }
+            description { state: "landscape_disabled_visible" 0.0;
+               inherit: "landscape" 0.0;
+               visible: 1;
+               text {
+                  style: "btn_naviframe_toolbar_disabled";
+               }
+            }
             description { state: "focused" 0.0;
                inherit: "default" 0.0;
+               visible: 1;
+               text {
+                  style: "btn_naviframe_toolbar_pressed";
+               }
+            }
+            description { state: "landscape_focused" 0.0;
+               inherit: "landscape" 0.0;
                visible: 1;
                text {
                   style: "btn_naviframe_toolbar_pressed";
@@ -4811,7 +4994,8 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
    group { name: "elm/button/base/naviframe/toolbar/right";
       inherit: "elm/button/base/naviframe/toolbar/default";
       parts {
-         part { name: "button_image";
+         part { name: "button_bg";
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
                min: BUTTON_NAVIFRAME_TITLE_TEXT_BG_NORMAL_MIN_INC;
@@ -4820,23 +5004,11 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                rel1.to: "padding_text_left_top";
                rel2.to: "padding_text_right_bottom";
                align: 0.0 0.5;
-               image {
-                  normal: "00_toolbar_button.png";
-                  border: BUTTON_NAVIFRAME_TITLE_TEXT_BG_PRESSED_BORDER_INC;
-                  border_scale: 1;
-               }
             }
-            description { state: "clicked" 0.0;
+            description { state: "landscape" 0.0;
                inherit: "default" 0.0;
-               image.normal: "00_toolbar_button_press.png";
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "00_toolbar_button_dim.png";
-            }
-            description { state: "focused" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "00_toolbar_button_press.png";
+               min: BUTTON_NAVIFRAME_TITLE_TEXT_LANDSCAPE_BG_NORMAL_MIN_INC;
+               max: BUTTON_NAVIFRAME_TITLE_TEXT_LANDSCAPE_BG_NORMAL_MAX_INC;
             }
          }
          part { name: "elm.text";
@@ -4863,8 +5035,16 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                   style: "btn_naviframe_toolbar";
                }
             }
+            description { state: "landscape" 0.0;
+               inherit: "default" 0.0;
+               min: BUTTON_NAVIFRAME_TITLE_LANDSCAPE_TEXTBLOCK_MIN_INC;
+            }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
+               visible: 1;
+            }
+            description { state: "landscape_visible" 0.0;
+               inherit: "landscape" 0.0;
                visible: 1;
             }
             description { state: "clicked" 0.0;
@@ -4874,8 +5054,18 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                   style: "btn_naviframe_toolbar_pressed";
                }
             }
+            description { state: "landscape_clicked" 0.0;
+               inherit: "landscape" 0.0;
+               visible: 1;
+               text {
+                  style: "btn_naviframe_toolbar_pressed";
+               }
+            }
             description { state: "disabled" 0.0;
                inherit: "default" 0.0;
+            }
+            description { state: "landscape_disabled" 0.0;
+               inherit: "landscape" 0.0;
             }
             description { state: "disabled_visible" 0.0;
                inherit: "default" 0.0;
@@ -4884,8 +5074,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                   style: "btn_naviframe_toolbar_disabled";
                }
             }
+            description { state: "landscape_disabled_visible" 0.0;
+               inherit: "landscape" 0.0;
+               visible: 1;
+               text {
+                  style: "btn_naviframe_toolbar_disabled";
+               }
+            }
             description { state: "focused" 0.0;
                inherit: "default" 0.0;
+               visible: 1;
+               text {
+                  style: "btn_naviframe_toolbar_pressed";
+               }
+            }
+            description { state: "landscape_focused" 0.0;
+               inherit: "landscape" 0.0;
                visible: 1;
                text {
                   style: "btn_naviframe_toolbar_pressed";
@@ -7194,3 +7398,5 @@ group { name: "elm/button/base/bubble_circle/sent";
 
 #undef BUTTON_STATE_ENABLED
 #undef BUTTON_STATE_DISABLED
+#undef BUTTON_LANDSCAPE_DISABLED
+#undef BUTTON_LANDSCAPE_ENABLED
