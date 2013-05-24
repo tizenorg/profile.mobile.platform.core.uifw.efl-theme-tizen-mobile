@@ -691,7 +691,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 	group {
 		name: "elm/ctxpopup/layout/more/default";
-		max: CTXPOPUP_MORE_WIDTH_INC ((CTXPOPUP_ITEM_HEIGHT_MIN_INC*7)+CTXPOPUP_SHADOW_TOP_PADDING+CTXPOPUP_SHADOW_BOTTOM_PADDING+(CTXPOPUP_SEPARATOR_PXLINE_SIZE_INC*12)-CTXPOPUP_CONTENT_PADDING);
+		max: CTXPOPUP_MORE_WIDTH_MAX_INC ((CTXPOPUP_ITEM_HEIGHT_MIN_INC*7)+CTXPOPUP_SHADOW_TOP_PADDING+CTXPOPUP_SHADOW_BOTTOM_PADDING+(CTXPOPUP_SEPARATOR_PXLINE_SIZE_INC*12)-CTXPOPUP_CONTENT_PADDING);
 		parts {
 			part {
 				name:"top_padding";
@@ -791,33 +791,28 @@
 				clip_to: "layout_clip";
 				description {
 					state: "default" 0.0;
-					max: CTXPOPUP_MORE_WIDTH_INC 806;
 					visible: 0;
 				}
 				description {
 					state: "show_up" 0.0;
-					max: CTXPOPUP_MORE_WIDTH_INC 806;
 					rel1 {to_x:"left_padding"; to_y:"top_padding"; relative: 1.0 1.0;}
 					rel2 {to_x:"right_padding"; to_y:"top_padding"; relative: 0.0 1.0;}
 					align: 0.5 0.0;
 				}
 				description {
 					state: "show_down" 0.0;
-					max: CTXPOPUP_MORE_WIDTH_INC 806;
 					rel1 {to_x:"left_padding"; to_y:"bottom_padding"; relative: 1.0 0.0;}
 					rel2 {to_x:"right_padding"; to_y:"bottom_padding"; relative: 0.0 0.0;}
 					align: 0.5 1.0;
 				}
 				description {
 					state: "show_left" 0.0;
-					max: CTXPOPUP_MORE_WIDTH_INC 806;
 					rel1 {to_x:"left_padding"; to_y:"top_padding"; relative: 1.0 1.0;}
 					rel2 {to_x:"left_padding"; to_y:"bottom_padding"; relative: 1.0 0.0;}
 					align: 0.0 0.5;
 				}
 				description {
 					state: "show_right" 0.0;
-					max: CTXPOPUP_MORE_WIDTH_INC 806;
 					rel1 {to_x:"right_padding"; to_y:"top_padding"; relative: 0.0 1.0;}
 					rel2 {to_x:"right_padding"; to_y:"bottom_padding"; relative: 0.0 0.0;}
 					align: 1.0 0.5;
@@ -1020,7 +1015,7 @@
     group {
         name: "elm/ctxpopup/layout/landscape/more/default";
         inherit: "elm/ctxpopup/layout/landscape/default";
-        max: CTXPOPUP_MORE_WIDTH_INC ((CTXPOPUP_ITEM_HEIGHT_MIN_INC*5)+CTXPOPUP_SHADOW_TOP_PADDING+CTXPOPUP_SHADOW_BOTTOM_PADDING+(CTXPOPUP_SEPARATOR_PXLINE_SIZE_INC*8)-CTXPOPUP_CONTENT_PADDING);
+        max: CTXPOPUP_MORE_WIDTH_MAX_INC ((CTXPOPUP_ITEM_HEIGHT_MIN_INC*5)+CTXPOPUP_SHADOW_TOP_PADDING+CTXPOPUP_SHADOW_BOTTOM_PADDING+(CTXPOPUP_SEPARATOR_PXLINE_SIZE_INC*8)-CTXPOPUP_CONTENT_PADDING);
     }
 ///////////////////////////////////////////////////////////////////////////////
 	group {
@@ -1051,8 +1046,8 @@
 			}
 		}
 		images {
-			image: "00_popup_scroll.png" COMP;
-			image: "00_scroll_bar_h.png" COMP;
+			image: "00_popup_scroll_v.png" COMP;
+			image: "00_popup_scroll_h.png" COMP;
 		}
 		parts {
 			part {
@@ -1147,7 +1142,7 @@
 				description {
 					state: "default" 0.0;
 					fixed: 1 1;
-					min: CTXPOPUP_SCROLLER_MIN_SIZE_INC;
+					min: CTXPOPUP_SCROLLER_V_MIN_SIZE_INC;
 					rel1 {
 						relative: 0.5  0.5;
 						to: "sb_vbar";
@@ -1157,7 +1152,7 @@
 						to: "sb_vbar";
 					}
 					image {
-						normal: "00_popup_scroll.png";
+						normal: "00_popup_scroll_v.png";
 						border: 0 0 8 8;
 						border_scale: 1;
 					}
@@ -1194,6 +1189,22 @@
 				}
 			}
 			part {
+				name: "sb_hbar_padding";
+				type: RECT;
+				mouse_events: 0;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					fixed: 1 1;
+					min: 0 (CTXPOPUP_SCROLLER_PADDING-CTXPOPUP_CONTENT_PADDING);
+					max: 0 (CTXPOPUP_SCROLLER_PADDING-CTXPOPUP_CONTENT_PADDING);
+					visible: 0;
+					align: 0.0 1.0;
+					rel1 { to:"clipper"; relative: 0.0 1.0; }
+					rel2 { to:"clipper"; relative: 1.0 1.0; }
+				}
+			}
+			part {
 				name: "sb_hbar";
 				type: RECT;
 				mouse_events: 0;
@@ -1203,8 +1214,8 @@
 					fixed: 1 1;
 					visible: 0;
 					align: 0.0 1.0;
-					rel1 {to:"clipper"; relative: 0.0 1.0;}
-					rel2 {to:"clipper"; relative: 1.0 1.0;}
+					rel1 {to_x:"clipper"; to_y: "sb_hbar_padding"; relative: 0.0 0.0;}
+					rel2 {to_x:"clipper"; to_y: "sb_hbar_padding"; relative: 1.0 0.0;}
 				}
 			}
 			part {
@@ -1220,12 +1231,12 @@
 				description {
 					state: "default" 0.0;
 					fixed: 1 1;
-					min: 32 12;
+					min: CTXPOPUP_SCROLLER_H_MIN_SIZE_INC;
 					rel1 {relative: 0.5  0.5; to: "sb_hbar";}
 					rel2 {relative: 0.5  0.5; to: "sb_hbar";}
 					image {
-						normal: "00_scroll_bar_h.png";
-						border: 12 14 0 0;
+						normal: "00_popup_scroll_h.png";
+						border: 8 8 0 0;
 						border_scale: 1;
 					}
 				}
@@ -2427,14 +2438,7 @@ group {
 				signal: "elm,state,disabled";
 				source: "elm";
 				script {
-					new st[31];
-					new Float:vl;
-					get_state(PART:"elm.text", st, 30, vl);
-					if ((!strcmp(st, "ellipsis")) || (!strcmp(st, "ellipsis_disabled")))
-						set_state(PART:"elm.text", "ellipsis_disabled", 0.0);
-					else
-						set_state(PART:"elm.text", "disabled", 0.0);
-
+					set_state(PART:"elm.text", "disabled", 0.0);
 					set_state(PART:"disclip", "disabled", 0.0);
 				}
 			}
@@ -2443,14 +2447,7 @@ group {
 				signal: "elm,state,enabled";
 				source: "elm";
 				script {
-					new st[31];
-					new Float:vl;
-					get_state(PART:"elm.text", st, 30, vl);
-					if ((!strcmp(st, "ellipsis")) || (!strcmp(st, "ellipsis_disabled")))
-						set_state(PART:"elm.text", "ellipsis", 0.0);
-					else
-						set_state(PART:"elm.text", "default", 0.0);
-
+					set_state(PART:"elm.text", "default", 0.0);
 					set_state(PART:"disclip", "default", 0.0);
 				}
 			}
@@ -2959,6 +2956,11 @@ group {
 					min: (CTXPOPUP_WIDTH_MAX_INC-CTXPOPUP_ITEM_TEXT_PADDING_INC-CTXPOPUP_ICON_WIDTH_INC-(CTXPOPUP_ITEM_ICON_PADDING_INC*2)) CTXPOPUP_ITEM_HEIGHT_MIN_INC;
 					text.min: 0 1;
 				}
+				description {
+					state: "ellipsis_disabled" 0.0;
+					inherit: "ellipsis" 0.0;
+					color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
+				}
 			}
 			part {
 				name: "text_right_padding";
@@ -3172,7 +3174,7 @@ group {
 					state: "default" 0.0;
 					rel1 {to:"frame_shadow_left_top_padding";}
 					rel2 {to:"frame_shadow_right_bottom_padding";}
-					min: CTXPOPUP_MORE_WIDTH_INC 0;
+					min: CTXPOPUP_MORE_WIDTH_MIN_INC 0;
 					image {
 						normal: "00_popup_bubble_bg.png";
 						border: CTXPOPUP_BUBBLE_BG_IMAGE_BORDER;
@@ -3452,8 +3454,8 @@ group {
 				description {
 					state: "default" 0.0;
 					visible: 0;
-					min: (CTXPOPUP_MORE_WIDTH_INC-CTXPOPUP_SHADOW_LEFT_PADDING-CTXPOPUP_SHADOW_RIGHT_PADDING-CTXPOPUP_CONTENT_PADDING*2) 1;
-					max: (CTXPOPUP_MORE_WIDTH_INC-CTXPOPUP_SHADOW_LEFT_PADDING-CTXPOPUP_SHADOW_RIGHT_PADDING-CTXPOPUP_CONTENT_PADDING*2) CTXPOPUP_MORE_ITEM_HEIGHT_MAX_INC;
+					min: (CTXPOPUP_MORE_WIDTH_MIN_INC-CTXPOPUP_SHADOW_LEFT_PADDING-CTXPOPUP_SHADOW_RIGHT_PADDING-CTXPOPUP_CONTENT_PADDING*2) 1;
+					max: (CTXPOPUP_MORE_WIDTH_MAX_INC-CTXPOPUP_SHADOW_LEFT_PADDING-CTXPOPUP_SHADOW_RIGHT_PADDING-CTXPOPUP_CONTENT_PADDING*2) CTXPOPUP_MORE_ITEM_HEIGHT_MAX_INC;
 				}
 				description {
 					state: "clicked" 0.0;
@@ -3603,7 +3605,7 @@ group {
 						size: CTXPOPUP_MORE_ITEM_TEXT_SIZE_INC;
 						size_range: CTXPOPUP_LIST_MAIN_TEXT_SIZE_INC CTXPOPUP_LIST_MAIN_TEXT_MAX_SIZE_INC;
 						align: 0.0 0.5;
-						min: 0 1;
+						min: 1 1;
 						text_class: "list_item";
 					}
 				}
@@ -3615,6 +3617,17 @@ group {
 				description {
 					state: "disabled" 0.0;
 					inherit: "default" 0.0;
+					color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
+				}
+				description {
+					state: "ellipsis" 0.0;
+					inherit: "default" 0.0;
+					min: CTXPOPUP_MORE_TEXT_MAX_INC CTXPOPUP_MORE_ITEM_HEIGHT_MIN_INC;
+					text.min: 0 1;
+				}
+				description {
+					state: "ellipsis_disabled" 0.0;
+					inherit: "ellipsis" 0.0;
 					color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
 				}
 			}
@@ -3673,6 +3686,13 @@ group {
 			}
 		}
 		programs {
+			program {
+				name: "text_ellipsis";
+				signal: "elm,state,text,ellipsis";
+				source: "elm";
+				action: STATE_SET "ellipsis" 0.0;
+				target: "elm.text";
+			}
 			program {
 				name: "item_unclick";
 				signal: "mouse,clicked,1";
@@ -4169,6 +4189,8 @@ group {
 					image: "00_more_popup_press.png" COMP;
 				}
 
+		data.item: "item_max_size" CTXPOPUP_TEXT_MAX_INC;
+
 		parts {
 			part {
 				name: "event_blocker";
@@ -4187,8 +4209,8 @@ group {
 				description {
 					state: "default" 0.0;
 					visible: 0;
-					min: (CTXPOPUP_TOOLBAR_SEGMENTEDCONTROL_WIDTH_INC-CTXPOPUP_SHADOW_LEFT_PADDING-CTXPOPUP_SHADOW_RIGHT_PADDING-CTXPOPUP_CONTENT_PADDING*2) 1;
-					max: (CTXPOPUP_TOOLBAR_SEGMENTEDCONTROL_WIDTH_INC-CTXPOPUP_SHADOW_LEFT_PADDING-CTXPOPUP_SHADOW_RIGHT_PADDING-CTXPOPUP_CONTENT_PADDING*2) CTXPOPUP_TOOLBAR_SEGMENTEDCONTROL_HEIGHT_MAX_INC;
+					min: (CTXPOPUP_TOOLBAR_SEGMENTEDCONTROL_WIDTH_MIN_INC-CTXPOPUP_SHADOW_LEFT_PADDING-CTXPOPUP_SHADOW_RIGHT_PADDING-CTXPOPUP_CONTENT_PADDING*2) 1;
+					max: (CTXPOPUP_TOOLBAR_SEGMENTEDCONTROL_WIDTH_MAX_INC-CTXPOPUP_SHADOW_LEFT_PADDING-CTXPOPUP_SHADOW_RIGHT_PADDING-CTXPOPUP_CONTENT_PADDING*2) CTXPOPUP_TOOLBAR_SEGMENTEDCONTROL_HEIGHT_MAX_INC;
 				}
 				description {
 					state: "clicked" 0.0;
@@ -4284,7 +4306,7 @@ group {
 						size: CTXPOPUP_LIST_MAIN_TEXT_SIZE_INC;
 						size_range: CTXPOPUP_LIST_MAIN_TEXT_SIZE_INC CTXPOPUP_LIST_MAIN_TEXT_MAX_SIZE_INC;
 						align: 0.5 0.5;
-						min: 0 1;
+						min: 1 1;
 						text_class: "list_item";
 					}
 				}
@@ -4292,10 +4314,22 @@ group {
 					state: "clicked" 0.0;
 					inherit: "default" 0.0;
 					color: CTXPOPUP_LIST_MAIN_TEXT_PRESS_COLOR_INC;
+					text.min: 0 1;
 				}
 				description {
 					state: "disabled" 0.0;
 					inherit: "default" 0.0;
+					color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
+				}
+				description {
+					state: "ellipsis" 0.0;
+					inherit: "default" 0.0;
+					min: CTXPOPUP_TEXT_MAX_INC CTXPOPUP_TOOLBAR_SEGMENTEDCONTROL_HEIGHT_MIN_INC;
+					text.min: 0 1;
+				}
+				description {
+					state: "ellipsis_disabled" 0.0;
+					inherit: "ellipsis" 0.0;
 					color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
 				}
 			}
@@ -4354,6 +4388,13 @@ group {
 			}
 		}
 		programs {
+			program {
+				name: "text_ellipsis";
+				signal: "elm,state,text,ellipsis";
+				source: "elm";
+				action: STATE_SET "ellipsis" 0.0;
+				target: "elm.text";
+			}
 			program {
 				name: "item_unclick";
 				signal: "mouse,clicked,1";
