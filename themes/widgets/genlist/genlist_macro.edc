@@ -408,7 +408,6 @@
      images { \
          image: "Content_views/Icon_masking/"SIZE_PREFIX"/00_list_circle_icon_bg_normal.png" COMP; \
          image: "Content_views/Icon_masking/"SIZE_PREFIX"/00_list_circle_icon_bg_press.png" COMP; \
-         image: "Content_views/Icon_masking/"SIZE_PREFIX"/00_list_circle_icon_bg_dim.png" COMP; \
          image: "Content_views/Icon_masking/"SIZE_PREFIX"/00_dialogue_circle_icon_bg_normal.png" COMP; \
          image: "Content_views/Icon_masking/"SIZE_PREFIX"/00_dialogue_circle_icon_bg_press.png" COMP; \
       } \
@@ -433,10 +432,6 @@
                inherit: "default" 0.0; \
                image.normal: "Content_views/Icon_masking/"SIZE_PREFIX"/00_list_circle_icon_bg_press.png"; \
             } \
-            description { state: "disabled" 0.0; \
-               inherit: "default" 0.0; \
-               image.normal: "Content_views/Icon_masking/"SIZE_PREFIX"/00_list_circle_icon_bg_dim.png"; \
-            } \
             description { state: "reorder" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "Content_views/Icon_masking/"SIZE_PREFIX"/00_dialogue_circle_icon_bg_normal.png"; \
@@ -444,10 +439,6 @@
             description { state: "reorder_selected" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "Content_views/Icon_masking/"SIZE_PREFIX"/00_dialogue_circle_icon_bg_press.png"; \
-            } \
-            description { state: "reorder_disabled" 0.0; \
-               inherit: "default" 0.0; \
-               image.normal: "Content_views/Icon_masking/"SIZE_PREFIX"/00_list_circle_icon_bg_dim.png"; \
             } \
             description { state: "decorate" 0.0; \
                inherit: "default" 0.0; \
@@ -463,7 +454,6 @@
       images { \
          image: "Content_views/Icon_masking/"SIZE_PREFIX"/00_list_square_icon_bg_normal.png" COMP; \
          image: "Content_views/Icon_masking/"SIZE_PREFIX"/00_list_square_icon_bg_press.png" COMP; \
-         image: "Content_views/Icon_masking/"SIZE_PREFIX"/00_list_square_icon_bg_dim.png" COMP; \
          image: "Content_views/Icon_masking/"SIZE_PREFIX"/00_dialogue_square_icon_bg_normal.png" COMP; \
          image: "Content_views/Icon_masking/"SIZE_PREFIX"/00_dialogue_square_icon_bg_press.png" COMP; \
       } \
@@ -488,10 +478,6 @@
                inherit: "default" 0.0; \
                image.normal: "Content_views/Icon_masking/"SIZE_PREFIX"/00_list_square_icon_bg_press.png"; \
             } \
-            description { state: "disabled" 0.0; \
-               inherit: "default" 0.0; \
-               image.normal: "Content_views/Icon_masking/"SIZE_PREFIX"/00_list_square_icon_bg_dim.png"; \
-            } \
             description { state: "reorder" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "Content_views/Icon_masking/"SIZE_PREFIX"/00_dialogue_square_icon_bg_normal.png"; \
@@ -499,10 +485,6 @@
             description { state: "reorder_selected" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "Content_views/Icon_masking/"SIZE_PREFIX"/00_dialogue_square_icon_bg_press.png"; \
-            } \
-            description { state: "reorder_disabled" 0.0; \
-               inherit: "default" 0.0; \
-               image.normal: "Content_views/Icon_masking/"SIZE_PREFIX"/00_list_square_icon_bg_dim.png"; \
             } \
             description { state: "decorate" 0.0; \
                inherit: "default" 0.0; \
@@ -1025,7 +1007,7 @@
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
-               color: GENLIST_LIST_DIM_COLOR; \
+               color: GENLIST_LIST_LINE1_COLOR; \
             } \
             description { state: "flipped" 0.0; \
                inherit: "default" 0.0; \
@@ -1053,7 +1035,7 @@
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
-               color: GENLIST_LIST_DIM_COLOR; \
+               color: GENLIST_LIST_LINE2_COLOR; \
             } \
             description { state: "flipped" 0.0; \
                inherit: "default" 0.0; \
@@ -2249,7 +2231,26 @@
       TARGET \
    }
 
-#define GENLIST_PROGRAMS_ENTRY \
+#define GENLIST_PROGRAMS_ENTRY( TARGET ) \
+   GENLIST_PROGRAM_DEFAULT( TARGET \
+      target: "bg"; \
+      target: "bg_clip"; \
+      target: "bottom_line"; \
+      target: "bottom_line2"; \
+      target: "bottom_line_clip"; \
+      target: "bg_reorder"; \
+      target: "elm.padding.left"; \
+      target: "elm.padding.right"; \
+   ) \
+   GENLIST_PROGRAM_DISABLED( TARGET ) \
+   GENLIST_PROGRAM_FOCUS \
+   GENLIST_PROGRAM_DECORATE_REORDER("editfield", TARGET \
+      target: "bg_clip"; \
+      target: "bg_reorder_clip"; \
+      target: "bottom_line_clip"; \
+      target: "elm.padding.left"; \
+      target: "elm.padding.right"; \
+   ) \
    program { \
       signal: "elm,state,eraser,show"; \
       action: STATE_SET "show" 0.0; \
@@ -2270,6 +2271,49 @@
       action: STATE_SET "hide" 0.0; \
       target: "elm.image.rename"; \
    }
+
+#define GENLIST_PROGRAMS_DIALOGUE_ENTRY( TARGET ) \
+   GENLIST_PROGRAM_DEFAULT( TARGET \
+      target: "bg_dialogue"; \
+      target: "bg_dialogue_clip"; \
+      target: "elm.padding.left"; \
+      target: "elm.padding.right"; \
+   ) \
+   GENLIST_PROGRAM_DISABLED( TARGET ) \
+   GENLIST_PROGRAM_FOCUS_DIALOGUE \
+   program { name: "bg_color_change"; \
+      signal: "bg_color_change"; \
+      source: "elm"; \
+      action: STATE_SET "2depth" 0.0; \
+      target: "bg_dialogue_clip"; \
+   } \
+   GENLIST_PROGRAM_DECORATE_REORDER( "normal", TARGET \
+      target: "elm.padding.left"; \
+      target: "elm.padding.right"; \
+   ) \
+   GENLIST_PROGRAM_FLIP \
+   GENLIST_PROGRAM_EDITMODE \
+   program { \
+      signal: "elm,state,eraser,show"; \
+      action: STATE_SET "show" 0.0; \
+      target: "elm.icon.eraser"; \
+   } \
+   program { \
+      signal: "elm,state,eraser,hide"; \
+      action: STATE_SET "default" 0.0; \
+      target: "elm.icon.eraser"; \
+   } \
+    program { \
+      signal: "elm,state,rename,show"; \
+      action: STATE_SET "default" 0.0; \
+      target: "elm.image.rename"; \
+   } \
+   program { \
+      signal: "elm,state,rename,hide"; \
+      action: STATE_SET "hide" 0.0; \
+      target: "elm.image.rename"; \
+   }
+
 
 #define GENLIST_PROGRAMS_THUMB \
    GENLIST_PROGRAM_DECORATE_REORDER( "thumb", target: "elm.thumb"; ) \
