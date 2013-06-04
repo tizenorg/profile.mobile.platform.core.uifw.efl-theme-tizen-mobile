@@ -2392,12 +2392,16 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 #define BUTTON_CIRCLE_STYLES(style_name, image_normal, image_press, min_width, min_height) \
    group { name: "elm/button/base/"style_name; \
+      data { \
+         item: "focus_highlight" "on"; \
+      } \
       images { \
          image: "00_circle_button.png" COMP; \
          image: "00_circle_button_press.png" COMP; \
          image: "00_circle_button_dim.png" COMP; \
          image: image_normal COMP; \
          image: image_press COMP; \
+         image: 00_circle_button_focus.png COMP; \
       } \
       parts { \
          part { name: "button_image"; \
@@ -2480,6 +2484,26 @@
             } \
             description { state: "disabled" 0.0; \
                color: BUTTON_CIRCLE_STYLE_DISABLED_COLOR_INC; \
+            } \
+         } \
+         part { name: "focus_image"; \
+            scale: 1; \
+            mouse_events: 0; \
+            repeat_events: 1; \
+              description { state: "default" 0.0; \
+                 min: BUTTON_CIRCLE_STYLE_BG_MIN_MAX_INC; \
+                 max: BUTTON_CIRCLE_STYLE_BG_MIN_MAX_INC; \
+                 visible: 0; \
+                 rel1.to : "button_image"; \
+                 rel2.to : "button_image"; \
+                 image { \
+                  normal: "00_circle_button_focus.png"; \
+                  border_scale: 1; \
+               } \
+            } \
+            description { state: "focused" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
             } \
          } \
          part { name: "over1"; \
@@ -2565,6 +2589,18 @@
             target: "button_image"; \
             target: "button_center_part"; \
             target: "icon_clipper"; \
+         } \
+         program { name: "action_focus"; \
+            signal: "elm,action,focus_highlight,show"; \
+            source: "elm"; \
+            action: STATE_SET "focused" 0.0; \
+            target: "focus_image"; \
+         } \
+         program { name: "action_unfocus"; \
+            signal: "elm,action,focus_highlight,hide"; \
+            source: "elm"; \
+            action: STATE_SET "default" 0.0; \
+            target: "focus_image"; \
          } \
       } \
    }
