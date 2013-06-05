@@ -420,6 +420,7 @@
             } \
          ) \
          GENLIST_PART_IMAGE("elm.thumb", \
+            insert_before: "focus_part"; \
             clip_to: "elm.thumb.clip"; \
             mouse_events: 0; \
             GENLIST_DESCRIPTION_ENVELOP(PARENT, \
@@ -447,7 +448,6 @@
                inherit: "reorder" 0.0; \
             } \
          ) \
-         GENLIST_PART_FLIP \
       }
 
 #define GENLIST_INHERIT_THUMB_SQUARE(SIZE_PREFIX, MASK_SIZE, PARENT) \
@@ -466,6 +466,7 @@
             } \
          ) \
          GENLIST_PART_IMAGE("elm.thumb", \
+            insert_before: "focus_part"; \
             clip_to: "elm.thumb.clip"; \
             mouse_events: 0; \
             GENLIST_DESCRIPTION_ENVELOP(PARENT, \
@@ -493,7 +494,6 @@
                inherit: "reorder" 0.0; \
             } \
          ) \
-         GENLIST_PART_FLIP \
       }
 
 
@@ -512,6 +512,7 @@
             } \
          ) \
          GENLIST_PART_IMAGE("elm.thumb", \
+            insert_before: "focus_part_dialogue"; \
             clip_to: "elm.thumb.clip"; \
             mouse_events: 0; \
             GENLIST_DESCRIPTION_ENVELOP(PARENT, \
@@ -556,6 +557,7 @@
             } \
          ) \
          GENLIST_PART_IMAGE("elm.thumb", \
+            insert_before: "focus_part_dialogue"; \
             clip_to: "elm.thumb.clip"; \
             mouse_events: 0; \
             GENLIST_DESCRIPTION_ENVELOP(PARENT, \
@@ -919,23 +921,53 @@
          visible: 0; \
          image { \
             normal: "00_focus.png"; \
-            border: 7 7 7 7; \
+            border: 6 6 6 6; \
+            border_scale: 1; \
          } \
       } \
       description { state: "focused" 0.0; \
          inherit: "default" 0.0; \
          visible: 1; \
       } \
+   ) \
+   GENLIST_PART_ICON("elm.icon.focus", \
+      repeat_events: 1; \
+      GENLIST_DESCRIPTION_ENVELOP("focus_part", \
+         fixed: 1 1; \
+      ) \
    )
 
+#define GENLIST_PART_FOCUS_REORDER \
+   GENLIST_PART_IMAGE("focus_part_reorder", \
+      mouse_events: 0; \
+      GENLIST_DESCRIPTION_LR("bg_reorder_left", "bg_reorder_right", \
+         visible: 0; \
+         image { \
+            normal: "00_focus.png"; \
+            border: 6 6 6 6; \
+            border_scale: 1; \
+         } \
+      ) \
+      description { state: "focused" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 1; \
+      } \
+   )
+
+#define GENLIST_PART_FOCUS_NORMAL \
+   GENLIST_PART_FOCUS \
+   GENLIST_PART_FOCUS_REORDER
+
+
 #define GENLIST_PART_FOCUS_DIALOGUE \
-   GENLIST_PART_IMAGE("focus_part", \
+   GENLIST_PART_IMAGE("focus_part_dialogue", \
       mouse_events: 0; \
       GENLIST_DESCRIPTION_LR("bg_dialogue_left", "bg_dialogue_right", \
          visible: 0; \
          image { \
             normal: "00_focus.png"; \
-            border: 7 7 7 7; \
+            border: 6 6 6 6; \
+            border_scale: 1; \
          } \
       ) \
       description { state: "focused" 0.0; \
@@ -969,7 +1001,7 @@
    ) \
    GENLIST_PART_ICON("elm.icon.focus", \
       repeat_events: 1; \
-      GENLIST_DESCRIPTION_ENVELOP("focus_part", \
+      GENLIST_DESCRIPTION_ENVELOP("focus_part_dialogue", \
          fixed: 1 1; \
       ) \
    )
@@ -1747,6 +1779,28 @@
          target: "focus_part"; \
       }
 
+#define GENLIST_PROGRAM_FOCUS_NORMAL \
+      program { name: "focused"; \
+         signal: "elm,state,focused"; \
+         source: "elm"; \
+         script { \
+            new st[31]; \
+            new Float:vl; \
+            get_state(PART:"bg_reorder_clip", st, 30, vl); \
+            if (!strcmp(st, "reorder") || !strcmp(st, "decorate_reorder")) \
+               set_state(PART:"focus_part_reorder", "focused", 0.0); \
+            else \
+               set_state(PART:"focus_part", "focused", 0.0); \
+         } \
+      } \
+      program { name: "unfocused"; \
+         signal: "elm,state,unfocused"; \
+         source: "elm"; \
+         action: STATE_SET "default" 0.0; \
+         target: "focus_part_reorder"; \
+         target: "focus_part"; \
+      }
+
 #define GENLIST_PROGRAM_FOCUS_DIALOGUE \
       program { name: "focused"; \
          signal: "elm,state,focused"; \
@@ -1756,20 +1810,20 @@
             new Float:vl; \
             get_state(PART:"bg_dialogue", st, 30, vl); \
             if (!strcmp(st, "top") || !strcmp(st, "top_selected")) \
-               set_state(PART:"focus_part", "top_focused", 0.0); \
+               set_state(PART:"focus_part_dialogue", "top_focused", 0.0); \
             else if (!strcmp(st, "center") || !strcmp(st, "center_selected")) \
-               set_state(PART:"focus_part", "center_focused", 0.0); \
+               set_state(PART:"focus_part_dialogue", "center_focused", 0.0); \
             else if (!strcmp(st, "bottom") || !strcmp(st, "bottom_selected")) \
-               set_state(PART:"focus_part", "bottom_focused", 0.0); \
+               set_state(PART:"focus_part_dialogue", "bottom_focused", 0.0); \
             else if (!strcmp(st, "default") || !strcmp(st, "selected")) \
-               set_state(PART:"focus_part", "focused", 0.0); \
+               set_state(PART:"focus_part_dialogue", "focused", 0.0); \
          } \
       } \
       program { name: "unfocused"; \
          signal: "elm,state,unfocused"; \
          source: "elm"; \
          action: STATE_SET "default" 0.0; \
-         target: "focus_part"; \
+         target: "focus_part_dialogue"; \
       }
 
 #define GENLIST_PROGRAM_SOUND( SRC ) \
@@ -2167,7 +2221,7 @@
          target: "bottom_line2"; \
          target: "bg_reorder"; \
       ) \
-      GENLIST_PROGRAM_FOCUS \
+      GENLIST_PROGRAM_FOCUS_NORMAL \
       GENLIST_PROGRAM_SELECT( TARGET \
          target: "bg"; \
          target: "bottom_line"; \
@@ -2252,7 +2306,7 @@
       target: "elm.padding.right"; \
    ) \
    GENLIST_PROGRAM_DISABLED( TARGET ) \
-   GENLIST_PROGRAM_FOCUS \
+   GENLIST_PROGRAM_FOCUS_NORMAL \
    GENLIST_PROGRAM_DECORATE_REORDER("editfield", TARGET \
       target: "bg_clip"; \
       target: "bg_reorder_clip"; \
