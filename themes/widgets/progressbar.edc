@@ -1168,6 +1168,7 @@
          } \
       } \
       PROGRESS_DESC(COLOR, SIZE, 01 ) \
+      PROGRESS_DESC(COLOR, SIZE, 02 ) \
       PROGRESS_DESC(COLOR, SIZE, 03 ) \
       PROGRESS_DESC(COLOR, SIZE, 04 ) \
       PROGRESS_DESC(COLOR, SIZE, 05 ) \
@@ -1422,47 +1423,69 @@
             mouse_events: 0;
             scale: 1;
             clip_to: "elm.background.progressbar";
-            PROCESS_DESCS("White", "36x36", 36, 36)
+            description {
+               state: "default" 0.0;
+               min: 36 36;
+               max: 36 36;
+               visible: 1;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image {
+                  normal: "White/36x36/00_list_process_01.png";
+               }
+            }
+            description {
+               state: "pulse" 0.0;
+               inherit: "default" 0.0;
+               image {
+                  normal: "White/36x36/00_list_process_01.png";
+                  tween:  "White/36x36/00_list_process_02.png";
+                  tween:  "White/36x36/00_list_process_03.png";
+                  tween:  "White/36x36/00_list_process_04.png";
+                  tween:  "White/36x36/00_list_process_05.png";
+                  tween:  "White/36x36/00_list_process_06.png";
+                  tween:  "White/36x36/00_list_process_07.png";
+                  tween:  "White/36x36/00_list_process_08.png";
+                  tween:  "White/36x36/00_list_process_09.png";
+                  tween:  "White/36x36/00_list_process_10.png";
+                  tween:  "White/36x36/00_list_process_11.png";
+                  tween:  "White/36x36/00_list_process_12.png";
+                  tween:  "White/36x36/00_list_process_13.png";
+                  tween:  "White/36x36/00_list_process_14.png";
+                  tween:  "White/36x36/00_list_process_15.png";
+                  tween:  "White/36x36/00_list_process_16.png";
+                  tween:  "White/36x36/00_list_process_17.png";
+                  tween:  "White/36x36/00_list_process_18.png";
+                  tween:  "White/36x36/00_list_process_19.png";
+                  tween:  "White/36x36/00_list_process_20.png";
+                  tween:  "White/36x36/00_list_process_21.png";
+                  tween:  "White/36x36/00_list_process_22.png";
+                  tween:  "White/36x36/00_list_process_23.png";
+                  tween:  "White/36x36/00_list_process_24.png";
+                  tween:  "White/36x36/00_list_process_25.png";
+                  tween:  "White/36x36/00_list_process_26.png";
+                  tween:  "White/36x36/00_list_process_27.png";
+                  tween:  "White/36x36/00_list_process_28.png";
+                  tween:  "White/36x36/00_list_process_29.png";
+                  tween:  "White/36x36/00_list_process_30.png";
+               }
+            }
          }
-      }
-      script {
-         public pulse_state;
       }
       programs {
-         program { name: "continue_pulse";
-            script {
-               new Float:state;
-               state = get_float(pulse_state);
-               set_state(PART:"background", "pulse", state);
-               state += 0.01;
-               if( state > 0.30 )
-                  state = 0.01;
-               set_float(pulse_state, state);
-            }
-               after: "delay";
-         }
-         program { name: "delay";
-            action: STATE_SET "pulse" 0.10;
-            target: "background";
-            in: PROGRESSING_DELAY 0.0;
-            after: "continue_pulse";
-         }
          program { name: "start_pulse";
             signal: "elm,state,pulse,start";
             source: "elm";
-            script {
-               set_float(pulse_state, 0.0);
-            }
-            after: "continue_pulse";
+            action: STATE_SET "pulse" 0.0;
+            target: "background";
+            transition: LINEAR 1.5;
+            after: "start_pulse";
          }
          program { name: "stop_pulse";
             signal: "elm,state,pulse,stop";
             source: "elm";
-            action: ACTION_STOP;
-            target: "continue_pulse";
-            target: "delay";
-            target: "start_pulse";
-            after: "init_pulse";
+            action: STATE_SET "default" 0.0;
+            target: "background";
          }
          program { name: "init_pulse";
             action: STATE_SET "default" 0.0;
@@ -1470,6 +1493,7 @@
          }
       }
    }
+
 
 // Black progressbar
    group { name: "elm/progressbar/horizontal/list_process_black";
