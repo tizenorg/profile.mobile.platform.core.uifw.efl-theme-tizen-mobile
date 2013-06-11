@@ -40,18 +40,19 @@ rm -rf %{buildroot}
 %make_install
 mkdir -p %{buildroot}/usr/share/license
 cp %{_builddir}/%{buildsubdir}/COPYING %{buildroot}/usr/share/license/%{name}
-
+cp %{buildroot}/usr/share/elementary/themes/tizen-HD-dark.edj %{buildroot}/usr/share/elementary/themes/tizen-hd.edj
 
 %files
 %defattr(-,root,root,-)
 %{_datadir}/elementary/themes/tizen-HD-dark.edj
+%{_datadir}/elementary/themes/tizen-hd.edj
 %manifest %{name}.manifest
 /usr/share/license/%{name}
 
 %files -n efl-theme-tizen-HD-light
 %defattr(-,root,root,-)
 %{_datadir}/elementary/themes/tizen-HD-light.edj
-%manifest %{name}.manifest
+%manifest efl-theme-tizen-HD-light.manifest
 /usr/share/license/%{name}
 
 %files -n efl-theme-tizen-devel
