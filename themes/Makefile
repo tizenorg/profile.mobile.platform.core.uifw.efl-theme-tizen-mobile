@@ -40,7 +40,7 @@ all: light dark
 	 -id ./images/$(TARGET)/$(@:.edj=)/Screen_Reader\
 	 -sd ./sounds -fd ../objects $(SRC).edc \
 	 $(SRC)-$(TARGET)-$@
-	rm ./inc/tmp-inc.edc
+	rm -rf ./inc/tmp-inc.edc
 
 light: light.edj
 dark: dark.edj
