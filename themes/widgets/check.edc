@@ -32,7 +32,7 @@
          image: "00_check_activated_dim.png" COMP; \
          image: "00_check_activated.png" COMP; \
          image: "00_check_press_bg.png" COMP; \
-         image: "00_check_press.png" COMP; \
+         image: "00_check_focus.png" COMP; \
       } \
       script { \
          public check_state = CHECK_STATE_DEFAULT; \
@@ -97,10 +97,7 @@
                color: 255 255 255 255; \
             } \
             description { state: "pressed" 0.0; \
-               inherit: "default" 0.0; \
-               visible: 1; \
-               image.normal: "00_check_press.png"; \
-               color: 255 255 255 255; \
+               inherit: "visible" 0.0; \
             } \
          } \
          part { name: "sequence_clip"; \
@@ -487,10 +484,7 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                color: 255 255 255 255; \
             } \
             description { state: "pressed" 0.0; \
-               inherit: "default" 0.0; \
-               visible: 1; \
-               image.normal: "00_check_press.png"; \
-               color: 255 255 255 255; \
+               inherit: "visible" 0.0; \
             } \
          } \
          part { name: "sequence_clip"; \
@@ -1101,12 +1095,13 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
 
    group { name: "elm/check/base/on&off";
       images {
-         image: "00_button_on.png" COMP;
-         image: "00_button_on_dim.png" COMP;
-         image: "00_button_off.png" COMP;
-         image: "00_button_off_dim.png" COMP;
-         image: "00_button_on_off_handler.png" COMP;
-         image: "00_button_on_off_handler_dim.png" COMP;
+         image: "00_button_on_handler.png" COMP;
+         image: "00_button_on_handler_dim.png" COMP;
+         image: "00_button_off_handler.png" COMP;
+         image: "00_button_off_handler_dim.png" COMP;
+         image: "00_button_on_off_bg.png" COMP;
+         image: "00_button_on_off_bg_dim.png" COMP;
+         image: "00_button_handler_focus.png" COMP;
       }
       script {
          public is_rtl = 0;
@@ -1210,27 +1205,27 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                   to_x: "bg";
                   to_y: "padding_bottom";
                }
-               image.normal: "00_button_off.png";
+               image.normal: "00_button_on_off_bg.png";
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
-               image.normal: "00_button_on.png";
+               image.normal: "00_button_on_off_bg.png";
             }
             description { state: "pressed" 0.0;
                inherit: "default" 0.0;
-               image.normal: "00_button_off.png";
+               image.normal: "00_button_on_off_bg.png";
             }
             description { state: "visible_pressed" 0.0;
                inherit: "default" 0.0;
-               image.normal: "00_button_on.png";
+               image.normal: "00_button_on_off_bg.png";
             }
             description { state: "visible_disable" 0.0;
                inherit: "default" 0.0;
-               image.normal: "00_button_on_dim.png";
+               image.normal: "00_button_on_off_bg_dim.png";
             }
             description { state: "off_disable" 0.0;
                inherit: "default" 0.0;
-               image.normal: "00_button_off_dim.png";
+               image.normal: "00_button_on_off_bg_dim.png";
             }
          }
          part { name: "drag_container";
@@ -1285,11 +1280,19 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                rel2.to: "bg";
                align: 0.0 0.5;
                fixed: 1 1;
-               image.normal: "00_button_on_off_handler.png";
+               image.normal: "00_button_off_handler.png";
             }
-            description { state: "disabled" 0.0;
+            description { state: "on" 0.0;
                inherit: "default" 0.0;
-               image.normal: "00_button_on_off_handler_dim.png";
+               image.normal: "00_button_on_handler.png";
+            }
+            description { state: "on_disabled" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_button_on_handler_dim.png";
+            }
+            description { state: "off_disabled" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_button_off_handler_dim.png";
             }
          }
          part { name: "button_events";
@@ -1566,6 +1569,7 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                }
                set_drag(PART:"button", drag, 0.0);
                set_state(PART:"bg_image", "visible", 0.0);
+               set_state(PART:"button", "on", 0.0);
                set_int(check_on, 1);
             }
          }
@@ -1582,6 +1586,7 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                }
                set_drag(PART:"button", drag, 0.0);
                set_state(PART:"bg_image", "default", 0.0);
+               set_state(PART:"button", "default", 0.0);
                set_int(check_on, 0);
             }
          }
@@ -1630,16 +1635,18 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                else
                  set_state(PART:"elm.text", "disabled", 0.0);
                get_state(PART:"bg_image", st, 30, vl);
-               if (!strcmp(st, "visible"))
+               if (!strcmp(st, "visible")) {
                  set_state(PART:"bg_image", "visible_disable", 0.0);
-               else
+                 set_state(PART:"button", "on_disabled", 0.0);
+               } else {
                  set_state(PART:"bg_image", "off_disable", 0.0);
+                 set_state(PART:"button", "off_disabled", 0.0);
+               }
                get_state(PART:"elm.swallow.content", st, 30, vl);
                if (!strcmp(st, "visible"))
                  set_state(PART:"elm.swallow.content", "disabled_visible", 0.0);
                else
                  set_state(PART:"elm.swallow.content", "disabled", 0.0);
-               set_state(PART:"button", "disabled", 0.0);
             }
          }
          program { name: "enable";
