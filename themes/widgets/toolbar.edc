@@ -40,17 +40,15 @@
    }
 
 styles{
-   TOOLBAR_TEXT_STYLE(24)
-   TOOLBAR_TEXT_STYLE(28)
    TOOLBAR_TEXT_STYLE(30)
-   TOOLBAR_SELECTED_TEXT_STYLE(24)
-   TOOLBAR_SELECTED_TEXT_STYLE(28)
+   TOOLBAR_TEXT_STYLE(36)
    TOOLBAR_SELECTED_TEXT_STYLE(30)
+   TOOLBAR_SELECTED_TEXT_STYLE(36)
 }
 
 group { name: "elm/toolbar/base/default";
    images {
-       image: "00_title_bg.png" COMP;
+       image: "00_toolbar_bg.png" COMP;
    }
    parts {
       part { name: "base";
@@ -73,7 +71,9 @@ group { name: "elm/toolbar/base/default";
                 to: "base";
             }
             image {
-                normal: "00_title_bg.png";
+                normal: "00_toolbar_bg.png";
+                border: 8 8 8 8;
+                border_scale: 1;
             }
          }
       }
@@ -83,12 +83,12 @@ group { name: "elm/toolbar/base/default";
          description {
             state: "default" 0.0;
             rel1 {
+               relative: 0.0 0.0;
                to: "base";
-               offset: 2 2;
             }
             rel2 {
+               relative: 1.0 1.0;
                to: "base";
-               offset: -3 -3;
             }
          }
       }
@@ -114,7 +114,7 @@ group { name: "elm/toolbar/base/default";
 
 group { name: "elm/toolbar/item/default";
    images {
-      image: "00_tab_press.png" COMP;
+      image: "00_toolbar_press.png" COMP;
    }
 
    data.item: "transition_animation_on" "1";
@@ -124,34 +124,24 @@ group { name: "elm/toolbar/item/default";
    }
    parts {
       part { name: "bg";
+         type: IMAGE;
+         scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
             visible: 0;
-            color: 255 255 255 0;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: TOOLBAR_ITEM_BG_REL1_OFFSET_INC;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: TOOLBAR_ITEM_BG_REL2_OFFSET_INC;
-            }
             image {
-               normal: "00_tab_press.png";
+               normal: "00_toolbar_press.png";
                border: TOOLBAR_ITEM_BG_SELECTED_BORDER_INC;
+               border_scale: 1;
             }
-            image.middle: SOLID;
-            fill.smooth: 0;
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            color: 255 255 255 255;
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
             visible: 0;
-            color: 255 255 255 0;
          }
       }
       part { name: "padding_left_top";
@@ -161,10 +151,22 @@ group { name: "elm/toolbar/item/default";
          description { state: "default" 0.0;
             align: 0.0 0.0;
             rel2.relative: 0.0 0.0;
-            min: 10 8;
+            min: 0 0;
             fixed: 1 1;
-            visible: 1;
+            visible: 0;
             color: 0 0 0 0;
+         }
+         description { state: "1_item" 0.0;
+            inherit: "default" 0.0;
+            min: 60 0;
+         }
+         description { state: "2_items" 0.0;
+            inherit: "default" 0.0;
+            min: 40 0;
+         }
+         description { state: "3_items" 0.0;
+            inherit: "default" 0.0;
+            min: 20 0;
          }
       }
       part { name: "padding_right_bottom";
@@ -174,190 +176,22 @@ group { name: "elm/toolbar/item/default";
          description { state: "default" 0.0;
             align: 1.0 1.0;
             rel1.relative: 1.0 1.0;
-            min: 10 5;
+            min: 0 0;
             fixed: 1 1;
-            visible: 1;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "icon_rect";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            min: 0 0;
-            fixed: 0 1;
-            rel1 {
-               relative: 1.0 1.0;
-               to: "padding_left_top";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "padding_right_bottom";
-               to_y: "padding_left_top";
-            }
-            align: 0.5 0.0;
-            color: 0 0 0 0;
-         }
-         description { state: "visible" 0.0;
-            min: TABBAR_ITEM_ICON_SIZE_INC;
-            fixed: 0 1;
-            rel1 {
-               relative: 1.0 1.0;
-               to: "padding_left_top";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "padding_right_bottom";
-               to_y: "padding_left_top";
-            }
-            align: 0.5 0.0;
-            color: 0 0 0 0;
-         }
-         description { state: "icononly" 0.0;
-            inherit: "default" 0.0;
-         }
-      }
-      part { name: "padding_after_icon";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0; //when only icon or no icon is there
-            align: 0.0 0.0;
-            rel1 {
-               relative: 0.0 1.0;
-               to: "icon_rect";
-            }
-            rel2.to: "icon_rect";
-            fixed: 0 1;
-            min: 0 0;
-            color: 0 0 0 0;
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "icononly" 0.0;
-            inherit: "default" 0.0;
-         }
-      }
-      part { name: "padding_before_text";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0; //when only icon or no icon is there
-            align: 0.5 1.0;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "padding_left_top";
-               to_y: "elm.text";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "padding_right_bottom";
-               to_y: "elm.text";
-            }
-            fixed: 0 1;
-            min: 0 0;
-            color: 0 0 0 0;
-         }
-      }
-      part { name: "elm.swallow.icon";
-         type: SWALLOW;
-         scale: 1;
-         clip_to: "elm.icon.clipper";
-         description { state: "default" 0.0;
             visible: 0;
-            align: 0.5 0.0;
-            rel1 {
-               relative: 1.0 1.0;
-               to: "padding_left_top";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "padding_right_bottom";
-               to_y: "padding_left_top";
-            }
-            fixed: 0 1;
+            color: 0 0 0 0;
          }
-         description { state: "visible" 0.0;
-            fixed: 0 1;
-            min: TABBAR_ITEM_ICON_SIZE_INC;
-            max: TABBAR_ITEM_ICON_SIZE_INC;
-            rel1 {
-               relative: 1.0 1.0;
-               to: "padding_left_top";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "padding_right_bottom";
-               to_y: "padding_before_text";
-            }
-            aspect: 1.0 1.0;
-            aspect_preference: HORIZONTAL;
+         description { state: "1_item" 0.0;
+            inherit: "default" 0.0;
+            min: 60 0;
          }
-         description { state: "icononly" 0.0;
-            min: TABBAR_ITEM_ICON_SIZE_INC;
-            max: TABBAR_ITEM_ICON_SIZE_INC;
-            rel1 {
-               relative: 1.0 1.0;
-               to: "padding_left_top";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to: "padding_right_bottom";
-            }
-            aspect: 1.0 1.0;
-            aspect_preference: HORIZONTAL;
+         description { state: "2_items" 0.0;
+            inherit: "default" 0.0;
+            min: 40 0;
          }
-      }
-      part { name: "elm.swallow.icon_new";
-         type: SWALLOW;
-         scale: 1;
-         clip_to: "elm.icon_new.clipper";
-         description { state: "default" 0.0;
-            visible: 0;
-            align: 0.5 0.0;
-            rel1 {
-               relative: 1.0 1.0;
-               to: "padding_left_top";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "padding_right_bottom";
-               to_y: "padding_left_top";
-            }
-            fixed: 0 1;
-         }
-         description { state: "visible" 0.0;
-            fixed: 0 1;
-            min: TABBAR_ITEM_ICON_SIZE_INC;
-            max: TABBAR_ITEM_ICON_SIZE_INC;
-            rel1 {
-               relative: 1.0 1.0;
-               to: "padding_left_top";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "padding_right_bottom";
-               to_y: "padding_before_text";
-            }
-            aspect: 1.0 1.0;
-            aspect_preference: HORIZONTAL;
-         }
-         description { state: "icononly" 0.0;
-            min: TABBAR_ITEM_ICON_SIZE_INC;
-            max: TABBAR_ITEM_ICON_SIZE_INC;
-            rel1 {
-               relative: 1.0 1.0;
-               to: "padding_left_top";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to: "padding_right_bottom";
-            }
-            aspect: 1.0 1.0;
-            aspect_preference: HORIZONTAL;
+         description { state: "3_items" 0.0;
+            inherit: "default" 0.0;
+            min: 20 0;
          }
       }
       part { name: "elm.text";
@@ -369,37 +203,21 @@ group { name: "elm/toolbar/item/default";
             visible: 0;
             rel1 {
                relative: 1.0 1.0;
-               to_x: "padding_left_top";
-               to_y: "padding_after_icon";
+               to: "padding_left_top";
             }
             rel2 {
                relative: 0.0 0.0;
                to: "padding_right_bottom";
             }
-            color: BUTTON_NAVIFRAME_DEFAULT_TEXT_COLOR_INC;
             fixed: 1 1;
+            max: 9999 60;
             text {
-               style: "toolbar_text_style_26";
+               style: "toolbar_text_style_36";
                min: 0 1;
             }
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
-         }
-         description { state: "visible_30" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_30";
-            visible: 1;
-         }
-         description { state: "visible_32" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_32";
-            visible: 1;
-         }
-         description { state: "visible_36" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_36";
             visible: 1;
          }
       }
@@ -412,8 +230,7 @@ group { name: "elm/toolbar/item/default";
             visible: 0;
             rel1 {
                relative: 1.0 1.0;
-               to_x: "padding_left_top";
-               to_y: "padding_after_icon";
+               to: "padding_left_top";
             }
             rel2 {
                relative: 0.0 0.0;
@@ -422,27 +239,12 @@ group { name: "elm/toolbar/item/default";
             color: BUTTON_NAVIFRAME_DEFAULT_TEXT_COLOR_INC;
             fixed: 1 1;
             text {
-               style: "toolbar_text_style_26";
+               style: "toolbar_text_style_36";
                min: 0 1;
             }
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
-         }
-         description { state: "visible_30" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_30";
-            visible: 1;
-         }
-         description { state: "visible_32" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_32";
-            visible: 1;
-         }
-         description { state: "visible_36" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_36";
             visible: 1;
          }
       }
@@ -470,28 +272,53 @@ group { name: "elm/toolbar/item/default";
             color: 255 255 255 153;
          }
       }
-      part { name: "elm.icon.clipper";
+      part { name: "divider";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
-            color: 255 255 255 255;
+            min: 2 78;
+            max: 2 78;
+            fixed: 1 1;
+            rel1 {
+                relative: 1.0 0.5;
+            }
+            rel2 {
+                relative: 1.0 0.5;
+            }
          }
-         description { state: "animation" 0.0;
-            color: 255 255 255 0;
-         }
-         description { state: "disabled" 0.0;
-            color: 255 255 255 153;
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
          }
       }
-      part { name: "elm.icon_new.clipper";
+      part { name: "divider_left";
          type: RECT;
+         clip_to: "divider";
          description { state: "default" 0.0;
-            color: 255 255 255 0;
+            color: TABBAR_ITEM_DIVIDER_LEFT_COLOR_INC;
+            rel1 {
+                relative: 0.0 0.0;
+                to: "divider";
+            }
+            rel2 {
+                relative: 0.5 1.0;
+                to: "divider";
+            }
          }
-         description { state: "animation" 0.0;
-            color: 255 255 255 255;
-         }
-         description { state: "disabled" 0.0;
-            color: 255 255 255 153;
+      }
+      part { name: "divider_right";
+         type: RECT;
+         clip_to: "divider";
+         description { state: "default" 0.0;
+            color: TABBAR_ITEM_DIVIDER_RIGHT_COLOR_INC;
+            rel1 {
+                relative: 0.5 0.0;
+                to: "divider";
+            }
+            rel2 {
+                relative: 1.0 1.0;
+                to: "divider";
+            }
          }
       }
       part { name: "event";
@@ -550,9 +377,7 @@ group { name: "elm/toolbar/item/default";
             set_int(item_state, ITEM_STATE_DISABLED);
             set_state(PART:"bg", "disabled", 0.0);
             set_state(PART:"elm.text.clipper", "disabled", 0.0);
-            set_state(PART:"elm.icon.clipper", "disabled", 0.0);
             run_program(PROGRAM:"label_set,animation,done");
-            run_program(PROGRAM:"icon_set,animation,done");
          }
       }
       program { name: "enable";
@@ -562,9 +387,7 @@ group { name: "elm/toolbar/item/default";
             set_int(item_state, ITEM_STATE_ENABLED);
             set_state(PART:"bg", "default", 0.0);
             set_state(PART:"elm.text.clipper", "default", 0.0);
-            set_state(PART:"elm.icon.clipper", "default", 0.0);
             run_program(PROGRAM:"label_set,animation,done");
-            run_program(PROGRAM:"icon_set,animation,done");
          }
       }
       program { name: "label_set,animation,forward";
@@ -609,120 +432,18 @@ group { name: "elm/toolbar/item/default";
               set_state(PART:"elm.text.clipper", "disabled", 0.0);
          }
       }
-      program { name: "icon_set,animation,forward";
-         signal: "elm,state,icon_set,forward";
-         source: "elm";
-         after: "icon_set,animation";
-      }
-      program { name: "icon_set,animation,backward";
-         signal: "elm,state,icon_set,backward";
-         source: "elm";
-         after: "icon_set,animation";
-      }
-      program { name: "icon_set,animation";
-         signal: "elm,state,icon_set";
-         source: "elm";
-         action: STATE_SET "animation" 0.0;
-         target: "elm.icon.clipper";
-         target: "elm.icon_new.clipper";
-         transition: LINEAR 0.2;
-         after: "icon_set,animation,done";
-      }
-      program { name: "icon_set,animation,done";
-         action: SIGNAL_EMIT "elm,state,icon_set,done" "elm";
-      }
-      program { name: "icon,reset";
-         signal: "elm,state,icon,reset";
-         source: "elm";
-         script {
-            set_state(PART:"elm.icon_new.clipper", "default", 0.0);
-            if (get_int(item_state) != ITEM_STATE_DISABLED)
-              set_state(PART:"elm.icon.clipper", "default", 0.0);
-            else
-              set_state(PART:"elm.icon.clipper", "disabled", 0.0);
-         }
-      }
       program { name: "text_show";
          signal: "elm,state,text,visible";
          source: "elm";
          script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.swallow.icon", st, 30, vl);
-            if (!strcmp(st, "icononly"))
-              {
-                 set_state(PART:"elm.swallow.icon", "visible", 0.0);
-                 set_state(PART:"icon_rect", "visible", 0.0);
-                 set_state(PART:"padding_after_icon", "visible", 0.0);
-              }
-            if (strcmp(st, "default"))
-              {
-                 set_state(PART:"elm.text", "visible", 0.0);
-              }
-            else
-              {
-                if (get_int(items_number) <= 3)
-                  set_state(PART:"elm.text", "visible_32", 0.0);
-                else if (get_int(items_number) >= 4)
-                  set_state(PART:"elm.text", "visible_30", 0.0);
-              }
+               set_state(PART:"elm.text", "visible", 0.0);
          }
       }
       program { name: "text_hide";
          signal: "elm,state,text,hidden";
          source: "elm";
          script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.swallow.icon", st, 30, vl);
-            if (!strcmp(st, "visible"))
-              {
-                 set_state(PART:"elm.swallow.icon", "icononly", 0.0);
-                 set_state(PART:"icon_rect", "icononly", 0.0);
-                 set_state(PART:"padding_after_icon", "icononly", 0.0);
-              }
             set_state(PART:"elm.text", "default", 0.0);
-         }
-      }
-      program { name: "icon_show";
-         signal: "elm,state,icon,visible";
-         source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strncmp(st, "visible", 7))
-              {
-                 set_state(PART:"elm.swallow.icon", "visible", 0.0);
-                 set_state(PART:"icon_rect", "visible", 0.0);
-                 set_state(PART:"padding_after_icon", "visible", 0.0);
-                 set_state(PART:"elm.text", "visible", 0.0);
-              }
-            else
-              {
-                 set_state(PART:"elm.swallow.icon", "icononly", 0.0);
-                 set_state(PART:"icon_rect", "icononly", 0.0);
-                 set_state(PART:"padding_after_icon", "icononly", 0.0);
-              }
-         }
-      }
-      program { name: "icon_hide";
-         signal: "elm,state,icon,hidden";
-         source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strncmp(st, "visible", 7))
-              {
-                if (get_int(items_number) <= 3)
-                  set_state(PART:"elm.text", "visible_32", 0.0);
-                else if (get_int(items_number) >= 4)
-                  set_state(PART:"elm.text", "visible_30", 0.0);
-              }
-            set_state(PART:"elm.swallow.icon", "default", 0.0);
-            set_state(PART:"icon_rect", "default", 0.0);
-            set_state(PART:"padding_after_icon", "default", 0.0);
          }
       }
       program { name: "text_only_item_1";
@@ -730,281 +451,40 @@ group { name: "elm/toolbar/item/default";
          source: "elm";
          script {
             set_int(items_number, 1);
+            set_state(PART:"padding_left_top", "1_item", 0.0);
+            set_state(PART:"padding_right_bottom", "1_item", 0.0);
          }
-         after: "text_only_item_under_3";
       }
       program { name: "text_only_item_2";
          signal: "elm,number,item,2";
          source: "elm";
          script {
             set_int(items_number, 2);
+            set_state(PART:"padding_left_top", "2_items", 0.0);
+            set_state(PART:"padding_right_bottom", "2_items", 0.0);
          }
-         after: "text_only_item_under_3";
       }
       program { name: "text_only_item_3";
          signal: "elm,number,item,3";
          source: "elm";
          script {
             set_int(items_number, 3);
-         }
-         after: "text_only_item_under_3";
-      }
-      program { name: "text_only_item_under_3";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.swallow.icon", st, 30, vl);
-            if (strcmp(st, "visible"))
-              {
-                get_state(PART:"elm.text", st, 30, vl);
-                if (!strncmp(st, "visible", 7))
-                  {
-                      set_state(PART:"elm.text", "visible_32", 0.0);
-                  }
-              }
+            set_state(PART:"padding_left_top", "3_items", 0.0);
+            set_state(PART:"padding_right_bottom", "3_items", 0.0);
          }
       }
-      program { name: "text_only_item_4";
-         signal: "elm,number,item,4";
+      program { name: "divider_visible";
+         signal: "elm,order,first,item";
+         signal: "elm,order,default,item";
          source: "elm";
-         script {
-            set_int(items_number, 4);
-         }
-         after: "text_only_item_upper_4";
+         action: STATE_SET "default" 0.0;
+         target: "divider";
       }
-      program { name: "text_only_item_5";
-         signal: "elm,number,item,5";
+      program { name: "divider_hidden";
+         signal: "elm,order,last,item";
          source: "elm";
-         script {
-            set_int(items_number, 5);
-         }
-         after: "text_only_item_upper_4";
-      }
-      program { name: "text_only_item_6";
-         signal: "elm,number,item,6";
-         source: "elm";
-         script {
-            set_int(items_number, 6);
-         }
-         after: "text_only_item_upper_4";
-      }
-      program { name: "text_only_item_7";
-         signal: "elm,number,item,7";
-         source: "elm";
-         script {
-            set_int(items_number, 7);
-         }
-         after: "text_only_item_upper_4";
-      }
-      program { name: "text_only_item_8";
-         signal: "elm,number,item,8";
-         source: "elm";
-         script {
-            set_int(items_number, 8);
-         }
-         after: "text_only_item_upper_4";
-      }
-      program { name: "text_only_item_9";
-         signal: "elm,number,item,9";
-         source: "elm";
-         script {
-            set_int(items_number, 9);
-         }
-         after: "text_only_item_upper_4";
-      }
-      program { name: "text_only_item_10";
-         signal: "elm,number,item,10";
-         source: "elm";
-         script {
-            set_int(items_number, 10);
-         }
-         after: "text_only_item_upper_4";
-      }
-      program { name: "text_only_item_upper_4";
-         signal: "elm,number,item,4";
-         source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.swallow.icon", st, 30, vl);
-            if (strcmp(st, "visible"))
-              {
-                get_state(PART:"elm.text", st, 30, vl);
-                if (!strncmp(st, "visible", 7))
-                  {
-                      set_state(PART:"elm.text", "visible_30", 0.0);
-                  }
-              }
-         }
-      }
-   }
-}
-
-group { name: "elm/toolbar/item/item_horizontal";
-   inherit: "elm/toolbar/item/default";
-   parts {
-      part { name: "icon_rect";
-         description { state: "default" 0.0;
-            fixed: 1 0;
-            align: 0.0 0.5;
-         }
-         description { state: "visible" 0.0;
-            fixed: 1 0;
-            rel2 {
-               relative: 1.0 0.0;
-               to_x: "padding_left_top";
-               to_y: "padding_right_bottom";
-            }
-            align: 0.0 0.5;
-         }
-      }
-      part { name: "padding_after_icon";
-         description { state: "default" 0.0; //when only icon or no icon is there
-            rel1.relative: 1.0 0.0;
-            fixed: 1 1;
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            min: 6 0;
-         }
-      }
-      part { name: "padding_before_text";
-         description { state: "default" 0.0; //when only icon or no icon is there
-            align: 1.0 0.5;
-            rel1 {
-               relative: 0.0 1.0;
-               to_x: "elm.text";
-               to_y: "padding_left_top";
-            }
-            rel2 {
-               to_x: "elm.text";
-               to_y: "padding_right_bottom";
-            }
-            fixed: 1 0;
-            min: 6 0;
-         }
-      }
-      part { name: "elm.swallow.icon";
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            rel2 {
-               relative: 1.0 0.0;
-               to_x: "padding_left_top";
-               to_y: "padding_right_bottom";
-            }
-            fixed: 1 0;
-         }
-         description { state: "visible" 0.0;
-            fixed: 1 0;
-            align: 1.0 0.5;
-            rel1 {
-               relative: 0.0 1.0;
-               to_x: "padding_before_text";
-               to_y: "padding_left_top";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "padding_before_text";
-               to_y: "padding_right_bottom";
-            }
-            aspect_preference: VERTICAL;
-         }
-         description { state: "icononly" 0.0;
-            aspect_preference: VERTICAL;
-         }
-      }
-      part { name: "elm.swallow.icon_new";
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            rel2 {
-               relative: 1.0 0.0;
-               to_x: "padding_left_top";
-               to_y: "padding_right_bottom";
-            }
-            fixed: 1 0;
-         }
-         description { state: "visible" 0.0;
-            fixed: 1 0;
-            align: 1.0 0.5;
-            rel1 {
-               relative: 0.0 1.0;
-               to_x: "padding_before_text";
-               to_y: "padding_left_top";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "padding_before_text";
-               to_y: "padding_right_bottom";
-            }
-            aspect_preference: VERTICAL;
-         }
-         description { state: "icononly" 0.0;
-            aspect_preference: VERTICAL;
-         }
-      }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         description { state: "default" 0.0;
-            rel1 {
-               relative: 1.0 1.0;
-               to_x: "padding_after_icon";
-               to_y: "padding_left_top";
-            }
-            text {
-               min: 1 0;
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-         description { state: "visible_30" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_30";
-            visible: 1;
-         }
-         description { state: "visible_32" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_32";
-            visible: 1;
-         }
-         description { state: "visible_36" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_36";
-            visible: 1;
-         }
-      }
-      part { name: "elm.text_new";
-         type: TEXTBLOCK;
-         description { state: "default" 0.0;
-            rel1 {
-               relative: 1.0 1.0;
-               to_x: "padding_after_icon";
-               to_y: "padding_left_top";
-            }
-            text {
-               min: 1 0;
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-         description { state: "visible_30" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_30";
-            visible: 1;
-         }
-         description { state: "visible_32" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_32";
-            visible: 1;
-         }
-         description { state: "visible_36" 0.0;
-            inherit: "default" 0.0;
-            text.style: "toolbar_text_style_36";
-            visible: 1;
-         }
+         action: STATE_SET "hidden" 0.0;
+         target: "divider";
       }
    }
 }
@@ -1560,37 +1040,6 @@ group { name: "elm/toolbar/item/tabbar";
             inherit: "default" 0.0;
             visible: 1;
          }
-         description { state: "visible" 0.24;
-            inherit: "visible" 0.0;
-            max: 0 34;
-            text.style: "toolbar_text_style_24";
-         }
-         description { state: "visible" 0.28;
-            inherit: "visible" 0.0;
-            max: 0 34;
-            text.style: "toolbar_text_style_28";
-         }
-         description { state: "visible" 0.30;
-            inherit: "visible" 0.0;
-            max: 0 34;
-            text.style: "toolbar_text_style_30";
-         }
-         description { state: "selected" 0.0;
-            inherit: "visible" 0.0;
-            text.style: "toolbar_selected_text_style_30";
-         }
-         description { state: "selected" 0.24;
-            inherit: "visible" 0.24;
-            text.style: "toolbar_selected_text_style_24";
-         }
-         description { state: "selected" 0.28;
-            inherit: "visible" 0.28;
-            text.style: "toolbar_selected_text_style_28";
-         }
-         description { state: "selected" 0.30;
-            inherit: "visible" 0.30;
-            text.style: "toolbar_selected_text_style_30";
-         }
       }
       part { name: "elm.text_new";
          type: TEXTBLOCK;
@@ -1619,37 +1068,6 @@ group { name: "elm/toolbar/item/tabbar";
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-         }
-         description { state: "visible" 0.24;
-            inherit: "visible" 0.0;
-            max: 0 34;
-            text.style: "toolbar_text_style_24";
-         }
-         description { state: "visible" 0.28;
-            inherit: "visible" 0.0;
-            max: 0 34;
-            text.style: "toolbar_text_style_28";
-         }
-         description { state: "visible" 0.30;
-            inherit: "visible" 0.0;
-            max: 0 34;
-            text.style: "toolbar_text_style_30";
-         }
-         description { state: "selected" 0.0;
-            inherit: "visible" 0.0;
-            text.style: "toolbar_selected_text_style_30";
-         }
-         description { state: "selected" 0.24;
-            inherit: "visible" 0.24;
-            text.style: "toolbar_selected_text_style_24";
-         }
-         description { state: "selected" 0.28;
-            inherit: "visible" 0.28;
-            text.style: "toolbar_selected_text_style_28";
-         }
-         description { state: "selected" 0.30;
-            inherit: "visible" 0.30;
-            text.style: "toolbar_selected_text_style_30";
          }
       }
       part { name: "selected_line";
@@ -1979,7 +1397,7 @@ group { name: "elm/toolbar/item/tabbar";
             set_int(selected, 1);
             get_state(PART:"elm.text", st, 30, vl);
             if (!strcmp(st, "visible"))
-              set_state(PART:"elm.text", "selected", vl);
+              set_state(PART:"elm.text", "visible", vl);
          }
       }
       program { name: "go_passive";
@@ -2182,28 +1600,7 @@ group { name: "elm/toolbar/item/tabbar";
                  set_state(PART:"padding_after_icon", "visible", 0.0);
                  set_state(PART:"bg", "icon_text", 0.0);
               }
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "default"))
-              {
-                if (get_int(selected))
-                  set_str(temp, "selected");
-                else
-                  set_str(temp, "visible");
-                get_str(temp, st, 31);
-
-                if (get_int(items_number) <= 2)
-                  set_state(PART:"elm.text", st, 0.30);
-                else if (get_int(items_number) == 3)
-                  set_state(PART:"elm.text", st, 0.28);
-                else if (get_int(items_number) >= 4)
-                  {
-                    get_state(PART:"bg", st, 30, vl);
-                    if (!strcmp(st, "icon_text"))
-                      set_state(PART:"elm.text", st, 0.28);
-                    else
-                      set_state(PART:"elm.text", st, 0.24);
-                  }
-              }
+            set_state(PART:"elm.text", "visible", 0.0);
          }
       }
       program { name: "text_hide";
@@ -2253,126 +1650,6 @@ group { name: "elm/toolbar/item/tabbar";
             set_state(PART:"icon_rect", "default", 0.0);
             set_state(PART:"padding_after_icon", "default", 0.0);
             set_state(PART:"bg", "default", 0.0);
-         }
-      }
-      program { name: "text_only_item_1";
-         signal: "elm,number,item,1";
-         source: "elm";
-         script {
-            set_int(items_number, 1);
-         }
-         after: "text_only_item_under_2";
-      }
-      program { name: "text_only_item_2";
-         signal: "elm,number,item,2";
-         source: "elm";
-         script {
-            set_int(items_number, 2);
-         }
-         after: "text_only_item_under_2";
-      }
-      program { name: "text_only_item_under_2";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strncmp(st, "visible", 7))
-              {
-                  set_state(PART:"elm.text", st, 0.30);
-              }
-            set_state(PART:"padding.badge", "default", 0.10);
-         }
-      }
-      program { name: "text_only_item_3";
-         signal: "elm,number,item,3";
-         source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            set_int(items_number, 3);
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strncmp(st, "visible", 7))
-              {
-                  set_state(PART:"elm.text", st, 0.28);
-              }
-            set_state(PART:"padding.badge", "default", 0.06);
-         }
-      }
-      program { name: "text_only_item_4";
-         signal: "elm,number,item,4";
-         source: "elm";
-         script {
-            set_int(items_number, 4);
-         }
-         after: "text_only_item_upper_4";
-      }
-      program { name: "text_only_item_5";
-         signal: "elm,number,item,5";
-         source: "elm";
-         script {
-            set_int(items_number, 5);
-         }
-         after: "text_only_item_upper_4";
-      }
-      program { name: "text_only_item_6";
-         signal: "elm,number,item,6";
-         source: "elm";
-         script {
-            set_int(items_number, 6);
-         }
-         after: "text_only_item_upper_4";
-      }
-      program { name: "text_only_item_7";
-         signal: "elm,number,item,7";
-         source: "elm";
-         script {
-            set_int(items_number, 7);
-         }
-         after: "text_only_item_upper_4";
-      }
-      program { name: "text_only_item_8";
-         signal: "elm,number,item,8";
-         source: "elm";
-         script {
-            set_int(items_number, 8);
-         }
-         after: "text_only_item_upper_4";
-      }
-      program { name: "text_only_item_9";
-         signal: "elm,number,item,9";
-         source: "elm";
-         script {
-            set_int(items_number, 9);
-         }
-         after: "text_only_item_upper_4";
-      }
-      program { name: "text_only_item_10";
-         signal: "elm,number,item,10";
-         source: "elm";
-         script {
-            set_int(items_number, 10);
-         }
-         after: "text_only_item_upper_4";
-      }
-      program { name: "text_only_item_upper_4";
-         script {
-            new st[31];
-            new stb[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "visible") || !strcmp(st, "selected"))
-              {
-                  get_state(PART:"bg", stb, 30, vl);
-                  if (!strcmp(stb, "icon_text"))
-                    set_state(PART:"elm.text", st, 0.28);
-                  else
-                    set_state(PART:"elm.text", st, 0.24);
-              }
-            get_state(PART:"bg", stb, 30, vl);
-            if (!strcmp(stb, "icon_text"))
-              set_state(PART:"padding.badge", "default", 0.06);
-            else
-              set_state(PART:"padding.badge", "default", 0.04);
          }
       }
       program { name: "badge_show";
@@ -2499,30 +1776,4 @@ group { name: "elm/toolbar/item/tabbar/item_with_title";
          }
       }
    }
-}
-
-group { name: "elm/toolbar/base/tabbar/item_horizontal";
-   alias: "elm/toolbar/base/tabbar";
-}
-
-group { name: "elm/toolbar/item/tabbar/item_horizontal";
-   inherit: "elm/toolbar/item/tabbar";
-   parts {
-      part { name: "bg";
-         description { state: "default" 0.0;
-            min: 320 0;
-         }
-         description { state: "icon_text" 0.0;
-            inherit: "default" 0.0;
-            min: 320 0;
-         }
-      }
-   }
-   program { name: "icon_text,horizontal";
-         signal: "elm,state,horizontal_icon_text,tabbar";
-         source: "elm";
-         script {
-            set_state(PART:"bg", "icon_text", 0.0);
-         }
-      }
 }
