@@ -18,6 +18,10 @@
 
 #define ITEM_STATE_ENABLED 0
 #define ITEM_STATE_DISABLED 1
+#define TOOLBAR_SLIDING_PER_FPS     2
+#define TOOLBAR_SLIDING_FPS         40.0
+#define TOOLBAR_SLIDING_TEXT_GAP    40
+#define TOOLBAR_SLIDING_TEXT_OFFSET 5
 
 #define TOOLBAR_TEXT_STYLE(_font_size) \
    style { name: "toolbar_text_style_"_font_size; \
@@ -773,14 +777,95 @@ group { name: "elm/toolbar/item/tabbar";
       image: "00_badge_bg.png" COMP;
       image: "00_focus.png" COMP;
       image: "00_tab_focus.png" COMP;
+      image: "00_effect_tab_text_dim_left.png" COMP;
+      image: "00_effect_tab_text_dim_right.png" COMP;
    }
 
    data.item: "transition_animation_on" "1";
    script {
       public item_state = ITEM_STATE_ENABLED;
       public items_number = 0;
-      public selected = 0;
-      public temp;
+      public sliding_timer;
+      public end_timer;
+      public text_w;
+      public org_text_w;
+      public loop_count = 0;
+
+      public get_width() {
+         new x, y, w, h;
+         set_state(PART:"elm.text", "visible", 0.0);
+         get_geometry(PART:"elm.text", x, y, w, h);
+         set_int(org_text_w, w);
+
+         set_state(PART:"elm.text", "sliding", 0.0);
+         get_geometry(PART:"elm.text", x, y, w, h);
+         set_int(text_w, w);
+      }
+      public ender(val) {
+         set_int(loop_count, 0);
+         if (get_int(sliding_timer)) cancel_timer(get_int(sliding_timer));
+         set_int(sliding_timer, 0);
+         if (get_int(end_timer)) cancel_timer(get_int(end_timer));
+         set_int(end_timer, 0);
+         set_state(PART:"elm.text.dim.left", "default", 0.0);
+         set_state(PART:"elm.text_new.clipper", "default", 0.0);
+         if (val == 1) {
+            custom_state(PART:"elm.text", "sliding", 0.0);
+            set_state_val(PART:"elm.text", STATE_REL1_OFFSET, TOOLBAR_SLIDING_TEXT_OFFSET, 0);
+            set_state_val(PART:"elm.text", STATE_REL2_OFFSET, TOOLBAR_SLIDING_TEXT_OFFSET, 0);
+            set_state(PART:"elm.text", "custom", 0.0);
+         } else {
+            set_state(PART:"elm.text", "visible", 0.0);
+            set_state(PART:"elm.text.dim.right", "default", 0.0);
+         }
+      }
+      public sliding(val) {
+         new buf[128];
+         if (val == TOOLBAR_SLIDING_TEXT_OFFSET) {
+            set_int(loop_count, get_int(loop_count) + 1);
+            get_width();
+            if (get_int(text_w) <= get_int(org_text_w)) {
+               ender(0);
+               return;
+            }
+         }
+         val -= TOOLBAR_SLIDING_PER_FPS;
+// for debuging //////////////////////////////
+/*         snprintf(buf, 127, "%d:%d:%d",
+            val, get_int(org_text_w), get_int(text_w));
+         set_text(PART:"dbg", buf);*/
+
+         if (val <= -get_int(text_w) - TOOLBAR_SLIDING_TEXT_GAP + TOOLBAR_SLIDING_TEXT_OFFSET)
+            val = TOOLBAR_SLIDING_TEXT_OFFSET;
+         custom_state(PART:"elm.text", "sliding", 0.0);
+         set_state_val(PART:"elm.text", STATE_REL1_OFFSET, val, 0);
+         set_state_val(PART:"elm.text", STATE_REL2_OFFSET, val, 0);
+         set_state(PART:"elm.text", "custom", 0.0);
+
+         set_state(PART:"elm.text_new.clipper", "animation", 0.0);
+         get_text(PART:"elm.text", buf, 128);
+         set_text(PART:"elm.text_new", buf);
+         custom_state(PART:"elm.text_new", "sliding", 0.0);
+         set_state_val(PART:"elm.text_new", STATE_REL1_OFFSET,
+            val + get_int(text_w) + TOOLBAR_SLIDING_TEXT_GAP, 0);
+         set_state_val(PART:"elm.text_new", STATE_REL2_OFFSET,
+            val + get_int(text_w) + TOOLBAR_SLIDING_TEXT_GAP, 0);
+         set_state(PART:"elm.text_new", "custom", 0.0);
+
+         set_state(PART:"elm.text.dim.left", "show", 0.0);
+         set_state(PART:"elm.text.dim.right", "show", 0.0);
+
+         if (val == TOOLBAR_SLIDING_TEXT_OFFSET || val <= -get_int(text_w))
+            set_state(PART:"elm.text.dim.left", "default", 0.0);
+
+         if (val == TOOLBAR_SLIDING_TEXT_OFFSET) {
+            if (get_int(loop_count) < 3)
+               set_int(sliding_timer, timer(2.0, "sliding", TOOLBAR_SLIDING_TEXT_OFFSET));
+            else
+               set_int(end_timer, timer(0.5, "ender", 1));
+         } else
+            set_int(sliding_timer, timer(1.0/TOOLBAR_SLIDING_FPS, "sliding", val));
+      }
    }
    parts {
       part { name: "bg";
@@ -820,7 +905,7 @@ group { name: "elm/toolbar/item/tabbar";
          description { state: "default" 0.0;
             align: 0.0 0.0;
             rel2.relative: 0.0 0.0;
-            min: 0 0;
+            min: 2 0;
             fixed: 1 1;
             visible: 0;
             color: 0 0 0 0;
@@ -833,7 +918,7 @@ group { name: "elm/toolbar/item/tabbar";
          description { state: "default" 0.0;
             align: 1.0 1.0;
             rel1.relative: 1.0 1.0;
-            min: 0 0;
+            min: 2 0;
             fixed: 1 1;
             visible: 0;
             color: 0 0 0 0;
@@ -1040,6 +1125,13 @@ group { name: "elm/toolbar/item/tabbar";
             inherit: "default" 0.0;
             visible: 1;
          }
+         description { state: "sliding" 0.0;
+            inherit: "visible" 0.0;
+            rel1.offset: TOOLBAR_SLIDING_TEXT_OFFSET 0;
+            rel2.offset: TOOLBAR_SLIDING_TEXT_OFFSET 0;
+            text.min: 1 1;
+            align: 0.0 0.5;
+         }
       }
       part { name: "elm.text_new";
          type: TEXTBLOCK;
@@ -1068,6 +1160,13 @@ group { name: "elm/toolbar/item/tabbar";
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
+         }
+         description { state: "sliding" 0.0;
+            inherit: "visible" 0.0;
+            rel1.offset: TOOLBAR_SLIDING_TEXT_OFFSET 0;
+            rel2.offset: TOOLBAR_SLIDING_TEXT_OFFSET 0;
+            text.min: 1 1;
+            align: 0.0 0.5;
          }
       }
       part { name: "selected_line";
@@ -1222,85 +1321,200 @@ group { name: "elm/toolbar/item/tabbar";
       part { name: "elm.text.clipper";
          type: RECT;
          description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "padding_left_top";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "padding_right_bottom";
+            }
             color: 255 255 255 255;
          }
          description { state: "animation" 0.0;
+            inherit: "default" 0.0;
             color: 255 255 255 0;
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
             color: 255 255 255 153;
          }
       }
       part { name: "elm.text_new.clipper";
          type: RECT;
          description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "padding_left_top";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "padding_right_bottom";
+            }
             color: 255 255 255 0;
          }
          description { state: "animation" 0.0;
+            inherit: "default" 0.0;
             color: 255 255 255 255;
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
             color: 255 255 255 153;
          }
       }
       part { name: "elm.icon.proxy.clipper";
          type: RECT;
          description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "padding_left_top";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "padding_right_bottom";
+            }
             color: 0 0 0 255;
          }
          description { state: "animation" 0.0;
+            inherit: "default" 0.0;
             color: 0 0 0 255;
          }
          description { state: "selected" 0.0;
+            inherit: "default" 0.0;
             color: 0 0 0 255;
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
             color: 0 0 0 255;
          }
       }
       part { name: "elm.icon_new.proxy.clipper";
          type: RECT;
          description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "padding_left_top";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "padding_right_bottom";
+            }
             color: 0 0 0 255;
          }
          description { state: "animation" 0.0;
+            inherit: "default" 0.0;
             color: 0 0 0 255;
          }
          description { state: "selected" 0.0;
+            inherit: "default" 0.0;
             color: 0 0 0 255;
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
             color: 0 0 0 255;
          }
       }
+
       part { name: "elm.icon.clipper";
          type: RECT;
          description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "padding_left_top";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "padding_right_bottom";
+            }
             color: 255 255 255 255;
          }
          description { state: "animation" 0.0;
+            inherit: "default" 0.0;
             color: 255 255 255 255;
          }
          description { state: "selected" 0.0;
+            inherit: "default" 0.0;
             color: 255 255 255 255;
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
             color: 255 255 255 255;
          }
       }
       part { name: "elm.icon_new.clipper";
          type: RECT;
          description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "padding_left_top";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "padding_right_bottom";
+            }
             color: 255 255 255 255;
          }
          description { state: "animation" 0.0;
+            inherit: "default" 0.0;
             color: 255 255 255 255;
          }
          description { state: "selected" 0.0;
+            inherit: "default" 0.0;
             color: 255 255 255 255;
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
             color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.text.dim.left";
+         type: IMAGE;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: 45 0;
+            align: 0.0 0.5;
+            visible: 0;
+            rel1 {
+                relative: 0.0 0.0;
+                to_x: "elm.text.clipper";
+                to_y: "elm.text";
+            }
+            rel2 {
+                relative: 0.0 1.0;
+                to_x: "elm.text.clipper";
+                to_y: "elm.text";
+            }
+            image.normal: "00_effect_tab_text_dim_left.png";
+         }
+         description { state: "show" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+      part { name: "elm.text.dim.right";
+         type: IMAGE;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: 45 0;
+            align: 1.0 0.5;
+            visible: 0;
+            rel1 {
+                relative: 1.0 0.0;
+                to_x: "elm.text.clipper";
+                to_y: "elm.text";
+            }
+            rel2 {
+                relative: 1.0 1.0;
+                to_x: "elm.text.clipper";
+                to_y: "elm.text";
+            }
+            image.normal: "00_effect_tab_text_dim_right.png";
+         }
+         description { state: "show" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
       part { name: "divider";
@@ -1379,6 +1593,23 @@ group { name: "elm/toolbar/item/tabbar";
             color: 0 0 0 0;
          }
       }
+// for debuging //////////////////////////////
+/*      part { name: "dbg";
+         type: TEXTBLOCK;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 0.0;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            text {
+               style: "toolbar_text_style_30";
+               text: "test";
+               min: 1 1;
+            }
+         }
+      }*/
    }
    programs {
       program { name: "go_active";
@@ -1394,10 +1625,9 @@ group { name: "elm/toolbar/item/tabbar";
          script{
             new st[31];
             new Float:vl;
-            set_int(selected, 1);
             get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "visible"))
-              set_state(PART:"elm.text", "visible", vl);
+            if (strcmp(st, "default"))
+                run_program(PROGRAM:"slide_start");
          }
       }
       program { name: "go_passive";
@@ -1413,10 +1643,9 @@ group { name: "elm/toolbar/item/tabbar";
          script{
             new st[31];
             new Float:vl;
-            set_int(selected, 0);
             get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "selected"))
-              set_state(PART:"elm.text", "visible", vl);
+            if (strcmp(st, "default"))
+                run_program(PROGRAM:"slide_stop");
          }
       }
       program { name: "moving";
@@ -1691,6 +1920,18 @@ group { name: "elm/toolbar/item/tabbar";
          action: STATE_SET "default" 0.0;
          target: "highlight";
       }
+      program { name: "slide_start";
+         script {
+            if (!get_int(sliding_timer) && !get_int(end_timer)) {
+               set_int(sliding_timer, timer(1.5, "sliding", TOOLBAR_SLIDING_TEXT_OFFSET));
+            }
+         }
+      }
+      program { name: "slide_stop";
+         script {
+             ender(0);
+         }
+      }
    }
 }
 
@@ -1725,7 +1966,29 @@ group { name: "elm/toolbar/base/tabbar/item_with_title";
 
 group { name: "elm/toolbar/item/tabbar/item_with_title";
    inherit: "elm/toolbar/item/tabbar";
+   images {
+      image: "00_effect_tab_text_dim_left_02.png" COMP;
+      image: "00_effect_tab_text_dim_right_02.png" COMP;
+   }
    parts {
+      part { name: "elm.text.dim.left";
+         description { state: "default" 0.0;
+            image.normal: "00_effect_tab_text_dim_left_02.png";
+         }
+         description { state: "show" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+      part { name: "elm.text.dim.right";
+         description { state: "default" 0.0;
+            image.normal: "00_effect_tab_text_dim_right_02.png";
+         }
+         description { state: "show" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
       part { name: "divider";
          type: RECT;
          scale: 1;
