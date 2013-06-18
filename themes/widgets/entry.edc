@@ -22,9 +22,27 @@
 #define ENTRY_BLOCK_HANDLE_SOURCE10 "elm/entry/selection/block_handle_edge_left"
 #define ENTRY_BLOCK_HANDLE_SOURCE11 "elm/entry/selection/block_handle_edge_right"
 
+#define ENTRY_FOCUS_DATA \
+   data.item: "focus_highlight" "on";
+
+#define ENTRY_EDITFIELD_FOCUS_DATA \
+   data.item: "focus_highlight" "off";
+
+#define ENTRY_FOCUS_IMAGE \
+   images { \
+      image: "00_focus.png" COMP; \
+   }
+
+#define ENTRY_EDITFIELD_FOCUS_IMAGE \
+   images { \
+      image: "00_edit_field_focus.png" COMP; \
+      image: "00_eidt_field_bg.png" COMP; \
+   }
+
 #define ENTRY_TEXTBLOCK_DEFAULT_REL \
    rel1 { \
-      relative: 0.0 0.0; \
+      to_x: "focus_left_padding"; \
+      relative: 1.0 0.0; \
    } \
    rel2 { \
       to_x: "editfield_space"; \
@@ -39,12 +57,19 @@
 #define ENTRY_SWALLOW_PARTS \
    part { name: "editfield_space"; \
       type: SPACER; \
+      scale: 1; \
       description { state: "default" 0.0; \
          align: 1.0 0.5; \
          min: 0 0; \
          max: 0 0; \
-         rel1.relative: 1.0 0.0; \
-         rel2.relative: 1.0 1.0; \
+         rel1 { \
+            to_x: "focus_right_padding"; \
+            relative: 0.0 0.0; \
+         } \
+         rel2 { \
+            to_x: "focus_right_padding"; \
+            relative: 0.0 1.0; \
+         } \
       } \
       description { state: "rename_visible" 0.0; \
          inherit: "default" 0.0; \
@@ -75,28 +100,215 @@
    } \
    part { name: "elm.swallow.clear"; \
       type: SWALLOW; \
+      scale: 1; \
       description { state: "default" 0.0; \
+         align: 1.0 0.5; \
          fixed: 1 1; \
-         rel1.relative: 1.0 0.0; \
-         rel2.relative: 1.0 1.0; \
+         rel1 { \
+            to_x: "focus_right_padding"; \
+            relative: 0.0 0.0; \
+         } \
+         rel2 { \
+            to_x: "focus_right_padding"; \
+            relative: 0.0 1.0; \
+         } \
          visible: 0; \
       } \
       description { state: "visible" 0.0; \
          inherit: "default" 0.0; \
-         align: 1.0 0.5; \
          visible: 1; \
       } \
    } \
    part { name: "elm.swallow.rename"; \
       type: SWALLOW; \
+      scale: 1; \
       description { state: "default" 0.0; \
-         fixed: 1 1; \
          align: 1.0 0.5; \
-         rel1.relative: 1.0 0.0; \
-         rel2.relative: 1.0 1.0; \
+         fixed: 1 1; \
+         rel1 { \
+            to_x: "focus_right_padding"; \
+            relative: 0.0 0.0; \
+         } \
+         rel2 { \
+            to_x: "focus_right_padding"; \
+            relative: 0.0 1.0; \
+         } \
          visible: 0; \
       } \
       description { state: "visible" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 1; \
+      } \
+   }
+
+#define ENTRY_FOCUS_PARTS \
+   part { name: "focus_bg"; \
+      type: RECT; \
+      scale: 1; \
+      description { state: "default" 0.0; \
+         visible: 0; \
+         rel1.relative: 0.0 0.0; \
+         rel2.relative: 1.0 1.0; \
+      } \
+   } \
+   part { name: "focus_left_padding"; \
+      type: SPACER; \
+      scale: 1; \
+      description { state: "default" 0.0; \
+         min: 10 0; \
+         max: 10 0; \
+         fixed: 1 0; \
+         align: 0.0 0.5; \
+         rel1 { \
+            to_x: "focus_bg"; \
+            relative: 0.0 0.0; \
+         } \
+         rel2 { \
+            to_x: "focus_bg"; \
+            relative: 0.0 1.0; \
+         } \
+      } \
+      description { state: "hidden" 0.0; \
+         inherit: "default" 0.0; \
+         min: 0 0; \
+         max: 0 0; \
+      } \
+   } \
+   part { name: "focus_right_padding"; \
+      type: SPACER; \
+      scale: 1; \
+      description { state: "default" 0.0; \
+         min: 10 0; \
+         max: 10 0; \
+         align: 1.0 0.5; \
+         fixed: 1 0; \
+         rel1 { \
+            to_x: "focus_bg"; \
+            relative: 1.0 0.0; \
+         } \
+         rel2 { \
+            to_x: "focus_bg"; \
+            relative: 1.0 1.0; \
+         } \
+      } \
+      description { state: "hidden" 0.0; \
+         inherit: "default" 0.0; \
+         min: 0 0; \
+         max: 0 0; \
+      } \
+   } \
+   part { name: "focus_image"; \
+      scale: 1; \
+      mouse_events: 0; \
+      description { state: "default" 0.0; \
+         visible: 0; \
+         image { \
+            normal: "00_focus.png"; \
+            border: 6 6 6 6; \
+            border_scale: 1; \
+         } \
+         rel1 { \
+            to_x: "focus_bg"; \
+            relative: 0.0 0.0; \
+         } \
+         rel2 { \
+            to_x: "focus_bg"; \
+            relative: 1.0 1.0; \
+         } \
+      } \
+      description { state: "focused" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 1; \
+      } \
+   }
+
+#define ENTRY_EDITFIELD_FOCUS_PARTS \
+   part { name: "focus_bg"; \
+      type: IMAGE; \
+      scale: 1; \
+      mouse_events: 0; \
+      repeat_events: 1; \
+      description { state: "default" 0.0; \
+         visible: 1; \
+         image { \
+            normal: "00_edit_field_bg.png"; \
+            border: 8 8 8 8; \
+            border_scale: 1; \
+         } \
+         rel1.relative: 0.0 0.0; \
+         rel2.relative: 1.0 1.0; \
+      } \
+      description { state: "hidden" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 0; \
+      } \
+   } \
+   part { name: "focus_left_padding"; \
+      type: SPACER; \
+      scale: 1; \
+      description { state: "default" 0.0; \
+         min: 10 0; \
+         max: 10 0; \
+         fixed: 1 0; \
+         align: 0.0 0.5; \
+         rel1 { \
+            to_x: "focus_bg"; \
+            relative: 0.0 0.0; \
+         } \
+         rel2 { \
+            to_x: "focus_bg"; \
+            relative: 0.0 1.0; \
+         } \
+      } \
+      description { state: "hidden" 0.0; \
+         inherit: "default" 0.0; \
+         min: 0 0; \
+         max: 0 0; \
+      } \
+   } \
+   part { name: "focus_right_padding"; \
+      type: SPACER; \
+      scale: 1; \
+      description { state: "default" 0.0; \
+         min: 10 0; \
+         max: 10 0; \
+         align: 1.0 0.5; \
+         fixed: 1 0; \
+         rel1 { \
+            to_x: "focus_bg"; \
+            relative: 1.0 0.0; \
+         } \
+         rel2 { \
+            to_x: "focus_bg"; \
+            relative: 1.0 1.0; \
+         } \
+      } \
+      description { state: "hidden" 0.0; \
+         inherit: "default" 0.0; \
+         min: 0 0; \
+         max: 0 0; \
+      } \
+   } \
+   part { name: "focus_image"; \
+      scale: 1; \
+      mouse_events: 0; \
+      description { state: "default" 0.0; \
+         visible: 0; \
+         image { \
+            normal: "00_edit_field_focus.png"; \
+            border: 8 8 8 8; \
+            border_scale: 1; \
+         } \
+         rel1 { \
+            to: "focus_bg"; \
+            relative: 0.0 0.0; \
+         } \
+         rel2 { \
+            to: "focus_bg"; \
+            relative: 1.0 1.0; \
+         } \
+      } \
+      description { state: "focused" 0.0; \
          inherit: "default" 0.0; \
          visible: 1; \
       } \
@@ -108,6 +320,9 @@
       source: "*"; \
       script { \
          set_int(scroll_enabled, 1); \
+         set_state(PART:"focus_bg", "hidden", 0.0); \
+         set_state(PART:"focus_left_padding", "hidden", 0.0); \
+         set_state(PART:"focus_right_padding", "hidden", 0.0); \
       } \
    } \
    program { name: "scroll_disabled"; \
@@ -115,6 +330,9 @@
       source: "*"; \
       script { \
          set_int(scroll_enabled, 0); \
+         set_state(PART:"focus_bg", "default", 0.0); \
+         set_state(PART:"focus_left_padding", "default", 0.0); \
+         set_state(PART:"focus_right_padding", "default", 0.0); \
       } \
    } \
    program { name: "clear_show"; \
@@ -166,6 +384,54 @@
       } \
    }
 
+#define ENTRY_FOCUS_PROGRAMS \
+   program { name: "action_focus"; \
+      signal: "elm,action,focus_highlight,show"; \
+      source: "elm"; \
+      script { \
+         new v; \
+         v = get_int(scroll_enabled); \
+         if (!v) { \
+            set_state(PART:"focus_image", "focused", 0.0); \
+         } \
+      } \
+   } \
+   program { name: "action_unfocus"; \
+      signal: "elm,action,focus_highlight,hide"; \
+      source: "elm"; \
+      script { \
+         new v; \
+         v = get_int(scroll_enabled); \
+         if (!v) { \
+            set_state(PART:"focus_image", "default", 0.0); \
+         } \
+      } \
+   }
+
+#define ENTRY_EDITFIELD_FOCUS_PROGRAMS \
+   program { name: "action_focus"; \
+      signal: "elm,state,focus,on"; \
+      source: "*"; \
+      script { \
+         new v; \
+         v = get_int(scroll_enabled); \
+         if (!v) { \
+            set_state(PART:"focus_image", "focused", 0.0); \
+         } \
+      } \
+   } \
+   program { name: "action_unfocus"; \
+      signal: "elm,state,focus,off"; \
+      source: "*"; \
+      script { \
+         new v; \
+         v = get_int(scroll_enabled); \
+         if (!v) { \
+            set_state(PART:"focus_image", "default", 0.0); \
+         } \
+      } \
+   }
+
 sounds {
    sample {
       name: "touch_sound" AS_IS;
@@ -196,7 +462,7 @@ group { name: "elm/entry/base/default";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "entry_textblock_disabled_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#00000080 left_margin=1 right_margin=2 wrap=mixed text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_DISABLED_TEXT_COLOR_INC" left_margin=1 right_margin=2 wrap=mixed text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -225,7 +491,10 @@ group { name: "elm/entry/base/default";
    data {
       item: context_menu_orientation "horizontal";
    }
+   ENTRY_FOCUS_DATA
+   ENTRY_FOCUS_IMAGE
    parts {
+      ENTRY_FOCUS_PARTS
       part { name: "elm.guide";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -320,6 +589,7 @@ group { name: "elm/entry/base/default";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
       ENTRY_SWALLOW_PROGRAMS
+      ENTRY_FOCUS_PROGRAMS
    }
 }
 
@@ -346,7 +616,7 @@ group { name: "elm/entry/base-charwrap/default";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "entry_textblock_char_wrap_disabled_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#00000080 wrap=char left_margin=1 right_margin=2 text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_DISABLED_TEXT_COLOR_INC" wrap=char left_margin=1 right_margin=2 text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -375,7 +645,10 @@ group { name: "elm/entry/base-charwrap/default";
    data {
       item: context_menu_orientation "horizontal";
    }
+   ENTRY_FOCUS_DATA
+   ENTRY_FOCUS_IMAGE
    parts {
+      ENTRY_FOCUS_PARTS
       part { name: "elm.guide";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -470,6 +743,7 @@ group { name: "elm/entry/base-charwrap/default";
         action: PLAY_SAMPLE "touch_sound" 1.0;
      }
      ENTRY_SWALLOW_PROGRAMS
+     ENTRY_FOCUS_PROGRAMS
   }
 }
 
@@ -480,7 +754,10 @@ group { name: "elm/entry/base-nowrap/default";
    data {
       item: context_menu_orientation "horizontal";
    }
+   ENTRY_FOCUS_DATA
+   ENTRY_FOCUS_IMAGE
    parts {
+      ENTRY_FOCUS_PARTS
       part { name: "elm.guide";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -573,6 +850,7 @@ group { name: "elm/entry/base-nowrap/default";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
       ENTRY_SWALLOW_PROGRAMS
+      ENTRY_FOCUS_PROGRAMS
    }
 }
 
@@ -605,7 +883,7 @@ group { name: "elm/entry/base/editfield";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "editfield_textblock_disabled_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#00000080 wrap=mixed left_margin=1 right_margin=2";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_DISABLED_TEXT_COLOR_INC" wrap=mixed left_margin=1 right_margin=2";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -621,7 +899,7 @@ group { name: "elm/entry/base/editfield";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "editfield_textblock_guide_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_GUIDE_TEXT_COLOR_INC" wrap=mixed left_margin=1 right_margin=2";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_EDITFIELD_GUIDE_TEXT_COLOR_INC" wrap=mixed left_margin=1 right_margin=2";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -634,7 +912,10 @@ group { name: "elm/entry/base/editfield";
    data {
       item: context_menu_orientation "horizontal";
    }
+   ENTRY_EDITFIELD_FOCUS_DATA
+   ENTRY_EDITFIELD_FOCUS_IMAGE
    parts {
+      ENTRY_EDITFIELD_FOCUS_PARTS
       part { name: "elm.guide";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -729,6 +1010,7 @@ group { name: "elm/entry/base/editfield";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
       ENTRY_SWALLOW_PROGRAMS
+      ENTRY_EDITFIELD_FOCUS_PROGRAMS
    }
 }
 
@@ -760,7 +1042,7 @@ group { name: "elm/entry/base-charwrap/editfield";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "editfield_textblock_char_wrap_disabled_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#00000080 wrap=char left_margin=1 right_margin=2";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_DISABLED_TEXT_COLOR_INC" wrap=char left_margin=1 right_margin=2";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -776,7 +1058,7 @@ group { name: "elm/entry/base-charwrap/editfield";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "editfield_textblock_char_wrap_guide_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_GUIDE_TEXT_COLOR_INC" wrap=char left_margin=1 right_margin=2";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_EDITFIELD_GUIDE_TEXT_COLOR_INC" wrap=char left_margin=1 right_margin=2";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -789,7 +1071,10 @@ group { name: "elm/entry/base-charwrap/editfield";
    data {
       item: context_menu_orientation "horizontal";
    }
+   ENTRY_EDITFIELD_FOCUS_DATA
+   ENTRY_EDITFIELD_FOCUS_IMAGE
    parts {
+      ENTRY_EDITFIELD_FOCUS_PARTS
       part { name: "elm.guide";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -884,6 +1169,7 @@ group { name: "elm/entry/base-charwrap/editfield";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
       ENTRY_SWALLOW_PROGRAMS
+      ENTRY_EDITFIELD_FOCUS_PROGRAMS
    }
 }
 
@@ -914,7 +1200,7 @@ group { name: "elm/entry/base-single/editfield";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "editfield_single_textblock_disabled_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#00000080 wrap=none left_margin=1 right_margin=3 text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_DISABLED_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -930,7 +1216,7 @@ group { name: "elm/entry/base-single/editfield";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "editfield_single_textblock_guide_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_GUIDE_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=entry ellipsis=1.0";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_EDITFIELD_GUIDE_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=entry ellipsis=1.0";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -943,7 +1229,10 @@ group { name: "elm/entry/base-single/editfield";
    data {
       item: context_menu_orientation "horizontal";
    }
+   ENTRY_EDITFIELD_FOCUS_DATA
+   ENTRY_EDITFIELD_FOCUS_IMAGE
    parts {
+      ENTRY_EDITFIELD_FOCUS_PARTS
       part { name: "elm.guide";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -1035,6 +1324,7 @@ group { name: "elm/entry/base-single/editfield";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
       ENTRY_SWALLOW_PROGRAMS
+      ENTRY_EDITFIELD_FOCUS_PROGRAMS
    }
 }
 
@@ -1045,7 +1335,54 @@ group { name: "elm/entry/base-single/editfield/searchbar/default";
    data {
       item: context_menu_orientation "horizontal";
    }
+   ENTRY_FOCUS_DATA
+   ENTRY_FOCUS_IMAGE
+   styles {
+      style { name: "editfield_searchbar_single_textblock_style";
+         base: "font=Tizen:style=Roman font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color="ENTRY_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=entry";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font=Tizen:style=Oblique";
+         tag:  "b" "+ font=Tizen:style=Bold";
+         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+         tag:  "hilight" "+ font=Tizen:style=Bold";
+         tag:  "preedit" "+ underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sel" "+ backing=on backing_color="ENTRY_PREEDIT_BACKGROUND_COLOR_INC" color="ENTRY_PREEDIT_TEXT_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_TEXT_COLOR_INC;
+         tag:  "preedit_sub1" "+ backing=on backing_color="ENTRY_PREEDIT_SUB1_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sub2" "+ backing=on backing_color="ENTRY_PREEDIT_SUB2_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sub3" "+ backing=on backing_color="ENTRY_PREEDIT_SUB3_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+      }
+      style { name: "editfield_searchbar_single_textblock_disabled_style";
+         base: "font=Tizen:style=Roman font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color="ENTRY_DISABLED_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=entry";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font=Tizen:style=Oblique";
+         tag:  "b" "+ font=Tizen:style=Bold";
+         tag:  "link" "+ color=#00000080 underline=on underline_color=#00000080";
+         tag:  "hilight" "+ font=Tizen:style=Bold";
+         tag:  "preedit" "+ underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sel" "+ backing=on backing_color="ENTRY_PREEDIT_BACKGROUND_COLOR_INC" color="ENTRY_PREEDIT_TEXT_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_TEXT_COLOR_INC;
+         tag:  "preedit_sub1" "+ backing=on backing_color="ENTRY_PREEDIT_SUB1_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sub2" "+ backing=on backing_color="ENTRY_PREEDIT_SUB2_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sub3" "+ backing=on backing_color="ENTRY_PREEDIT_SUB3_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+      }
+      style { name: "editfield_searchbar_single_textblock_guide_style";
+         base: "font=Tizen:style=Roman font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color="ENTRY_GUIDE_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=entry ellipsis=1.0";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font=Tizen:style=Oblique";
+         tag:  "b" "+ font=Tizen:style=Bold";
+         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+         tag:  "hilight" "+ font=Tizen:style=Bold";
+      }
+   }
    parts {
+      ENTRY_FOCUS_PARTS
       part { name: "elm.guide";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -1054,7 +1391,7 @@ group { name: "elm/entry/base-single/editfield/searchbar/default";
             rel1.to: "elm.text";
             rel2.to: "elm.text";
             text {
-               style: "editfield_single_textblock_guide_style";
+               style: "editfield_searchbar_single_textblock_guide_style";
                min: 0 1;
                max: 0 1;
             }
@@ -1084,7 +1421,7 @@ group { name: "elm/entry/base-single/editfield/searchbar/default";
          source11: ENTRY_BLOCK_HANDLE_SOURCE11; // end edge selection
          description { state: "default" 0.0;
             text {
-               style: "editfield_single_textblock_style";
+               style: "editfield_searchbar_single_textblock_style";
                min: 1 1;
                max: 0 1;
             }
@@ -1093,7 +1430,7 @@ group { name: "elm/entry/base-single/editfield/searchbar/default";
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
             text {
-               style: "editfield_single_textblock_disabled_style";
+               style: "editfield_searchbar_single_textblock_disabled_style";
             }
          }
       }
@@ -1137,6 +1474,7 @@ group { name: "elm/entry/base-single/editfield/searchbar/default";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
       ENTRY_SWALLOW_PROGRAMS
+      ENTRY_FOCUS_PROGRAMS
    }
 }
 
@@ -1162,7 +1500,7 @@ group { name: "elm/entry/base-single/default";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "entry_single_textblock_disabled_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#00000080 wrap=none left_margin=1 right_margin=3 text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_DISABLED_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -1188,10 +1526,13 @@ group { name: "elm/entry/base-single/default";
          tag:  "hilight" "+ font=Tizen:style=Bold";
       }
    }
+   ENTRY_FOCUS_DATA
+   ENTRY_FOCUS_IMAGE
    data {
       item: context_menu_orientation "horizontal";
    }
    parts {
+      ENTRY_FOCUS_PARTS
       part { name: "elm.guide";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -1285,6 +1626,7 @@ group { name: "elm/entry/base-single/default";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
       ENTRY_SWALLOW_PROGRAMS
+      ENTRY_FOCUS_PROGRAMS
    }
 }
 
@@ -1685,7 +2027,10 @@ group { name: "elm/entry/base-noedit/default";
       data {
          item: context_menu_orientation "horizontal";
       }
+      ENTRY_FOCUS_DATA
+      ENTRY_FOCUS_IMAGE
       parts {
+         ENTRY_FOCUS_PARTS
          part { name: "elm.guide";
             type: TEXTBLOCK;
             mouse_events: 0;
@@ -1725,7 +2070,7 @@ group { name: "elm/entry/base-noedit/default";
 	    description { state: "default" 0.0;
 	       text {
 		  style: "entry_single_textblock_style";
-		  repch: "*";
+		  repch: "•";
 		  min: 1 1;
                   max: 0 1;
 	       }
@@ -1778,6 +2123,7 @@ group { name: "elm/entry/base-noedit/default";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
          ENTRY_SWALLOW_PROGRAMS
+         ENTRY_FOCUS_PROGRAMS
       }
    }
 
@@ -1807,7 +2153,7 @@ group { name: "elm/entry/base-password/popup";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "entry_single_textblock_disabled_popup_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#00000080 align=center wrap=mixed ellipsis=1.0 text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_DISABLED_TEXT_COLOR_INC" align=center wrap=mixed ellipsis=1.0 text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -1833,7 +2179,10 @@ group { name: "elm/entry/base-password/popup";
          tag:  "hilight" "+ font=Tizen:style=Bold";
       }
    }
+   ENTRY_FOCUS_DATA
+   ENTRY_FOCUS_IMAGE
    parts {
+      ENTRY_FOCUS_PARTS
       part { name: "elm.guide";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -1873,7 +2222,7 @@ group { name: "elm/entry/base-password/popup";
          description { state: "default" 0.0;
             text {
                style: "entry_single_textblock_popup_style";
-               repch: "*";
+               repch: "•";
                min: 1 1;
                max: 0 1;
             }
@@ -1926,6 +2275,7 @@ group { name: "elm/entry/base-password/popup";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
       ENTRY_SWALLOW_PROGRAMS
+      ENTRY_FOCUS_PROGRAMS
    }
 }
 
@@ -4357,6 +4707,157 @@ styles {
       }
    }
 
+group { name: "elm/entry/base-single/multibuttonentry";
+
+   data.item: "default_font_size" "24";
+   data.item: "min_font_size" "8";
+   data.item: "max_font_size" "60";
+
+   styles {
+      style { name: "multibuttonentry_single_textblock_style";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=tizen";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font=Tizen:style=Oblique";
+         tag:  "b" "+ font=Tizen:style=Bold";
+         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+         tag:  "hilight" "+ font=Tizen:style=Bold";
+         tag:  "preedit" "+ underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sel" "+ backing=on backing_color="ENTRY_PREEDIT_BACKGROUND_COLOR_INC" color="ENTRY_PREEDIT_TEXT_COLOR_INC;
+         tag:  "preedit_sub1" "+ backing=on backing_color="ENTRY_PREEDIT_SUB1_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sub2" "+ backing=on backing_color="ENTRY_PREEDIT_SUB2_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sub3" "+ backing=on backing_color="ENTRY_PREEDIT_SUB3_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+      }
+      style { name: "multibuttonentry_single_textblock_disabled_style";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=tizen";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font=Tizen:style=Oblique";
+         tag:  "b" "+ font=Tizen:style=Bold";
+         tag:  "link" "+ color=#00000080 underline=on underline_color=#8008";
+         tag:  "hilight" "+ font=Tizen:style=Bold";
+         tag:  "preedit" "+ underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sel" "+ backing=on backing_color="ENTRY_PREEDIT_BACKGROUND_COLOR_INC" color="ENTRY_PREEDIT_TEXT_COLOR_INC;
+         tag:  "preedit_sub1" "+ backing=on backing_color="ENTRY_PREEDIT_SUB1_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sub2" "+ backing=on backing_color="ENTRY_PREEDIT_SUB2_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sub3" "+ backing=on backing_color="ENTRY_PREEDIT_SUB3_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+         tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
+      }
+      style { name: "multibuttonentry_single_textblock_guide_style";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_GUIDE_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=tizen ellipsis=1.0";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font=Tizen:style=Oblique";
+         tag:  "b" "+ font=Tizen:style=Bold";
+         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+         tag:  "hilight" "+ font=Tizen:style=Bold";
+      }
+   }
+   data {
+      item: context_menu_orientation "horizontal";
+   }
+   ENTRY_FOCUS_DATA
+   ENTRY_FOCUS_IMAGE
+   parts {
+      ENTRY_FOCUS_PARTS
+      part { name: "elm.guide";
+         type: TEXTBLOCK;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "elm.text";
+            rel2.to: "elm.text";
+            text {
+               style: "multibuttonentry_single_textblock_guide_style";
+               min: 0 1;
+               max: 0 1;
+            }
+         }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         mouse_events: 1;
+         scale: 1;
+         entry_mode: EDITABLE;
+         select_mode: BLOCK_HANDLE;
+         //cursor_mode: BEFORE;
+         multiline: 0;
+         source: "elm/entry/selection/default"; // selection under
+         //source2: "X"; // selection over
+         //source3: "X"; // cursor under
+         source4: "elm/entry/cursor/default"; // cursorover
+         source5: "elm/entry/anchor/default"; // anchor under
+         source7: ENTRY_BLOCK_HANDLE_SOURCE7; // start selection handler
+         source8: ENTRY_BLOCK_HANDLE_SOURCE8; // end selection handler
+         source9: ENTRY_CURSOR_HANDLE_SOURCE9; // cursor handler
+         source10: ENTRY_BLOCK_HANDLE_SOURCE10; // start edge selection
+         source11: ENTRY_BLOCK_HANDLE_SOURCE11; // end edge selection
+         description { state: "default" 0.0;
+            text {
+               style: "multibuttonentry_single_textblock_style";
+               min: 1 1;
+               max: 0 1;
+            }
+            ENTRY_TEXTBLOCK_DEFAULT_REL
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text {
+               style: "multibuttonentry_single_textblock_disabled_style";
+            }
+         }
+      }
+      ENTRY_SWALLOW_PARTS
+   }
+   ENTRY_SWALLOW_SCRIPT_PUBLIC
+   programs {
+      program { name: "focus";
+         signal: "load";
+         source: "";
+         action: FOCUS_SET;
+         target: "elm.text";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "elm.text";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+      program { name: "gdisable";
+         signal: "elm,guide,disabled";
+         source: "elm";
+         action: STATE_SET "hidden" 0.0;
+         target: "elm.guide";
+      }
+      program { name: "genable";
+         signal: "elm,guide,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.guide";
+      }
+      program { name: "touch_snd";
+         signal: "mouse,clicked,1";
+         source: "elm.text";
+         action: PLAY_SAMPLE "touch_sound" 1.0;
+      }
+      ENTRY_SWALLOW_PROGRAMS
+      ENTRY_FOCUS_PROGRAMS
+   }
+}
 group { name: "elm/entry/base/font_color_black";
    alias: "elm/entry/base-mixedwrap/font_color_black";
    alias: "elm/entry/base/font_color_black/default";
@@ -4372,7 +4873,7 @@ group { name: "elm/entry/base/font_color_black";
 
    styles {
       style { name: "font_color_black_textblock_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#000000FF wrap=mixed left_margin=1 right_margin=2 text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_FONT_COLOR_BLACK_TEXT_COLOR_INC" wrap=mixed left_margin=1 right_margin=2 text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -4388,7 +4889,7 @@ group { name: "elm/entry/base/font_color_black";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color=#000000FF";
       }
       style { name: "font_color_black_textblock_disabled_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#00000080 wrap=mixed left_margin=1 right_margin=2 text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_FONT_COLOR_BLACK_DISABLED_TEXT_COLOR_INC" wrap=mixed left_margin=1 right_margin=2 text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -4404,7 +4905,7 @@ group { name: "elm/entry/base/font_color_black";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color=#000000FF";
       }
       style { name: "font_color_black_textblock_guide_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#90A9C7 wrap=mixed left_margin=1 right_margin=2 text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_FONT_COLOR_BLACK_GUIDE_TEXT_COLOR_INC" wrap=mixed left_margin=1 right_margin=2 text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -4417,7 +4918,10 @@ group { name: "elm/entry/base/font_color_black";
    data {
       item: context_menu_orientation "horizontal";
    }
+   ENTRY_FOCUS_DATA
+   ENTRY_FOCUS_IMAGE
    parts {
+      ENTRY_FOCUS_PARTS
       part { name: "elm.guide";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -4511,6 +5015,7 @@ group { name: "elm/entry/base/font_color_black";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
       ENTRY_SWALLOW_PROGRAMS
+      ENTRY_FOCUS_PROGRAMS
    }
 }
 
@@ -4629,7 +5134,7 @@ group { name: "elm/entry/base-charwrap/font_color_black";
 
    styles {
       style { name: "font_color_black_textblock_char_wrap_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#000000FF wrap=char left_margin=1 right_margin=2 text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_FONT_COLOR_BLACK_TEXT_COLOR_INC" wrap=char left_margin=1 right_margin=2 text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -4645,7 +5150,7 @@ group { name: "elm/entry/base-charwrap/font_color_black";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color=#000000FF";
       }
       style { name: "font_color_black_textblock_char_wrap_disabled_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#00000080 wrap=char left_margin=1 right_margin=2 text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_FONT_COLOR_BLACK_DISABLED_TEXT_COLOR_INC" wrap=char left_margin=1 right_margin=2 text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -4661,7 +5166,7 @@ group { name: "elm/entry/base-charwrap/font_color_black";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color=#000000FF";
       }
       style { name: "font_color_black_textblock_char_wrap_guide_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#90A9C7 wrap=char left_margin=1 right_margin=2 text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_FONT_COLOR_BLACK_GUIDE_TEXT_COLOR_INC" wrap=char left_margin=1 right_margin=2 text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -4674,7 +5179,10 @@ group { name: "elm/entry/base-charwrap/font_color_black";
    data {
       item: context_menu_orientation "horizontal";
    }
+   ENTRY_FOCUS_DATA
+   ENTRY_FOCUS_IMAGE
    parts {
+      ENTRY_FOCUS_PARTS
       part { name: "elm.guide";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -4768,6 +5276,7 @@ group { name: "elm/entry/base-charwrap/font_color_black";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
       ENTRY_SWALLOW_PROGRAMS
+      ENTRY_FOCUS_PROGRAMS
    }
 }
 
@@ -4786,7 +5295,7 @@ group { name: "elm/entry/base-single/font_color_black";
 
    styles {
       style { name: "font_color_black_single_textblock_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#000000FF wrap=none left_margin=1 right_margin=3 text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_FONT_COLOR_BLACK_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -4802,7 +5311,7 @@ group { name: "elm/entry/base-single/font_color_black";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color=#000000FF";
       }
       style { name: "font_color_black_single_textblock_disabled_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#00000080 wrap=none left_margin=1 right_margin=3 text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_FONT_COLOR_BLACK_DISABLED_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -4818,7 +5327,7 @@ group { name: "elm/entry/base-single/font_color_black";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color=#000000FF";
       }
       style { name: "font_color_black_single_textblock_guide_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#90A9C7 wrap=none left_margin=1 right_margin=3 text_class=entry";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_FONT_COLOR_BLACK_GUIDE_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -4831,7 +5340,10 @@ group { name: "elm/entry/base-single/font_color_black";
    data {
       item: context_menu_orientation "horizontal";
    }
+   ENTRY_FOCUS_DATA
+   ENTRY_FOCUS_IMAGE
    parts {
+      ENTRY_FOCUS_PARTS
       part { name: "elm.guide";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -4923,6 +5435,7 @@ group { name: "elm/entry/base-single/font_color_black";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
       ENTRY_SWALLOW_PROGRAMS
+      ENTRY_FOCUS_PROGRAMS
    }
 }
 
@@ -5027,7 +5540,7 @@ group { name: "elm/entry/base-single/font_color_black/tizen_text_class";
    inherit: "elm/entry/base-single/font_color_black";
    styles {
       style { name: "tizen_text_class_single_textblock_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#000000FF wrap=none left_margin=1 right_margin=3 text_class=tizen";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_FONT_COLOR_BLACK_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=tizen";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -5043,7 +5556,7 @@ group { name: "elm/entry/base-single/font_color_black/tizen_text_class";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color=#000000FF";
       }
       style { name: "tizen_text_class_single_textblock_disabled_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#00000080 wrap=none left_margin=1 right_margin=3 text_class=tizen";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_FONT_COLOR_BLACK_DISABLED_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=tizen";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -5059,7 +5572,7 @@ group { name: "elm/entry/base-single/font_color_black/tizen_text_class";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color=#000000FF";
       }
       style { name: "tizen_text_class_single_textblock_guide_style";
-         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color=#90A9C7 wrap=none left_margin=1 right_margin=3 text_class=tizen ellipsis=1.0";
+         base: "font=Tizen:style=Roman font_size="ENTRY_TEXT_SIZE_INC" color="ENTRY_FONT_COLOR_BLACK_GUIDE_TEXT_COLOR_INC" wrap=none left_margin=1 right_margin=3 text_class=tizen ellipsis=1.0";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -5112,7 +5625,10 @@ group { name: "elm/entry/base-password/font_color_black";
    data {
       item: context_menu_orientation "horizontal";
    }
+   ENTRY_FOCUS_DATA
+   ENTRY_FOCUS_IMAGE
    parts {
+      ENTRY_FOCUS_PARTS
       part { name: "elm.guide";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -5151,7 +5667,7 @@ group { name: "elm/entry/base-password/font_color_black";
          description { state: "default" 0.0;
             text {
                style: "font_color_black_single_textblock_style";
-               repch: "*";
+               repch: "•";
                min: 1 1;
                max: 0 1;
             }
@@ -5204,14 +5720,16 @@ group { name: "elm/entry/base-password/font_color_black";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
       ENTRY_SWALLOW_PROGRAMS
+      ENTRY_FOCUS_PROGRAMS
    }
 }
 
 group { name: "elm/scroller/entry/default";
-      alias : "elm/scroller/entry/editfield";
-      alias : "elm/scroller/entry/editfield/searchbar/default";
       data {
-         item: "focus_highlight" "off";
+         item: "focus_highlight" "on";
+      }
+      images {
+         image: "00_focus.png" COMP;
       }
       script {
          public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
@@ -5238,14 +5756,93 @@ group { name: "elm/scroller/entry/default";
          }
       }
       parts {
-         part { name: "bg";
+         part { name: "focus_bg";
             type: RECT;
+            scale: 1;
             description { state: "default" 0.0;
                visible: 0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+         part { name: "focus_image";
+            scale: 1;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               image {
+                  normal: "00_focus.png";
+                  border: 6 6 6 6;
+                  border_scale: 1;
+               }
+               rel1 {
+                  to: "focus_bg";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to: "focus_bg";
+                  relative: 1.0 1.0;
+               }
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "focus_left_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               max: 10 0;
+               align: 0.0 0.5;
+               fixed: 1 0;
+               rel1 {
+                  to: "focus_bg";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to: "focus_bg";
+                  relative: 0.0 1.0;
+               }
+            }
+         }
+         part { name: "focus_right_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               max: 10 0;
+               align: 1.0 0.5;
+               fixed: 1 0;
+               rel1 {
+                  to: "focus_bg";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to: "focus_bg";
+                  relative: 1.0 1.0;
+               }
+            }
+         }
+         part { name: "bg";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  to_x: "focus_left_padding";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to_x: "focus_right_padding";
+                  relative: 0.0 1.0;
+               }
             }
          }
          part { name: "clipper";
             type: RECT;
+            scale: 1;
             mouse_events: 0;
             description { state: "default" 0.0;
                rel1.to: "bg";
@@ -5254,8 +5851,11 @@ group { name: "elm/scroller/entry/default";
          }
          part { name: "editfield_space";
             type: SPACER;
+            scale: 1;
             description { state: "default" 0.0;
                align: 1.0 1.0;
+               min: 0 0;
+               max: 0 0;
                rel1.to: "elm.swallow.end";
                rel1.relative: 0.0 0.0;
                rel2.to: "elm.swallow.end";
@@ -5276,7 +5876,6 @@ group { name: "elm/scroller/entry/default";
             }
             description { state: "clear_visible" 0.0;
                inherit: "default" 0.0;
-               align: 1.0 1.0;
                min: 9 0;
                max: 9 0;
                rel1 {
@@ -5291,6 +5890,7 @@ group { name: "elm/scroller/entry/default";
          }
          part { name: "contentclipper";
             type: RECT;
+            scale: 1;
             mouse_events: 0;
             clip_to: "clipper";
             description { state: "default" 0.0;
@@ -5302,8 +5902,10 @@ group { name: "elm/scroller/entry/default";
          }
          part { name: "elm.swallow.icon";
             type: SWALLOW;
+            scale: 1;
             clip_to: "clipper";
             description { state: "default" 0.0;
+               align: 0.0 0.5;
                fixed: 1 1;
                rel1 {
                   to: "bg";
@@ -5316,21 +5918,13 @@ group { name: "elm/scroller/entry/default";
                visible: 0;
             }
             description { state: "visible" 0.0;
-               fixed: 1 1;
-               align: 0.0 1.0;
-               rel1 {
-                         to: "bg";
-                         relative: 0.0 0.0;
-               }
-               rel2 {
-                  to: "bg";
-                  relative: 0.0 1.0;
-               }
+               inherit: "default" 0.0;
                visible: 1;
             }
          }
          part { name: "icon_right_padding";
             type: SPACER;
+            scale: 1;
             clip_to: "clipper";
             description { state: "default" 0.0;
                fixed: 1 1;
@@ -5354,8 +5948,10 @@ group { name: "elm/scroller/entry/default";
          }
          part { name: "elm.swallow.clear";
             type: SWALLOW;
+            scale: 1;
             clip_to: "clipper";
             description { state: "default" 0.0;
+               align: 1.0 0.5;
                fixed: 1 1;
                rel1 {
                   to_x: "elm.swallow.end";
@@ -5371,15 +5967,15 @@ group { name: "elm/scroller/entry/default";
             }
             description { state: "clear_visible" 0.0;
                inherit: "default" 0.0;
-               align: 1.0 1.0;
                visible: 1;
             }
          }
          part { name: "elm.swallow.rename";
             type: SWALLOW;
+            scale: 1;
             clip_to: "clipper";
             description { state: "default" 0.0;
-               align: 1.0 1.0;
+               align: 1.0 0.5;
                fixed: 1 1;
                rel1 {
                   to_x: "elm.swallow.end";
@@ -5400,8 +5996,10 @@ group { name: "elm/scroller/entry/default";
          }
          part { name: "elm.swallow.end";
             type: SWALLOW;
+            scale: 1;
             clip_to: "clipper";
             description { state: "default" 0.0;
+               align: 1.0 0.5;
                fixed: 1 1;
                rel1 {
                   to: "bg";
@@ -5415,12 +6013,12 @@ group { name: "elm/scroller/entry/default";
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
-               align: 1.0 1.0;
                visible: 1;
             }
          }
          part { name: "elm.swallow.content";
             clip_to: "contentclipper";
+            scale: 1;
             type: SWALLOW;
             description { state: "default" 0.0;
                rel1 {
@@ -5428,13 +6026,14 @@ group { name: "elm/scroller/entry/default";
                        relative: 1.0 0.0;
                }
                rel2 {
-                to: "editfield_space";
+                to_x: "editfield_space";
                 relative: 0.0 1.0;
                }
             }
          }
          part { name: "sb_vbar_clip_master";
             type: RECT;
+            scale: 1;
             mouse_events: 0;
             description { state: "default" 0.0;
             }
@@ -5446,6 +6045,7 @@ group { name: "elm/scroller/entry/default";
          part { name: "sb_vbar_clip";
             clip_to: "sb_vbar_clip_master";
             type: RECT;
+            scale: 1;
             mouse_events: 0;
             description { state: "default" 0.0;
             }
@@ -5456,6 +6056,7 @@ group { name: "elm/scroller/entry/default";
          }
          part { name: "sb_vbar";
             type: RECT;
+            scale: 1;
             mouse_events: 0;
             description { state: "default" 0.0;
                fixed: 1 1;
@@ -5476,6 +6077,7 @@ group { name: "elm/scroller/entry/default";
          }
          part { name: "elm.dragable.vbar";
             type: RECT;
+            scale: 1;
             clip_to: "sb_vbar_clip";
             mouse_events: 0;
             dragable {
@@ -5500,6 +6102,7 @@ group { name: "elm/scroller/entry/default";
          }
          part { name: "sb_hbar_clip_master";
             type: RECT;
+            scale: 1;
             mouse_events: 0;
             description { state: "default" 0.0;
             }
@@ -5511,6 +6114,7 @@ group { name: "elm/scroller/entry/default";
          part { name: "sb_hbar_clip";
             clip_to: "sb_hbar_clip_master";
             type: RECT;
+            scale: 1;
             mouse_events: 0;
             description { state: "default" 0.0;
             }
@@ -5521,6 +6125,7 @@ group { name: "elm/scroller/entry/default";
          }
          part { name: "sb_hbar";
             type: RECT;
+            scale: 1;
             mouse_events: 0;
             description { state: "default" 0.0;
                fixed: 1 1;
@@ -5541,6 +6146,7 @@ group { name: "elm/scroller/entry/default";
          }
          part { name: "elm.dragable.hbar";
             type: RECT;
+            scale: 1;
             clip_to: "sb_hbar_clip";
             mouse_events: 0;
             dragable {
@@ -5768,5 +6374,254 @@ group { name: "elm/scroller/entry/default";
                set_int(sbvis_timer, v);
             }
          }
+         program { name: "action_focus";
+            signal: "elm,action,focus_highlight,show";
+            source: "elm";
+            action: STATE_SET "focused" 0.0;
+            target: "focus_image";
+         }
+         program { name: "action_unfocus";
+            signal: "elm,action,focus_highlight,hide";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "focus_image";
+         }
       }
    }
+group { name: "elm/scroller/entry/editfield";
+      inherit: "elm/scroller/entry/default";
+      data {
+         item: "focus_highlight" "off";
+      }
+      images {
+         image: "00_edit_field_focus.png" COMP;
+         image: "00_edit_field_bg.png" COMP;
+      }
+      parts {
+         part { name: "focus_bg";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 0;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               visible: 1;
+               image {
+                  normal: "00_edit_field_bg.png";
+                  border: 8 8 8 8;
+                  border_scale: 1;
+               }
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+         part { name: "focus_image";
+            scale: 1;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               image {
+                  normal: "00_edit_field_focus.png";
+                  border: 8 8 8 8;
+                  border_scale: 1;
+               }
+               rel1 {
+                  to: "focus_bg";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to: "focus_bg";
+                  relative: 1.0 1.0;
+               }
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "focus_left_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               max: 10 0;
+               fixed: 1 0;
+               align: 0.0 0.5;
+               rel1 {
+                  to: "focus_bg";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to: "focus_bg";
+                  relative: 0.0 1.0;
+               }
+            }
+         }
+         part { name: "focus_right_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               max: 10 0;
+               align: 1.0 0.5;
+               fixed: 1 0;
+               rel1 {
+                  to: "focus_bg";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to: "focus_bg";
+                  relative: 1.0 1.0;
+               }
+            }
+         }
+         part { name: "bg";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  to_x: "focus_left_padding";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to_x: "focus_right_padding";
+                  relative: 0.0 1.0;
+               }
+            }
+         }
+      }
+      programs {
+         program { name: "action_focus";
+            signal: "elm,state,focus,on";
+            source: "*";
+            action: STATE_SET "focused" 0.0;
+            target: "focus_image";
+         }
+         program { name: "action_unfocus";
+            signal: "elm,state,focus,off";
+            source: "*";
+            action: STATE_SET "default" 0.0;
+            target: "focus_image";
+         }
+      }
+}
+group { name: "elm/scroller/entry/editfield/searchbar/default";
+      inherit: "elm/scroller/entry/default";
+      data {
+         item: "focus_highlight" "off";
+      }
+      images {
+         image: "00_search_edit_field_bg_focus.png" COMP;
+         image: "00_search_edit_field_bg.png" COMP;
+      }
+      parts {
+         part { name: "focus_bg";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 0;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               visible: 1;
+               image {
+                  normal: "00_search_edit_field_bg.png";
+                  border: 12 13 12 13;
+                  border_scale: 1;
+               }
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+         part { name: "focus_image";
+            scale: 1;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               image {
+                  normal: "00_search_edit_field_bg_focus.png";
+                  border: 12 13 12 13;
+                  border_scale: 1;
+               }
+               rel1 {
+                  to: "focus_bg";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to: "focus_bg";
+                  relative: 1.0 1.0;
+               }
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "focus_left_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               max: 10 0;
+               fixed: 1 0;
+               align: 0.0 0.5;
+               rel1 {
+                  to: "focus_bg";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to: "focus_bg";
+                  relative: 0.0 1.0;
+               }
+            }
+         }
+         part { name: "focus_right_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               max: 10 0;
+               align: 1.0 0.5;
+               fixed: 1 0;
+               rel1 {
+                  to: "focus_bg";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to: "focus_bg";
+                  relative: 1.0 1.0;
+               }
+            }
+         }
+         part { name: "bg";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  to_x: "focus_left_padding";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to_x: "focus_right_padding";
+                  relative: 0.0 1.0;
+               }
+            }
+         }
+      }
+      programs {
+         program { name: "action_focus";
+            signal: "elm,state,focus,on";
+            source: "*";
+            action: STATE_SET "focused" 0.0;
+            target: "focus_image";
+         }
+         program { name: "action_unfocus";
+            signal: "elm,state,focus,off";
+            source: "*";
+            action: STATE_SET "default" 0.0;
+            target: "focus_image";
+         }
+      }
+}
+
+
+

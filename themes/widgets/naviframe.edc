@@ -20,11 +20,11 @@
 
    group { name: "elm/naviframe/item/basic/default";
       images {
+         image: "00_title_bg.png" COMP;
          image: "00_badge_bg.png" COMP;
       }
       script {
          public tbar_bg = 0;     //Toolbar BG Show call count
-         public toolbar_buttons_visible = 0; //when both toolbar buttons are visible
          public tbar_close = 0; //Toolbar lastest Open/Close status
          public title_badge_visible = 0; //Title badge visible/hidden status
          public title_slide_visible = 0; //Title slide visible/hidden status
@@ -58,19 +58,25 @@
             }
          }
          part { name: "title_bg";
-            type: RECT;
+            type: IMAGE;
             scale: 1;
             description { state: "default" 0.0;
                min: 1 NAVIFRAME_TITLE_H_INC;
+               max: -1 NAVIFRAME_TITLE_H_INC;
                align: 0.0 0.0;
                fixed: 0 1;
                rel1 { relative: 0.0 0.0; to: "base"; }
                rel2 { relative: 1.0 0.0; to: "base"; }
-               color: NAVIFRAME_TITLE_BG_COLOR_INC;
+               image {
+                  normal: "00_title_bg.png";
+                  border: NAVIFRAME_TITLE_BG_IMAGE_BORDER_INC;
+                  border_scale: 1;
+               }
             }
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
                min: 1 NAVIFRAME_LANDSCAPE_TITLE_H_INC;
+               max: -1 NAVIFRAME_LANDSCAPE_TITLE_H_INC;
             }
             description { state: "hide" 0.0;
                inherit: "default" 0.0;
@@ -88,59 +94,25 @@
                rel2 { to_y: "title_bg"; }
             }
          }
-         part { name: "top_padding";
+         part { name: "title_right_padding";
             type: RECT;
             mouse_events: 0;
             scale: 1;
-            description {
-               state: "default" 0.0;
-               min: NAVIFRAME_TITLE_TOP_PADDING_INC;
-               fixed: 0 1;
-               align: 0.0 0.0;
-               rel1 { relative: 0.0 0.0; to: "title_bg"; }
-               rel2 { relative: 1.0 0.0; to: "title_bg"; }
-               visible: 0;
-            }
-            description {
-               state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_LANDSCAPE_TITLE_TOP_PADDING_INC;
-            }
-         }
-         part { name: "top_padding2";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               min: NAVIFRAME_TITLE_TOP_PADDING2_INC;
-               fixed: 0 1;
-               align: 0.0 0.0;
-               rel1 { relative: 0.0 0.0; to: "title_bg"; }
-               rel2 { relative: 1.0 0.0; to: "title_bg"; }
-               visible: 0;
-            }
-            description {
-               state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_LANDSCAPE_TITLE_TOP_PADDING2_INC;
-            }
-         }
-         part { name: "right_padding";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               min: NAVIFRAME_TITLE_RIGHT_PADDING_INC;
+            description { state: "default" 0.0;
+               min: NAVIFRAME_PADDING_INC;
                fixed: 1 0;
                align: 1.0 0.0;
-               rel1 { relative: 1.0 0.0; to: "title_bg"; }
-               rel2 { relative: 1.0 1.0; to: "title_bg"; }
+               rel1 { relative: 1.0 0.0; to: "divider2"; }
+               rel2 { relative: 1.0 1.0; to: "divider2"; }
                visible: 0;
             }
+            description { state: "title_left_btn_set" 0.0;
+               inherit: "default" 0.0;
+               rel1 { relative: 1.0 0.0; to: "divider1"; }
+               rel2 { relative: 1.0 1.0; to: "divider1"; }
+            }
          }
-         part { name: "padding_center_text1";
+         part { name: "title_left_padding";
             type: RECT;
             scale: 1;
             mouse_events: 0;
@@ -169,7 +141,7 @@
                rel1.to_y: "title_bg";
                rel2.relative: 1.0 0.0;
                rel2.to_x: "base";
-               rel2.to_y: "toolbar_bg";
+               rel2.to_y: "toolbar";
             }
          }
          part { name: "content_clip";
@@ -181,36 +153,6 @@
                rel2.to_y: "elm.swallow.content";
             }
          }
-         part { name: "padding_center_text2";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_PADDING2_INC;
-               fixed: 1 0;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_left_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_left_btn"; }
-               visible: 0;
-            }
-         }
-         part { name: "padding_bottom_text";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_BOTTOM_TEXT_PADDING_INC;
-               fixed: 0 1;
-               align: 0.0 1.0;
-               rel1 { relative: 0.0 1.0; to: "title_bg"; }
-               rel2 { relative: 1.0 1.0; to: "title_bg"; }
-               visible: 0;
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_LANDSCAPE_BOTTOM_TEXT_PADDING_INC;
-            }
-         }
          part { name: "badge_padding";
             type: RECT;
             mouse_events: 0;
@@ -219,8 +161,8 @@
                min: 0 0;
                fixed: 1 0;
                align: 1.0 0.0;
-               rel1 { relative: 0.0 0.0; to: "padding_center_text2"; }
-               rel2 { relative: 0.0 1.0; to: "padding_center_text2"; }
+               rel1 { relative: 0.0 0.0; to: "title_right_padding"; }
+               rel2 { relative: 0.0 1.0; to: "title_right_padding"; }
                visible: 0;
             }
             description { state: "visible" 0.0;
@@ -233,14 +175,30 @@
             repeat_events: 1;
             description { state: "default" 0.0;
                visible: 0;
-               fixed: 1 1;
-               rel1 { relative: 1.0 1.0; to_x: "padding_center_text1"; to_y: "top_padding"; }
-               rel2 { relative: 0.0 0.0; to_x: "padding_center_text2"; to_y: "padding_bottom_text"; }
+               min: 0 NAVIFRAME_TITLE_TEXT_BG_H_INC;
+               max: -1 NAVIFRAME_TITLE_TEXT_BG_H_INC;
+               fixed: 0 1;
+               rel1 { relative: 1.0 0.0; to_x: "title_left_padding"; to_y: "title_bg"; }
+               rel2 { relative: 0.0 1.0; to_x: "title_right_padding"; to_y: "title_bg"; }
             }
             description { state: "subtitle_is_set" 0.0;
                inherit: "default" 0.0;
-               rel1 { relative: 1.0 1.0; to_x: "padding_center_text1"; to_y: "top_padding2"; }
-               rel2 { relative: 0.0 0.0; to_x: "padding_center_text2"; to_y: "subtitle_text_bg"; }
+               min: 0 NAVIFRAME_LANDSCAPE_TITLE_TEXT_BG_H_INC;
+               max: -1 NAVIFRAME_LANDSCAPE_TITLE_TEXT_BG_H_INC;
+            }
+         }
+         part { name: "maintitle_text_bg";
+            type: RECT;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 { relative: 0.0 0.0; to: "title_text_bg"; }
+               rel2 { relative: 0.0 1.0; to_x: "badge_padding"; to_y: "title_text_bg"; }
+            }
+            description { state: "subtitle_is_set" 0.0;
+               inherit: "default" 0.0;
+               rel1 { relative: 0.0 0.0; to: "title_text_bg"; }
+               rel2 { relative: 0.0 0.0; to_x: "badge_padding"; to_y: "subtitle_top_padding"; }
             }
          }
          part { name: "elm.text.title";
@@ -259,13 +217,13 @@
                   text_class: "tizen";
                }
                color: NAVIFRAME_TITLE_TEXT_COLOR_INC;
-               color3: 255 255 255 255;
-               fixed: 1 1;
+               color3: 0 0 0 255;
                align: 0.0 0.5;
-               rel1 { to: "title_text_bg"; }
-               rel2 { relative: 0.0 1.0; to_x: "badge_padding"; to_y: "title_text_bg"; }
+               rel1.to: "maintitle_text_bg";
+               rel2.to: "maintitle_text_bg";
             }
             description { state: "subtitle_is_set" 0.0;
+               inherit: "default" 0.0;
                text { font: "Tizen:style=Bold";
                   size: NAVIFRAME_TITLE_SMALL_FONT_SIZE_INC;
                   min: 0 0;
@@ -273,27 +231,9 @@
                   align: 0.0 0.5;
                   text_class: "tizen";
                }
-               color: NAVIFRAME_TITLE_TEXT_COLOR_INC;
-               color3: 255 255 255 255;
-               fixed: 1 1;
-               align: 0.0 0.5;
-               rel1 { to: "title_text_bg"; }
-               rel2 { relative: 0.0 1.0; to_x: "badge_padding"; to_y: "title_text_bg"; }
-            }
-            description { state: "default_landscape" 0.0;
-               inherit: "default" 0.0;
-               text { font: "Tizen:style=Bold";
-                  size: NAVIFRAME_LANDSCAPE_TITLE_FONT_SIZE_INC;
-                  size_range: NAVIFRAME_TITLE_FONT_MIN_SIZE_INC NAVIFRAME_LANDSCAPE_TITLE_FONT_SIZE_INC;
-                  fit: 1 0;
-                  min: 0 0;
-                  max: 1 0;
-                  align: 0.0 0.5;
-                  text_class: "tizen";
-               }
             }
             description { state: "subtitle_is_set_landscape" 0.0;
-               inherit: "subtitle_is_set" 0.0;
+               inherit: "default" 0.0;
                text { font: "Tizen:style=Bold";
                   size: NAVIFRAME_LANDSCAPE_TITLE_SMALL_FONT_SIZE_INC;
                   min: 0 0;
@@ -301,6 +241,32 @@
                   align: 0.0 0.5;
                   text_class: "tizen";
                }
+            }
+         }
+         part { name: "subtitle_top_padding";
+            type: RECT;
+            scale: 1;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               min: 0 0;
+               max: 0 0;
+               fixed: 1 1;
+               align: 0.5 1.0;
+               rel1 { relative: 0.0 0.0; to: "subtitle_text_bg"; }
+               rel2 { relative: 1.0 0.0; to: "subtitle_text_bg"; }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               fixed: 0 1;
+               min: 0 NAVIFRAME_SUBTITLE_TOP_PADDING_H_INC;
+               max: -1 NAVIFRAME_SUBTITLE_TOP_PADDING_H_INC;
+            }
+            description { state: "visible_landscape" 0.0;
+               inherit: "default" 0.0;
+               fixed: 0 1;
+               min: 0 NAVIFRAME_LANDSCAPE_SUBTITLE_TOP_PADDING_H_INC;
+               max: -1 NAVIFRAME_LANDSCAPE_SUBTITLE_TOP_PADDING_H_INC;
             }
          }
          part { name: "subtitle_text_bg";
@@ -312,19 +278,21 @@
                min: 0 0;
                max: 0 0;
                fixed: 1 1;
-               align: 0.0 1.0;
-               rel1 { relative: 1.0 0.0; to_x: "padding_center_text1"; to_y: "padding_bottom_text"; }
-               rel2 { relative: 0.0 0.0; to_x: "padding_center_text2"; to_y: "padding_bottom_text"; }
+               align: 0.5 1.0;
+               rel1 { relative: 0.0 1.0; to: "title_text_bg"; }
+               rel2 { relative: 1.0 1.0; to: "title_text_bg"; }
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
-               min: 0 NAVIFRAME_SUBTITLE_HEIGHT_INC;
-               max: -1 NAVIFRAME_SUBTITLE_HEIGHT_INC;
+               fixed: 0 1;
+               min: 0 NAVIFRAME_SUBTITLE_H_INC;
+               max: -1 NAVIFRAME_SUBTITLE_H_INC;
             }
             description { state: "visible_landscape" 0.0;
                inherit: "default" 0.0;
-               min: 0 NAVIFRAME_LANDSCAPE_SUBTITLE_HEIGHT_INC;
-               max: -1 NAVIFRAME_LANDSCAPE_SUBTITLE_HEIGHT_INC;
+               fixed: 0 1;
+               min: 0 NAVIFRAME_LANDSCAPE_SUBTITLE_H_INC;
+               max: -1 NAVIFRAME_LANDSCAPE_SUBTITLE_H_INC;
             }
          }
          part { name: "elm.text.subtitle";
@@ -340,7 +308,6 @@
                   text_class: "tizen";
                }
                color: NAVIFRAME_SUBTITLE_TEXT_COLOR_INC;
-               fixed: 1 1;
                align: 0.0 0.5;
                rel1.to: "subtitle_text_bg";
                rel2.to: "subtitle_text_bg";
@@ -362,10 +329,10 @@
             mouse_events: 0;
             description { state: "default" 0.0;
                align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "elm.text.title"; }
-               rel2 { relative: 0.0 1.0; to: "elm.text.title"; }
+               rel1 { relative: 0.0 0.0; to: "title_text_bg"; }
+               rel2 { relative: 0.0 1.0; to: "title_text_bg"; }
                fixed: 1 0;
-               min: NAVIFRAME_PADDING_INC;
+               min: NAVIFRAME_PADDING2_INC;
                visible: 0;
             }
          }
@@ -379,6 +346,11 @@
                rel1 { relative: 0.0 0.0; to: "title_bg"; }
                rel2 { relative: 1.0 0.0; to: "title_bg"; }
                align: 0.0 0.0;
+            }
+            description { state: "subtitle_is_set" 0.0;
+               inherit: "default" 0.0;
+               min: 0 0;
+               fixed: 0 1;
             }
          }
          part { name: "badge_left_padding";
@@ -394,7 +366,7 @@
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
-               min: NAVIFRAME_PADDING_BADGE_INC;
+               min: NAVIFRAME_BADGE_LEFT_PADDING_INC;
             }
             description { state: "title_slide_is_set" 0.0;
                inherit: "visible" 0.0;
@@ -423,7 +395,7 @@
             description {
                state: "visible" 0.0;
                inherit: "default" 0.0;
-               min: 23 54;
+               min: NAVIFRAME_BADGE_TEXT_LEFT_PADDING_INC;
             }
          }
          part { name: "right.padding.text";
@@ -447,7 +419,7 @@
             description {
                state: "visible" 0.0;
                inherit: "default" 0.0;
-               min: 18 54;
+               min: NAVIFRAME_BADGE_TEXT_LEFT_PADDING_INC;
             }
          }
          part { name: "badge_bg";
@@ -485,7 +457,8 @@
             clip_to: "title_clip";
             description { state: "default" 0.0;
                visible: 0;
-               max: NAVIFRAME_BADGE_TEXT_W_INC -1;
+               min: NAVIFRAME_BADGE_TEXT_MIN_W_INC 0;
+               max: NAVIFRAME_BADGE_TEXT_MAX_W_INC -1;
                fixed: 1 0;
                rel1 { relative: 1.0 0.0; to: "left.padding.text"; }
                rel2 { relative: 1.0 1.0; to_y: "left.padding.text"; to_x: "badge_padding"; }
@@ -520,8 +493,8 @@
             clip_to: "title_clip";
             description { state: "default" 0.0;
                fixed: 1 1;
-               rel1 { to: "title_text_bg"; }
-               rel2 { to: "title_text_bg"; }
+               rel1 { to: "maintitle_text_bg"; }
+               rel2 { to: "maintitle_text_bg"; }
             }
          }
          part { name: "elm.swallow.subtitle";
@@ -545,6 +518,23 @@
                color: 0 0 0 0;
             }
          }
+         part { name: "divider1";
+            type: RECT;
+            description { state: "default" 0.0;
+               min: 0 0;
+               max: 0 -1;
+               fixed: 1 1;
+               color: NAVIFRAME_TITLE_BUTTON_DIVIDER_COLOR_INC;
+               rel1 { relative: 0.0 0.0; to: "title_left_btn"; }
+               rel2 { relative: 0.0 1.0; to: "title_left_btn"; }
+               align: 1.0 0.5;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: 2 48;
+               max: 2 48;
+            }
+         }
          part { name: "title_left_btn";
             type: SWALLOW;
             scale: 1;
@@ -553,12 +543,29 @@
                max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
                fixed: 1 1;
                align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_right_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_right_btn"; }
+               rel1 { relative: 0.0 0.0; to: "divider2"; }
+               rel2 { relative: 0.0 1.0; to: "divider2"; }
             }
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
                max: NAVIFRAME_LANDSCAPE_TITLE_FUNC_BTN_SIZE_INC;
+            }
+         }
+         part { name: "divider2";
+            type: RECT;
+            description { state: "default" 0.0;
+               min: 0 0;
+               max: 0 -1;
+               fixed: 1 1;
+               color: NAVIFRAME_TITLE_BUTTON_DIVIDER_COLOR_INC;
+               rel1 { relative: 0.0 0.0; to: "title_right_btn"; }
+               rel2 { relative: 0.0 1.0; to: "title_right_btn"; }
+               align: 1.0 0.5;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: 2 48;
+               max: 2 48;
             }
          }
          part { name: "elm.swallow.icon";
@@ -583,16 +590,16 @@
                max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
                align: 1.0 0.5;
                fixed: 1 1;
-               rel1 { relative: 0.0 0.0; to: "right_padding"; }
-               rel2 { relative: 0.0 1.0; to: "right_padding"; }
+               rel1 { relative: 1.0 0.0; to: "title_bg"; }
+               rel2 { relative: 1.0 1.0; to: "title_bg"; }
             }
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
                max: NAVIFRAME_LANDSCAPE_TITLE_FUNC_BTN_SIZE_INC;
             }
          }
-         part { name: "toolbar_bg";
-            type: RECT;
+         part { name: "toolbar";
+            type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
                min: 0 0;
@@ -602,7 +609,6 @@
                visible: 0;
                rel1 { to: "base"; }
                rel2 { to: "base"; }
-               color: NAVIFRAME_TOOLBAR_BG_COLOR_INC;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -625,8 +631,8 @@
                min: NAVIFRAME_TOOLBAR_BUTTON_BG_PADDING_INC;
                fixed: 1 0;
                align: 0.0 0.0;
-               rel1 { relative: 0.0 0.0; to: "toolbar_bg"; }
-               rel2 { relative: 0.0 1.0; to: "toolbar_bg"; }
+               rel1 { relative: 0.0 0.0; to: "toolbar"; }
+               rel2 { relative: 0.0 1.0; to: "toolbar"; }
                visible: 0;
             }
          }
@@ -639,6 +645,7 @@
                fixed: 1 1;
                rel1.to: "more_btn_bg";
                rel2.to: "more_btn_bg";
+               visible: 0;
             }
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
@@ -653,8 +660,8 @@
                min: NAVIFRAME_TOOLBAR_BUTTON_BG_PADDING_INC;
                fixed: 1 0;
                align: 1.0 0.0;
-               rel1 { relative: 1.0 0.0; to: "toolbar_bg"; }
-               rel2.to: "toolbar_bg";
+               rel1 { relative: 1.0 0.0; to: "toolbar"; }
+               rel2.to: "toolbar";
                visible: 0;
             }
          }
@@ -668,19 +675,11 @@
                align: 0.5 0.5;
                rel1.to: "prev_btn_bg";
                rel2.to: "prev_btn_bg";
+               visible: 0;
             }
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
                max: NAVIFRAME_LANDSCAPE_PREV_FUNC_BTN_SIZE_INC;
-            }
-         }
-         part { name: "toolbar_btns_area";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1 { relative: 1.0 0.0; to: "more_btn_bg"; }
-               rel2 { relative: 0.0 1.0; to: "prev_btn_bg"; }
-               visible: 0;
             }
          }
          part { name: "toolbar_clip";
@@ -688,64 +687,8 @@
             mouse_events: 0;
             clip_to: "clipper";
             description { state: "default" 0.0;
-               rel1 { to_y: "toolbar_bg"; }
-               rel2 { to_y: "toolbar_bg"; }
-            }
-         }
-         part { name: "toolbar_button1";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "toolbar_clip";
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "buttons_set" 0.0;
-               inherit: "default" 0.0;
-               align: 1.0 0.5;
-               rel2 {
-                  relative: 0.0 1.0;
-                  to: "toolbar_button_padding";
-               }
-            }
-         }
-         part { name: "toolbar_button_padding";
-            type: RECT;
-            scale : 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_TOOLBAR_BUTTONS_PADDING_INC 0;
-               max: NAVIFRAME_TOOLBAR_BUTTONS_PADDING_INC 9999;
-               fixed : 1 0;
-               visible: 0;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_LANDSCAPE_TOOLBAR_BUTTONS_PADDING_INC 0;
-               max: NAVIFRAME_LANDSCAPE_TOOLBAR_BUTTONS_PADDING_INC 9999;
-            }
-         }
-         part { name: "toolbar_button2";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "toolbar_clip";
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "buttons_set" 0.0;
-               inherit: "default" 0.0;
-               align: 0.0 0.5;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to: "toolbar_button_padding";
-               }
+               rel1 { to: "toolbar"; }
+               rel2 { to: "toolbar"; }
             }
          }
       }
@@ -836,13 +779,16 @@
             signal: "elm,state,subtitle,show";
             source: "elm";
             script {
-               set_state(PART:"title_text_bg", "subtitle_is_set", 0.0);
+               set_state(PART:"badge_top_padding", "subtitle_is_set", 0.0);
+               set_state(PART:"maintitle_text_bg", "subtitle_is_set", 0.0);
                if (get_int(landscape) == 0) {
                   set_state(PART:"elm.text.title", "subtitle_is_set", 0.0);
+                  set_state(PART:"subtitle_top_padding", "visible", 0.0);
                   set_state(PART:"subtitle_text_bg", "visible", 0.0);
                }
                else {
                   set_state(PART:"elm.text.title", "subtitle_is_set_landscape", 0.0);
+                  set_state(PART:"subtitle_top_padding", "visible_landscape", 0.0);
                   set_state(PART:"subtitle_text_bg", "visible_landscape", 0.0);
                }
             }
@@ -851,118 +797,71 @@
             signal: "elm,state,subtitle,hide";
             source: "elm";
             script {
-               set_state(PART:"title_text_bg", "default", 0.0);
+               set_state(PART:"badge_top_padding", "default", 0.0);
+               set_state(PART:"maintitle_text_bg", "default", 0.0);
+               set_state(PART:"subtitle_top_padding", "default", 0.0);
                set_state(PART:"subtitle_text_bg", "default", 0.0);
-               if (get_int(landscape) == 0)
-                 set_state(PART:"elm.text.title", "default", 0.0);
-               else
-                 set_state(PART:"elm.text.title", "default_landscape", 0.0);
+               set_state(PART:"elm.text.title", "default", 0.0);
             }
          }
          program { name: "icon_show";
             signal: "elm,state,icon,show";
             source: "elm";
             action: STATE_SET "icon" 0.0;
-            target: "padding_center_text1";
+            target: "title_left_padding";
          }
          program { name: "icon_hide";
             signal: "elm,state,icon,hide";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "padding_center_text1";
+            target: "title_left_padding";
          }
-         program { name: "prev_btn_show";
-            signal: "elm,state,prev_btn,show";
+         program { name: "title_left_btn_show";
+            signal: "elm,state,title_left_btn,show";
             source: "elm";
             script {
-               emit("elm,state,toolbar_bg,show", "elm");
+               set_state(PART:"divider1", "visible", 0.0);
+               set_state(PART:"title_right_padding", "title_left_btn_set", 0.0);
             }
          }
-         program { name: "prev_btn_hide";
-            signal: "elm,state,prev_btn,hide";
+         program { name: "title_left_btn_hide";
+            signal: "elm,state,title_left_btn,hide";
             source: "elm";
             script {
-               emit("elm,state,toolbar_bg,hide", "elm");
+               set_state(PART:"divider1", "default", 0.0);
+               set_state(PART:"title_right_padding", "default", 0.0);
             }
          }
-         program { name: "more_btn_show";
-            signal: "elm,state,toolbar_more_btn,show";
+         program { name: "title_right_btn_show";
+            signal: "elm,state,title_right_btn,show";
             source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-            }
+            action: STATE_SET "visible" 0.0;
+            target: "divider2";
          }
-         program { name: "more_btn_hide";
-            signal: "elm,state,toolbar_more_btn,hide";
+         program { name: "title_right_btn_hide";
+            signal: "elm,state,title_right_btn,hide";
             source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-            }
+            action: STATE_SET "default" 0.0;
+            target: "divider2";
          }
-         program { name: "toolbar_button1_show";
-            signal: "elm,state,toolbar_button1,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) + 1);
-               if (get_int(toolbar_buttons_visible) >= 2)
-                 {
-                    set_state(PART:"toolbar_button1", "buttons_set", 0.0);
-                    set_state(PART:"toolbar_button2", "buttons_set", 0.0);
-                 }
-            }
-         }
-         program { name: "toolbar_button1_hide";
-            signal: "elm,state,toolbar_button1,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) - 1);
-               set_state(PART:"toolbar_button1", "default", 0.0);
-               set_state(PART:"toolbar_button2", "default", 0.0);
-            }
-         }
-         program { name: "toolbar_button2_show";
-            signal: "elm,state,toolbar_button2,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) + 1);
-               if (get_int(toolbar_buttons_visible) >= 2)
-                 {
-                    set_state(PART:"toolbar_button1", "buttons_set", 0.0);
-                    set_state(PART:"toolbar_button2", "buttons_set", 0.0);
-                 }
-            }
-         }
-         program { name: "toolbar_button2_hide";
-            signal: "elm,state,toolbar_button2,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) - 1);
-               set_state(PART:"toolbar_button1", "default", 0.0);
-               set_state(PART:"toolbar_button2", "default", 0.0);
-            }
-         }
-         program { name: "toolbar_bg_show";
-            signal: "elm,state,toolbar_bg,show";
+         program { name: "toolbar_show";
+            signal: "elm,state,toolbar,show";
             source: "elm";
             script {
                if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
+                 set_state(PART:"toolbar", "visible", 0.0);
                else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                 set_state(PART:"toolbar", "visible_landscape", 0.0);
                set_int(tbar_bg, get_int(tbar_bg) + 1);
             }
          }
-         program { name: "toolbar_bg_hide";
-            signal: "elm,state,toolbar_bg,hide";
+         program { name: "toolbar_hide";
+            signal: "elm,state,toolbar,hide";
             source: "elm";
             script {
                set_int(tbar_bg, get_int(tbar_bg) - 1);
                if (get_int(tbar_bg) <= 0)
-                 set_state(PART:"toolbar_bg", "default", 0.0);
+                 set_state(PART:"toolbar", "default", 0.0);
             }
          }
          program { name: "toolbar_open_internal";
@@ -971,9 +870,9 @@
             script {
                set_int(tbar_close, 0);
                if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
+                 set_state(PART:"toolbar", "visible", 0.0);
                else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                 set_state(PART:"toolbar", "visible_landscape", 0.0);
             }
          }
          program { name: "toolbar_close_internal";
@@ -981,7 +880,7 @@
             source: "elm";
             script {
                set_int(tbar_close, 1);
-               set_state(PART:"toolbar_bg", "default", 0.0);
+               set_state(PART:"toolbar", "default", 0.0);
             }
          }
          program { name: "toolbar_open";
@@ -989,9 +888,9 @@
             source: "";
             script {
                if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
+                 set_state(PART:"toolbar", "visible", 0.0);
                else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                 set_state(PART:"toolbar", "visible_landscape", 0.0);
             }
             transition: LINEAR 0.2;
             after: "toolbar_open_internal";
@@ -1000,7 +899,7 @@
             signal: "elm,state,toolbar,close";
             source: "";
             action: STATE_SET "default" 0.0;
-            target: "toolbar_bg";
+            target: "toolbar";
             transition: LINEAR 0.2;
             after: "toolbar_close_internal";
          }
@@ -1089,11 +988,16 @@
             signal: "elm,state,elm.swallow.subtitle,show";
             source: "elm";
             script {
-               set_state(PART:"title_text_bg", "subtitle_is_set", 0.0);
-               if (get_int(landscape) == 0)
+               set_state(PART:"badge_top_padding", "subtitle_is_set", 0.0);
+               set_state(PART:"maintitle_text_bg", "subtitle_is_set", 0.0);
+               if (get_int(landscape) == 0) {
+                 set_state(PART:"subtitle_top_padding", "visible", 0.0);
                  set_state(PART:"subtitle_text_bg", "visible", 0.0);
-               else
+               }
+               else {
+                 set_state(PART:"subtitle_top_padding", "visible_landscape", 0.0);
                  set_state(PART:"subtitle_text_bg", "visible_landscape", 0.0);
+               }
             }
          }
          program {
@@ -1101,7 +1005,9 @@
             signal: "elm,state,elm.swallow.subtitle,hide";
             source: "elm";
             script {
-               set_state(PART:"title_text_bg", "default", 0.0);
+               set_state(PART:"badge_top_padding", "default", 0.0);
+               set_state(PART:"maintitle_text_bg", "default", 0.0);
+               set_state(PART:"subtitle_top_padding", "default", 0.0);
                set_state(PART:"subtitle_text_bg", "default", 0.0);
             }
          }
@@ -1111,15 +1017,12 @@
             source: "elm";
             script {
                if (get_int(landscape) == 0) {
-                  set_state(PART:"top_padding", "landscape", 0.0);
-                  set_state(PART:"top_padding2", "landscape", 0.0);
-                  set_state(PART:"padding_bottom_text", "landscape", 0.0);
+                  set_state(PART:"title_text_bg", "landscape", 0.0);
                   set_state(PART:"elm.text.subtitle", "landscape", 0.0);
                   set_state(PART:"title_left_btn", "landscape", 0.0);
                   set_state(PART:"title_right_btn", "landscape", 0.0);
                   set_state(PART:"toolbar_more_btn", "landscape", 0.0);
                   set_state(PART:"elm.swallow.prev_btn", "landscape", 0.0);
-                  set_state(PART:"toolbar_button_padding", "landscape", 0.0);
 
                   new st[31];
                   new Float:vl;
@@ -1128,18 +1031,20 @@
                     set_state(PART:"title_bg", "landscape", 0.0);
 
                   get_state(PART:"elm.text.title", st, 30, vl);
-                  if (!strcmp(st, "default"))
-                    set_state(PART:"elm.text.title", "default_landscape", 0.0);
-                  else
+                  if (!strcmp(st, "subtitle_is_set"))
                     set_state(PART:"elm.text.title", "subtitle_is_set_landscape", 0.0);
+
+                  get_state(PART:"subtitle_top_padding", st, 30, vl);
+                  if (!strcmp(st, "visible"))
+                    set_state(PART:"subtitle_top_padding", "visible_landscape", 0.0);
 
                   get_state(PART:"subtitle_text_bg", st, 30, vl);
                   if (!strcmp(st, "visible"))
                     set_state(PART:"subtitle_text_bg", "visible_landscape", 0.0);
 
-                  get_state(PART:"toolbar_bg", st, 30, vl);
+                  get_state(PART:"toolbar", st, 30, vl);
                   if (!strcmp(st, "visible"))
-                    set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                    set_state(PART:"toolbar", "visible_landscape", 0.0);
 
                   set_int(landscape, 1);
                }
@@ -1151,15 +1056,12 @@
             source: "elm";
             script {
                if (get_int(landscape) == 1) {
-                  set_state(PART:"top_padding", "default", 0.0);
-                  set_state(PART:"top_padding2", "default", 0.0);
-                  set_state(PART:"padding_bottom_text", "default", 0.0);
+                  set_state(PART:"title_text_bg", "default", 0.0);
                   set_state(PART:"elm.text.subtitle", "default", 0.0);
                   set_state(PART:"title_left_btn", "default", 0.0);
                   set_state(PART:"title_right_btn", "default", 0.0);
                   set_state(PART:"toolbar_more_btn", "default", 0.0);
                   set_state(PART:"elm.swallow.prev_btn", "default", 0.0);
-                  set_state(PART:"toolbar_button_padding", "default", 0.0);
 
                   new st[31];
                   new Float:vl;
@@ -1168,18 +1070,20 @@
                     set_state(PART:"title_bg", "default", 0.0);
 
                   get_state(PART:"elm.text.title", st, 30, vl);
-                  if (!strcmp(st, "default_landscape"))
-                    set_state(PART:"elm.text.title", "default", 0.0);
-                  else
+                  if (!strcmp(st, "subtitle_is_set_landscape"))
                     set_state(PART:"elm.text.title", "subtitle_is_set", 0.0);
+
+                  get_state(PART:"subtitle_top_padding", st, 30, vl);
+                  if (!strcmp(st, "visible_landscape"))
+                    set_state(PART:"subtitle_top_padding", "visible", 0.0);
 
                   get_state(PART:"subtitle_text_bg", st, 30, vl);
                   if (!strcmp(st, "visible_landscape"))
                     set_state(PART:"subtitle_text_bg", "visible", 0.0);
 
-                  get_state(PART:"toolbar_bg", st, 30, vl);
+                  get_state(PART:"toolbar", st, 30, vl);
                   if (!strcmp(st, "visible_landscape"))
-                    set_state(PART:"toolbar_bg", "visible", 0.0);
+                    set_state(PART:"toolbar", "visible", 0.0);
 
                   set_int(landscape, 0);
                }
@@ -1209,9 +1113,11 @@
    }
 
    group { name: "elm/naviframe/item/tabbar/default";
+      images {
+         image: "00_title_bg.png" COMP;
+      }
       script {
          public tbar_bg = 0;     //Controlbar BG Show call count
-         public toolbar_buttons_visible = 0; //when both toolbar buttons are visible
          public tbar_close = 0; //Toolbar lastest Open/Close status
          public landscape = 0; //Landscape mode status
       }
@@ -1243,19 +1149,25 @@
             }
          }
          part { name: "title_bg";
-            type: RECT;
+            type: IMAGE;
             scale: 1;
             description { state: "default" 0.0;
                min: 1 NAVIFRAME_TAB_TITLE_H_INC;
+               max: -1 NAVIFRAME_TAB_TITLE_H_INC;
                align: 0.0 0.0;
                fixed: 0 1;
                rel1 { relative: 0.0 0.0; to: "base"; }
                rel2 { relative: 1.0 0.0; to: "base"; }
-               color: NAVIFRAME_TITLE_BG_COLOR_INC;
+               image {
+                  normal: "00_title_bg.png";
+                  border: NAVIFRAME_TITLE_BG_IMAGE_BORDER_INC;
+                  border_scale: 1;
+               }
             }
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
                min: 1 NAVIFRAME_LANDSCAPE_TAB_TITLE_H_INC;
+               max: -1 NAVIFRAME_LANDSCAPE_TAB_TITLE_H_INC;
             }
             description { state: "hide" 0.0;
                inherit: "default" 0.0;
@@ -1285,7 +1197,7 @@
                rel1.to_y: "title_bg";
                rel2.relative: 1.0 0.0;
                rel2.to_x: "base";
-               rel2.to_y: "toolbar_bg";
+               rel2.to_y: "toolbar";
             }
          }
          part { name: "content_clip";
@@ -1297,24 +1209,7 @@
                rel2.to_y: "elm.swallow.content";
             }
          }
-         part { name: "top_padding";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               align: 0.0 0.0;
-               rel1 { relative: 0.0 0.0; to: "title_bg"; }
-               rel2 { relative: 1.0 0.0; to: "title_bg"; }
-               fixed: 0 1;
-               min: NAVIFRAME_TAB_TITLE_TOP_PADDING_INC;
-               visible: 0;
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_LANDSCAPE_TAB_TITLE_TOP_PADDING_INC;
-            }
-         }
-         part { name: "left_padding";
+         part { name: "title_left_padding";
             type: RECT;
             scale: 1;
             mouse_events: 0;
@@ -1327,7 +1222,7 @@
                visible: 0;
             }
          }
-         part { name: "right_padding";
+         part { name: "title_right_padding";
             type: RECT;
             scale: 1;
             mouse_events: 0;
@@ -1338,10 +1233,6 @@
                fixed: 1 0;
                min: NAVIFRAME_PADDING_INC;
                visible: 0;
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_LANDSCAPE_PADDING_INC;
             }
          }
          part { name: "elm.text.title";
@@ -1355,20 +1246,17 @@
                   size: NAVIFRAME_TITLE_TAB_FONT_SIZE_INC;
                   min: 0 0;
                   max: 1 0;
-                  align: 0.5 0.5;
+                  align: 0.0 0.5;
                   text_class: "tizen";
                }
                min: 0 NAVIFRAME_TITLE_TAB_TEXT_H_INC;
                max: 999999 NAVIFRAME_TITLE_TAB_TEXT_H_INC;
-               fixed: 1 1;
+               fixed: 0 1;
                color: NAVIFRAME_TITLE_TEXT_COLOR_INC;
-               color3: 255 255 255 255;
-               align: 0 0;
-               rel1.to_x: "left_padding";
-               rel1.to_y: "top_padding";
-               rel1.relative: 1.0 1.0;
-               rel2.to: "right_padding";
-               rel2.relative: 0.0 1.0;
+               color3: 0 0 0 255;
+               align: 0.0 0.0;
+               rel1 { relative: 1.0 0.0; to: "title_left_padding"; }
+               rel2 { relative: 0.0 1.0; to: "title_right_padding"; }
             }
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
@@ -1376,7 +1264,7 @@
                   size: NAVIFRAME_LANDSCAPE_TITLE_TAB_FONT_SIZE_INC;
                   min: 0 0;
                   max: 1 0;
-                  align: 0.5 0.5;
+                  align: 0.0 0.5;
                   text_class: "tizen";
                }
                min: 0 NAVIFRAME_LANDSCAPE_TITLE_TAB_TEXT_H_INC;
@@ -1402,59 +1290,21 @@
                color: 0 0 0 0;
             }
          }
-         part { name: "middle_padding";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_MIDDLE_PADDING_INC;
-               fixed: 0 1;
-               align: 0.0 0.0;
-               rel1 { relative: 0.0 1.0; to_x: "title_bg"; to_y: "elm.text.title"; }
-               rel2 { relative: 1.0 1.0; to_x: "title_bg"; to_y: "elm.text.title"; }
-               visible: 0;
-            }
-            description { state: "hide" 0.0;
-               inherit: "default" 0.0;
-               min: 0 0;
-            }
-         }
          part { name: "tabbar";
             type: SWALLOW;
             scale: 1;
             clip_to: "title_clip";
             description { state: "default" 0.0;
                min: 0 NAVIFRAME_TITLE_TAB_H_INC;
-               max: 999999 NAVIFRAME_TITLE_TAB_H_INC;
-               fixed: 1 1;
-               align: 0.5 0.0;
-               rel1.to_x: "title_bg";
-               rel1.to_y: "middle_padding";
-               rel1.relative: 0.0 1.0;
-               rel2.to_x: "title_bg";
-               rel2.to_y: "bottom_padding";
-               rel2.relative: 1.0 0.0;
-            }
-         }
-         part { name: "bottom_padding";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_BOTTOM_PADDING_INC;
+               max: -1 NAVIFRAME_TITLE_TAB_H_INC;
                fixed: 0 1;
-               align: 0.0 1.0;
+               align: 0.5 1.0;
                rel1 { relative: 0.0 1.0; to: "title_bg"; }
                rel2 { relative: 1.0 1.0; to: "title_bg"; }
-               visible: 0;
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_LANDSCAPE_BOTTOM_PADDING_INC;
             }
          }
-         part { name: "toolbar_bg";
-            type: RECT;
+         part { name: "toolbar";
+            type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
                min: 0 0;
@@ -1464,7 +1314,6 @@
                visible: 0;
                rel1 { to: "base"; }
                rel2 { to: "base"; }
-               color: NAVIFRAME_TOOLBAR_BG_COLOR_INC;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -1487,8 +1336,8 @@
                min: NAVIFRAME_TOOLBAR_BUTTON_BG_PADDING_INC;
                fixed: 1 0;
                align: 0.0 0.0;
-               rel1 { relative: 0.0 0.0; to: "toolbar_bg"; }
-               rel2 { relative: 0.0 1.0; to: "toolbar_bg"; }
+               rel1 { relative: 0.0 0.0; to: "toolbar"; }
+               rel2 { relative: 0.0 1.0; to: "toolbar"; }
                visible: 0;
             }
          }
@@ -1501,6 +1350,7 @@
                fixed: 1 1;
                rel1.to: "more_btn_bg";
                rel2.to: "more_btn_bg";
+               visible: 0;
             }
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
@@ -1515,8 +1365,8 @@
                min: NAVIFRAME_TOOLBAR_BUTTON_BG_PADDING_INC;
                fixed: 1 0;
                align: 1.0 0.0;
-               rel1 { relative: 1.0 0.0; to: "toolbar_bg"; }
-               rel2.to: "toolbar_bg";
+               rel1 { relative: 1.0 0.0; to: "toolbar"; }
+               rel2.to: "toolbar";
                visible: 0;
             }
          }
@@ -1530,19 +1380,11 @@
                align: 0.5 0.5;
                rel1.to: "prev_btn_bg";
                rel2.to: "prev_btn_bg";
+               visible: 0;
             }
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
                max: NAVIFRAME_LANDSCAPE_PREV_FUNC_BTN_SIZE_INC;
-            }
-         }
-         part { name: "toolbar_btns_area";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1 { relative: 1.0 0.0; to: "more_btn_bg"; }
-               rel2 { relative: 0.0 1.0; to: "prev_btn_bg"; }
-               visible: 0;
             }
          }
          part { name: "toolbar_clip";
@@ -1550,65 +1392,8 @@
             mouse_events: 0;
             clip_to: "clipper";
             description { state: "default" 0.0;
-               rel1 { to_y: "toolbar_bg"; }
-               rel2 { to_y: "toolbar_bg"; }
-            }
-         }
-         part { name: "toolbar_button1";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "toolbar_clip";
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "buttons_set" 0.0;
-               inherit: "default" 0.0;
-               align: 1.0 0.5;
-               rel2 {
-                  relative: 0.0 1.0;
-                  to: "toolbar_button_padding";
-               }
-            }
-         }
-         part { name: "toolbar_button_padding";
-            type: RECT;
-            scale : 1;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_TOOLBAR_BUTTONS_PADDING_INC 0;
-               max: NAVIFRAME_TOOLBAR_BUTTONS_PADDING_INC 9999;
-               fixed : 1 0;
-               visible: 0;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_LANDSCAPE_TOOLBAR_BUTTONS_PADDING_INC 0;
-               max: NAVIFRAME_LANDSCAPE_TOOLBAR_BUTTONS_PADDING_INC 9999;
-            }
-         }
-         part { name: "toolbar_button2";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "toolbar_clip";
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "buttons_set" 0.0;
-               inherit: "default" 0.0;
-               align: 0.0 0.5;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to: "toolbar_button_padding";
-               }
+               rel1 { to: "toolbar"; }
+               rel2 { to: "toolbar"; }
             }
          }
       }
@@ -1694,98 +1479,24 @@
                set_state(PART:"title_bg", "hide", 0.0);
             }
          }
-         program { name: "prev_btn_show";
-            signal: "elm,state,prev_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "prev_btn_hide";
-            signal: "elm,state,prev_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-            }
-         }
-         program { name: "more_btn_show";
-            signal: "elm,state,toolbar_more_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "more_btn_hide";
-            signal: "elm,state,toolbar_more_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-            }
-         }
-         program { name: "toolbar_button1_show";
-            signal: "elm,state,toolbar_button1,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) + 1);
-               if (get_int(toolbar_buttons_visible) >= 2)
-                 {
-                    set_state(PART:"toolbar_button1", "buttons_set", 0.0);
-                    set_state(PART:"toolbar_button2", "buttons_set", 0.0);
-                 }
-            }
-         }
-         program { name: "toolbar_button1_hide";
-            signal: "elm,state,toolbar_button1,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) - 1);
-               set_state(PART:"toolbar_button1", "default", 0.0);
-               set_state(PART:"toolbar_button2", "default", 0.0);
-            }
-         }
-         program { name: "toolbar_button2_show";
-            signal: "elm,state,toolbar_button2,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) + 1);
-               if (get_int(toolbar_buttons_visible) >= 2)
-                 {
-                    set_state(PART:"toolbar_button1", "buttons_set", 0.0);
-                    set_state(PART:"toolbar_button2", "buttons_set", 0.0);
-                 }
-            }
-         }
-         program { name: "toolbar_button2_hide";
-            signal: "elm,state,toolbar_button2,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) - 1);
-               set_state(PART:"toolbar_button1", "default", 0.0);
-               set_state(PART:"toolbar_button2", "default", 0.0);
-            }
-         }
-         program { name: "toolbar_bg_show";
-            signal: "elm,state,toolbar_bg,show";
+         program { name: "toolbar_show";
+            signal: "elm,state,toolbar,show";
             source: "elm";
             script {
                if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
+                 set_state(PART:"toolbar", "visible", 0.0);
                else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                 set_state(PART:"toolbar", "visible_landscape", 0.0);
                set_int(tbar_bg, get_int(tbar_bg) + 1);
             }
          }
-         program { name: "toolbar_bg_hide";
-            signal: "elm,state,toolbar_bg,hide";
+         program { name: "toolbar_hide";
+            signal: "elm,state,toolbar,hide";
             source: "elm";
             script {
                set_int(tbar_bg, get_int(tbar_bg) - 1);
                if (get_int(tbar_bg) <= 0)
-                 set_state(PART:"toolbar_bg", "default", 0.0);
+                 set_state(PART:"toolbar", "default", 0.0);
             }
          }
          program { name: "toolbar_open_internal";
@@ -1794,9 +1505,9 @@
             script {
                set_int(tbar_close, 0);
                if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
+                 set_state(PART:"toolbar", "visible", 0.0);
                else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                 set_state(PART:"toolbar", "visible_landscape", 0.0);
             }
          }
          program { name: "toolbar_close_internal";
@@ -1804,7 +1515,7 @@
             source: "elm";
             script {
                set_int(tbar_close, 1);
-               set_state(PART:"toolbar_bg", "default", 0.0);
+               set_state(PART:"toolbar", "default", 0.0);
             }
          }
          program { name: "toolbar_open";
@@ -1812,9 +1523,9 @@
             source: "";
             script {
                if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
+                 set_state(PART:"toolbar", "visible", 0.0);
                else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                 set_state(PART:"toolbar", "visible_landscape", 0.0);
             }
             transition: LINEAR 0.2;
             after: "toolbar_open_internal";
@@ -1823,7 +1534,7 @@
             signal: "elm,state,toolbar,close";
             source: "";
             action: STATE_SET "default" 0.0;
-            target: "toolbar_bg";
+            target: "toolbar";
             transition: LINEAR 0.2;
             after: "toolbar_close_internal";
          }
@@ -1862,14 +1573,9 @@
             source: "elm";
             script {
                if (get_int(landscape) == 0) {
-                  set_state(PART:"top_padding", "landscape", 0.0);
-                  set_state(PART:"right_padding", "landscape", 0.0);
                   set_state(PART:"elm.text.title", "landscape", 0.0);
-                  set_state(PART:"middle_padding", "hide", 0.0);
-                  set_state(PART:"bottom_padding", "landscape", 0.0);
                   set_state(PART:"toolbar_more_btn", "landscape", 0.0);
                   set_state(PART:"elm.swallow.prev_btn", "landscape", 0.0);
-                  set_state(PART:"toolbar_button_padding", "landscape", 0.0);
 
                   new st[31];
                   new Float:vl;
@@ -1877,9 +1583,9 @@
                   if (!strcmp(st, "default"))
                     set_state(PART:"title_bg", "landscape", 0.0);
 
-                  get_state(PART:"toolbar_bg", st, 30, vl);
+                  get_state(PART:"toolbar", st, 30, vl);
                   if (!strcmp(st, "visible"))
-                    set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                    set_state(PART:"toolbar", "visible_landscape", 0.0);
 
                   set_int(landscape, 1);
                }
@@ -1891,14 +1597,9 @@
             source: "elm";
             script {
                if (get_int(landscape) == 1) {
-                  set_state(PART:"top_padding", "default", 0.0);
-                  set_state(PART:"right_padding", "default", 0.0);
                   set_state(PART:"elm.text.title", "default", 0.0);
-                  set_state(PART:"middle_padding", "default", 0.0);
-                  set_state(PART:"bottom_padding", "default", 0.0);
                   set_state(PART:"toolbar_more_btn", "default", 0.0);
                   set_state(PART:"elm.swallow.prev_btn", "default", 0.0);
-                  set_state(PART:"toolbar_button_padding", "default", 0.0);
 
                   new st[31];
                   new Float:vl;
@@ -1906,9 +1607,9 @@
                   if (!strcmp(st, "landscape"))
                     set_state(PART:"title_bg", "default", 0.0);
 
-                  get_state(PART:"toolbar_bg", st, 30, vl);
+                  get_state(PART:"toolbar", st, 30, vl);
                   if (!strcmp(st, "visible_landscape"))
-                    set_state(PART:"toolbar_bg", "visible", 0.0);
+                    set_state(PART:"toolbar", "visible", 0.0);
 
                   set_int(landscape, 0);
                }
@@ -1940,7 +1641,6 @@
    group { name: "elm/naviframe/item/tabbar/notitle/default";
       script {
          public tbar_bg = 0;     //Toolbar BG Show call count
-         public toolbar_buttons_visible = 0; //when both toolbar buttons are visible
          public tbar_close = 0; //Toolbar lastest Open/Close status
          public landscape = 0; //Landscape mode status
       }
@@ -1975,16 +1675,12 @@
             type: RECT;
             scale: 1;
             description { state: "default" 0.0;
-               min: 1 NAVIFRAME_TITLE_H_INC;
+               min: 1 NAVIFRAME_TAB_TITLE_H2_INC;
+               max: -1 NAVIFRAME_TAB_TITLE_H2_INC;
                align: 0.0 0.0;
                fixed: 0 1;
                rel1 { relative: 0.0 0.0; to: "base"; }
                rel2 { relative: 1.0 0.0; to: "base"; }
-               color: NAVIFRAME_TITLE_BG_COLOR_INC;
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: 1 NAVIFRAME_LANDSCAPE_TITLE_H_INC;
             }
             description { state: "hide" 0.0;
                inherit: "default" 0.0;
@@ -2007,18 +1703,9 @@
             scale: 1;
             clip_to: "title_clip";
             description { state: "default" 0.0;
-               max: -1 NAVIFRAME_TITLE_H_INC;
-               rel1.to: "title_bg";
-               rel1.relative: 0.0 0.0;
-               rel2.to: "title_bg";
-               rel2.relative: 1.0 1.0;
-            }
-            description { state: "landscape" 0.0;
-               max: -1 NAVIFRAME_LANDSCAPE_TITLE_H_INC;
-               rel1.to: "title_bg";
-               rel1.relative: 0.0 0.0;
-               rel2.to: "title_bg";
-               rel2.relative: 1.0 1.0;
+               max: -1 NAVIFRAME_TAB_TITLE_H2_INC;
+               rel1 { relative: 0.0 0.0; to: "title_bg"; }
+               rel2 { relative: 1.0 1.0; to: "title_bg"; }
             }
          }
          part { name: "elm.swallow.content";
@@ -2033,7 +1720,7 @@
                rel1.to_y: "title_bg";
                rel2.relative: 1.0 0.0;
                rel2.to_x: "base";
-               rel2.to_y: "toolbar_bg";
+               rel2.to_y: "toolbar";
             }
          }
          part { name: "content_clip";
@@ -2045,8 +1732,8 @@
                rel2.to_y: "elm.swallow.content";
             }
          }
-         part { name: "toolbar_bg";
-            type: RECT;
+         part { name: "toolbar";
+            type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
                min: 0 0;
@@ -2056,7 +1743,6 @@
                visible: 0;
                rel1 { to: "base"; }
                rel2 { to: "base"; }
-               color: NAVIFRAME_TOOLBAR_BG_COLOR_INC;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -2079,8 +1765,8 @@
                min: NAVIFRAME_TOOLBAR_BUTTON_BG_PADDING_INC;
                fixed: 1 0;
                align: 0.0 0.0;
-               rel1 { relative: 0.0 0.0; to: "toolbar_bg"; }
-               rel2 { relative: 0.0 1.0; to: "toolbar_bg"; }
+               rel1 { relative: 0.0 0.0; to: "toolbar"; }
+               rel2 { relative: 0.0 1.0; to: "toolbar"; }
                visible: 0;
             }
          }
@@ -2093,6 +1779,7 @@
                fixed: 1 1;
                rel1.to: "more_btn_bg";
                rel2.to: "more_btn_bg";
+               visible: 0;
             }
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
@@ -2107,8 +1794,8 @@
                min: NAVIFRAME_TOOLBAR_BUTTON_BG_PADDING_INC;
                fixed: 1 0;
                align: 1.0 0.0;
-               rel1 { relative: 1.0 0.0; to: "toolbar_bg"; }
-               rel2.to: "toolbar_bg";
+               rel1 { relative: 1.0 0.0; to: "toolbar"; }
+               rel2.to: "toolbar";
                visible: 0;
             }
          }
@@ -2122,6 +1809,7 @@
                align: 0.5 0.5;
                rel1.to: "prev_btn_bg";
                rel2.to: "prev_btn_bg";
+               visible: 0;
             }
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
@@ -2133,73 +1821,8 @@
             mouse_events: 0;
             clip_to: "clipper";
             description { state: "default" 0.0;
-               rel1 { to_y: "toolbar_bg"; }
-               rel2 { to_y: "toolbar_bg"; }
-            }
-         }
-         part { name: "toolbar_btns_area";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1 { relative: 1.0 0.0; to: "more_btn_bg"; }
-               rel2 { relative: 0.0 1.0; to: "prev_btn_bg"; }
-               visible: 0;
-            }
-         }
-         part { name: "toolbar_button1";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "toolbar_clip";
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "buttons_set" 0.0;
-               inherit: "default" 0.0;
-               align: 1.0 0.5;
-               rel2 {
-                  relative: 0.0 1.0;
-                  to: "toolbar_button_padding";
-               }
-            }
-         }
-         part { name: "toolbar_button_padding";
-            type: RECT;
-            scale : 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_TOOLBAR_BUTTONS_PADDING_INC 0;
-               max: NAVIFRAME_TOOLBAR_BUTTONS_PADDING_INC 9999;
-               fixed : 1 0;
-               visible: 0;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_LANDSCAPE_TOOLBAR_BUTTONS_PADDING_INC 0;
-               max: NAVIFRAME_LANDSCAPE_TOOLBAR_BUTTONS_PADDING_INC 9999;
-            }
-         }
-         part { name: "toolbar_button2";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "toolbar_clip";
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "buttons_set" 0.0;
-               inherit: "default" 0.0;
-               align: 0.0 0.5;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to: "toolbar_button_padding";
-               }
+               rel1 { to: "toolbar"; }
+               rel2 { to: "toolbar"; }
             }
          }
       }
@@ -2272,10 +1895,7 @@
             signal: "elm,state,title,show";
             source: "elm";
             script {
-               if (get_int(landscape) == 0)
-                 set_state(PART:"title_bg", "default", 0.0);
-               else
-                 set_state(PART:"title_bg", "landscape", 0.0);
+               set_state(PART:"title_bg", "default", 0.0);
             }
          }
          program { name: "title_hide";
@@ -2285,98 +1905,24 @@
                set_state(PART:"title_bg", "hide", 0.0);
             }
          }
-         program { name: "prev_btn_show";
-            signal: "elm,state,prev_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "prev_btn_hide";
-            signal: "elm,state,prev_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-            }
-         }
-         program { name: "more_btn_show";
-            signal: "elm,state,toolbar_more_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "more_btn_hide";
-            signal: "elm,state,toolbar_more_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-            }
-         }
-         program { name: "toolbar_button1_show";
-            signal: "elm,state,toolbar_button1,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) + 1);
-               if (get_int(toolbar_buttons_visible) >= 2)
-                 {
-                    set_state(PART:"toolbar_button1", "buttons_set", 0.0);
-                    set_state(PART:"toolbar_button2", "buttons_set", 0.0);
-                 }
-            }
-         }
-         program { name: "toolbar_button1_hide";
-            signal: "elm,state,toolbar_button1,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) - 1);
-               set_state(PART:"toolbar_button1", "default", 0.0);
-               set_state(PART:"toolbar_button2", "default", 0.0);
-            }
-         }
-         program { name: "toolbar_button2_show";
-            signal: "elm,state,toolbar_button2,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) + 1);
-               if (get_int(toolbar_buttons_visible) >= 2)
-                 {
-                    set_state(PART:"toolbar_button1", "buttons_set", 0.0);
-                    set_state(PART:"toolbar_button2", "buttons_set", 0.0);
-                 }
-            }
-         }
-         program { name: "toolbar_button2_hide";
-            signal: "elm,state,toolbar_button2,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) - 1);
-               set_state(PART:"toolbar_button1", "default", 0.0);
-               set_state(PART:"toolbar_button2", "default", 0.0);
-            }
-         }
-         program { name: "toolbar_bg_show";
-            signal: "elm,state,toolbar_bg,show";
+         program { name: "toolbar_show";
+            signal: "elm,state,toolbar,show";
             source: "elm";
             script {
                if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
+                 set_state(PART:"toolbar", "visible", 0.0);
                else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                 set_state(PART:"toolbar", "visible_landscape", 0.0);
                set_int(tbar_bg, get_int(tbar_bg) + 1);
             }
          }
-         program { name: "toolbar_bg_hide";
-            signal: "elm,state,toolbar_bg,hide";
+         program { name: "toolbar_hide";
+            signal: "elm,state,toolbar,hide";
             source: "elm";
             script {
                set_int(tbar_bg, get_int(tbar_bg) - 1);
                if (get_int(tbar_bg) <= 0)
-                 set_state(PART:"toolbar_bg", "default", 0.0);
+                 set_state(PART:"toolbar", "default", 0.0);
             }
          }
          program { name: "toolbar_open_internal";
@@ -2385,9 +1931,9 @@
             script {
                set_int(tbar_close, 0);
                if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
+                 set_state(PART:"toolbar", "visible", 0.0);
                else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                 set_state(PART:"toolbar", "visible_landscape", 0.0);
             }
          }
          program { name: "toolbar_close_internal";
@@ -2395,7 +1941,7 @@
             source: "elm";
             script {
                set_int(tbar_close, 1);
-               set_state(PART:"toolbar_bg", "default", 0.0);
+               set_state(PART:"toolbar", "default", 0.0);
             }
          }
          program { name: "toolbar_open";
@@ -2403,9 +1949,9 @@
             source: "";
             script {
                if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
+                 set_state(PART:"toolbar", "visible", 0.0);
                else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                 set_state(PART:"toolbar", "visible_landscape", 0.0);
             }
             transition: LINEAR 0.2;
             after: "toolbar_open_internal";
@@ -2414,7 +1960,7 @@
             signal: "elm,state,toolbar,close";
             source: "";
             action: STATE_SET "default" 0.0;
-            target: "toolbar_bg";
+            target: "toolbar";
             transition: LINEAR 0.2;
             after: "toolbar_close_internal";
          }
@@ -2449,21 +1995,12 @@
                if (get_int(landscape) == 0) {
                   set_state(PART:"toolbar_more_btn", "landscape", 0.0);
                   set_state(PART:"elm.swallow.prev_btn", "landscape", 0.0);
-                  set_state(PART:"toolbar_button_padding", "landscape", 0.0);
 
                   new st[31];
                   new Float:vl;
-                  get_state(PART:"title_bg", st, 30, vl);
-                  if (!strcmp(st, "default"))
-                    set_state(PART:"title_bg", "landscape", 0.0);
-
-                  get_state(PART:"tabbar", st, 30, vl);
-                  if (!strcmp(st, "default"))
-                    set_state(PART:"tabbar", "landscape", 0.0);
-
-                  get_state(PART:"toolbar_bg", st, 30, vl);
+                  get_state(PART:"toolbar", st, 30, vl);
                   if (!strcmp(st, "visible"))
-                    set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                    set_state(PART:"toolbar", "visible_landscape", 0.0);
 
                   set_int(landscape, 1);
                }
@@ -2477,21 +2014,12 @@
                if (get_int(landscape) == 1) {
                   set_state(PART:"toolbar_more_btn", "default", 0.0);
                   set_state(PART:"elm.swallow.prev_btn", "default", 0.0);
-                  set_state(PART:"toolbar_button_padding", "default", 0.0);
 
                   new st[31];
                   new Float:vl;
-                  get_state(PART:"toolbar_bg", st, 30, vl);
+                  get_state(PART:"toolbar", st, 30, vl);
                   if (!strcmp(st, "visible_landscape"))
-                    set_state(PART:"toolbar_bg", "visible", 0.0);
-
-                  get_state(PART:"title_bg", st, 30, vl);
-                  if (!strcmp(st, "landscape"))
-                    set_state(PART:"title_bg", "default", 0.0);
-
-                  get_state(PART:"tabbar", st, 30, vl);
-                  if (!strcmp(st, "landscape"))
-                    set_state(PART:"tabbar", "default", 0.0);
+                    set_state(PART:"toolbar", "visible", 0.0);
 
                   set_int(landscape, 0);
                }
@@ -2523,7 +2051,6 @@
    group { name: "elm/naviframe/item/empty/default";
       script {
          public tbar_bg = 0;     //Toolbar BG Show call count
-         public toolbar_buttons_visible = 0; //when both toolbar buttons are visible
          public tbar_close = 0; //Toolbar lastest Open/Close status
          public landscape = 0; //Landscape mode status
       }
@@ -2560,7 +2087,6 @@
             description { state: "default" 0.0;
                rel1 { to: "title"; }
                rel2 { to: "title"; }
-               color: NAVIFRAME_TITLE_BG_COLOR_INC;
             }
             description { state: "hide" 0.0;
                inherit: "default" 0.0;
@@ -2581,7 +2107,7 @@
                rel1.to_y: "title_bg";
                rel2.relative: 1.0 0.0;
                rel2.to_x: "base";
-               rel2.to_y: "toolbar_bg";
+               rel2.to_y: "toolbar";
             }
          }
          part { name: "content_clip";
@@ -2611,8 +2137,8 @@
                fixed: 1 1;
             }
          }
-         part { name: "toolbar_bg";
-            type: RECT;
+         part { name: "toolbar";
+            type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
                min: 0 0;
@@ -2622,7 +2148,6 @@
                visible: 0;
                rel1 { to: "base"; }
                rel2 { to: "base"; }
-               color: NAVIFRAME_TOOLBAR_BG_COLOR_INC;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -2645,8 +2170,8 @@
                min: NAVIFRAME_TOOLBAR_BUTTON_BG_PADDING_INC;
                fixed: 1 0;
                align: 0.0 0.0;
-               rel1 { relative: 0.0 0.0; to: "toolbar_bg"; }
-               rel2 { relative: 0.0 1.0; to: "toolbar_bg"; }
+               rel1 { relative: 0.0 0.0; to: "toolbar"; }
+               rel2 { relative: 0.0 1.0; to: "toolbar"; }
                visible: 0;
             }
          }
@@ -2659,6 +2184,7 @@
                fixed: 1 1;
                rel1.to: "more_btn_bg";
                rel2.to: "more_btn_bg";
+               visible: 0;
             }
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
@@ -2673,8 +2199,8 @@
                min: NAVIFRAME_TOOLBAR_BUTTON_BG_PADDING_INC;
                fixed: 1 0;
                align: 1.0 0.0;
-               rel1 { relative: 1.0 0.0; to: "toolbar_bg"; }
-               rel2.to: "toolbar_bg";
+               rel1 { relative: 1.0 0.0; to: "toolbar"; }
+               rel2.to: "toolbar";
                visible: 0;
             }
          }
@@ -2688,6 +2214,7 @@
                align: 0.5 0.5;
                rel1.to: "prev_btn_bg";
                rel2.to: "prev_btn_bg";
+               visible: 0;
             }
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
@@ -2699,73 +2226,8 @@
             mouse_events: 0;
             clip_to: "clipper";
             description { state: "default" 0.0;
-               rel1 { to: "toolbar_bg"; }
-               rel2 { to: "toolbar_bg"; }
-            }
-         }
-         part { name: "toolbar_btns_area";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1 { relative: 1.0 0.0; to: "more_btn_bg"; }
-               rel2 { relative: 0.0 1.0; to: "prev_btn_bg"; }
-               visible: 0;
-            }
-         }
-         part { name: "toolbar_button1";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "toolbar_clip";
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "buttons_set" 0.0;
-               inherit: "default" 0.0;
-               align: 1.0 0.5;
-               rel2 {
-                  relative: 0.0 1.0;
-                  to: "toolbar_button_padding";
-               }
-            }
-         }
-         part { name: "toolbar_button_padding";
-            type: RECT;
-            scale : 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_TOOLBAR_BUTTONS_PADDING_INC 0;
-               max: NAVIFRAME_TOOLBAR_BUTTONS_PADDING_INC 9999;
-               fixed : 1 0;
-               visible: 0;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_LANDSCAPE_TOOLBAR_BUTTONS_PADDING_INC 0;
-               max: NAVIFRAME_LANDSCAPE_TOOLBAR_BUTTONS_PADDING_INC 9999;
-            }
-         }
-         part { name: "toolbar_button2";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "toolbar_clip";
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "buttons_set" 0.0;
-               inherit: "default" 0.0;
-               align: 0.0 0.5;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to: "toolbar_button_padding";
-               }
+               rel1 { to: "toolbar"; }
+               rel2 { to: "toolbar"; }
             }
          }
       }
@@ -2850,98 +2312,24 @@
                set_state(PART:"title", "hide", 0.0);
             }
          }
-         program { name: "prev_btn_show";
-            signal: "elm,state,prev_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "prev_btn_hide";
-            signal: "elm,state,prev_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-            }
-         }
-         program { name: "more_btn_show";
-            signal: "elm,state,toolbar_more_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "more_btn_hide";
-            signal: "elm,state,toolbar_more_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-            }
-         }
-         program { name: "toolbar_button1_show";
-            signal: "elm,state,toolbar_button1,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) + 1);
-               if (get_int(toolbar_buttons_visible) >= 2)
-                 {
-                    set_state(PART:"toolbar_button1", "buttons_set", 0.0);
-                    set_state(PART:"toolbar_button2", "buttons_set", 0.0);
-                 }
-            }
-         }
-         program { name: "toolbar_button1_hide";
-            signal: "elm,state,toolbar_button1,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) - 1);
-               set_state(PART:"toolbar_button1", "default", 0.0);
-               set_state(PART:"toolbar_button2", "default", 0.0);
-            }
-         }
-         program { name: "toolbar_button2_show";
-            signal: "elm,state,toolbar_button2,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) + 1);
-               if (get_int(toolbar_buttons_visible) >= 2)
-                 {
-                    set_state(PART:"toolbar_button1", "buttons_set", 0.0);
-                    set_state(PART:"toolbar_button2", "buttons_set", 0.0);
-                 }
-            }
-         }
-         program { name: "toolbar_button2_hide";
-            signal: "elm,state,toolbar_button2,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) - 1);
-               set_state(PART:"toolbar_button1", "default", 0.0);
-               set_state(PART:"toolbar_button2", "default", 0.0);
-            }
-         }
-         program { name: "toolbar_bg_show";
-            signal: "elm,state,toolbar_bg,show";
+         program { name: "toolbar_show";
+            signal: "elm,state,toolbar,show";
             source: "elm";
             script {
                if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
+                 set_state(PART:"toolbar", "visible", 0.0);
                else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                 set_state(PART:"toolbar", "visible_landscape", 0.0);
                set_int(tbar_bg, get_int(tbar_bg) + 1);
             }
          }
-         program { name: "toolbar_bg_hide";
-            signal: "elm,state,toolbar_bg,hide";
+         program { name: "toolbar_hide";
+            signal: "elm,state,toolbar,hide";
             source: "elm";
             script {
                set_int(tbar_bg, get_int(tbar_bg) - 1);
                if (get_int(tbar_bg) <= 0)
-                 set_state(PART:"toolbar_bg", "default", 0.0);
+                 set_state(PART:"toolbar", "default", 0.0);
             }
          }
          program { name: "toolbar_open_internal";
@@ -2950,9 +2338,9 @@
             script {
                set_int(tbar_close, 0);
                if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
+                 set_state(PART:"toolbar", "visible", 0.0);
                else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                 set_state(PART:"toolbar", "visible_landscape", 0.0);
             }
          }
          program { name: "toolbar_close_internal";
@@ -2960,7 +2348,7 @@
             source: "elm";
             script {
                set_int(tbar_close, 1);
-               set_state(PART:"toolbar_bg", "default", 0.0);
+               set_state(PART:"toolbar", "default", 0.0);
             }
          }
          program { name: "toolbar_open";
@@ -2968,9 +2356,9 @@
             source: "";
             script {
                if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
+                 set_state(PART:"toolbar", "visible", 0.0);
                else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                 set_state(PART:"toolbar", "visible_landscape", 0.0);
             }
             transition: LINEAR 0.2;
             after: "toolbar_open_internal";
@@ -2979,7 +2367,7 @@
             signal: "elm,state,toolbar,close";
             source: "";
             action: STATE_SET "default" 0.0;
-            target: "toolbar_bg";
+            target: "toolbar";
             transition: LINEAR 0.2;
             after: "toolbar_close_internal";
          }
@@ -3014,13 +2402,12 @@
                if (get_int(landscape) == 0) {
                   set_state(PART:"toolbar_more_btn", "landscape", 0.0);
                   set_state(PART:"elm.swallow.prev_btn", "landscape", 0.0);
-                  set_state(PART:"toolbar_button_padding", "landscape", 0.0);
 
                   new st[31];
                   new Float:vl;
-                  get_state(PART:"toolbar_bg", st, 30, vl);
+                  get_state(PART:"toolbar", st, 30, vl);
                   if (!strcmp(st, "visible"))
-                    set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
+                    set_state(PART:"toolbar", "visible_landscape", 0.0);
 
                   set_int(landscape, 1);
                }
@@ -3034,13 +2421,12 @@
                if (get_int(landscape) == 1) {
                   set_state(PART:"toolbar_more_btn", "default", 0.0);
                   set_state(PART:"elm.swallow.prev_btn", "default", 0.0);
-                  set_state(PART:"toolbar_button_padding", "default", 0.0);
 
                   new st[31];
                   new Float:vl;
-                  get_state(PART:"toolbar_bg", st, 30, vl);
+                  get_state(PART:"toolbar", st, 30, vl);
                   if (!strcmp(st, "visible_landscape"))
-                    set_state(PART:"toolbar_bg", "visible", 0.0);
+                    set_state(PART:"toolbar", "visible", 0.0);
 
                   set_int(landscape, 0);
                }
@@ -3173,1299 +2559,3 @@
       }
    }
 
-   group { name: "elm/naviframe/item/dual_title/default";
-      images {
-         image: "00_badge_bg.png" COMP;
-      }
-      script {
-         public tbar_bg = 0;     //Toolbar BG Show call count
-         public toolbar_buttons_visible = 0; //when both toolbar buttons are visible
-         public tbar_close = 0; //Toolbar lastest Open/Close status
-         public title_buttons_visible = 0; //when both title buttons are visible
-         public landscape = 0; //Landscape mode status
-      }
-      parts {
-         part { name: "clipper";
-            type: RECT;
-            description { state: "default" 0.0;
-               visible: 1;
-            }
-            description { state: "left" 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "base";
-            type: RECT;
-            mouse_events:  0;
-            description { state: "default" 0.0;
-               visible: 0;
-            }
-            description { state: "left" 0.0;
-               inherit: "default" 0.0;
-               rel1.relative: -1.0 0.0;
-               rel2.relative: 0.0 1.0;
-            }
-            description { state: "right" 0.0;
-               inherit: "default" 0.0;
-               rel1.relative: 1.0 0.0;
-               rel2.relative: 2.0 1.0;
-            }
-         }
-         part { name: "title_bg";
-            type: RECT;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 1 NAVIFRAME_TITLE_H_INC;
-               align: 0.0 0.0;
-               fixed: 0 1;
-               rel1 { relative: 0.0 0.0; to: "base"; }
-               rel2 { relative: 1.0 0.0; to: "base"; }
-               color: NAVIFRAME_TITLE_BG_COLOR_INC;
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: 1 NAVIFRAME_LANDSCAPE_TITLE_H_INC;
-            }
-            description { state: "hide" 0.0;
-               inherit: "default" 0.0;
-               min: 0 0;
-               max: 0 0;
-               fixed: 1 1;
-            }
-         }
-         part { name: "title_clip";
-            type: RECT;
-            mouse_events: 0;
-            clip_to: "clipper";
-            description { state: "default" 0.0;
-               rel1 { to_y: "title_bg"; }
-               rel2 { to_y: "title_bg"; }
-            }
-         }
-         part { name: "top_padding";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               min: NAVIFRAME_TITLE_TOP_PADDING_INC;
-               fixed: 0 1;
-               align: 0.0 0.0;
-               rel1 { relative: 0.0 0.0; to: "title_bg"; }
-               rel2 { relative: 1.0 0.0; to: "title_bg"; }
-               visible: 0;
-            }
-            description {
-               state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_LANDSCAPE_TITLE_TOP_PADDING_INC;
-            }
-         }
-         part { name: "right_padding";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               min: NAVIFRAME_TITLE_RIGHT_PADDING_INC;
-               fixed: 1 0;
-               align: 1.0 0.0;
-               rel1 { relative: 1.0 0.0; to: "title_bg"; }
-               rel2 { relative: 1.0 1.0; to: "title_bg"; }
-               visible: 0;
-            }
-         }
-         part { name: "padding_center_text1";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_PADDING_INC;
-               fixed: 1 0;
-               align: 0.0 0.0;
-               rel1 { relative: 0.0 0.0; to: "title_bg"; }
-               rel2 { relative: 0.0 1.0; to: "title_bg"; }
-               visible: 0;
-            }
-         }
-         part { name: "elm.swallow.content";
-            type: SWALLOW;
-            scale: 1;
-            repeat_events: 0;
-            clip_to: "content_clip";
-            description { state: "default" 0.0;
-               align: 0.0 0.0;
-               rel1.relative: 0.0 1.0;
-               rel1.to_x: "base";
-               rel1.to_y: "title_bg";
-               rel2.relative: 1.0 0.0;
-               rel2.to_x: "base";
-               rel2.to_y: "toolbar_bg";
-            }
-         }
-         part { name: "content_clip";
-            type: RECT;
-            mouse_events: 0;
-            clip_to: "clipper";
-            description { state: "default" 0.0;
-               rel1.to_y: "elm.swallow.content";
-               rel2.to_y: "elm.swallow.content";
-            }
-         }
-         part { name: "padding_bottom_text";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_BOTTOM_TEXT_PADDING_INC;
-               fixed: 0 1;
-               align: 0.0 1.0;
-               rel1 { relative: 0.0 1.0; to: "title_bg"; }
-               rel2 { relative: 1.0 1.0; to: "title_bg"; }
-               visible: 0;
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_LANDSCAPE_BOTTOM_TEXT_PADDING_INC;
-            }
-         }
-         part { name: "padding_center_text2";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_PADDING2_INC;
-               fixed: 1 0;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_left_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_left_btn"; }
-               visible: 0;
-            }
-         }
-         part { name: "title1_max_area";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_DUAL_TITLE1_MAX_W_WITH_ONE_BUTTON_INC 0;
-               max: NAVIFRAME_DUAL_TITLE1_MAX_W_WITH_ONE_BUTTON_INC -1;
-               align: 0.0 0.5;
-               fixed: 1 1;
-               rel1 { relative: 1.0 1.0; to_x: "padding_center_text1"; to_y: "top_padding"; }
-               rel2 { relative: 1.0 0.0; to_x: "padding_center_text1"; to_y: "padding_bottom_text"; }
-               visible: 0;
-            }
-            description { state: "buttons_set" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_DUAL_TITLE1_MAX_W_WITH_TWO_BUTTON_INC 0;
-               max: NAVIFRAME_DUAL_TITLE1_MAX_W_WITH_TWO_BUTTON_INC -1;
-            }
-         }
-         part { name: "elm.text.title";
-            type: TEXT;
-            effect: FAR_SHADOW BOTTOM;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               text { font: "Tizen:style=Bold";
-                  size: NAVIFRAME_DUAL_TITLE_FONT_SIZE_INC;
-                  min: 0 0;
-                  max: 1 0;
-                  align: 0.0 0.5;
-                  text_class: "tizen";
-               }
-               color: NAVIFRAME_TITLE_TEXT_UNSELECTED_COLOR_INC;
-               color3: 255 255 255 255;
-               align: 0.0 0.5;
-               fixed: 1 1;
-               rel1 { to: "title1_max_area"; }
-               rel2 { to: "title1_max_area"; }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: NAVIFRAME_TITLE_TEXT_COLOR_INC;
-            }
-            description { state: "default_landscape" 0.0;
-               inherit: "default" 0.0;
-               text { font: "Tizen:style=Bold";
-                  size: NAVIFRAME_LANDSCAPE_TITLE_FONT_SIZE_INC;
-                  min: 0 0;
-                  max: 1 0;
-                  align: 0.0 0.5;
-                  text_class: "tizen";
-               }
-            }
-            description { state: "selected_landscape" 0.0;
-               inherit: "default_landscape" 0.0;
-               color: NAVIFRAME_TITLE_TEXT_COLOR_INC;
-            }
-         }
-         part { name: "click_event_title1_area";
-            type: RECT;
-            ignore_flags: ON_HOLD;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_DUAL_TITLE1_MIN_W_INC 0;
-               align: 0.0 0.5;
-               fixed: 1 1;
-               rel1 { to: "elm.text.title"; }
-               rel2 { to: "elm.text.title"; }
-               color: 0 0 0 0;
-            }
-         }
-         part { name: "text.padding";
-            type: RECT;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               min: 30 0;
-               align: 0.0 0.0;
-               fixed: 1 0;
-               rel1 { relative: 1.0 0.0; to: "click_event_title1_area"; }
-               rel2 { relative: 1.0 1.0; to: "click_event_title1_area"; }
-               visible: 0;
-            }
-         }
-         part { name: "divider";
-            type: RECT;
-            description { state: "default" 0.0;
-               min: 4 26;
-               max: 4 26;
-               fixed: 1 1;
-               rel1.to: "text.padding";
-               rel2.to: "text.padding";
-               align: 0.5 0.5;
-            }
-         }
-         part { name: "divider_left";
-            type: RECT;
-            clip_to: "divider";
-            description { state: "default" 0.0;
-               color: NAVIFRAME_DUAL_TITLE_DIVIDER_LEFT_COLOR_INC;
-               rel1 { relative: 0.0 0.0; to: "divider"; }
-               rel2 { relative: 0.5 1.0; to: "divider"; }
-            }
-         }
-         part { name: "divider_right";
-            type: RECT;
-            clip_to: "divider";
-            description { state: "default" 0.0;
-               color: NAVIFRAME_DUAL_TITLE_DIVIDER_RIGHT_COLOR_INC;
-               rel1 { relative: 0.5 0.0; to: "divider"; }
-               rel2 { relative: 1.0 1.0; to: "divider"; }
-            }
-         }
-         part { name: "elm.text.title2";
-            type: TEXT;
-            effect: FAR_SHADOW BOTTOM;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               text { font: "Tizen:style=Bold";
-                  size: NAVIFRAME_DUAL_TITLE_FONT_SIZE_INC;
-                  min: 0 0;
-                  max: 1 0;
-                  align: 0.0 0.5;
-                  text_class: "tizen";
-               }
-               color: NAVIFRAME_TITLE_TEXT_UNSELECTED_COLOR_INC;
-               color3: 255 255 255 255;
-               align: 0.0 0.5;
-               fixed: 1 1;
-               rel1 { relative: 1.0 1.0; to_x: "text.padding"; to_y: "top_padding"; }
-               rel2 { relative: 0.0 0.0; to_x: "padding_center_text2"; to_y: "padding_bottom_text"; }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: NAVIFRAME_TITLE_TEXT_COLOR_INC;
-            }
-            description { state: "default_landscape" 0.0;
-               inherit: "default" 0.0;
-               text { font: "Tizen:style=Bold";
-                  size: NAVIFRAME_LANDSCAPE_TITLE_FONT_SIZE_INC;
-                  min: 0 0;
-                  max: 1 0;
-                  align: 0.0 0.5;
-                  text_class: "tizen";
-               }
-            }
-            description { state: "selected_landscape" 0.0;
-               inherit: "default_landscape" 0.0;
-               color: NAVIFRAME_TITLE_TEXT_COLOR_INC;
-            }
-         }
-         part { name: "click_event_title2_area";
-             type: RECT;
-             ignore_flags: ON_HOLD;
-             description { state: "default" 0.0;
-                rel1 { to: "elm.text.title2"; }
-                rel2 { to: "elm.text.title2"; }
-                color: 0 0 0 0;
-             }
-         }
-         part { name: "badge_top_padding";
-            type: RECT;
-            scale: 1;
-            description { state: "default" 0.0;
-               visible: 0;
-               min: NAVIFRAME_BADGE_TOP_PADDING_INC;
-               fixed: 0 1;
-               rel1 { relative: 0.0 0.0; to: "title_bg"; }
-               rel2 { relative: 1.0 0.0; to: "title_bg"; }
-               align: 0.0 0.0;
-            }
-         }
-         part { name: "badge_left_padding";
-            type: RECT;
-            scale: 1;
-            description { state: "default" 0.0;
-               visible: 0;
-               min: 0 0;
-               fixed: 1 1;
-               rel1 { relative: 0.0 1.0; to_x: "divider"; to_y: "badge_top_padding"; }
-               rel2 { relative: 0.0 0.5; to_x: "divider"; to_y: "title_bg"; }
-               align: 0.0 0.5;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_PADDING_BADGE_INC;
-            }
-         }
-         part { name: "right.padding.text";
-            type: RECT;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               visible: 0;
-               fixed: 1 1;
-               min: 8 54;
-               rel1 {
-                  to: "badge_left_padding";
-                  relative: 0.0 1.0;
-               }
-               rel2 {
-                  to: "badge_left_padding";
-                  relative: 0.0 1.0;
-               }
-               align: 1.0 1.0;
-            }
-         }
-         part { name: "left.padding.text";
-            type: RECT;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               visible: 0;
-               fixed: 1 1;
-               min: 13 54;
-               rel1 {
-                  to: "title_badge";
-                  relative: 0.0 1.0;
-               }
-               rel2 {
-                  to: "title_badge";
-                  relative: 0.0 1.0;
-               }
-               align: 1.0 1.0;
-            }
-         }
-         part { name: "badge_bg";
-            type: IMAGE;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               visible: 0;
-               fixed: 1 1;
-               rel1 {
-                  to: "left.padding.text";
-                  relative: 0.0 0.0;
-               }
-               rel2 {
-                  to: "right.padding.text";
-                  relative: 1.0 1.0;
-               }
-               image {
-                  normal: "00_badge_bg.png";
-                  border: NAVIFRAME_BADGE_BG_IMAGE_BORDER_INC;
-                  border_scale: 1;
-               }
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               min: NAVIFRAME_BADGE_BG_IMAGE_SIZE_INC;
-               fixed: 1 1;
-            }
-         }
-         part { name: "title_badge";
-            type: TEXT;
-            mouse_events: 0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               visible: 0;
-               rel1 {
-                  to: "right.padding.text";
-                  relative: 0.0 0.0;
-               }
-               rel2 {
-                  to: "right.padding.text";
-                  relative: 0.0 1.0;
-               }
-               fixed: 1 0;
-               align: 1.0 0.5;
-               color: NAVIFRAME_BADGE_TEXT_COLOR_INC;
-               text {
-                  font: "Tizen:style=Bold";
-                  size: NAVIFRAME_BADGE_TEXT_H_INC;
-                  min: 1 1;
-                  max: 1 0;
-               }
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "badge_left_padding2";
-            type: RECT;
-            scale: 1;
-            description { state: "default" 0.0;
-               visible: 0;
-               min: 0 0;
-               fixed: 1 1;
-               rel1 { relative: 1.0 1.0; to_x: "elm.text.title2"; to_y: "badge_top_padding"; }
-               rel2 { relative: 1.0 0.5; to_x: "elm.text.title2"; to_y: "title_bg"; }
-               align: 0.0 0.5;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_PADDING_INC;
-            }
-         }
-         part { name: "right.padding.text2";
-            type: RECT;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               visible: 0;
-               fixed: 1 1;
-               min: 8 54;
-               rel1 {
-                  to: "badge_left_padding2";
-                  relative: 1.0 1.0;
-               }
-               rel2 {
-                  to: "badge_left_padding2";
-                  relative: 1.0 1.0;
-               }
-               align: 1.0 1.0;
-            }
-         }
-         part { name: "left.padding.text2";
-            type: RECT;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               visible: 0;
-               fixed: 1 1;
-               min: 13 54;
-               rel1 {
-                  to: "title2_badge";
-                  relative: 0.0 1.0;
-               }
-               rel2 {
-                  to: "title2_badge";
-                  relative: 0.0 1.0;
-               }
-               align: 1.0 1.0;
-            }
-         }
-         part { name: "badge2_bg";
-            type: IMAGE;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               visible: 0;
-               fixed: 1 1;
-               rel1 {
-                  to: "left.padding.text2";
-                  relative: 0.0 0.0;
-               }
-               rel2 {
-                  to: "right.padding.text2";
-                  relative: 1.0 1.0;
-               }
-               image {
-                  normal: "00_badge_bg.png";
-                  border: NAVIFRAME_BADGE_BG_IMAGE_BORDER_INC;
-                  border_scale: 1;
-               }
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               min: NAVIFRAME_BADGE_BG_IMAGE_SIZE_INC;
-               fixed: 1 1;
-            }
-         }
-         part { name: "title2_badge";
-            type: TEXT;
-            mouse_events: 0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               visible: 0;
-               rel1 {
-                  to: "right.padding.text2";
-                  relative: 0.0 0.0;
-               }
-               rel2 {
-                  to: "right.padding.text2";
-                  relative: 0.0 1.0;
-               }
-               fixed: 1 0;
-               align: 1.0 0.5;
-               color: NAVIFRAME_BADGE_TEXT_COLOR_INC;
-               text {
-                  font: "Tizen:style=Bold";
-                  size: NAVIFRAME_BADGE_TEXT_H_INC;
-                  min: 1 1;
-                  max: 1 0;
-               }
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "access.title";
-            type: RECT;
-            repeat_events: 1;
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               rel1.to: "title_bg";
-               rel2.to: "title_bg";
-               color: 0 0 0 0;
-            }
-         }
-         part { name: "title_left_btn";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
-               fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 { relative: 0.0 0.0; to: "title_right_btn"; }
-               rel2 { relative: 0.0 1.0; to: "title_right_btn"; }
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               max: NAVIFRAME_LANDSCAPE_TITLE_FUNC_BTN_SIZE_INC;
-            }
-         }
-         part { name: "title_right_btn";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "title_clip";
-            description { state: "default" 0.0;
-               max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
-               align: 1.0 0.5;
-               fixed: 1 1;
-               rel1 { relative: 0.0 0.0; to: "right_padding"; }
-               rel2 { relative: 0.0 1.0; to: "right_padding"; }
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               max: NAVIFRAME_LANDSCAPE_TITLE_FUNC_BTN_SIZE_INC;
-            }
-         }
-         part { name: "toolbar_bg";
-            type: RECT;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: 0 0;
-               max: 999999 0;
-               fixed: 0 1;
-               align: 0.0 1.0;
-               visible: 0;
-               rel1 { to: "base"; }
-               rel2 { to: "base"; }
-               color: NAVIFRAME_TOOLBAR_BG_COLOR_INC;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               min: 0 NAVIFRAME_TOOLBAR_HEIGHT_INC;
-               max: 999999 NAVIFRAME_TOOLBAR_HEIGHT_INC;
-               visible: 1;
-            }
-            description { state: "visible_landscape" 0.0;
-               inherit: "default" 0.0;
-               min: 0 NAVIFRAME_LANDSCAPE_TOOLBAR_HEIGHT_INC;
-               max: 999999 NAVIFRAME_LANDSCAPE_TOOLBAR_HEIGHT_INC;
-               visible: 1;
-            }
-         }
-         part { name: "more_btn_bg";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_TOOLBAR_BUTTON_BG_PADDING_INC;
-               fixed: 1 0;
-               align: 0.0 0.0;
-               rel1 { relative: 0.0 0.0; to: "toolbar_bg"; }
-               rel2 { relative: 0.0 1.0; to: "toolbar_bg"; }
-               visible: 0;
-            }
-         }
-         part { name: "toolbar_more_btn";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "toolbar_clip";
-            description { state: "default" 0.0;
-               max: NAVIFRAME_PREV_FUNC_BTN_SIZE_INC;
-               fixed: 1 1;
-               rel1.to: "more_btn_bg";
-               rel2.to: "more_btn_bg";
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               max: NAVIFRAME_LANDSCAPE_PREV_FUNC_BTN_SIZE_INC;
-            }
-         }
-         part { name: "prev_btn_bg";
-            type: RECT;
-            scale: 1;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_TOOLBAR_BUTTON_BG_PADDING_INC;
-               fixed: 1 0;
-               align: 1.0 0.0;
-               rel1 { relative: 1.0 0.0; to: "toolbar_bg"; }
-               rel2.to: "toolbar_bg";
-               visible: 0;
-            }
-         }
-         part { name: "elm.swallow.prev_btn";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "toolbar_clip";
-            description { state: "default" 0.0;
-               max: NAVIFRAME_PREV_FUNC_BTN_SIZE_INC;
-               fixed: 1 1;
-               align: 0.5 0.5;
-               rel1.to: "prev_btn_bg";
-               rel2.to: "prev_btn_bg";
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               max: NAVIFRAME_LANDSCAPE_PREV_FUNC_BTN_SIZE_INC;
-            }
-         }
-         part { name: "toolbar_btns_area";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1 { relative: 1.0 0.0; to: "more_btn_bg"; }
-               rel2 { relative: 0.0 1.0; to: "prev_btn_bg"; }
-               visible: 0;
-            }
-         }
-         part { name: "toolbar_clip";
-            type: RECT;
-            mouse_events: 0;
-            clip_to: "clipper";
-            description { state: "default" 0.0;
-               rel1 { to_y: "toolbar_bg"; }
-               rel2 { to_y: "toolbar_bg"; }
-            }
-         }
-         part { name: "toolbar_button1";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "toolbar_clip";
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "buttons_set" 0.0;
-               inherit: "default" 0.0;
-               align: 1.0 0.5;
-               rel2 {
-                  relative: 0.0 1.0;
-                  to: "toolbar_button_padding";
-               }
-            }
-         }
-         part { name: "toolbar_button_padding";
-            type: RECT;
-            scale : 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_TOOLBAR_BUTTONS_PADDING_INC 0;
-               max: NAVIFRAME_TOOLBAR_BUTTONS_PADDING_INC 9999;
-               fixed : 1 0;
-               visible: 0;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "landscape" 0.0;
-               inherit: "default" 0.0;
-               min: NAVIFRAME_LANDSCAPE_TOOLBAR_BUTTONS_PADDING_INC 0;
-               max: NAVIFRAME_LANDSCAPE_TOOLBAR_BUTTONS_PADDING_INC 9999;
-            }
-         }
-         part { name: "toolbar_button2";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "toolbar_clip";
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               align: 0.5 0.5;
-               rel1.to: "toolbar_btns_area";
-               rel2.to: "toolbar_btns_area";
-            }
-            description { state: "buttons_set" 0.0;
-               inherit: "default" 0.0;
-               align: 0.0 0.5;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to: "toolbar_button_padding";
-               }
-            }
-         }
-      }
-      programs {
-         program { name: "content_new_pushed";
-            signal: "elm,state,new,pushed,deferred";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "base";
-            transition: DECELERATE NAVIFRAME_VIEW_TRANS_TIME;
-            after: "show_finished";
-         }
-         program { name: "content_cur_pushed";
-            signal: "elm,state,cur,pushed,deferred";
-            source: "elm";
-            action: STATE_SET "left" 0.0;
-            target: "base";
-            target: "clipper";
-            transition: DECELERATE NAVIFRAME_VIEW_TRANS_TIME;
-            after: "pushed_finished";
-         }
-         program { name: "content_prev_popped";
-            signal: "elm,state,prev,popped,deferred";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "base";
-            target: "clipper";
-            transition: DECELERATE NAVIFRAME_VIEW_TRANS_TIME;
-            after: "show_finished";
-         }
-         program { name: "content_cur_popped";
-            signal: "elm,state,cur,popped,deferred";
-            source: "elm";
-            action: STATE_SET "right" 0.0;
-            target: "base";
-            transition: DECELERATE NAVIFRAME_VIEW_TRANS_TIME;
-            after: "popped_finished";
-         }
-         program { name: "cur_pushed";
-            signal: "elm,state,cur,pushed";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "base";
-         }
-         program { name: "new_pushed";
-            signal: "elm,state,new,pushed";
-            source: "elm";
-            action: STATE_SET "right" 0.0;
-            target: "base";
-         }
-         program { name: "prev_popped";
-            signal: "elm,state,prev,popped";
-            source: "elm";
-            action: STATE_SET "left" 0.0;
-            target: "base";
-         }
-         program { name: "cur_popped";
-            signal: "elm,state,cur,popped";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "base";
-         }
-         program { name: "visible";
-            signal: "elm,state,visible";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "base";
-         }
-         program { name: "title_show";
-            signal: "elm,state,title,show";
-            source: "elm";
-            script {
-               if (get_int(landscape) == 0)
-                 set_state(PART:"title_bg", "default", 0.0);
-               else
-                 set_state(PART:"title_bg", "landscape", 0.0);
-            }
-         }
-         program { name: "title_hide";
-            signal: "elm,state,title,hide";
-            source: "elm";
-            script {
-               set_state(PART:"title_bg", "hide", 0.0);
-            }
-         }
-         program { name: "title_left_btn_show";
-            signal: "elm,state,title_left_btn,show";
-            source: "elm";
-            script {
-               set_int(title_buttons_visible, get_int(title_buttons_visible) + 1);
-               if (get_int(title_buttons_visible) >= 2)
-                 set_state(PART:"title1_max_area", "buttons_set", 0.0);
-            }
-         }
-         program { name: "title_left_btn_hide";
-            signal: "elm,state,title_left_btn,hide";
-            source: "elm";
-            script {
-               set_int(title_buttons_visible, get_int(title_buttons_visible) - 1);
-               set_state(PART:"title1_max_area", "default", 0.0);
-            }
-         }
-         program { name: "title_right_btn_show";
-            signal: "elm,state,title_right_btn,show";
-            source: "elm";
-            script {
-               set_int(title_buttons_visible, get_int(title_buttons_visible) + 1);
-               if (get_int(title_buttons_visible) >= 2)
-                 set_state(PART:"title1_max_area", "buttons_set", 0.0);
-            }
-         }
-         program { name: "title_right_btn_hide";
-            signal: "elm,state,title_right_btn,hide";
-            source: "elm";
-            script {
-               set_int(title_buttons_visible, get_int(title_buttons_visible) - 1);
-               set_state(PART:"title1_max_area", "default", 0.0);
-            }
-         }
-         program { name: "prev_btn_show";
-            signal: "elm,state,prev_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "prev_btn_hide";
-            signal: "elm,state,prev_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-            }
-         }
-         program { name: "more_btn_show";
-            signal: "elm,state,toolbar_more_btn,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-            }
-         }
-         program { name: "more_btn_hide";
-            signal: "elm,state,toolbar_more_btn,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-            }
-         }
-         program { name: "toolbar_button1_show";
-            signal: "elm,state,toolbar_button1,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) + 1);
-               if (get_int(toolbar_buttons_visible) >= 2)
-                 {
-                    set_state(PART:"toolbar_button1", "buttons_set", 0.0);
-                    set_state(PART:"toolbar_button2", "buttons_set", 0.0);
-                 }
-            }
-         }
-         program { name: "toolbar_button1_hide";
-            signal: "elm,state,toolbar_button1,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) - 1);
-               set_state(PART:"toolbar_button1", "default", 0.0);
-               set_state(PART:"toolbar_button2", "default", 0.0);
-            }
-         }
-         program { name: "toolbar_button2_show";
-            signal: "elm,state,toolbar_button2,show";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,show", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) + 1);
-               if (get_int(toolbar_buttons_visible) >= 2)
-                 {
-                    set_state(PART:"toolbar_button1", "buttons_set", 0.0);
-                    set_state(PART:"toolbar_button2", "buttons_set", 0.0);
-                 }
-            }
-         }
-         program { name: "toolbar_button2_hide";
-            signal: "elm,state,toolbar_button2,hide";
-            source: "elm";
-            script {
-               emit("elm,state,toolbar_bg,hide", "elm");
-               set_int(toolbar_buttons_visible, get_int(toolbar_buttons_visible) - 1);
-               set_state(PART:"toolbar_button1", "default", 0.0);
-               set_state(PART:"toolbar_button2", "default", 0.0);
-            }
-         }
-         program { name: "toolbar_bg_show";
-            signal: "elm,state,toolbar_bg,show";
-            source: "elm";
-            script {
-               if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
-               else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
-               set_int(tbar_bg, get_int(tbar_bg) + 1);
-            }
-         }
-         program { name: "toolbar_bg_hide";
-            signal: "elm,state,toolbar_bg,hide";
-            source: "elm";
-            script {
-               set_int(tbar_bg, get_int(tbar_bg) - 1);
-               if (get_int(tbar_bg) <= 0)
-                 set_state(PART:"toolbar_bg", "default", 0.0);
-            }
-         }
-         program { name: "toolbar_open_internal";
-            signal: "elm,state,toolbar,open,internal";
-            source: "elm";
-            script {
-               set_int(tbar_close, 0);
-               if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
-               else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
-            }
-         }
-         program { name: "toolbar_close_internal";
-            signal: "elm,state,toolbar,close,internal";
-            source: "elm";
-            script {
-               set_int(tbar_close, 1);
-               set_state(PART:"toolbar_bg", "default", 0.0);
-            }
-         }
-         program { name: "toolbar_open";
-            signal: "elm,state,toolbar,open";
-            source: "";
-            script {
-               if (get_int(landscape) == 0)
-                 set_state(PART:"toolbar_bg", "visible", 0.0);
-               else
-                 set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
-            }
-            transition: LINEAR 0.2;
-            after: "toolbar_open_internal";
-         }
-         program { name: "toolbar_close";
-            signal: "elm,state,toolbar,close";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "toolbar_bg";
-            transition: LINEAR 0.2;
-            after: "toolbar_close_internal";
-         }
-         program { name: "toolbar_instant_open";
-            signal: "elm,state,toolbar,instant_open";
-            source: "";
-            script {
-               emit("elm,state,toolbar,open,internal", "elm");
-            }
-         }
-         program { name: "toolbar_instant_close";
-            signal: "elm,state,toolbar,instant_close";
-            source: "";
-            script {
-               emit("elm,state,toolbar,close,internal", "elm");
-            }
-         }
-         program { name: "show_finished";
-            action: SIGNAL_EMIT "elm,action,show,finished" "";
-         }
-         program { name: "pushed_finished";
-            action: SIGNAL_EMIT "elm,action,pushed,finished" "";
-         }
-         program { name: "popped_finished";
-            action: SIGNAL_EMIT "elm,action,popped,finished" "";
-         }
-         program {
-            name: "init_title_selection";
-            signal: "elm,state,title_label,show";
-            source: "elm";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text.title", st, 30, vl);
-               if (get_int(landscape) == 0)
-                 {
-                    set_state(PART:"elm.text.title", "selected", 0.0);
-                    set_state(PART:"elm.text.title2", "default", 0.0);
-                 }
-               else
-                 {
-                    set_state(PART:"elm.text.title", "selected_landscape", 0.0);
-                    set_state(PART:"elm.text.title2", "default_landscape", 0.0);
-                 }
-            }
-         }
-         program {
-            name: "title1_clicked";
-            signal: "mouse,clicked,1";
-            source: "click_event_title1_area";
-            after: "touch_snd";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text.title", st, 30, vl);
-               if ((get_int(landscape) == 0) && !strcmp(st, "default"))
-                 {
-                    set_state(PART:"elm.text.title", "selected", 0.0);
-                    set_state(PART:"elm.text.title2", "default", 0.0);
-                 }
-               else if ((get_int(landscape) == 1) && !strcmp(st, "default_landscape"))
-                 {
-                    set_state(PART:"elm.text.title", "selected_landscape", 0.0);
-                    set_state(PART:"elm.text.title2", "default_landscape", 0.0);
-                 }
-               emit("elm,action,title1,clicked", "");
-            }
-         }
-         program {
-            name: "title2_clicked";
-            signal: "mouse,clicked,1";
-            source: "click_event_title2_area";
-            after: "touch_snd";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text.title2", st, 30, vl);
-               if ((get_int(landscape) == 0) && !strcmp(st, "default"))
-                 {
-                    set_state(PART:"elm.text.title2", "selected", 0.0);
-                    set_state(PART:"elm.text.title", "default", 0.0);
-                 }
-               else if ((get_int(landscape) == 1) && !strcmp(st, "default_landscape"))
-                 {
-                    set_state(PART:"elm.text.title2", "selected_landscape", 0.0);
-                    set_state(PART:"elm.text.title", "default_landscape", 0.0);
-                 }
-               emit("elm,action,title2,clicked", "");
-            }
-         }
-         program { name: "touch_snd";
-            action: PLAY_SAMPLE "touch_sound" 1.0;
-         }
-         program { name: "title1_selected";
-            signal: "elm,state,title1,selected";
-            source: "";
-            script {
-              if (get_int(landscape) == 0)
-                {
-                   set_state(PART:"elm.text.title", "selected", 0.0);
-                   set_state(PART:"elm.text.title2", "default", 0.0);
-                }
-              else
-                {
-                   set_state(PART:"elm.text.title", "selected_landscape", 0.0);
-                   set_state(PART:"elm.text.title2", "default_landscape", 0.0);
-                }
-            }
-         }
-         program { name: "title1_unselected";
-            signal: "elm,state,title1,unselected";
-            source: "";
-            script {
-               if (get_int(landscape) == 0)
-                 set_state(PART:"elm.text.title", "default", 0.0);
-               else
-                 set_state(PART:"elm.text.title", "default_landscape", 0.0);
-            }
-         }
-         program { name: "title2_selected";
-            signal: "elm,state,title2,selected";
-            source: "";
-            script {
-              if (get_int(landscape) == 0)
-                {
-                   set_state(PART:"elm.text.title2", "selected", 0.0);
-                   set_state(PART:"elm.text.title", "default", 0.0);
-                }
-              else
-                {
-                   set_state(PART:"elm.text.title2", "selected_landscape", 0.0);
-                   set_state(PART:"elm.text.title", "default_landscape", 0.0);
-                }
-            }
-         }
-         program { name: "title2_unselected";
-            signal: "elm,state,title2,unselected";
-            source: "";
-            script {
-               if (get_int(landscape) == 0)
-                 set_state(PART:"elm.text.title2", "default", 0.0);
-               else
-                 set_state(PART:"elm.text.title2", "default_landscape", 0.0);
-            }
-         }
-         program {
-            name: "badge_show";
-            signal: "elm,state,title_badge,show";
-            source: "elm";
-            script {
-               set_state(PART:"badge_bg", "visible", 0.0);
-               set_state(PART:"title_badge", "visible", 0.0);
-            }
-         }
-         program {
-            name: "badge_hide";
-            signal: "elm,state,title_badge,hide";
-            source: "elm";
-            script {
-               set_state(PART:"badge_bg", "default", 0.0);
-               set_state(PART:"title_badge", "default", 0.0);
-            }
-         }
-         program {
-            name: "badge2_show";
-            signal: "elm,state,title2_badge,show";
-            source: "elm";
-            script {
-               set_state(PART:"badge_left_padding2", "visible", 0.0);
-               set_state(PART:"badge2_bg", "visible", 0.0);
-               set_state(PART:"title2_badge", "visible", 0.0);
-            }
-         }
-         program {
-            name: "badge2_hide";
-            signal: "elm,state,title2_badge,hide";
-            source: "elm";
-            script {
-               set_state(PART:"badge_left_padding2", "default", 0.0);
-               set_state(PART:"badge2_bg", "default", 0.0);
-               set_state(PART:"title2_badge", "default", 0.0);
-            }
-         }
-         program {
-            name: "change_to_landscape";
-            signal: "elm,state,landscape";
-            source: "elm";
-            script {
-               if (get_int(landscape) == 0) {
-                  set_state(PART:"top_padding", "landscape", 0.0);
-                  set_state(PART:"padding_bottom_text", "landscape", 0.0);
-                  set_state(PART:"title_left_btn", "landscape", 0.0);
-                  set_state(PART:"title_right_btn", "landscape", 0.0);
-                  set_state(PART:"toolbar_more_btn", "landscape", 0.0);
-                  set_state(PART:"elm.swallow.prev_btn", "landscape", 0.0);
-                  set_state(PART:"toolbar_button_padding", "landscape", 0.0);
-
-                  new st[31];
-                  new Float:vl;
-                  get_state(PART:"title_bg", st, 30, vl);
-                  if (!strcmp(st, "default"))
-                    set_state(PART:"title_bg", "landscape", 0.0);
-
-                  get_state(PART:"elm.text.title", st, 30, vl);
-                  if (!strcmp(st, "default"))
-                    set_state(PART:"elm.text.title", "default_landscape", 0.0);
-                  else
-                    set_state(PART:"elm.text.title", "selected_landscape", 0.0);
-
-                  get_state(PART:"elm.text.title2", st, 30, vl);
-                  if (!strcmp(st, "default"))
-                    set_state(PART:"elm.text.title2", "default_landscape", 0.0);
-                  else
-                    set_state(PART:"elm.text.title2", "selected_landscape", 0.0);
-
-                  get_state(PART:"toolbar_bg", st, 30, vl);
-                  if (!strcmp(st, "visible"))
-                    set_state(PART:"toolbar_bg", "visible_landscape", 0.0);
-
-                  set_int(landscape, 1);
-               }
-            }
-         }
-         program {
-            name: "change_to_portrait";
-            signal: "elm,state,portrait";
-            source: "elm";
-            script {
-               if (get_int(landscape) == 1) {
-                  set_state(PART:"top_padding", "default", 0.0);
-                  set_state(PART:"padding_bottom_text", "default", 0.0);
-                  set_state(PART:"title_left_btn", "default", 0.0);
-                  set_state(PART:"title_right_btn", "default", 0.0);
-                  set_state(PART:"toolbar_more_btn", "default", 0.0);
-                  set_state(PART:"elm.swallow.prev_btn", "default", 0.0);
-                  set_state(PART:"toolbar_button_padding", "default", 0.0);
-
-                  new st[31];
-                  new Float:vl;
-                  get_state(PART:"title_bg", st, 30, vl);
-                  if (!strcmp(st, "landscape"))
-                    set_state(PART:"title_bg", "default", 0.0);
-
-                  get_state(PART:"elm.text.title", st, 30, vl);
-                  if (!strcmp(st, "default_landscape"))
-                    set_state(PART:"elm.text.title", "default", 0.0);
-                  else
-                    set_state(PART:"elm.text.title", "selected", 0.0);
-
-                  get_state(PART:"elm.text.title2", st, 30, vl);
-                  if (!strcmp(st, "default_landscape"))
-                    set_state(PART:"elm.text.title2", "default", 0.0);
-                  else
-                    set_state(PART:"elm.text.title2", "selected", 0.0);
-
-                  get_state(PART:"toolbar_bg", st, 30, vl);
-                  if (!strcmp(st, "visible_landscape"))
-                    set_state(PART:"toolbar_bg", "visible", 0.0);
-
-                  set_int(landscape, 0);
-               }
-            }
-         }
-         program { name: "landscape_mode";
-            source: "elm";
-            signal: "elm,state,orient,90";
-            action: SIGNAL_EMIT "elm,state,landscape" "elm";
-         }
-         program { name: "landscape_mode2";
-            source: "elm";
-            signal: "elm,state,orient,270";
-            action: SIGNAL_EMIT "elm,state,landscape" "elm";
-         }
-         program { name: "portrait_mode";
-            source: "elm";
-            signal: "elm,state,orient,0";
-            action: SIGNAL_EMIT "elm,state,portrait" "elm";
-         }
-         program { name: "portrait_mode2";
-            source: "elm";
-            signal: "elm,state,orient,180";
-            action: SIGNAL_EMIT "elm,state,portrait" "elm";
-         }
-      }
-   }

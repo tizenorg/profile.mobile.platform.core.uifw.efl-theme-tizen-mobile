@@ -53,18 +53,32 @@
       text.style: "genlist_style_groupindex_text_focus"; \
    }
 
-#define GENLIST_PART_INDEX_LINE(LEFT, RIGHT, TOP, BOTTOM) \
-         GENLIST_PART_RECT("index_line", \
-            GENLIST_DESCRIPTION(LEFT, RIGHT, TOP, BOTTOM, \
-               color: GENLIST_GROUPINDEX_LINE_COLOR; \
-               min: 0 4; \
-               max: -1 4; \
-            ) \
-            description { state: "selected" 0.0; \
-               inherit: "default" 0.0; \
-               color: GENLIST_GROUPINDEX_LINE_FOCUS_COLOR; \
-            } \
-         )
+#define GENLIST_PART_INDEX_LINE(TOP, BOTTOM) \
+      GENLIST_PART_RECT("index_line", \
+         GENLIST_DESCRIPTION_TB(TOP, BOTTOM, \
+            color: GENLIST_GROUPINDEX_LINE_COLOR; \
+            min: 0 4; \
+            max: -1 4; \
+         ) \
+         description { state: "selected" 0.0; \
+            inherit: "default" 0.0; \
+            color: GENLIST_GROUPINDEX_LINE_FOCUS_COLOR; \
+         } \
+      )
+
+#define GENLIST_PART_INDEX_LINE_ICON(LEFT, TOP, BOTTOM) \
+      GENLIST_PART_RECT("index_line_icon", \
+         GENLIST_DESCRIPTION_LTB(LEFT, TOP, BOTTOM, \
+            color: GENLIST_GROUPINDEX_LINE_COLOR; \
+            min: 0 4; \
+            max: -1 4; \
+            rel2.to_x: "base"; \
+         ) \
+         description { state: "selected" 0.0; \
+            inherit: "default" 0.0; \
+            color: GENLIST_GROUPINDEX_LINE_FOCUS_COLOR; \
+        } \
+      )
 
 // Group Index
 #define GENLIST_PARAM_INDEX_LIST \
@@ -86,7 +100,7 @@
    }
 
 #define GENLIST_PART_PADDING_GROUPINDEX_LEFT \
-         GENLIST_PART_EXPANDED_PAD \
+      GENLIST_PART_EXPANDED_PAD \
          GENLIST_PART_RECT("elm.padding.left", \
             GENLIST_DESCRIPTION_L("elm.swallow.pad",  \
                color: GENLIST_LIST_BG_COLOR; \
@@ -94,6 +108,14 @@
                max: GROUPINDEX_PADDING_SIZE_LEFT -1; \
                fixed: 1 0; \
             ) \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               color: GENLIST_GROUPINDEX_LIST_PRESS_COLOR; \
+            } \
+            description { state: "disabled" 0.0; \
+               inherit: "default" 0.0; \
+               color: GENLIST_GROUPINDEX_LIST_BG_COLOR; \
+            } \
             GENLIST_DESCRIPTION_DECORATE_PADDING \
             GENLIST_DESCRIPTION_REORDER_PADDING \
             GENLIST_DESCRIPTION_DECORATE_REORDER_PADDING \
@@ -110,6 +132,14 @@
                rel1.to: "base"; \
                rel2.to: "base"; \
                rel1.relative: 1 0; \
+            } \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               color: GENLIST_GROUPINDEX_LIST_PRESS_COLOR; \
+            } \
+            description { state: "disabled" 0.0; \
+               inherit: "default" 0.0; \
+               color: GENLIST_GROUPINDEX_LIST_BG_COLOR; \
             } \
             GENLIST_DESCRIPTION_DECORATE_PADDING \
             GENLIST_DESCRIPTION_REORDER_PADDING \
@@ -199,7 +229,6 @@
             }
             GENLIST_DESCRIPTION_INDEX_LIST_TB
          )
-         GENLIST_PART_INDEX_LINE("elm.padding.left", "elm.padding.right", "elm.text", "elm.padding.bottom")
          /*
          part { name: "dbg";
             type: TEXT;
@@ -215,6 +244,7 @@
          */
         GENLIST_PART_PADDING_GROUPINDEX_LEFT
         GENLIST_PART_PADDING_GROUPINDEX_RIGHT
+        GENLIST_PART_INDEX_LINE("elm.text", "elm.padding.bottom")
         GENLIST_PART_FOCUS
       }
       program { name: "default";
@@ -237,6 +267,8 @@
                   set_state(PART:"elm.text", "selected", 0.0);
                   set_state(PART:"index_line", "selected", 0.0);
                   set_state(PART:"bg", "selected", 0.0);
+                  set_state(PART:"elm.padding.left", "selected", 0.0);
+                  set_state(PART:"elm.padding.right", "selected", 0.0);
                }
             }
          }
@@ -248,6 +280,8 @@
                   set_state(PART:"elm.text", "default", 0.0);
                   set_state(PART:"index_line", "default", 0.0);
                   set_state(PART:"bg", "default", 0.0);
+                  set_state(PART:"elm.padding.left", "default", 0.0);
+                  set_state(PART:"elm.padding.right", "default", 0.0);
                }
             }
          }
@@ -314,12 +348,12 @@
             )
             GENLIST_DESCRIPTION_INDEX_LIST
          )
-         GENLIST_PART_INDEX_LINE("elm.padding.icon.right", "elm.padding.right", "elm.text", "elm.padding.bottom")
+         GENLIST_PART_INDEX_LINE_ICON("elm.padding.icon.right", "elm.text", "elm.padding.bottom")
          GENLIST_PART_FOCUS
       }
       programs {
-         GENLIST_PROGRAM_DISABLED( target: "elm.text"; target: "index_line"; )
-         GENLIST_PROGRAM_SELECT( target: "elm.text"; target: "index_line"; target: "bg"; )
+         GENLIST_PROGRAM_DISABLED( target: "elm.text"; target: "index_line_icon"; )
+         GENLIST_PROGRAM_SELECT( target: "elm.text"; target: "index_line_icon"; target: "bg"; )
          GENLIST_PROGRAM_FOCUS
       }
    }
