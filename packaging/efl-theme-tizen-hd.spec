@@ -5,7 +5,7 @@ Release:       1
 Group:         TO_BE/FILLED_IN
 License:       TO_BE/FILLED_IN
 Source0:       %{name}-%{version}.tar.gz
-BuildRequires: edje, edje-bin, embryo, embryo-bin
+BuildRequires: perl, edje, edje-bin, embryo, embryo-bin
 %define _unpackaged_files_terminate_build 0
 
 %description

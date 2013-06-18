@@ -5,7 +5,6 @@ THEME_DIR=$(DESTDIR)$(PREFIX)/share/elementary/themes
 EDJE_FLAGS_VERBOSE_ =
 EDJE_FLAGS_VERBOSE_0 =
 EDJE_FLAGS_VERBOSE_1 = -v
-TMP_INC=tmp-inc.edc
 SRC=tizen
 TARGET=HD
 
@@ -14,11 +13,7 @@ all: light dark
 
 .SUFFIXES: .edc .edj
 .edc.edj:
-	echo $(SRC)
-	echo $(EDJE_FLAGS_$(V))
-	echo "/inc/$(@:.edj=)"
-	echo $(TARGET)/$(SRC)-$(TARGET)-$(@:.edj=)
-	cp -f ./inc/$(SRC)-$(@:.edj=-inc.edc) ./inc/$(TMP_INC)
+	perl -pi -e 's/TIZEN_TMP_INC/".\/inc\/$(SRC)-$*-inc.edc"/g' $*.edc
 	edje_cc $(EDJE_FLAGS_$(V))\
 	 -id ./images/$(TARGET)/$(@:.edj=)\
 	 -id ./images/$(TARGET)/$(@:.edj=)/Content_views\
@@ -38,9 +33,8 @@ all: light dark
 	 -id ./images/$(TARGET)/$(@:.edj=)/Popup\
 	 -id ./images/$(TARGET)/$(@:.edj=)/Process\
 	 -id ./images/$(TARGET)/$(@:.edj=)/Screen_Reader\
-	 -sd ./sounds -fd ../objects $(SRC).edc \
-	 $(SRC)-$(TARGET)-$@
-	rm -rf ./inc/tmp-inc.edc
+	 -sd ./sounds -fd ../objects \
+	 $*.edc $(SRC)-$(TARGET)-$@
 
 light: light.edj
 dark: dark.edj
@@ -58,4 +52,3 @@ uninstall:
 	rm -f $(EDC_DIR)/$(SRC.edc) && rm -rf $(EDC_DIR)/widgets
 
 distclean: clean
-	      ~
