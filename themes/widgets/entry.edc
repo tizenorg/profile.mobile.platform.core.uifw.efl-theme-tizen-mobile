@@ -31,15 +31,6 @@
       image: "00_eidt_field_bg.png" COMP; \
    }
 
-#define ENTRY_TEXTBLOCK_DEFAULT_REL \
-   rel1 { \
-      relative: 0.0 0.0; \
-   } \
-   rel2 { \
-      to_x: "clear_padding"; \
-      relative: 0.0 1.0; \
-   }
-
 #define ENTRY_EDITFIELD_TEXTBLOCK_DEFAULT_REL \
    rel1 { \
       to_x: "focus_left_padding"; \
@@ -50,51 +41,9 @@
       relative: 0.0 1.0; \
    }
 
-#define ENTRY_SWALLOW_SCRIPT_PUBLIC \
+#define ENTRY_EDITFIELD_SWALLOW_SCRIPT_PUBLIC \
    script { \
       public scroll_enabled; \
-   }
-
-#define ENTRY_SWALLOW_PARTS \
-   part { name: "clear_padding"; \
-      type: SPACER; \
-      scale: 1; \
-      description { state: "default" 0.0; \
-         align: 1.0 0.5; \
-         min: 0 0; \
-         max: 0 0; \
-         fixed: 1 0; \
-         rel1 { \
-            relative: 1.0 0.0; \
-         } \
-         rel2 { \
-            relative: 1.0 1.0; \
-         } \
-      } \
-      description { state: "visible" 0.0; \
-         inherit: "default" 0.0; \
-         min: 70 0; \
-         max: 70 0; \
-      } \
-   } \
-   part { name: "elm.swallow.clear"; \
-      type: SWALLOW; \
-      scale: 1; \
-      description { state: "default" 0.0; \
-         align: 1.0 0.5; \
-         fixed: 1 1; \
-         rel1 { \
-            relative: 1.0 0.0; \
-         } \
-         rel2 { \
-            relative: 1.0 1.0; \
-         } \
-         visible: 0; \
-      } \
-      description { state: "visible" 0.0; \
-         inherit: "default" 0.0; \
-         visible: 1; \
-      } \
    }
 
 #define ENTRY_EDITFIELD_SWALLOW_PARTS \
@@ -232,46 +181,6 @@
       description { state: "focused" 0.0; \
          inherit: "default" 0.0; \
          visible: 1; \
-      } \
-   }
-
-#define ENTRY_SWALLOW_PROGRAMS \
-   program { name: "scroll_enabled"; \
-      signal: "elm,state,scroll,enabled"; \
-      source: "*"; \
-      script { \
-         set_int(scroll_enabled, 1); \
-      } \
-   } \
-   program { name: "scroll_disabled"; \
-      signal: "elm,state,scroll,disabled"; \
-      source: "*"; \
-      script { \
-         set_int(scroll_enabled, 0); \
-      } \
-   } \
-   program { name: "clear_show"; \
-      signal: "elm,state,clear,visible"; \
-      source: "*"; \
-      script { \
-         new v; \
-         v = get_int(scroll_enabled); \
-         if (!v) { \
-            set_state(PART:"elm.swallow.clear", "visible", 0.0); \
-            set_state(PART:"clear_padding", "visible", 0.0); \
-         } \
-      } \
-   } \
-   program { name: "clear_hide"; \
-      signal: "elm,state,clear,hidden"; \
-      source: "*"; \
-      script { \
-         new v; \
-         v = get_int(scroll_enabled); \
-         if (!v) { \
-            set_state(PART:"elm.swallow.clear", "default", 0.0); \
-            set_state(PART:"clear_padding", "default", 0.0); \
-         } \
       } \
    }
 
@@ -449,7 +358,6 @@ group { name: "elm/entry/base/default";
                min: 0 1;
                align: 0.0 0.0;
             }
-            ENTRY_TEXTBLOCK_DEFAULT_REL
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -459,9 +367,7 @@ group { name: "elm/entry/base/default";
             }
          }
       }
-      ENTRY_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
    programs {
       program { name: "focus";
          signal: "load";
@@ -498,7 +404,6 @@ group { name: "elm/entry/base/default";
          source: "elm.text";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
-      ENTRY_SWALLOW_PROGRAMS
    }
 }
 
@@ -599,7 +504,6 @@ group { name: "elm/entry/base-charwrap/default";
                min: 0 1;
                align: 0.0 0.0;
             }
-            ENTRY_TEXTBLOCK_DEFAULT_REL
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -609,9 +513,7 @@ group { name: "elm/entry/base-charwrap/default";
             }
          }
       }
-      ENTRY_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
    programs {
 	 program { name: "focus";
         signal: "load";
@@ -648,7 +550,6 @@ group { name: "elm/entry/base-charwrap/default";
         source: "elm.text";
         action: PLAY_SAMPLE "touch_sound" 1.0;
      }
-     ENTRY_SWALLOW_PROGRAMS
   }
 }
 
@@ -702,7 +603,6 @@ group { name: "elm/entry/base-nowrap/default";
                min: 1 1;
                align: 0.0 0.0;
             }
-            ENTRY_TEXTBLOCK_DEFAULT_REL
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -712,9 +612,7 @@ group { name: "elm/entry/base-nowrap/default";
             }
          }
       }
-      ENTRY_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
    programs {
       program { name: "focus";
          signal: "load";
@@ -751,7 +649,6 @@ group { name: "elm/entry/base-nowrap/default";
          source: "elm.text";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
-      ENTRY_SWALLOW_PROGRAMS
    }
 }
 
@@ -873,7 +770,7 @@ group { name: "elm/entry/base/editfield";
       }
       ENTRY_EDITFIELD_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
+   ENTRY_EDITFIELD_SWALLOW_SCRIPT_PUBLIC
    programs {
       program { name: "focus";
          signal: "load";
@@ -1032,7 +929,7 @@ group { name: "elm/entry/base-charwrap/editfield";
       }
       ENTRY_EDITFIELD_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
+   ENTRY_EDITFIELD_SWALLOW_SCRIPT_PUBLIC
    programs {
       program { name: "focus";
          signal: "load";
@@ -1187,7 +1084,7 @@ group { name: "elm/entry/base-single/editfield";
       }
       ENTRY_EDITFIELD_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
+   ENTRY_EDITFIELD_SWALLOW_SCRIPT_PUBLIC
    programs {
       program { name: "focus";
          signal: "load";
@@ -1337,7 +1234,7 @@ group { name: "elm/entry/base-single/editfield/searchbar/default";
       }
       ENTRY_EDITFIELD_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
+   ENTRY_EDITFIELD_SWALLOW_SCRIPT_PUBLIC
    programs {
       program { name: "focus";
          signal: "load";
@@ -1475,7 +1372,6 @@ group { name: "elm/entry/base-single/default";
                max: 0 0;
                align: 0.0 0.5;
             }
-            ENTRY_TEXTBLOCK_DEFAULT_REL
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -1484,9 +1380,7 @@ group { name: "elm/entry/base-single/default";
             }
          }
       }
-      ENTRY_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
    programs {
       program { name: "focus";
          signal: "load";
@@ -1523,7 +1417,6 @@ group { name: "elm/entry/base-single/default";
          source: "elm.text";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
-      ENTRY_SWALLOW_PROGRAMS
    }
 }
 
@@ -1968,7 +1861,6 @@ group { name: "elm/entry/base-noedit/default";
 		  min: 1 1;
                   max: 0 1;
 	       }
-               ENTRY_TEXTBLOCK_DEFAULT_REL
 	    }
 	    description { state: "disabled" 0.0;
                inherit: "default" 0.0;
@@ -1977,9 +1869,7 @@ group { name: "elm/entry/base-noedit/default";
 	       }
 	    }
 	 }
-         ENTRY_SWALLOW_PARTS
       }
-      ENTRY_SWALLOW_SCRIPT_PUBLIC
       programs {
 	 program { name: "focus";
             signal: "load";
@@ -2016,7 +1906,6 @@ group { name: "elm/entry/base-noedit/default";
             source: "elm.text";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
-         ENTRY_SWALLOW_PROGRAMS
       }
    }
 
@@ -2116,7 +2005,6 @@ group { name: "elm/entry/base-password/popup";
                min: 1 1;
                max: 0 1;
             }
-            ENTRY_TEXTBLOCK_DEFAULT_REL
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -2125,9 +2013,7 @@ group { name: "elm/entry/base-password/popup";
             }
          }
       }
-      ENTRY_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
    programs {
       program { name: "focus";
          signal: "load";
@@ -2164,7 +2050,6 @@ group { name: "elm/entry/base-password/popup";
          source: "elm.text";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
-      ENTRY_SWALLOW_PROGRAMS
    }
 }
 
@@ -4692,7 +4577,6 @@ group { name: "elm/entry/base-single/multibuttonentry";
                min: 1 1;
                max: 0 1;
             }
-            ENTRY_TEXTBLOCK_DEFAULT_REL
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -4701,9 +4585,7 @@ group { name: "elm/entry/base-single/multibuttonentry";
             }
          }
       }
-      ENTRY_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
    programs {
       program { name: "focus";
          signal: "load";
@@ -4740,7 +4622,6 @@ group { name: "elm/entry/base-single/multibuttonentry";
          source: "elm.text";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
-      ENTRY_SWALLOW_PROGRAMS
    }
 }
 group { name: "elm/entry/base/font_color_black";
@@ -4847,7 +4728,6 @@ group { name: "elm/entry/base/font_color_black";
                style: "font_color_black_textblock_style";
                min: 0 1;
             }
-            ENTRY_TEXTBLOCK_DEFAULT_REL
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -4857,9 +4737,7 @@ group { name: "elm/entry/base/font_color_black";
             }
          }
       }
-      ENTRY_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
    programs {
       program { name: "focus";
          signal: "load";
@@ -4896,7 +4774,6 @@ group { name: "elm/entry/base/font_color_black";
          source: "elm.text";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
-      ENTRY_SWALLOW_PROGRAMS
    }
 }
 
@@ -5104,7 +4981,6 @@ group { name: "elm/entry/base-charwrap/font_color_black";
                style: "font_color_black_textblock_char_wrap_style";
                min: 0 1;
             }
-            ENTRY_TEXTBLOCK_DEFAULT_REL
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -5114,9 +4990,7 @@ group { name: "elm/entry/base-charwrap/font_color_black";
             }
          }
       }
-      ENTRY_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
    programs {
       program { name: "focus";
          signal: "load";
@@ -5153,7 +5027,6 @@ group { name: "elm/entry/base-charwrap/font_color_black";
          source: "elm.text";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
-      ENTRY_SWALLOW_PROGRAMS
    }
 }
 
@@ -5260,7 +5133,6 @@ group { name: "elm/entry/base-single/font_color_black";
                min: 1 1;
                max: 0 1;
             }
-            ENTRY_TEXTBLOCK_DEFAULT_REL
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -5269,9 +5141,7 @@ group { name: "elm/entry/base-single/font_color_black";
             }
          }
       }
-      ENTRY_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
    programs {
       program { name: "focus";
          signal: "load";
@@ -5308,7 +5178,6 @@ group { name: "elm/entry/base-single/font_color_black";
          source: "elm.text";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
-      ENTRY_SWALLOW_PROGRAMS
    }
 }
 
@@ -5479,7 +5348,6 @@ group { name: "elm/entry/base-single/font_color_black/tizen_text_class";
             text {
                style: "tizen_text_class_single_textblock_style";
             }
-            ENTRY_TEXTBLOCK_DEFAULT_REL
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -5541,7 +5409,6 @@ group { name: "elm/entry/base-password/font_color_black";
                min: 1 1;
                max: 0 1;
             }
-            ENTRY_TEXTBLOCK_DEFAULT_REL
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -5550,9 +5417,7 @@ group { name: "elm/entry/base-password/font_color_black";
             }
          }
       }
-      ENTRY_SWALLOW_PARTS
    }
-   ENTRY_SWALLOW_SCRIPT_PUBLIC
    programs {
       program { name: "focus";
          signal: "load";
@@ -5589,7 +5454,6 @@ group { name: "elm/entry/base-password/font_color_black";
          source: "elm.text";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
-      ENTRY_SWALLOW_PROGRAMS
    }
 }
 
