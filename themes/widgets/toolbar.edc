@@ -59,6 +59,9 @@ styles{
 }
 
 group { name: "elm/toolbar/base/default";
+   data {
+      item: "focus_highlight" "on";
+   }
    images {
        image: "00_toolbar_bg.png" COMP;
    }
@@ -127,6 +130,7 @@ group { name: "elm/toolbar/base/default";
 group { name: "elm/toolbar/item/default";
    images {
       image: "00_toolbar_press.png" COMP;
+      image: "00_tab_focus.png" COMP;
    }
 
    data.item: "transition_animation_on" "1";
@@ -349,6 +353,22 @@ group { name: "elm/toolbar/item/default";
             color: 0 0 0 0;
          }
       }
+      part { name: "highlight";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            image {
+                normal: "00_tab_focus.png";
+                border: 8 8 8 8;
+                border_scale: 1;
+            }
+         }
+         description { state: "highlighted" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
    }
    programs {
       program { name: "pressed";
@@ -498,6 +518,18 @@ group { name: "elm/toolbar/item/default";
          action: STATE_SET "hidden" 0.0;
          target: "divider";
       }
+      program { name: "highlight_on";
+         signal: "elm,highlight,on";
+         source: "elm";
+         action: STATE_SET "highlighted" 0.0;
+         target: "highlight";
+      }
+      program { name: "highlight_off";
+         signal: "elm,highlight,off";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "highlight";
+      }
    }
 }
 
@@ -563,6 +595,9 @@ group { name: "elm/toolbar/object/default";
 }
 
 group { name: "elm/toolbar/base/tabbar";
+   data {
+      item: "focus_highlight" "on";
+   }
    images {
       image: "00_effect_tab_bounce_left.png" COMP;
       image: "00_effect_tab_bounce_right.png" COMP;
