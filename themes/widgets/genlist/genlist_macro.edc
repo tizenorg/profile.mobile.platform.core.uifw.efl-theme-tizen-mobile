@@ -1878,6 +1878,22 @@
          action: PLAY_SAMPLE "touch_sound" 1.0; \
       }
 
+#define GENLIST_PROGRAM_REORDER_SOUND( SRC ) \
+      program { name: "play_sound"SRC; \
+         signal: "mouse,clicked,1"; \
+         source: SRC; \
+         script { \
+            new st[31]; \
+            new Float:vl; \
+            get_state(PART:"base", st, 30, vl); \
+            if (strcmp(st, "disabled")) \
+               run_program(PROGRAM:"play_button_press"SRC); \
+         } \
+      } \
+      program { name: "play_button_press"SRC; \
+         action: PLAY_SAMPLE "reorder_sound" 1.0; \
+      }
+
 #define GENLIST_PROGRAM_SELECT( TARGET ) \
          program { name: "selected"; \
             signal: "elm,state,selected"; \
@@ -2306,7 +2322,7 @@
          target: "bg_reorder"; \
       ) \
       GENLIST_PROGRAM_SOUND("bg") \
-      GENLIST_PROGRAM_SOUND("bg_reorder") \
+      GENLIST_PROGRAM_REORDER_SOUND("bg_reorder") \
       GENLIST_PROGRAM_DECORATE_REORDER("normal", TARGET \
          target: "bg_clip"; \
          target: "bg_reorder_clip"; \
