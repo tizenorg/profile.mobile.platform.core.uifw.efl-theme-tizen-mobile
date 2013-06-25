@@ -17,12 +17,6 @@
  */
 
 /* genlist multisense sample/tone listing */
-   sounds {
-      sample {
-         name: "button-pressed" RAW;
-         source: "button-pressed.wav";
-      }
-   }
 
 //****************************************************************************//
 // *******************************  Default size macro **********************//
@@ -1869,6 +1863,20 @@
       }
 
 #define GENLIST_PROGRAM_SOUND( SRC ) \
+      program { \
+         name: "sound_disable"SRC; \
+         signal: "elm,state,slide,active"; \
+         source: "elm"; \
+         action: STATE_SET "disabled" 0.0; \
+         target: "base"; \
+      } \
+      program { \
+         name: "sound_enable"SRC; \
+         signal: "elm,state,slide,passive"; \
+         source: "elm"; \
+         action: STATE_SET "default" 0.0; \
+         target: "base"; \
+      } \
       program { name: "play_sound"SRC; \
          signal: "mouse,clicked,1"; \
          source: SRC; \
@@ -1881,7 +1889,23 @@
          } \
       } \
       program { name: "play_button_press"SRC; \
-         action: PLAY_SAMPLE "button-pressed" 1.0; \
+         action: PLAY_SAMPLE "touch_sound" 1.0; \
+      }
+
+#define GENLIST_PROGRAM_REORDER_SOUND( SRC ) \
+      program { name: "play_sound"SRC; \
+         signal: "mouse,clicked,1"; \
+         source: SRC; \
+         script { \
+            new st[31]; \
+            new Float:vl; \
+            get_state(PART:"base", st, 30, vl); \
+            if (strcmp(st, "disabled")) \
+               run_program(PROGRAM:"play_button_press"SRC); \
+         } \
+      } \
+      program { name: "play_button_press"SRC; \
+         action: PLAY_SAMPLE "reorder_sound" 1.0; \
       }
 
 #define GENLIST_PROGRAM_SELECT( TARGET ) \
@@ -2312,7 +2336,7 @@
          target: "bg_reorder"; \
       ) \
       GENLIST_PROGRAM_SOUND("bg") \
-      GENLIST_PROGRAM_SOUND("bg_reorder") \
+      GENLIST_PROGRAM_REORDER_SOUND("bg_reorder") \
       GENLIST_PROGRAM_DECORATE_REORDER("normal", TARGET \
          target: "bg_clip"; \
          target: "bg_reorder_clip"; \
@@ -3565,6 +3589,6 @@
 
 #define GENLIST_PROGRAM_PLAY_BUTTON_PRESS \
          program { name: "play_button_press"; \
-            action: PLAY_SAMPLE "button-pressed" 1.0; \
+            action: PLAY_SAMPLE "touch_sound" 1.0; \
          }
 #endif
