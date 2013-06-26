@@ -23,6 +23,28 @@
 
 #define CHECK_HIDE 0
 #define CHECK_SHOW 1
+
+   styles {
+      style { name: "check_label_textblock_style";
+         base: "font=Tizen:style=Regular font_size="CHECK_DEFAULT_TEXT_FONT_SIZE_INC" color="CHECK_DEFAULT_TEXT_NORMAL_COLOR_INC" wrap=char text_class=tizen";
+         tag: "br" "\n";
+         tag: "ps" "ps";
+         tag: "hilight" "+ font=Tizen:style=Bold";
+         tag: "b" "+ font=Tizen:style=Bold";
+         tag: "whitecolor" "+ color=#ffffff";
+         tag: "tab" "\t";
+      }
+      style { name: "check_label_textblock_style_disable";
+         base: "font=Tizen:style=Regular font_size="CHECK_DEFAULT_TEXT_FONT_SIZE_INC" color="CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC" wrap=char text_class=tizen";
+         tag: "br" "\n";
+         tag: "ps" "ps";
+         tag: "hilight" "+ font=Tizen:style=Bold";
+         tag: "b" "+ font=Tizen:style=Bold";
+         tag: "whitecolor" "+ color=#ffffff";
+         tag: "tab" "\t";
+      }
+   }
+
 ////////////////////////////////////////////////////////////////////////////////
 #define CHECK_STYLE_DEFAULT(style_name, min_width, min_height) \
    group { name: "elm/check/base/"style_name; \
@@ -67,7 +89,6 @@
             } \
             description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
-               image.normal: "00_check_press_bg.png"; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
@@ -98,6 +119,20 @@
             } \
             description { state: "pressed" 0.0; \
                inherit: "visible" 0.0; \
+            } \
+         } \
+         part { name: "pressed_effect"; \
+            mouse_events: 0; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               rel1.to: "bg"; \
+               rel2.to: "bg"; \
+               visible: 0; \
+               image.normal: "00_check_press_bg.png"; \
+            } \
+            description { state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
             } \
          } \
          part { name: "sequence_clip"; \
@@ -181,8 +216,10 @@
             description { state: "disabled_visible" 0.0; \
                inherit: "default" 0.0; \
                visible: 1; \
-               text.min: 1 1; \
-               color: CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC; \
+               text { \
+                  style: "check_label_textblock_style_disable"; \
+                  min: 1 1; \
+               } \
             } \
          } \
          part { name: "events1"; \
@@ -250,6 +287,7 @@
             action: STATE_SET "default" 0.0; \
             target: "bg"; \
             target: "check"; \
+            target: "pressed_effect"; \
          } \
          program { name: "pressed"; \
             signal: "mouse,down,1"; \
@@ -257,6 +295,7 @@
             action: STATE_SET "pressed" 0.0; \
             target: "bg"; \
             target: "check"; \
+            target: "pressed_effect"; \
          } \
          program { name: "mouse,out"; \
             signal: "mouse,out"; \
@@ -417,6 +456,7 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
       images { \
          image: "00_check_bg.png" COMP; \
          image: "00_check_dim_bg.png" COMP; \
+         image: "00_check_press_bg.png" COMP; \
          image: "00_check_activated_dim.png" COMP; \
          image: "00_check_activated.png" COMP; \
       } \
@@ -453,7 +493,6 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             } \
             description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
-               image.normal: "00_check_press_bg.png"; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
@@ -484,6 +523,20 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             } \
             description { state: "pressed" 0.0; \
                inherit: "visible" 0.0; \
+            } \
+         } \
+         part { name: "pressed_effect"; \
+            mouse_events: 0; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               rel1.to: "bg"; \
+               rel2.to: "bg"; \
+               visible: 0; \
+               image.normal: "00_check_press_bg.png"; \
+            } \
+            description { state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
             } \
          } \
          part { name: "sequence_clip"; \
@@ -567,8 +620,10 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             description { state: "disabled_visible" 0.0; \
                inherit: "default" 0.0; \
                visible: 1; \
-               text.min: 1 1; \
-               color: CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC; \
+               text { \
+                  style: "check_label_textblock_style_disable"; \
+                  min: 1 1; \
+               } \
             } \
          } \
          part { name: "disclip"; \
@@ -620,6 +675,7 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                     set_state(PART:"check", "default", 0.0); \
                  } \
                set_state(PART:"bg", "default", 0.0); \
+               set_state(PART:"pressed_effect", "default", 0.0); \
             } \
          } \
          program { name: "pressed"; \
@@ -632,6 +688,7 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                     set_state(PART:"check", "pressed", 0.0); \
                  } \
                set_state(PART:"bg", "pressed", 0.0); \
+               set_state(PART:"pressed_effect", "pressed", 0.0); \
             } \
          } \
          program { name: "mouse,out"; \
@@ -913,8 +970,10 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
             description { state: "disabled_visible" 0.0; \
                inherit: "default" 0.0; \
                visible: 1; \
-               text.min: 1 1; \
-               color: CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC; \
+               text { \
+                  style: "check_label_textblock_style_disable"; \
+                  min: 1 1; \
+               } \
             } \
          } \
          part { name: "events1"; \
@@ -1078,18 +1137,6 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
 ////////////////////////////////////////////////////////////////////////////////
 CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_FAVORITE_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC)
 ////////////////////////////////////////////////////////////////////////////////
-   styles {
-      style { name: "check_label_textblock_style";
-         base: "font=Tizen:style=Roman font_size="CHECK_DEFAULT_TEXT_FONT_SIZE_INC" color="CHECK_DEFAULT_TEXT_NORMAL_COLOR_INC" wrap=char text_class=tizen";
-         tag: "br" "\n";
-         tag: "ps" "ps";
-         tag: "hilight" "+ font=Tizen:style=Bold";
-         tag: "b" "+ font=Tizen:style=Bold";
-         tag: "whitecolor" "+ color=#ffffff";
-         tag: "tab" "\t";
-      }
-   }
-
    group { name: "elm/check/base/on&off";
       images {
          image: "00_button_on_handler.png" COMP;
@@ -1447,7 +1494,10 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
             description { state: "disabled_visible" 0.0;
                inherit: "default" 0.0;
                visible: 1;
-               text.min: 1 1;
+               text {
+                  style: "check_label_textblock_style_disable";
+                  min: 1 1;
+               }
             }
          }
          part { name: "disclip";
@@ -1818,8 +1868,10 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
             description { state: "disabled_visible" 0.0; \
                inherit: "default" 0.0; \
                visible: 1; \
-               text.min: 1 1; \
-               color: CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC; \
+               text { \
+                 style: "check_label_textblock_style_disable"; \
+                 min: 1 1; \
+               } \
             } \
          } \
          part { name: "disclip"; \
@@ -1961,10 +2013,13 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
 ////////////////////////////////////////////////////////////////////////////////
 
    group { name: "elm/check/base/grid";
-      images.image: "00_check_bg.png" COMP;
-      images.image: "00_check_dim_bg.png" COMP;
-      images.image: "00_check_activated_dim.png" COMP;
-      images.image: "00_check_activated.png" COMP;
+      images {
+         image: "00_check_bg.png" COMP;
+         image: "00_check_dim_bg.png" COMP;
+         image: "00_check_activated_dim.png" COMP;
+         image: "00_check_activated.png" COMP;
+         image: "00_check_press_bg.png" COMP;
+      }
       script {
          public check_state = CHECK_STATE_DEFAULT;
          public check_visible = CHECK_HIDE;
@@ -2044,6 +2099,20 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
                inherit: "default" 0.0;
                visible: 1;
                image.normal: "00_check_activated_dim.png";
+            }
+         }
+         part { name: "pressed_effect";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1.to: "bg2";
+               rel2.to: "bg2";
+               visible: 0;
+               image.normal: "00_check_press_bg.png";
+            }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
             }
          }
          part { name: "sequence_clip";
@@ -2132,8 +2201,10 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
             description { state: "disabled_visible" 0.0;
                inherit: "default" 0.0;
                visible: 1;
-               text.min: 1 1;
-               color: CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC;
+               text {
+                  style: "check_label_textblock_style_disable";
+                  min: 1 1;
+               }
             }
          }
          part { name: "events";
@@ -2179,6 +2250,12 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
                set_state(PART:"bg2", "default", 0.0);
             }
          }
+         program { name: "unpress";
+            signal: "mouse,up,1";
+            source: "events";
+            action: STATE_SET "default" 0.0;
+            target: "pressed_effect";
+         }
          program { name: "pressed";
             signal: "mouse,down,1";
             source: "events";
@@ -2191,6 +2268,7 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
                     set_state(PART:"check", "pressed", 0.0);
                     set_state(PART:"bg2", "visible", 0.0);
                  }
+              set_state(PART:"pressed_effect", "pressed", 0.0);
             }
          }
          program { name: "mouse,out";
@@ -2209,6 +2287,7 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
                     set_state(PART:"sequence_clip", "default", 0.0);
                     set_state(PART:"bg2", "default", 0.0);
                  }
+              set_state(PART:"pressed_effect", "default", 0.0);
             }
          }
          program { name: "check_on";
