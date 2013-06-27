@@ -1,6 +1,6 @@
 Name:          efl-theme-tizen-hd
 Summary:       Tizen theme files
-Version:       1.0.196
+Version:       1.0.197
 Release:       1
 Group:         TO_BE/FILLED_IN
 License:       TO_BE/FILLED_IN
@@ -16,12 +16,6 @@ Tizen HD theme for EFL
 Summary: Development package
 
 %description -n efl-theme-tizen-devel
-Development package
-
-%package -n efl-theme-tizen-HD-light
-Summary: Development package
-
-%description -n efl-theme-tizen-HD-light
 Development package
 
 %prep
@@ -45,14 +39,9 @@ cp %{buildroot}/usr/share/elementary/themes/tizen-HD-dark.edj %{buildroot}/usr/s
 %files
 %defattr(-,root,root,-)
 %{_datadir}/elementary/themes/tizen-HD-dark.edj
+%{_datadir}/elementary/themes/tizen-HD-light.edj
 %{_datadir}/elementary/themes/tizen-hd.edj
 %manifest %{name}.manifest
-/usr/share/license/%{name}
-
-%files -n efl-theme-tizen-HD-light
-%defattr(-,root,root,-)
-%{_datadir}/elementary/themes/tizen-HD-light.edj
-%manifest efl-theme-tizen-HD-light.manifest
 /usr/share/license/%{name}
 
 %files -n efl-theme-tizen-devel

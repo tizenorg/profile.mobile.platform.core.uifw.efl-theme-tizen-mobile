@@ -26,6 +26,8 @@
       images {
          image: "00_title_bg.png" COMP;
          image: "00_badge_bg.png" COMP;
+         image: "00_effect_title_text_dim_left.png" COMP;
+         image: "00_effect_title_text_dim_right.png" COMP;
       }
       script {
          public tbar_bg = 0;     //Toolbar BG Show call count
@@ -177,6 +179,9 @@
                      return;
                   }
 
+                  set_state(PART:"title_text_slide_effect_left", "visible", 0.0);
+                  set_state(PART:"title_text_slide_effect_right", "visible", 0.0);
+
                   len = get_int(title_text_w) + NAVIFRAME_TITLE_SLIDE_TEXT_GAP;
                   set_float(title_duration, len / NAVIFRAME_TITLE_FONT_SIZE_INC * NAVIFRAME_TITLE_SLIDE_SPEED_WEIGHT);
 
@@ -214,6 +219,9 @@
                      set_int(subtitle_slide_count, 0);
                      return;
                   }
+
+                  set_state(PART:"subtitle_text_slide_effect_left", "visible", 0.0);
+                  set_state(PART:"subtitle_text_slide_effect_right", "visible", 0.0);
 
                   len = get_int(subtitle_text_w) + NAVIFRAME_SUBTITLE_SLIDE_TEXT_GAP;
                   if (!get_int(landscape))
@@ -266,6 +274,9 @@
 
                set_state(PART:"title_text_clip", "default", 0.0);
                set_state(PART:"slide_title_text_clip", "default", 0.0);
+
+               set_state(PART:"title_text_slide_effect_left", "default", 0.0);
+               set_state(PART:"title_text_slide_effect_right", "default", 0.0);
             }
             // Subtitle Text
             else {
@@ -284,6 +295,9 @@
 
                set_state(PART:"subtitle_text_clip", "default", 0.0);
                set_state(PART:"slide_subtitle_text_clip", "default", 0.0);
+
+               set_state(PART:"subtitle_text_slide_effect_left", "default", 0.0);
+               set_state(PART:"subtitle_text_slide_effect_right", "default", 0.0);
             }
          }
       }
@@ -606,6 +620,43 @@
                text.size: NAVIFRAME_LANDSCAPE_TITLE_SMALL_FONT_SIZE_INC;
             }
          }
+         part { name: "title_text_slide_effect_left_bg";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "slide_title_text_clip";
+            description { state: "default" 0.0;
+               min: NAVIFRAME_PADDING_INC;
+               align: 1.0 0.5;
+               fixed: 1 0;
+               visible: 0;
+               rel1 { relative: 0.0 0.0; to: "elm.text.title"; }
+               rel2 { relative: 0.0 1.0; to: "elm.text.title"; }
+            }
+         }
+         part { name: "title_text_slide_effect_left";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "slide_title_text_clip";
+            description { state: "default" 0.0;
+               min: NAVIFRAME_TITLE_TEXT_SLIDE_EFFECT_IMAGE_SIZE_INC;
+               align: 0.0 0.5;
+               fixed: 1 0;
+               visible: 0;
+               rel1 { relative: 0.0 0.0; to: "title_text_slide_effect_left_bg"; }
+               rel2 { relative: 0.0 1.0; to: "title_text_slide_effect_left_bg"; }
+               image {
+                  normal: "00_effect_title_text_dim_left.png";
+                  border: NAVIFRAME_TITLE_TEXT_SLIDE_EFFECT_IMAGE_BORDER_INC;
+                  border_scale: 1;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
          part { name: "elm.text.full_title";
             type: TEXT;
             scale: 1;
@@ -714,6 +765,43 @@
             description { state: "maintitle_slide_end_landscape" 0.0;
                inherit: "maintitle_slide_end" 0.0;
                text.size: NAVIFRAME_LANDSCAPE_TITLE_SMALL_FONT_SIZE_INC;
+            }
+         }
+         part { name: "title_text_slide_effect_right_bg";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "slide_title_text_clip";
+            description { state: "default" 0.0;
+               min: NAVIFRAME_PADDING_INC;
+               align: 0.0 0.5;
+               fixed: 1 0;
+               visible: 0;
+               rel1 { relative: 1.0 0.0; to: "elm.text.title"; }
+               rel2 { relative: 1.0 1.0; to: "elm.text.title"; }
+            }
+         }
+         part { name: "title_text_slide_effect_right";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "slide_title_text_clip";
+            description { state: "default" 0.0;
+               min: NAVIFRAME_TITLE_TEXT_SLIDE_EFFECT_IMAGE_SIZE_INC;
+               align: 1.0 0.5;
+               fixed: 1 0;
+               visible: 0;
+               rel1 { relative: 1.0 0.0; to: "title_text_slide_effect_right_bg"; }
+               rel2 { relative: 1.0 1.0; to: "title_text_slide_effect_right_bg"; }
+               image {
+                  normal: "00_effect_title_text_dim_right.png";
+                  border: NAVIFRAME_TITLE_TEXT_SLIDE_EFFECT_IMAGE_BORDER_INC;
+                  border_scale: 1;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
             }
          }
          part { name: "subtitle_top_padding";
@@ -882,6 +970,29 @@
                rel2 { relative: 0.0 1.0; to: "slide_subtitle_divider1"; }
             }
          }
+         part { name: "subtitle_text_slide_effect_left";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "slide_subtitle_text_clip";
+            description { state: "default" 0.0;
+               min: NAVIFRAME_TITLE_TEXT_SLIDE_EFFECT_IMAGE_SIZE_INC;
+               align: 0.0 0.5;
+               fixed: 1 0;
+               visible: 0;
+               rel1 { relative: 0.0 0.0; to_x: "title_text_slide_effect_left_bg"; to_y: "subtitle_text_bg"; }
+               rel2 { relative: 0.0 1.0; to_x: "title_text_slide_effect_left_bg"; to_y: "subtitle_text_bg"; }
+               image {
+                  normal: "00_effect_title_text_dim_left.png";
+                  border: NAVIFRAME_TITLE_TEXT_SLIDE_EFFECT_IMAGE_BORDER_INC;
+                  border_scale: 1;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
          part { name: "elm.text.full_subtitle";
             type: TEXT;
             scale: 1;
@@ -955,6 +1066,43 @@
                inherit: "slide_begin_landscape" 0.0;
                rel1.relative: 0.0 0.0;
                rel2.relative: 0.0 1.0;
+            }
+         }
+         part { name: "subtitle_text_slide_effect_right_bg";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "slide_subtitle_text_clip";
+            description { state: "default" 0.0;
+               min: NAVIFRAME_PADDING_INC;
+               align: 0.0 0.5;
+               fixed: 1 0;
+               visible: 0;
+               rel1 { relative: 1.0 0.0; to: "elm.text.subtitle"; }
+               rel2 { relative: 1.0 1.0; to: "elm.text.subtitle"; }
+            }
+         }
+         part { name: "subtitle_text_slide_effect_right";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "slide_subtitle_text_clip";
+            description { state: "default" 0.0;
+               min: NAVIFRAME_TITLE_TEXT_SLIDE_EFFECT_IMAGE_SIZE_INC;
+               align: 1.0 0.5;
+               fixed: 1 0;
+               visible: 0;
+               rel1 { relative: 1.0 0.0; to: "subtitle_text_slide_effect_right_bg"; }
+               rel2 { relative: 1.0 1.0; to: "subtitle_text_slide_effect_right_bg"; }
+               image {
+                  normal: "00_effect_title_text_dim_right.png";
+                  border: NAVIFRAME_TITLE_TEXT_SLIDE_EFFECT_IMAGE_BORDER_INC;
+                  border_scale: 1;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
             }
          }
          part { name: "padding_before_text";
@@ -1148,7 +1296,6 @@
             clip_to: "title_clip";
             description { state: "default" 0.0;
                max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
-               fixed: 1 1;
                align: 1.0 0.5;
                rel1 { relative: 0.0 0.0; to: "divider2"; }
                rel2 { relative: 0.0 1.0; to: "divider2"; }
@@ -1196,7 +1343,6 @@
             description { state: "default" 0.0;
                max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
                align: 1.0 0.5;
-               fixed: 1 1;
                rel1 { relative: 1.0 0.0; to: "title_bg"; }
                rel2 { relative: 1.0 1.0; to: "title_bg"; }
             }
@@ -1576,7 +1722,6 @@
             source: "click_event_area";
             script {
                emit("elm,action,title,clicked", "");
-               emit("elm,action,title,slide", "");
             }
          }
          program {
@@ -1711,6 +1856,8 @@
    group { name: "elm/naviframe/item/tabbar/default";
       images {
          image: "00_title_bg.png" COMP;
+         image: "00_effect_title_text_dim_left.png" COMP;
+         image: "00_effect_title_text_dim_right.png" COMP;
       }
       script {
          public tbar_bg = 0;     //Controlbar BG Show call count
@@ -1791,6 +1938,9 @@
                   return;
                }
 
+               set_state(PART:"title_text_slide_effect_left", "visible", 0.0);
+               set_state(PART:"title_text_slide_effect_right", "visible", 0.0);
+
                len = get_int(title_text_w) + NAVIFRAME_TITLE_SLIDE_TEXT_GAP;
 
                if (get_int(landscape))
@@ -1840,6 +1990,9 @@
 
             set_state(PART:"title_text_clip", "default", 0.0);
             set_state(PART:"slide_title_text_clip", "default", 0.0);
+
+            set_state(PART:"title_text_slide_effect_left", "default", 0.0);
+            set_state(PART:"title_text_slide_effect_right", "default", 0.0);
          }
       }
 
@@ -2091,6 +2244,43 @@
                text.size: NAVIFRAME_LANDSCAPE_TITLE_TAB_FONT_SIZE_INC;
             }
          }
+         part { name: "title_text_slide_effect_left_bg";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "slide_title_text_clip";
+            description { state: "default" 0.0;
+               min: NAVIFRAME_PADDING_INC;
+               align: 1.0 0.5;
+               fixed: 1 0;
+               visible: 0;
+               rel1 { relative: 0.0 0.0; to: "elm.text.title"; }
+               rel2 { relative: 0.0 1.0; to: "elm.text.title"; }
+            }
+         }
+         part { name: "title_text_slide_effect_left";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "slide_title_text_clip";
+            description { state: "default" 0.0;
+               min: NAVIFRAME_TITLE_TEXT_SLIDE_EFFECT_IMAGE_SIZE_INC;
+               align: 0.0 0.5;
+               fixed: 1 0;
+               visible: 0;
+               rel1 { relative: 0.0 0.0; to: "title_text_slide_effect_left_bg"; }
+               rel2 { relative: 0.0 1.0; to: "title_text_slide_effect_left_bg"; }
+               image {
+                  normal: "00_effect_title_text_dim_left.png";
+                  border: NAVIFRAME_TITLE_TEXT_SLIDE_EFFECT_IMAGE_BORDER_INC;
+                  border_scale: 1;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
          part { name: "elm.text.full_title";
             type: TEXT;
             scale: 1;
@@ -2167,6 +2357,43 @@
             description { state: "slide_end_landscape" 0.0;
                inherit: "slide_end" 0.0;
                text.size: NAVIFRAME_LANDSCAPE_TITLE_TAB_FONT_SIZE_INC;
+            }
+         }
+         part { name: "title_text_slide_effect_right_bg";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "slide_title_text_clip";
+            description { state: "default" 0.0;
+               min: NAVIFRAME_PADDING_INC;
+               align: 0.0 0.5;
+               fixed: 1 0;
+               visible: 0;
+               rel1 { relative: 1.0 0.0; to: "elm.text.title"; }
+               rel2 { relative: 1.0 1.0; to: "elm.text.title"; }
+            }
+         }
+         part { name: "title_text_slide_effect_right";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "slide_title_text_clip";
+            description { state: "default" 0.0;
+               min: NAVIFRAME_TITLE_TEXT_SLIDE_EFFECT_IMAGE_SIZE_INC;
+               align: 1.0 0.5;
+               fixed: 1 0;
+               visible: 0;
+               rel1 { relative: 1.0 0.0; to: "title_text_slide_effect_right_bg"; }
+               rel2 { relative: 1.0 1.0; to: "title_text_slide_effect_right_bg"; }
+               image {
+                  normal: "00_effect_title_text_dim_right.png";
+                  border: NAVIFRAME_TITLE_TEXT_SLIDE_EFFECT_IMAGE_BORDER_INC;
+                  border_scale: 1;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
             }
          }
          part { name: "click_event_area";
@@ -2485,7 +2712,6 @@
             source: "click_event_area";
             script {
                emit("elm,action,title,clicked", "");
-               emit("elm,action,title,slide", "");
             }
          }
          program {
