@@ -6105,6 +6105,7 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
       images {
          image: "00_search_edit_field_bg_focus.png" COMP;
          image: "00_search_edit_field_bg.png" COMP;
+         image: "00_search_icon.png" COMP;
       }
       parts {
          part { name: "focus_bg";
@@ -6159,6 +6160,83 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
                }
             }
          }
+         part { name: "search_icon_left_padding";
+            type: SPACER;
+            description { state: "default" 0.0;
+               min: ENTRY_SEARCH_ICON_LEFT_PADDING_MIN_MAX_INC;
+               max: ENTRY_SEARCH_ICON_LEFT_PADDING_MIN_MAX_INC;
+               fixed: 1 0;
+               align: 0.0 0.5;
+               rel1 {
+                  to_x: "icon_padding";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to_x: "icon_padding";
+                  relative: 1.0 1.0;
+               }
+            }
+         }
+         part { name: "search_icon";
+            type: IMAGE;
+            mouse_events: 0;
+            repeat_events: 1;
+            clip_to: "search_icon.clipper";
+            description { state: "default" 0.0;
+               min: ENTRY_SEARCH_ICON_MIN_MAX_INC;
+               max: ENTRY_SEARCH_ICON_MIN_MAX_INC;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               image.normal: "00_search_icon.png";
+               rel1 {
+                  to_x: "search_icon_left_padding";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to_x: "search_icon_left_padding";
+                  relative: 1.0 1.0;
+               }
+            }
+         }
+         part { name: "search_icon_right_padding";
+            type: SPACER;
+            description { state: "default" 0.0;
+               min: ENTRY_SEARCH_ICON_RIGHT_PADDING_MIN_MAX_INC;
+               max: ENTRY_SEARCH_ICON_RIGHT_PADDING_MIN_MAX_INC;
+               fixed: 1 0;
+               align: 0.0 0.5;
+               rel1 {
+                  to_x: "search_icon";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to_x: "search_icon";
+                  relative: 1.0 1.0;
+               }
+            }
+         }
+         part { name: "search_icon.clipper";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: ENTRY_SEARCH_ICON_CLIPPER_DEFAULT_COLOR_INC;
+            }
+            description { state: "disabled" 0.0;
+               color: ENTRY_SEARCH_ICON_CLIPPER_DISABLED_COLOR_INC;
+            }
+         }
+         part { name: "search_icon_disabler";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1.to: "search_icon";
+               rel2.to: "search_icon";
+               visible: 0;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
          part { name: "focus_image";
             scale: 1;
             mouse_events: 0;
@@ -6198,6 +6276,23 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
                }
             }
          }
+         part { name: "elm.swallow.content";
+            clip_to: "contentclipper";
+            scale: 1;
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1 {
+                  to_x: "search_icon_right_padding";
+                  to_y: "bg";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to_x: "clear_padding";
+                  to_y: "bg";
+                  relative: 0.0 1.0;
+               }
+            }
+         }
       }
       programs {
          program { name: "action_focus";
@@ -6211,6 +6306,20 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
             source: "*";
             action: STATE_SET "default" 0.0;
             target: "focus_image";
+         }
+         program { name: "disable";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "search_icon_disabler";
+            target: "search_icon.clipper";
+         }
+         program { name: "enable";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "search_icon_disabler";
+            target: "search_icon.clipper";
          }
       }
 }
