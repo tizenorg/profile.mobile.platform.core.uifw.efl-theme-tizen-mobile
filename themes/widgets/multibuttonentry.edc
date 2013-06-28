@@ -148,17 +148,26 @@ group {
    styles {
       style {
          name: "multibuttonentry_btn_text_style";
-         base: "font=Tizen:style=Regular font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color="MULTIBUTTONENTRY_BUTTON_TEXT_COLOR_INC" text_class=tizen";
+         base: "font=Tizen:style=Regular font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color="MULTIBUTTONENTRY_BUTTON_TEXT_COLOR_INC" style=far_shadow, bottom shadow_color="MULTIBUTTONENTRY_BUTTON_TEXT_NORMAL_SHADOW_COLOR_INC" text_class=tizen";
+      }
+      style {
+         name: "multibuttonentry_btn_text_pressed_style";
+         base: "font=Tizen:style=Regular font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color="MULTIBUTTONENTRY_BUTTON_TEXT_COLOR_INC" style=far_shadow, top shadow_color="MULTIBUTTONENTRY_BUTTON_TEXT_PRESSED_SHADOW_COLOR_INC" text_class=tizen";
       }
       style {
          name: "multibuttonentry_btn_text_ellipsis_style";
-         base: "font=Tizen:style=Regular font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color="MULTIBUTTONENTRY_BUTTON_TEXT_COLOR_INC" ellipsis=1 text_class=tizen";
+         base: "font=Tizen:style=Regular font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color="MULTIBUTTONENTRY_BUTTON_TEXT_COLOR_INC" style=far_shadow, bottom shadow_color="MULTIBUTTONENTRY_BUTTON_TEXT_NORMAL_SHADOW_COLOR_INC" ellipsis=1 text_class=tizen";
+      }
+      style {
+         name: "multibuttonentry_btn_text_ellipsis_pressed_style";
+         base: "font=Tizen:style=Regular font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color="MULTIBUTTONENTRY_BUTTON_TEXT_COLOR_INC" style=far_shadow, top shadow_color="MULTIBUTTONENTRY_BUTTON_TEXT_PRESSED_SHADOW_COLOR_INC" ellipsis=1 text_class=tizen";
       }
    }
 
    images {
       image: "00_contacts_button.png" COMP;
       image: "00_contacts_button_press.png" COMP;
+      image: "00_contacts_button_dim.png" COMP;
    }
 
    data.item: "button_left_pad" MULTIBUTTONENTRY_BUTTON_PAD_INC;
@@ -183,6 +192,11 @@ group {
             state: "focused" 0.0;
             inherit: "default" 0.0;
             image.normal: "00_contacts_button_press.png";
+         }
+         description {
+            state: "out_of_focus" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "00_contacts_button_dim.png";
          }
       }
       part {
@@ -235,12 +249,22 @@ group {
             }
          }
          description {
+            state: "focused" 0.0;
+            inherit: "default" 0.0;
+            text.style: "multibuttonentry_btn_text_pressed_style";
+         }
+         description {
             state: "ellipsis" 0.0;
             inherit: "default" 0.0;
             text {
                style: "multibuttonentry_btn_text_ellipsis_style";
                min: 0 0;
             }
+         }
+         description {
+            state: "ellipsis_focused" 0.0;
+            inherit: "ellipsis" 0.0;
+            text.style: "multibuttonentry_btn_text_ellipsis_pressed_style";
          }
       }
       part { name: "events";
@@ -264,16 +288,50 @@ group {
          name: "focused";
          signal: "focused";
          source: "";
-         action: STATE_SET "focused" 0.0;
-         target: "elm.btn.bg";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.btn.text", st, 30, vl);
+            if (!strcmp(st, "default"))
+              set_state(PART:"elm.btn.text", "focused", 0.0);
+            else
+              set_state(PART:"elm.btn.text", "ellipsis_focused", 0.0);
+
+            set_state(PART:"elm.btn.bg", "focused", 0.0);
+         }
          after: "selected";
       }
       program {
          name: "unfocused";
          signal: "default";
          source: "";
-         action: STATE_SET "default" 0.0;
-         target: "elm.btn.bg";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.btn.text", st, 30, vl);
+            if (!strcmp(st, "focused"))
+              set_state(PART:"elm.btn.text", "default", 0.0);
+            else
+              set_state(PART:"elm.btn.text", "ellipsis", 0.0);
+
+            set_state(PART:"elm.btn.bg", "default", 0.0);
+         }
+      }
+      program {
+         name: "mbe_lose_focus";
+         signal: "lose_focus";
+         source: "";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.btn.text", st, 30, vl);
+            if (!strcmp(st, "focused"))
+              set_state(PART:"elm.btn.text", "default", 0.0);
+            else
+              set_state(PART:"elm.btn.text", "ellipsis", 0.0);
+
+            set_state(PART:"elm.btn.bg", "out_of_focus", 0.0);
+         }
       }
       program {
          name: "clicked";
