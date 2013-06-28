@@ -19,7 +19,7 @@
 // datetime
 ///////////////////////////////////////////////////////////////////////////////
 
-#define DATETIME_FIELD(_pos, prev_part) \
+#define DATETIME_PADDING(_pos, prev_part) \
    part {\
       name: "picker.padding"#_pos; \
       type: RECT; \
@@ -45,37 +45,15 @@
       }\
    }\
    part {\
-      name: "field"#_pos".bg"; \
-      type: RECT; \
-      scale: 1;\
-      clip_to: "clipper";\
-      description { state: "default" 0.0; \
-         visible: 0;\
-         align: 0.0 0.5;\
-         fixed: 1 0;\
-         rel1 {\
-            relative: 0.0 0.0;\
-            to: "left.padding"#_pos;\
-         }\
-         rel2 {\
-            relative: 1.0 1.0;\
-            to: "right.padding"#_pos;\
-         }\
-         color: DATETIME_PICKER_BG_COLOR_INC;\
-      }\
-      description { state: "enable" 0.0;\
-         inherit: "default" 0.0;\
-         visible: 1;\
-      }\
-   }\
-   part {\
       name: "left.padding"#_pos; \
       type: RECT; \
       scale: 1;\
       clip_to: "clipper";\
+      mouse_events: 0;\
       description { state: "default" 0.0; \
          color: 0 0 0 0;\
          min: 0 0;\
+         visible: 0;\
          align: 0.0 0.5;\
          fixed: 1 0;\
          rel1 {\
@@ -92,6 +70,55 @@
          min: DATETIME_FIELD_LEFT_PADDING_SIZE_INC;\
       }\
    }\
+   part {\
+      name: "right.padding"#_pos; \
+      type: RECT;\
+      scale: 1;\
+      clip_to: "clipper";\
+      mouse_events: 0;\
+      description {\
+         state: "default" 0.0;\
+         color: 0 0 0 0;\
+         visible: 0;\
+         min: 0 0;\
+         align: 0.0 0.5;\
+         fixed: 1 0;\
+         rel1 {\
+            relative: 1.0 0.0;\
+            to: "field"#_pos;\
+         }\
+         rel2 {\
+            relative: 1.0 1.0;\
+            to: "field"#_pos;\
+         }\
+      }\
+      description { state: "enable" 0.0;\
+         inherit: "default" 0.0;\
+         min: DATETIME_FIELD_RIGHT_PADDING_SIZE_INC;\
+      }\
+   }\
+   programs{\
+      program {\
+         name: "field_"#_pos"enabled";\
+         signal: "field"#_pos",enable";\
+         source: "elm";\
+         action: STATE_SET "enable" 0.0;\
+         target: "left.padding"#_pos;\
+         target: "right.padding"#_pos;\
+         target: "field"#_pos;\
+      }\
+      program {\
+         name: "field_"#_pos"disabled";\
+         signal: "field"#_pos",disable";\
+         source: "elm";\
+         action: STATE_SET "default" 0.0;\
+         target: "left.padding"#_pos;\
+         target: "right.padding"#_pos;\
+         target: "field"#_pos;\
+      }\
+   }
+
+#define DATETIME_FIELD(_pos) \
    part {\
       name: "field"#_pos; \
       type: SWALLOW; \
@@ -123,6 +150,7 @@
       type: TEXT;\
       scale: 1;\
       clip_to: "clipper";\
+      mouse_events: 0;\
       description {\
          state: "default" 0.0;\
          visible: 0;\
@@ -131,11 +159,11 @@
          fixed: 1 0;\
          rel1 {\
             relative: 1.0 0.0;\
-            to: "field"#_pos;\
+            to: "right.padding"#_pos;\
          }\
          rel2 {\
             relative: 1.0 1.0;\
-            to: "field"#_pos;\
+            to: "right.padding"#_pos;\
          }\
          color: DATETIME_SEPARATOR_TEXT_COLOR_INC;\
          text {\
@@ -151,53 +179,7 @@
          min: DATETIME_SEPARATOR_MIN_SIZE_INC;\
       }\
    }\
-   part {\
-      name: "right.padding"#_pos; \
-      type: RECT;\
-      scale: 1;\
-      clip_to: "clipper";\
-      description {\
-         state: "default" 0.0;\
-         color: 0 0 0 0;\
-         min: 0 0;\
-         align: 0.0 0.5;\
-         fixed: 1 0;\
-         rel1 {\
-            relative: 1.0 0.0;\
-            to: "separator"#_pos;\
-         }\
-         rel2 {\
-            relative: 1.0 1.0;\
-            to: "separator"#_pos;\
-         }\
-      }\
-      description { state: "enable" 0.0;\
-         inherit: "default" 0.0;\
-         visible: 1;\
-         min: DATETIME_FIELD_RIGHT_PADDING_SIZE_INC;\
-      }\
-   }\
    programs{\
-      program {\
-         name: "field_"#_pos"enabled";\
-         signal: "field"#_pos",enable";\
-         source: "elm";\
-         action: STATE_SET "enable" 0.0;\
-         target: "field"#_pos;\
-         target: "left.padding"#_pos;\
-         target: "right.padding"#_pos;\
-         target: "field"#_pos".bg";\
-      }\
-      program {\
-         name: "field_"#_pos"disabled";\
-         signal: "field"#_pos",disable";\
-         source: "elm";\
-         action: STATE_SET "default" 0.0;\
-         target: "field"#_pos;\
-         target: "left.padding"#_pos;\
-         target: "right.padding"#_pos;\
-         target: "field"#_pos".bg";\
-      }\
       program {\
          name: "separator"#_pos",enabled";\
          signal: "field"#_pos",separator,enable";\
@@ -214,11 +196,159 @@
       }\
    }
 
+#define DATETIME_PICKER_PADDING_PROGRAMS \
+      program {\
+         name: "datepicker_starting_field2_padding";\
+         signal: "datepicker,starting,field2";\
+         source: "elm";\
+         script {\
+            set_state(PART:"picker.padding2", "enable", 0.0);\
+            set_state(PART:"picker.padding3", "default", 0.0);\
+         }\
+      }\
+      program {\
+         name: "datepicker_starting_field3_padding";\
+         signal: "datepicker,starting,field3";\
+         source: "elm";\
+         script {\
+            set_state(PART:"picker.padding3", "enable", 0.0);\
+            set_state(PART:"picker.padding2", "default", 0.0);\
+         }\
+      }\
+      program {\
+         name: "timepicker_starting_field3_padding";\
+         signal: "timepicker,starting,field3";\
+         source: "elm";\
+         script {\
+            set_state(PART:"picker.padding2", "default", 0.0);\
+            set_state(PART:"picker.padding3", "enable", 0.0);\
+         }\
+      }\
+      program {\
+         name: "timepicker_starting_field0_padding";\
+         signal: "timepicker,starting,field0";\
+         source: "elm";\
+         action: STATE_SET "default" 0.0;\
+         target: "picker.padding0";\
+      }\
+      program {\
+         name: "datepicker_starting_field1_padding";\
+         signal: "datepicker,starting,field1";\
+         source: "elm";\
+         action: STATE_SET "default" 0.0;\
+         target: "picker.padding0";\
+         target: "picker.padding2";\
+         target: "picker.padding3";\
+      }\
+      program {\
+         name: "datepicker_starting_field4_padding";\
+         signal: "datepicker,starting,field4";\
+         source: "elm";\
+         action: STATE_SET "default" 0.0;\
+         target: "picker.padding0";\
+         target: "picker.padding2";\
+         target: "picker.padding3";\
+      }
+
+
 #define DATETIME_DATEPICKER_BG \
+   part {\
+      name: "date.picker.left.pad"; \
+      type: RECT;\
+      scale: 1;\
+      description { state: "default" 0.0; \
+         min: 0 0;\
+         visible: 0;\
+         align: 1.0 0.5; \
+         fixed: 1 0;\
+         rel1 {\
+            relative: 0.0 0.0;\
+            to: "left.padding0";\
+         }\
+         rel2 {\
+            relative: 0.0 1.0;\
+            to: "left.padding0";\
+         }\
+      }\
+      description { state: "datefirst" 0.0;\
+         inherit: "default" 0.0;\
+         min: DATETIME_PICKER_BG_PADDING_SIZE_INC;\
+      }\
+      description { state: "timefirst" 0.0;\
+         inherit: "default" 0.0;\
+         min: DATETIME_PICKER_BG_PADDING_SIZE_INC;\
+         rel1 {\
+            relative: 0.0 0.0;\
+            to: "left.padding3";\
+         }\
+         rel2 {\
+            relative: 0.0 1.0;\
+            to: "left.padding3";\
+         }\
+      }\
+      description { state: "timefirst24hr" 0.0;\
+         inherit: "default" 0.0;\
+         min: DATETIME_PICKER_BG_PADDING_SIZE_INC;\
+         rel1 {\
+            relative: 0.0 0.0;\
+            to: "left.padding2";\
+         }\
+         rel2 {\
+            relative: 0.0 1.0;\
+            to: "left.padding2";\
+         }\
+      }\
+   }\
+   part {\
+      name: "date.picker.right.pad"; \
+      type: RECT;\
+      scale: 1;\
+      description { state: "default" 0.0; \
+         min: 0 0;\
+         visible: 0;\
+         align: 0.0 0.5; \
+         fixed: 1 0;\
+         rel1 {\
+            relative: 1.0 0.0;\
+            to: "separator2";\
+         }\
+         rel2 {\
+            relative: 1.0 1.0;\
+            to: "separator2";\
+         }\
+      }\
+      description { state: "datefirst" 0.0;\
+         inherit: "default" 0.0;\
+         min: DATETIME_PICKER_BG_PADDING_SIZE_INC;\
+      }\
+      description { state: "timefirst" 0.0;\
+         inherit: "default" 0.0;\
+         min: DATETIME_PICKER_BG_PADDING_SIZE_INC;\
+         rel1 {\
+            relative: 1.0 0.0;\
+            to: "separator5";\
+         }\
+         rel2 {\
+            relative: 1.0 1.0;\
+            to: "separator5";\
+         }\
+      }\
+      description { state: "timefirst24hr" 0.0;\
+         inherit: "default" 0.0;\
+         min: DATETIME_PICKER_BG_PADDING_SIZE_INC;\
+         rel1 {\
+            relative: 1.0 0.0;\
+            to: "separator4";\
+         }\
+         rel2 {\
+            relative: 1.0 1.0;\
+            to: "separator4";\
+         }\
+      }\
+   }\
    part {\
       name: "date.picker.bg"; \
       scale: 1;\
-      clip_to: "clipper";\
       description { state: "default" 0.0; \
          min: 0 0;\
          visible: 0;\
@@ -230,11 +360,11 @@
          }\
          rel1 {\
             relative: 0.0 0.0;\
-            to: "left.padding0";\
+            to: "date.picker.left.pad";\
          }\
          rel2 {\
             relative: 1.0 1.0;\
-            to: "right.padding2";\
+            to: "date.picker.right.pad";\
          }\
       }\
       description { state: "datefirst" 0.0;\
@@ -244,26 +374,53 @@
       description { state: "timefirst" 0.0;\
          inherit: "default" 0.0;\
          visible: 1;\
-         rel1 {\
-            relative: 0.0 0.0;\
-            to: "left.padding3";\
-         }\
-         rel2 {\
-            relative: 1.0 1.0;\
-            to: "right.padding5";\
-         }\
       }\
       description { state: "timefirst24hr" 0.0;\
          inherit: "default" 0.0;\
          visible: 1;\
-         rel1 {\
-            relative: 0.0 0.0;\
-            to: "left.padding2";\
+      }\
+      description { state: "datefirst_press" 0.0;\
+         inherit: "datefirst" 0.0;\
+         image {\
+            normal: "00_button_01_press.png";\
+            border: DATETIME_BG_IMAGE_BORDER_INC;\
+            border_scale: 1;\
          }\
-         rel2 {\
-            relative: 1.0 1.0;\
-            to: "right.padding4";\
+      }\
+      description { state: "timefirst_press" 0.0;\
+         inherit: "timefirst" 0.0;\
+         image {\
+            normal: "00_button_01_press.png";\
+            border: DATETIME_BG_IMAGE_BORDER_INC;\
+            border_scale: 1;\
          }\
+      }\
+      description { state: "timefirst24hr_press" 0.0;\
+         inherit: "timefirst24hr" 0.0;\
+         image {\
+            normal: "00_button_01_press.png";\
+            border: DATETIME_BG_IMAGE_BORDER_INC;\
+            border_scale: 1;\
+         }\
+      }\
+   }\
+   part {\
+      name: "datepicker.focus";\
+      scale: 1;\
+      description {\
+         state: "default" 0.0;\
+         visible: 0;\
+         rel1.to : "date.picker.bg";\
+         rel2.to : "date.picker.bg";\
+         image {\
+            normal: "00_button_01_focus.png";\
+            border: DATETIME_BG_IMAGE_BORDER_INC;\
+            border_scale: 1;\
+         }\
+      }\
+      description { state: "focus" 0.0;\
+         inherit: "default" 0.0;\
+         visible: 1;\
       }\
    }\
    programs{\
@@ -273,6 +430,8 @@
          source: "elm";\
          action: STATE_SET "datefirst" 0.0;\
          target: "date.picker.bg";\
+         target: "date.picker.left.pad";\
+         target: "date.picker.right.pad";\
       }\
       program {\
          name: "datepicker_starting_field3";\
@@ -280,13 +439,17 @@
          source: "elm";\
          action: STATE_SET "timefirst" 0.0;\
          target: "date.picker.bg";\
+         target: "date.picker.left.pad";\
+         target: "date.picker.right.pad";\
       }\
       program {\
          name: "datepicker_starting_field2";\
-         signal: "datepicker,starting,field3";\
+         signal: "datepicker,starting,field2";\
          source: "elm";\
          action: STATE_SET "timefirst24hr" 0.0;\
          target: "date.picker.bg";\
+         target: "date.picker.left.pad";\
+         target: "date.picker.right.pad";\
       }\
       program {\
          name: "datepicker_starting_field1";\
@@ -294,6 +457,8 @@
          source: "elm";\
          action: STATE_SET "default" 0.0;\
          target: "date.picker.bg";\
+         target: "date.picker.left.pad";\
+         target: "date.picker.right.pad";\
       }\
       program {\
          name: "datepicker_starting_field4";\
@@ -301,6 +466,8 @@
          source: "elm";\
          action: STATE_SET "default" 0.0;\
          target: "date.picker.bg";\
+         target: "date.picker.left.pad";\
+         target: "date.picker.right.pad";\
       }\
       program {\
          name: "datepicker_starting_field5";\
@@ -308,14 +475,166 @@
          source: "elm";\
          action: STATE_SET "default" 0.0;\
          target: "date.picker.bg";\
+         target: "date.picker.left.pad";\
+         target: "date.picker.right.pad";\
+      }\
+      program {\
+         name: "datepicker_mouse_down";\
+         signal: "mouse,down,1";\
+         source: "date.picker.bg";\
+         script {\
+            new st[31];\
+            new Float:vl;\
+            get_state(PART:"date.picker.bg", st, 30, vl);\
+            if (!strcmp(st, "datefirst")) {\
+              set_state(PART:"date.picker.bg", "datefirst_press", 0.0);\
+            }\
+            else if (!strcmp(st, "timefirst")) {\
+              set_state(PART:"date.picker.bg", "timefirst_press", 0.0);\
+            }\
+            else if (!strcmp(st, "timefirst24hr")) {\
+              set_state(PART:"date.picker.bg", "timefirst24hr_press", 0.0);\
+            }\
+         }\
+      }\
+      program {\
+         name: "datepicker_mouse_up";\
+         signal: "mouse,up,1";\
+         source: "date.picker.bg";\
+         script {\
+            new st[31];\
+            new Float:vl;\
+            get_state(PART:"date.picker.bg", st, 30, vl);\
+            if (!strcmp(st, "datefirst_press")) {\
+              set_state(PART:"date.picker.bg", "datefirst", 0.0);\
+            }\
+            else if (!strcmp(st, "timefirst_press")) {\
+              set_state(PART:"date.picker.bg", "timefirst", 0.0);\
+            }\
+            else if (!strcmp(st, "timefirst24hr_press")) {\
+              set_state(PART:"date.picker.bg", "timefirst24hr", 0.0);\
+            }\
+         }\
+      }\
+      program {\
+         name: "datepicker_focus";\
+         signal: "elm,action,focus_highlight,show";\
+         source: "elm";\
+         action: STATE_SET "focus" 0.0;\
+         target: "datepicker.focus";\
+      }\
+      program {\
+         name: "datepicker_unfocus";\
+         signal: "elm,action,focus_highlight,hide";\
+         source: "elm";\
+         action: STATE_SET "default" 0.0;\
+         target: "datepicker.focus";\
+      }\
+      program { name: "datepicker_touch_snd";\
+         signal: "mouse,clicked,1";\
+         source: "date.picker.bg";\
+         action: PLAY_SAMPLE "touch_sound" 1.0;\
       }\
    }
 
 #define DATETIME_TIMEPICKER_BG \
    part {\
+      name: "time.picker.left.pad"; \
+      type: RECT;\
+      scale: 1;\
+      description { state: "default" 0.0; \
+         min: 0 0;\
+         visible: 0;\
+         align: 1.0 0.5; \
+         fixed: 1 0;\
+         rel1 {\
+            relative: 0.0 0.0;\
+            to: "left.padding3";\
+         }\
+         rel2 {\
+            relative: 0.0 1.0;\
+            to: "left.padding3";\
+         }\
+      }\
+      description { state: "datefirst" 0.0;\
+         inherit: "default" 0.0;\
+         min: DATETIME_PICKER_BG_PADDING_SIZE_INC;\
+      }\
+      description { state: "timefirst" 0.0;\
+         inherit: "default" 0.0;\
+         min: DATETIME_PICKER_BG_PADDING_SIZE_INC;\
+         rel1 {\
+            relative: 0.0 0.0;\
+            to: "left.padding0";\
+         }\
+         rel2 {\
+            relative: 0.0 1.0;\
+            to: "left.padding0";\
+         }\
+      }\
+      description { state: "timefirst24hr" 0.0;\
+         inherit: "default" 0.0;\
+         min: DATETIME_PICKER_BG_PADDING_SIZE_INC;\
+         rel1 {\
+            relative: 0.0 0.0;\
+            to: "left.padding0";\
+         }\
+         rel2 {\
+            relative: 0.0 1.0;\
+            to: "left.padding0";\
+         }\
+      }\
+   }\
+   part {\
+      name: "time.picker.right.pad"; \
+      type: RECT;\
+      scale: 1;\
+      description { state: "default" 0.0; \
+         min: 0 0;\
+         visible: 0;\
+         align: 0.0 0.5; \
+         fixed: 1 0;\
+         rel1 {\
+            relative: 1.0 0.0;\
+            to: "right.padding5";\
+         }\
+         rel2 {\
+            relative: 1.0 1.0;\
+            to: "right.padding5";\
+         }\
+      }\
+      description { state: "datefirst" 0.0;\
+         inherit: "default" 0.0;\
+         min: DATETIME_PICKER_BG_PADDING_SIZE_INC;\
+      }\
+      description { state: "timefirst" 0.0;\
+         inherit: "default" 0.0;\
+         min: DATETIME_PICKER_BG_PADDING_SIZE_INC;\
+         rel1 {\
+            relative: 1.0 0.0;\
+            to: "right.padding2";\
+         }\
+         rel2 {\
+            relative: 1.0 1.0;\
+            to: "right.padding2";\
+         }\
+      }\
+      description { state: "timefirst24hr" 0.0;\
+         inherit: "default" 0.0;\
+         min: DATETIME_PICKER_BG_PADDING_SIZE_INC;\
+         rel1 {\
+            relative: 1.0 0.0;\
+            to: "right.padding1";\
+         }\
+         rel2 {\
+            relative: 1.0 1.0;\
+            to: "right.padding1";\
+         }\
+      }\
+   }\
+   part {\
       name: "time.picker.bg"; \
       scale: 1;\
-      clip_to: "clipper";\
       description { state: "default" 0.0; \
          min: 0 0;\
          visible: 0;\
@@ -327,11 +646,11 @@
          }\
          rel1 {\
             relative: 0.0 0.0;\
-            to: "left.padding3";\
+            to: "time.picker.left.pad";\
          }\
          rel2 {\
             relative: 1.0 1.0;\
-            to: "right.padding5";\
+            to: "time.picker.right.pad";\
          }\
       }\
       description { state: "datefirst" 0.0;\
@@ -341,26 +660,53 @@
       description { state: "timefirst" 0.0;\
          inherit: "default" 0.0;\
          visible: 1;\
-         rel1 {\
-            relative: 0.0 0.0;\
-            to: "left.padding0";\
-         }\
-         rel2 {\
-            relative: 1.0 1.0;\
-            to: "right.padding2";\
-         }\
       }\
       description { state: "timefirst24hr" 0.0;\
          inherit: "default" 0.0;\
          visible: 1;\
-         rel1 {\
-            relative: 0.0 0.0;\
-            to: "left.padding0";\
+      }\
+      description { state: "datefirst_press" 0.0;\
+         inherit: "datefirst" 0.0;\
+         image {\
+            normal: "00_button_01_press.png";\
+            border: DATETIME_BG_IMAGE_BORDER_INC;\
+            border_scale: 1;\
          }\
-         rel2 {\
-            relative: 1.0 1.0;\
-            to: "right.padding1";\
+      }\
+      description { state: "timefirst_press" 0.0;\
+         inherit: "timefirst" 0.0;\
+         image {\
+            normal: "00_button_01_press.png";\
+            border: DATETIME_BG_IMAGE_BORDER_INC;\
+            border_scale: 1;\
          }\
+      }\
+      description { state: "timefirst24hr_press" 0.0;\
+         inherit: "timefirst24hr" 0.0;\
+         image {\
+            normal: "00_button_01_press.png";\
+            border: DATETIME_BG_IMAGE_BORDER_INC;\
+            border_scale: 1;\
+         }\
+      }\
+   }\
+   part {\
+      name: "timepicker.focus";\
+      scale: 1;\
+      description {\
+         state: "default" 0.0;\
+         visible: 0;\
+         rel1.to : "time.picker.bg";\
+         rel2.to : "time.picker.bg";\
+         image {\
+            normal: "00_button_01_focus.png";\
+            border: DATETIME_BG_IMAGE_BORDER_INC;\
+            border_scale: 1;\
+         }\
+      }\
+      description { state: "focus" 0.0;\
+         inherit: "default" 0.0;\
+         visible: 1;\
       }\
    }\
    programs{\
@@ -368,21 +714,37 @@
          name: "timepicker_starting_field3";\
          signal: "timepicker,starting,field3";\
          source: "elm";\
-         action: STATE_SET "datefirst" 0.0;\
-         target: "time.picker.bg";\
+         in: 0.001 0.0;\
+         script {\
+            new st[31];\
+            new Float:vl;\
+            get_state(PART:"field3", st, 30, vl);\
+            if (!strcmp(st, "enable")) {\
+              set_state(PART:"time.picker.bg", "datefirst", 0.0);\
+              set_state(PART:"time.picker.left.pad", "datefirst", 0.0);\
+              set_state(PART:"time.picker.right.pad", "datefirst", 0.0);\
+            }\
+         }\
       }\
       program {\
          name: "timepicker_starting_field0";\
          signal: "timepicker,starting,field0";\
          source: "elm";\
+         in: 0.001 0.0;\
          script {\
             new st[31];\
             new Float:vl;\
             get_state(PART:"date.picker.bg", st, 30, vl);\
-            if (!strcmp(st, "timefirst24hr"))\
+            if (!strcmp(st, "timefirst24hr")) {\
               set_state(PART:"time.picker.bg", "timefirst24hr", 0.0);\
-            else\
+              set_state(PART:"time.picker.left.pad", "timefirst24hr", 0.0);\
+              set_state(PART:"time.picker.right.pad", "timefirst24hr", 0.0);\
+            }\
+            else {\
               set_state(PART:"time.picker.bg", "timefirst", 0.0);\
+              set_state(PART:"time.picker.left.pad", "timefirst", 0.0);\
+              set_state(PART:"time.picker.right.pad", "timefirst", 0.0);\
+            }\
          }\
       }\
       program {\
@@ -391,6 +753,8 @@
          source: "elm";\
          action: STATE_SET "default" 0.0;\
          target: "time.picker.bg";\
+         target: "time.picker.left.pad";\
+         target: "time.picker.right.pad";\
       }\
       program {\
          name: "timepicker_starting_field2";\
@@ -398,6 +762,8 @@
          source: "elm";\
          action: STATE_SET "default" 0.0;\
          target: "time.picker.bg";\
+         target: "time.picker.left.pad";\
+         target: "time.picker.right.pad";\
       }\
       program {\
          name: "timepicker_starting_field4";\
@@ -405,6 +771,8 @@
          source: "elm";\
          action: STATE_SET "default" 0.0;\
          target: "time.picker.bg";\
+         target: "time.picker.left.pad";\
+         target: "time.picker.right.pad";\
       }\
       program {\
          name: "timepicker_starting_field5";\
@@ -412,67 +780,73 @@
          source: "elm";\
          action: STATE_SET "default" 0.0;\
          target: "time.picker.bg";\
+         target: "time.picker.left.pad";\
+         target: "time.picker.right.pad";\
+      }\
+      program {\
+         name: "timepicker_mouse_down";\
+         signal: "mouse,down,1";\
+         source: "time.picker.bg";\
+         script {\
+            new st[31];\
+            new Float:vl;\
+            get_state(PART:"time.picker.bg", st, 30, vl);\
+            if (!strcmp(st, "datefirst")) {\
+              set_state(PART:"time.picker.bg", "datefirst_press", 0.0);\
+            }\
+            else if (!strcmp(st, "timefirst")) {\
+              set_state(PART:"time.picker.bg", "timefirst_press", 0.0);\
+            }\
+            else if (!strcmp(st, "timefirst24hr")) {\
+              set_state(PART:"time.picker.bg", "timefirst24hr_press", 0.0);\
+            }\
+         }\
+      }\
+      program {\
+         name: "timepicker_mouse_up";\
+         signal: "mouse,up,1";\
+         source: "time.picker.bg";\
+         script {\
+            new st[31];\
+            new Float:vl;\
+            get_state(PART:"time.picker.bg", st, 30, vl);\
+            if (!strcmp(st, "datefirst_press")) {\
+              set_state(PART:"time.picker.bg", "datefirst", 0.0);\
+            }\
+            else if (!strcmp(st, "timefirst_press")) {\
+              set_state(PART:"time.picker.bg", "timefirst", 0.0);\
+            }\
+            else if (!strcmp(st, "timefirst24hr_press")) {\
+              set_state(PART:"time.picker.bg", "timefirst24hr", 0.0);\
+            }\
+         }\
+      }\
+      program {\
+         name: "timepicker_focus";\
+         signal: "elm,action,focus_highlight,show";\
+         source: "elm";\
+         action: STATE_SET "focus" 0.0;\
+         target: "timepicker.focus";\
+      }\
+      program {\
+         name: "timepicker_unfocus";\
+         signal: "elm,action,focus_highlight,hide";\
+         source: "elm";\
+         action: STATE_SET "default" 0.0;\
+         target: "timepicker.focus";\
+      }\
+      program { name: "timepicker_touch_snd";\
+         signal: "mouse,clicked,1";\
+         source: "time.picker.bg";\
+         action: PLAY_SAMPLE "touch_sound" 1.0;\
       }\
    }
-
-#define DATETIME_PICKER_BG_PROGRAMS \
-      program {\
-         name: "datepicker_starting_field2_bg";\
-         signal: "datepicker,starting,field2";\
-         source: "elm";\
-         script {\
-            set_state(PART:"picker.padding2", "enable", 0.0);\
-            set_state(PART:"picker.padding3", "default", 0.0);\
-         }\
-      }\
-      program {\
-         name: "datepicker_starting_field3_bg";\
-         signal: "datepicker,starting,field3";\
-         source: "elm";\
-         script {\
-            set_state(PART:"picker.padding3", "enable", 0.0);\
-            set_state(PART:"picker.padding2", "default", 0.0);\
-         }\
-      }\
-      program {\
-         name: "timepicker_starting_field3_bg";\
-         signal: "timepicker,starting,field3";\
-         source: "elm";\
-         script {\
-            set_state(PART:"picker.padding3", "enable", 0.0);\
-            set_state(PART:"picker.padding2", "default", 0.0);\
-         }\
-      }\
-      program {\
-         name: "timepicker_starting_field0_bg";\
-         signal: "timepicker,starting,field0";\
-         source: "elm";\
-         action: STATE_SET "default" 0.0;\
-         target: "picker.padding0";\
-      }\
-      program {\
-         name: "datepicker_starting_field1_bg";\
-         signal: "datepicker,starting,field1";\
-         source: "elm";\
-         action: STATE_SET "default" 0.0;\
-         target: "picker.padding0";\
-         target: "picker.padding2";\
-         target: "picker.padding3";\
-      }\
-      program {\
-         name: "datepicker_starting_field4_bg";\
-         signal: "datepicker,starting,field4";\
-         source: "elm";\
-         action: STATE_SET "default" 0.0;\
-         target: "picker.padding0";\
-         target: "picker.padding2";\
-         target: "picker.padding3";\
-      }
 
 group { name: "elm/datetime/base/default";
    images {
       image: "00_button_01.png" COMP;
       image: "00_button_01_press.png" COMP;
+      image: "00_button_01_focus.png" COMP;
    }
    parts {
       part {
@@ -497,7 +871,7 @@ group { name: "elm/datetime/base/default";
             visible: 0;
             min: DATETIME_WIDGET_PADDING_SIZE_INC;
             align: 0.0 0.5;
-            fixed: 1 1;
+            fixed: 1 0;
             rel1.to: "bg";
             rel2 {
                relative: 0.0 1.0;
@@ -516,8 +890,8 @@ group { name: "elm/datetime/base/default";
             visible: 0;
             min: DATETIME_WIDGET_PADDING_SIZE_INC;
             align: 1.0 0.5;
-            fixed: 1 1;
-            rel2 {
+            fixed: 1 0;
+            rel1 {
                relative: 1.0 0.0;
                to: "bg";
             }
@@ -525,15 +899,22 @@ group { name: "elm/datetime/base/default";
          }
       }
 
-      //DATETIME_DATEPICKER_BG
-      //DATETIME_TIMEPICKER_BG
+      DATETIME_PADDING(0, "left.padding")
+      DATETIME_PADDING(1, "separator0")
+      DATETIME_PADDING(2, "separator1")
+      DATETIME_PADDING(3, "separator2")
+      DATETIME_PADDING(4, "separator3")
+      DATETIME_PADDING(5, "separator4")
 
-      DATETIME_FIELD(0, "left.padding")
-      DATETIME_FIELD(1, "right.padding0")
-      DATETIME_FIELD(2, "right.padding1")
-      DATETIME_FIELD(3, "right.padding2")
-      DATETIME_FIELD(4, "right.padding3")
-      DATETIME_FIELD(5, "right.padding4")
+      DATETIME_DATEPICKER_BG
+      DATETIME_TIMEPICKER_BG
+
+      DATETIME_FIELD(0)
+      DATETIME_FIELD(1)
+      DATETIME_FIELD(2)
+      DATETIME_FIELD(3)
+      DATETIME_FIELD(4)
+      DATETIME_FIELD(5)
 
       part {
          name: "clipper";
@@ -552,6 +933,8 @@ group { name: "elm/datetime/base/default";
          description { state: "default" 0.0;
             color: 0 0 0 0;
             visible: 0;
+            rel1.to: "bg";
+            rel2.to: "bg";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
@@ -576,7 +959,7 @@ group { name: "elm/datetime/base/default";
          target: "disabler";
          target: "clipper";
       }
-      DATETIME_PICKER_BG_PROGRAMS
+      DATETIME_PICKER_PADDING_PROGRAMS
    }
 }
 
@@ -1088,6 +1471,16 @@ group { name: "elm/spinner/base/default";
          signal: "mouse,up,1";
          source: "button.events";
          action: SIGNAL_EMIT "elm,action,entry,toggle" "";
+      }
+      program { name: "up_touch_snd";
+         signal: "mouse,clicked,1";
+         source: "up.btn";
+         action: PLAY_SAMPLE "touch_sound" 1.0;
+      }
+      program { name: "down_ouch_snd";
+         signal: "mouse,clicked,1";
+         source: "down.btn";
+         action: PLAY_SAMPLE "touch_sound" 1.0;
       }
    }
 }
