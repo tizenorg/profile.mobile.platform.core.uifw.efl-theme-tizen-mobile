@@ -23,6 +23,8 @@
       images {
          image: "00_progress_bg.png" COMP;
          image: "00_progress_bar.png" COMP;
+         image: "00_progress_bg_dim.png" COMP;
+         image: "00_progress_bar_dim.png" COMP;
       }
       parts {
          part { name: "access";
@@ -177,6 +179,10 @@
                   border_scale: 1;
                }
             }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_progress_bg_dim.png";
+            }
          }
          part { name: "elm.text.status";
             type: TEXT;
@@ -324,6 +330,10 @@
                   to: "elm.swallow.bar";
                   relative: 1.0 1.0;
                }
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_progress_bar_dim.png";
             }
          }
          part { name: "text-bar";
@@ -478,6 +488,20 @@
             action:  STATE_SET "default" 0.0;
             target: "elm.progress.progressbar";
          }
+         program { name: "progressbar_disable";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action:  STATE_SET "disabled" 0.0;
+            target: "elm.progress.progressbar";
+            target: "background";
+         }
+         program { name: "progressbar_enable";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action:  STATE_SET "default" 0.0;
+            target: "elm.progress.progressbar";
+            target: "background";
+         }
       }
    }
 
@@ -485,6 +509,8 @@
       images {
          image: "00_progress_bg.png" COMP;
          image: "00_progress_bar.png" COMP;
+         image: "00_progress_bg_dim.png" COMP;
+         image: "00_progress_bar_dim.png" COMP;
       }
       parts {
          part { name: "access";
@@ -684,6 +710,10 @@
                   border_scale: 1;
                }
             }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_progress_bg_dim.png";
+            }
          }
          part { name: "elm.text.status";
             type: TEXT;
@@ -831,6 +861,10 @@
                   to: "elm.swallow.bar";
                   relative: 1.0 1.0;
                }
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_progress_bar_dim.png";
             }
          }
          part { name: "text-bar";
@@ -985,16 +1019,35 @@
             action:  STATE_SET "default" 0.0;
             target: "elm.progress.progressbar";
          }
+         program { name: "progressbar_disable";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action:  STATE_SET "disabled" 0.0;
+            target: "elm.progress.progressbar";
+            target: "background";
+         }
+         program { name: "progressbar_enable";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action:  STATE_SET "default" 0.0;
+            target: "elm.progress.progressbar";
+            target: "background";
+         }
       }
    }
 
    group { name: "elm/progressbar/horizontal/pending_list";
       images {
          image: "00_progress_bg.png" COMP;
+         image: "00_progress_bg_dim.png" COMP;
          image: "00_progress_pending_01_bg.png" COMP;
          image: "00_progress_pending_02_bg.png" COMP;
+         image: "00_progress_pending_01_bg_dim.png" COMP;
+         image: "00_progress_pending_02_bg_dim.png" COMP;
          image: "00_progress_pending_01_bg_h.png" COMP;
          image: "00_progress_pending_02_bg_h.png" COMP;
+         image: "00_progress_pending_01_bg_h_dim.png" COMP;
+         image: "00_progress_pending_02_bg_h_dim.png" COMP;
       }
       parts {
          part { name: "access";
@@ -1057,6 +1110,10 @@
                   border_scale: 1;
                }
             }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_progress_bg_dim.png";
+            }
          }
          part { name: "elm.progress.progressbar";
             mouse_events: 0;
@@ -1087,31 +1144,39 @@
             description {
                state: "state_begin_landscape" 0.0;
                inherit: "default" 0.0;
-               image {
-                  normal: "00_progress_pending_01_bg_h.png";
-                  border: 0 0 0 0;
-               }
+               image.normal: "00_progress_pending_01_bg_h.png";
+            }
+            description { state: "state_begin_disabled" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_progress_pending_01_bg_dim.png";
+            }
+            description { state: "state_begin_landscape_disabled" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_progress_pending_01_bg_h_dim.png";
             }
             description {
                state: "state_end" 0.0;
                inherit: "default" 0.0;
-               image {
-                  normal: "00_progress_pending_02_bg.png";
-                  border: 0 0 0 0;
-               }
+               image.normal: "00_progress_pending_02_bg.png";
             }
             description {
                state: "state_end_landscape" 0.0;
                inherit: "default" 0.0;
-               image {
-                  normal: "00_progress_pending_02_bg_h.png";
-                  border: 0 0 0 0;
-               }
+               image.normal: "00_progress_pending_02_bg_h.png";
+            }
+            description { state: "state_end_disabled" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_progress_pending_02_bg_dim.png";
+            }
+            description { state: "state_end_landscape_disabled" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_progress_pending_02_bg_h_dim.png";
             }
          }
       }
       script {
          public landscape = 0;
+         public state_end = 0;
       }
       programs {
          program { name: "slide_to_end";
@@ -1121,6 +1186,7 @@
                  set_state(PART:"elm.progress.progressbar", "state_end", 0.0);
                else
                  set_state(PART:"elm.progress.progressbar", "state_end_landscape", 0.0);
+               set_int(state_end, 1);
             }
             after: "slide_to_begin";
          }
@@ -1132,6 +1198,7 @@
                  set_state(PART:"elm.progress.progressbar", "state_begin", 0.0);
                else
                  set_state(PART:"elm.progress.progressbar", "state_begin_landscape", 0.0);
+               set_int(state_end, 0);
             }
             after: "slide_to_end";
          }
@@ -1152,6 +1219,44 @@
          program { name: "init_pulse";
             action: STATE_SET "default" 0.0;
             target: "elm.progress.progressbar";
+         }
+         program { name: "progressbar_disable";
+            signal: "elm,state,disabled";
+            source: "elm";
+            script {
+               set_state(PART:"background", "disabled", 0.0);
+               if (!get_int(landscape)) {
+                  if (!get_int(state_end))
+                     set_state(PART:"elm.progress.progressbar", "state_begin_disabled", 0.0);
+                  else
+                     set_state(PART:"elm.progress.progressbar", "state_end_disabled", 0.0);
+               }
+               else {
+                  if (!get_int(state_end))
+                     set_state(PART:"elm.progress.progressbar", "state_begin_landscape_disabled", 0.0);
+                  else
+                     set_state(PART:"elm.progress.progressbar", "state_end_landscape_disabled", 0.0);
+               }
+            }
+         }
+         program { name: "progressbar_enable";
+            signal: "elm,state,enabled";
+            source: "elm";
+            script {
+               set_state(PART:"background", "default", 0.0);
+               if (!get_int(landscape)) {
+                  if (!get_int(state_end))
+                     set_state(PART:"elm.progress.progressbar", "state_begin", 0.0);
+                  else
+                     set_state(PART:"elm.progress.progressbar", "state_end", 0.0);
+               }
+               else {
+                  if (!get_int(state_end))
+                     set_state(PART:"elm.progress.progressbar", "state_begin_landscape", 0.0);
+                  else
+                     set_state(PART:"elm.progress.progressbar", "state_end_landscape", 0.0);
+               }
+            }
          }
          program { name: "landscape_mode";
             source: "elm";
