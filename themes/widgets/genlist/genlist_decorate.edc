@@ -111,6 +111,9 @@
                rel2.relative: 0 1;
                align: 1 0.5;
             }
+            description { state: "decorate_flipped" 0.0;
+               inherit: "flipped" 0.0;
+            }
          )
          GENLIST_PART_PADDING_L("elm.edit.icon1.right", "elm.edit.icon.1")
          GENLIST_PART_ICON("elm.swallow.decorate.content",
@@ -133,6 +136,9 @@
                rel1.relative: 1 0;
                rel2.relative: 1 1;
                align: 0 0.5;
+            }
+            description { state: "decorate_flipped" 0.0;
+               inherit: "flipped" 0.0;
             }
          )
          GENLIST_PART_FOCUS_NORMAL
@@ -164,10 +170,58 @@
             target: "elm.edit.icon.1";
             target: "elm.edit.icon.2";
          )
-         GENLIST_PROGRAM_FLIP_EFFECT_TARGET(
+         program { name: "flip_flipped";
+            action:  STATE_SET "flipped" 0.0;
+            transition: DECELERATE 0.5;
             target: "elm.edit.icon.1";
             target: "elm.edit.icon.2";
-         )
+         }
+         program { name: "flip_decorate_flipped";
+            action:  STATE_SET "decorate_flipped" 0.0;
+            transition: DECELERATE 0.5;
+            target: "elm.edit.icon.1";
+            target: "elm.edit.icon.2";
+         }
+         program { name: "unflip_default";
+            action:  STATE_SET "default" 0.0;
+            transition: DECELERATE 0.5;
+            target: "elm.edit.icon.1";
+            target: "elm.edit.icon.2";
+         }
+         program { name: "unflip_decorated";
+            action:  STATE_SET "decorate" 0.0;
+            transition: DECELERATE 0.5;
+            target: "elm.edit.icon.1";
+            target: "elm.edit.icon.2";
+         }
+         program { name: "flip_enabled_effect";
+            signal:  "elm,state,flip,enabled";
+            source:  "elm";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.edit.icon.1", st, 30, vl);
+               if (!strcmp(st, "decorate")) {
+                  run_program(PROGRAM:"flip_decorate_flipped");
+                } else {
+                  run_program(PROGRAM:"flip_flipped");
+                }
+            }
+         }
+         program { name: "flip_disabled_effect";
+            signal:  "elm,state,flip,disabled";
+            source:  "elm";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.edit.icon.1", st, 30, vl);
+               if (!strcmp(st, "decorate_flipped")) {
+                  run_program(PROGRAM:"unflip_decorated");
+                } else {
+                  run_program(PROGRAM:"unflip_default");
+                }
+            }
+         }
          program { name: "flip_enabled";
             signal:  "elm,state,flip,enabled";
             source:  "elm";
