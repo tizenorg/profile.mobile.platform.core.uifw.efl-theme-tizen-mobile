@@ -33,6 +33,21 @@
          image : "00_thumbs_bg_focus.png" COMP;
          image : "00_thumbs_loading_bg.png" COMP;
       }
+      script {
+         public highlight_timer;
+         public mouse_down(val) {
+            if (get_int(highlight_timer))
+               cancel_timer(get_int(highlight_timer));
+            set_int(highlight_timer, 0);
+            set_state(PART:"focus_bg", "enabled", 0.0);
+         }
+         public mouse_up(val) {
+            if (get_int(highlight_timer))
+               cancel_timer(get_int(highlight_timer));
+            set_int(highlight_timer, 0);
+            set_state(PART:"focus_bg", "default", 0.0);
+         }
+      }
       parts {
          part { name: "bg";
             type: RECT;
@@ -244,19 +259,53 @@
          }
       }
       programs {
-         program { name: "go_mouse_down";
-            signal: "mouse,down,1";
-            source: "reorder_bg";
+#if 0
+         // FIXME: gengrid should use this also
+         // but has side-effects.
+         program { name: "selected";
+            signal: "elm,state,selected";
+            source: "elm";
             action: STATE_SET "enabled" 0.0;
             target: "focus_bg";
             transition: ACCELERATE 0.2;
          }
-         program { name: "go_mouse_up";
-            signal: "mouse,up,1";
-            source: "reorder_bg";
+         program { name: "unselected";
+            signal: "elm,state,unselected";
+            source: "elm";
             action: STATE_SET "default" 0.0;
             target: "focus_bg";
             transition: DECELERATE 0.2;
+         }
+#endif
+         program { name: "go_mouse_down";
+            signal: "mouse,down,1";
+            source: "reorder_bg";
+            script {
+               set_int(highlight_timer, timer(0.1, "mouse_down", 1));
+            }
+         }
+         program { name: "go_mouse_up";
+            signal: "mouse,up,1";
+            source: "reorder_bg";
+            script {
+               if (get_int(highlight_timer)) {
+                  set_state(PART:"focus_bg", "enabled", 0.0);
+                  cancel_timer(get_int(highlight_timer));
+                  set_int(highlight_timer, timer(0.1, "mouse_up", 1));
+               } else {
+                  set_state(PART:"focus_bg", "default", 0.0);
+               }
+            }
+         }
+         program { name: "go_mouse_move";
+            signal: "mouse,move";
+            source: "reorder_bg";
+            script {
+               if (get_int(highlight_timer)) {
+                  cancel_timer(get_int(highlight_timer));
+                  set_int(highlight_timer, 0);
+               }
+            }
          }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
