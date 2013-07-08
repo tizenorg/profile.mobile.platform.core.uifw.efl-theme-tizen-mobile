@@ -320,8 +320,6 @@
          program { name: "check_off"; \
             signal: "elm,state,check,off"; \
             source: "elm"; \
-            action: STATE_SET "default" 0.0; \
-            target: "check"; \
             script { \
                if (get_int(check_state) == CHECK_STATE_VISIBLE) \
                  { \
@@ -1127,6 +1125,7 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
          public is_drag = 0;
          public was_drag = 0;
          public check_on = 0;
+         public check_disable = 0;
       }
       parts {
          part { name: "bg";
@@ -1589,7 +1588,8 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                   drag = 0.0;
                }
                set_drag(PART:"button", drag, 0.0);
-               set_state(PART:"bg_image", "visible", 0.0);
+               if (get_int(check_disable) == 0)
+                  set_state(PART:"bg_image", "visible", 0.0);
                set_state(PART:"button", "on", 0.0);
                set_int(check_on, 1);
             }
@@ -1606,7 +1606,8 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                   drag = 100.0;
                }
                set_drag(PART:"button", drag, 0.0);
-               set_state(PART:"bg_image", "default", 0.0);
+               if (get_int(check_disable) == 0)
+                  set_state(PART:"bg_image", "default", 0.0);
                set_state(PART:"button", "default", 0.0);
                set_int(check_on, 0);
             }
@@ -1668,6 +1669,7 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                  set_state(PART:"elm.swallow.content", "disabled_visible", 0.0);
                else
                  set_state(PART:"elm.swallow.content", "disabled", 0.0);
+               set_int(check_disable, 1);
             }
          }
          program { name: "enable";
@@ -1701,6 +1703,7 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                  set_state(PART:"elm.swallow.content", "visible", 0.0);
                else
                  set_state(PART:"elm.swallow.content", "default", 0.0);
+               set_int(check_disable, 0);
             }
          }
          program { name: "to_rtl";
