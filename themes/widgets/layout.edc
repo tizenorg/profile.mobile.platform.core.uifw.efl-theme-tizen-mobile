@@ -1793,44 +1793,102 @@ group {
    }
 }
 
-   #define WIDTH 720.0
-   #define HEIGHT 1280.0
+#define DRAWER_PORT_SIZE 400 400
+#define DRAWER_LAND_SIZE 1280 720
+#define DRAWER_SIDE_SPACE 80 0
+#define DRAWER_THRES 0.2
 
    group { name: "elm/layout/drawer/default";
       script {
-         public down_flag;
-         public down_flag2;
-         public down_flag3;
-         public dx_down;
-         public cur_page;
-         public direct;
+         public down_center;   //0 or 1
+         public down_right;    //0 or 1
+         public down_left;     //0 or 1
+         public down_dx;       //mouse down cursor position. 
+         public cur_page;      //-1: left, 0: center, 1: right
+         public direct;        //-1: left, 0: center, 1: right
       }
       parts {
-         part { name: "right_drag_area";
+         part { name: "base";
+            type: RECT;
+            description { state: "default" 0.0;
+               visible: 0;
+            }
+         }
+         part { name: "drag_area_left_space";
             type: RECT;
             scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1.relative: -1 0;
+               rel2.relative: -1 1;
+               min: DRAWER_SIDE_SPACE;
+               fixed: 1 1;
+               align: 0 0;
+            }
+         }
+         part { name: "drag_area_right_space";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1.relative: 2 0;
+               rel2.relative: 2 1;
+               min: DRAWER_SIDE_SPACE;
+               fixed: 1 1;
+               align: 1 0;
+            }
+         }
+         part { name: "right_drag_area";
+            type: RECT;
             mouse_events: 0;
             description { state: "default" 0.0;
                visible: 0;
                rel1.relative: 0 0;
-               rel2.relative: 1.8 1;
+               rel2.relative: 0 1;
+               rel2.to: "drag_area_right_space";
             }
          }
          part { name: "left_drag_area";
             type: RECT;
-            scale: 1;
             mouse_events: 0;
             description { state: "default" 0.0;
                visible: 0;
-               rel1.relative: -0.8 0;
+               rel1.relative: 1 0;
                rel2.relative: 1 1;
+               rel1.to: "drag_area_left_space";
             }
          }
-         part { name: "swallow.left";
+         part { name: "left_space";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1.relative: 0 0;
+               rel2.relative: 0 1;
+               min: DRAWER_SIDE_SPACE;
+               fixed: 1 1;
+               align: 0 0;
+            }
+         }
+         part { name: "right_space";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1.relative: 1 0;
+               rel2.relative: 1 1;
+               min: DRAWER_SIDE_SPACE;
+               fixed: 1 1;
+               align: 1 0;
+            }
+         }
+
+         part { name: "elm.swallow.left";
             type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
-               rel2.relative: 0.8 1.0;
+               rel2.relative: 0 1;
+               rel2.to: "right_space";
                visible: 0;
             }
             description { state: "show" 0.0;
@@ -1838,11 +1896,12 @@ group {
                visible: 1;
             }
          }
-         part { name: "swallow.right";
+         part { name: "elm.swallow.right";
             type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
-               rel1.relative: 0.2 0.0;
+               rel1.relative: 1 0;
+               rel1.to: "left_space";
                visible: 0;
             }
             description { state: "show" 0.0;
@@ -1850,10 +1909,12 @@ group {
                visible: 1;
             }
          }
-         part { name: "swallow.center";
+         part { name: "elm.swallow.center";
             type: SWALLOW;
             scale: 1;
             description { state: "default" 0.0;
+               rel1.to: "base";
+               rel2.to: "base";
             }
             description { state: "left" 0.0;
                rel1.to: "left_dragable";
@@ -1870,11 +1931,14 @@ group {
             repeat_events: 1;
             dragable {
                x: 1 1 0;
-               y: 0 0 0;
                confine: "right_drag_area";
             }
             description { state: "default" 0.0;
-               min: WIDTH HEIGHT;
+               min: DRAWER_PORT_SIZE;
+               color: 0 0 0 0;
+            }
+            description { state: "landscape" 0.0;
+               min: DRAWER_LAND_SIZE;
                color: 0 0 0 0;
             }
          }
@@ -1884,11 +1948,14 @@ group {
             repeat_events: 1;
             dragable {
                x: 1 1 0;
-               y: 0 0 0;
                confine: "left_drag_area";
             }
             description { state: "default" 0.0;
-               min: WIDTH HEIGHT;
+               min: DRAWER_PORT_SIZE;
+               color: 0 0 0 0;
+            }
+            description { state: "landscape" 0.0;
+               min: DRAWER_LAND_SIZE;
                color: 0 0 0 0;
             }
          }
@@ -1900,48 +1967,51 @@ group {
             script {
                set_drag(PART:"left_dragable", 1, 0);
                set_drag(PART:"right_dragable", 0, 0);
-               set_int(cur_page, 0);
-               set_int(direct, 0);
-               set_int(down_flag, 0);
             }
          }
          program { name: "mouse,down,center";
             signal: "mouse,down,1";
-            source: "swallow.center";
+            source: "elm.swallow.center";
             script {
                if (get_int(cur_page) == 0) {
                   new dx, dy;
                   get_mouse(dx, dy);
-                  set_int(dx_down, dx);
-                  set_int(down_flag, 1);
+                  set_int(down_dx, dx);
+                  set_int(down_center, 1);
                }
 	    }
          }
          program { name: "mouse,move,center";
             signal: "mouse,move";
-            source: "swallow.center";
+            source: "elm.swallow.center";
             script {
                if (get_int(cur_page) == 0) {
-                  if (get_int(down_flag) == 1) {
+                  if (get_int(down_center) == 1) {
+
+                     //decide the drag direction here.
                      new dx1, dy1, dx2;
                      get_mouse(dx1, dy1);
-                     dx2 = get_int(dx_down);
+                     dx2 = get_int(down_dx);
+
+                     //right
                      if (dx1 > dx2) {
-                        set_state(PART:"swallow.center", "right", 0.0);
+                        set_state(PART:"elm.swallow.center", "right", 0.0);
                         set_int(direct, 1);
-                        set_int(down_flag2, 1);
+                        set_int(down_right, 1);
                      }
+                     //left
                      else if (dx1 < dx2){
-                        set_state(PART:"swallow.center", "left", 0.0);
+                        set_state(PART:"elm.swallow.center", "left", 0.0);
                         set_int(direct, -1);
-                        set_int(down_flag3, 1);
+                        set_int(down_left, 1);
                      }
+                     //no change
                      else {
                         set_int(direct, 0);
                         set_drag(PART:"left_dragable", 1, 0);
                         set_drag(PART:"right_dragable", 0, 0);
                      }
-                     set_int(down_flag, 0);
+                     set_int(down_center, 0);
                   }
                }
             }
@@ -1950,10 +2020,10 @@ group {
             signal: "mouse,move";
             source: "right_dragable";
             script {
-               if (get_int(down_flag2) == 1) {
-                  set_state(PART:"swallow.left", "show", 0.0);
-                  set_state(PART:"swallow.right", "default", 0.0);
-                  set_int(down_flag2, 0);
+               if (get_int(down_right) == 1) {
+                  set_state(PART:"elm.swallow.left", "show", 0.0);
+                  set_state(PART:"elm.swallow.right", "default", 0.0);
+                  set_int(down_right, 0);
                }
             }
          }
@@ -1962,33 +2032,42 @@ group {
             source: "right_dragable";
             script {
                if (get_int(direct) == 1) {
-               new Float:dx, Float:dy;
-               get_drag(PART:"right_dragable", dx, dy);
+                  new Float:dx, Float:dy;
+                  get_drag(PART:"right_dragable", dx, dy);
 
-               if (get_int(cur_page) == 1) {
-                  if (dx > 0.8) {
-                     set_drag(PART:"right_dragable", 1, 0);
+                  //Right -> Center
+                  if (get_int(cur_page) == 1) {
+
+                     //Roll back the drag position if the drag size is smaller
+                     //than threshold.
+                     if (dx > (1.0 - DRAWER_THRES)) {
+                        set_drag(PART:"right_dragable", 1, 0);
+                     }
+                     //set to center
+                     else {
+                        set_state(PART:"elm.swallow.center", "default", 0.0);
+                        set_state(PART:"elm.swallow.left", "default", 0.0);
+                        set_drag(PART:"right_dragable", 0, 0);
+                        set_drag(PART:"left_dragable", 1, 0);
+                        set_int(cur_page, 0);
+                        set_int(direct, 0);
+                     }
                   }
+                  //Center -> Right
                   else {
-                     set_state(PART:"swallow.center", "default", 0.0);
-                     set_state(PART:"swallow.left", "default", 0.0);
-                     set_drag(PART:"right_dragable", 0, 0);
-                     set_drag(PART:"left_dragable", 1, 0);
-                     set_int(cur_page, 0);
-                     set_int(direct, 0);
+                     //Roll back the drag position if the drag size is smaller
+                     //than threshold.
+                     if (dx < DRAWER_THRES) {
+                        set_drag(PART:"right_dragable", 0, 0);
+                        set_drag(PART:"left_dragable", 1, 0);
+                        set_int(direct, 0);
+                     }
+                     //set to right
+                     else {
+                        set_drag(PART:"right_dragable", 1, 0);
+                        set_int(cur_page, 1);
+                     }
                   }
-               }
-               else {
-                  if (dx < 0.2) {
-                     set_drag(PART:"right_dragable", 0, 0);
-                     set_drag(PART:"left_dragable", 1, 0);
-                     set_int(direct, 0);
-                  }
-                  else {
-                     set_drag(PART:"right_dragable", 1, 0);
-                     set_int(cur_page, 1);
-                  }
-               }
                }
             }
          }
@@ -1996,10 +2075,10 @@ group {
             signal: "mouse,move";
             source: "left_dragable";
             script {
-               if (get_int(down_flag3) == 1) {
-                  set_state(PART:"swallow.right", "show", 0.0);
-                  set_state(PART:"swallow.left", "default", 0.0);
-                  set_int(down_flag3, 0);
+               if (get_int(down_left) == 1) {
+                  set_state(PART:"elm.swallow.right", "show", 0.0);
+                  set_state(PART:"elm.swallow.left", "default", 0.0);
+                  set_int(down_left, 0);
                }
             }
          }
@@ -2011,24 +2090,32 @@ group {
                   new Float:dx, Float:dy;
                   get_drag(PART:"left_dragable", dx, dy);
 
+                  //Left -> Center
                   if (get_int(cur_page) == -1) {
-                     if (dx < 0.2) {
+
+                     //Roll back the drag position if the drag size is smaller
+                     //than threshold.
+                     if (dx < DRAWER_THRES) {
                         set_drag(PART:"left_dragable", 0, 0);
                      }
+                     //set to center
                      else {
                         set_drag(PART:"left_dragable", 1, 0);
                         set_drag(PART:"right_dragable", 0, 0);
                         set_int(cur_page, 0);
                         set_int(direct, 0);
-                        set_state(PART:"swallow.center", "default", 0.0);
-                        set_state(PART:"swallow.right", "default", 0.0);
+                        set_state(PART:"elm.swallow.center", "default", 0.0);
+                        set_state(PART:"elm.swallow.right", "default", 0.0);
                      }
-	          }
+                  }
+                  //Center -> Left
                   else {
-                     if (dx < 0.8) {
+                     if (dx < (1.0 - DRAWER_THRES)) {
                         set_drag(PART:"left_dragable", 0, 0);
                         set_int(cur_page, -1);
                      }
+                     //Roll back the drag position if the drag size is smaller
+                     //than threshold.
                      else {
                         set_drag(PART:"left_dragable", 1, 0);
                         set_drag(PART:"right_dragable", 0, 0);
@@ -2038,5 +2125,34 @@ group {
                }
             }
          }
+         program { name: "landscape_mode";
+            source: "elm";
+            signal: "elm,state,orient,90";
+            action: STATE_SET "landscape" 0.0;
+            target: "left_dragable";
+            target: "right_dragable";
+         }
+         program { name: "landscape_mode2";
+            source: "elm";
+            signal: "elm,state,orient,270";
+            action: STATE_SET "landscape" 0.0;
+            target: "left_dragable";
+            target: "right_dragable";
+         }
+         program { name: "portrait_mode";
+            source: "elm";
+            signal: "elm,state,orient,0";
+            action: STATE_SET "default" 0.0;
+            target: "left_dragable";
+            target: "right_dragable";
+         }
+         program { name: "portrait_mode2";
+            source: "elm";
+            signal: "elm,state,orient,180";
+            action: STATE_SET "default" 0.0;
+            target: "left_dragable";
+            target: "right_dragable";
+         }
       }
    }
+
