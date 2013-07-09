@@ -1963,6 +1963,27 @@
                else \
                   set_state(PART:"bg_dialogue", "bottom", 0.0); \
             } \
+         } \
+         program { name: "bg_normal"; \
+            signal: "elm,state,normal"; \
+            source: "*"; \
+            script { \
+               new st[31]; \
+               new Float:vl; \
+               new st2[31]; \
+               new Float:vl2; \
+               get_state(PART:"2depth", st, 30, vl); \
+               get_state(PART:"bg_dialogue", st2, 30, vl2); \
+               if (!strcmp(st2, "selected") || \
+                  !strcmp(st2, "top_selected") || \
+                  !strcmp(st2, "center_selected") ||  \
+                  !strcmp(st2, "bottom_selected")) \
+                  set_state(PART:"bg_dialogue", "selected", 0.0); \
+               else if (!strcmp(st, "2depth")) \
+                  set_state(PART:"bg_dialogue", "2depth", 0.0); \
+               else \
+                  set_state(PART:"bg_dialogue", "default", 0.0); \
+            } \
          }
 
 #define GENLIST_PROGRAM_SELECT_DIALOGUE( TARGET ) \
@@ -2278,22 +2299,6 @@
          program { name: "flip_disabled_target"; \
             signal:  "elm,state,flip,disabled"; \
             source:  "elm"; \
-            action:  STATE_SET "default" 0.0; \
-            TARGET \
-         }
-
-#define GENLIST_PROGRAM_FLIP_EFFECT_TARGET( TARGET ) \
-         program { name: "flip_enabled_effect"; \
-            signal:  "elm,state,flip,enabled"; \
-            source:  "elm"; \
-            transition: DECELERATE 0.5; \
-            action:  STATE_SET "flipped" 0.0; \
-            TARGET \
-         } \
-         program { name: "flip_disabled_effect"; \
-            signal:  "elm,state,flip,disabled"; \
-            source:  "elm"; \
-            transition: DECELERATE 0.5; \
             action:  STATE_SET "default" 0.0; \
             TARGET \
          }
