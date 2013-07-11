@@ -35,7 +35,7 @@
 
 #define TOOLBAR_PRESSED_TEXT_STYLE(_font_size) \
    style { name: "toolbar_pressed_text_style_"_font_size; \
-      base: "font=Tizen:style=Bold style=far_shadow,bottom shadow_color="TOOLBAR_ITEM_PRESSED_TEXTBLOCK_SHADOW_COLOR_INC" font_size="_font_size" align=center color="TOOLBAR_ITEM_PRESSED_TEXTBLOCK_COLOR_INC" wrap=word ellipsis=1 text_class=tizen linegap=0"; \
+      base: "font=Tizen:style=Bold style=far_shadow,top shadow_color="TOOLBAR_ITEM_PRESSED_TEXTBLOCK_SHADOW_COLOR_INC" font_size="_font_size" align=center color="TOOLBAR_ITEM_PRESSED_TEXTBLOCK_COLOR_INC" wrap=word ellipsis=1 text_class=tizen linegap=0"; \
       tag: "br" "\n"; \
       tag: "ps" "ps"; \
       tag: "hilight" "+ font=Tizen:style=Bold"; \
@@ -913,7 +913,11 @@ group { name: "elm/toolbar/item/tabbar";
             set_state_val(PART:"elm.text", STATE_REL2_OFFSET, TOOLBAR_SLIDING_TEXT_OFFSET, 0);
             set_state(PART:"elm.text", "custom", 0.0);
          } else {
-            if (get_int(selected))
+            if(get_int(pressed))
+            {
+               set_state(PART:"elm.text", "pressed", 0.0);
+            }
+            else if (get_int(selected))
             {
                set_state(PART:"elm.text", "selected", 0.0);
             }
@@ -1216,7 +1220,14 @@ group { name: "elm/toolbar/item/tabbar";
              rel1.to: "elm.swallow.icon";
              rel1.offset: 0 2;
              rel2.to: "elm.swallow.icon";
-             rel2.offset: 0 2;
+             rel2.offset: -1 1;
+         }
+         description { state: "pressed" 0.0;
+             inherit: "default" 0.0;
+             rel1.to: "elm.swallow.icon";
+             rel1.offset: 0 -2;
+             rel2.to: "elm.swallow.icon";
+             rel2.offset: -1 -3;
          }
       }
       part { name: "elm.swallow.icon_new.proxy";
@@ -1229,7 +1240,14 @@ group { name: "elm/toolbar/item/tabbar";
              rel1.to: "elm.swallow.icon_new";
              rel1.offset: 0 2;
              rel2.to: "elm.swallow.icon_new";
-             rel2.offset: 0 2;
+             rel2.offset: -1 1;
+         }
+         description { state: "pressed" 0.0;
+             inherit: "default" 0.0;
+             rel1.to: "elm.swallow.icon_new";
+             rel1.offset: 0 -2;
+             rel2.to: "elm.swallow.icon_new";
+             rel2.offset: -1 -3;
          }
       }
       part { name: "elm.swallow.icon.proxy.2";
@@ -1854,9 +1872,9 @@ group { name: "elm/toolbar/item/tabbar";
             set_int(selected, 1);
             get_state(PART:"elm.text", st, 30, vl);
             if (!strcmp(st, "visible"))
-                set_state(PART:"elm.text", "selected", vl);
+              set_state(PART:"elm.text", "selected", vl);
             if (strcmp(st, "default"))
-                run_program(PROGRAM:"slide_start");
+              run_program(PROGRAM:"slide_start");
          }
       }
       program { name: "go_passive";
@@ -1876,28 +1894,49 @@ group { name: "elm/toolbar/item/tabbar";
             set_int(selected, 0);
             get_state(PART:"elm.text", st, 30, vl);
             if (!strcmp(st, "selected"))
-                set_state(PART:"elm.text", "visible", vl);
+              set_state(PART:"elm.text", "visible", vl);
             if (strcmp(st, "default"))
-                run_program(PROGRAM:"slide_stop");
+              run_program(PROGRAM:"slide_stop");
          }
       }
       program { name: "moving";
          signal:  "elm,state,moving";
          source:  "elm";
          script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+
             set_state(PART:"bg_cover", "moving", 0.0);
+            set_state(PART:"elm.text", "pressed", 0.0);
+            set_state(PART:"elm.swallow.icon.proxy", "pressed", 0.0);
+            set_state(PART:"elm.swallow.icon_new.proxy", "pressed", 0.0);
+            set_state(PART:"elm.icon.clipper", "pressed", 0.0);
+            set_state(PART:"elm.icon.proxy.clipper", "pressed", 0.0);
+            set_state(PART:"elm.icon.proxy.clipper.2", "pressed", 0.0);
+            set_int(pressed, 1);
+            if (strcmp(st, "default"))
+              run_program(PROGRAM:"slide_stop");
          }
       }
       program { name: "pressed";
          signal:  "mouse,down,1";
          source:  "event";
          script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+
             set_state(PART:"bg_cover", "pressed", 0.0);
             set_state(PART:"elm.text", "pressed", 0.0);
+            set_state(PART:"elm.swallow.icon.proxy", "pressed", 0.0);
+            set_state(PART:"elm.swallow.icon_new.proxy", "pressed", 0.0);
             set_state(PART:"elm.icon.clipper", "pressed", 0.0);
             set_state(PART:"elm.icon.proxy.clipper", "pressed", 0.0);
             set_state(PART:"elm.icon.proxy.clipper.2", "pressed", 0.0);
             set_int(pressed, 1);
+            if (strcmp(st, "default"))
+              run_program(PROGRAM:"slide_stop");
          }
       }
       program {
@@ -1916,9 +1955,12 @@ group { name: "elm/toolbar/item/tabbar";
                   {
                     set_drag(PART:"event", 0.0, 0.0);
                     set_state(PART:"bg_cover", "default", 0.0);
+                    set_int(pressed, 0);
                     if (get_int(selected))
                       {
                         set_state(PART:"elm.text", "selected", 0.0);
+                        set_state(PART:"elm.swallow.icon.proxy", "default", 0.0);
+                        set_state(PART:"elm.swallow.icon_new.proxy", "default", 0.0);
                         set_state(PART:"elm.icon.clipper", "selected", 0.0);
                         set_state(PART:"elm.icon.proxy.clipper", "selected", 0.0);
                         set_state(PART:"elm.icon.proxy.clipper.2", "selected", 0.0);
@@ -1926,6 +1968,8 @@ group { name: "elm/toolbar/item/tabbar";
                     else
                       {
                         set_state(PART:"elm.text", "visible", 0.0);
+                        set_state(PART:"elm.swallow.icon.proxy", "default", 0.0);
+                        set_state(PART:"elm.swallow.icon_new.proxy", "default", 0.0);
                         set_state(PART:"elm.icon.clipper", "default", 0.0);
                         set_state(PART:"elm.icon.proxy.clipper", "default", 0.0);
                         set_state(PART:"elm.icon.proxy.clipper.2", "default", 0.0);
@@ -1933,7 +1977,7 @@ group { name: "elm/toolbar/item/tabbar";
                   }
                 set_drag(PART:"event", 0.0, 0.0);
               }
-          }
+         }
       }
       program { name: "unpressed";
          signal:  "mouse,up,1";
@@ -1945,6 +1989,8 @@ group { name: "elm/toolbar/item/tabbar";
             if (get_int(selected))
               {
                 set_state(PART:"elm.text", "selected", 0.0);
+                set_state(PART:"elm.swallow.icon.proxy", "default", 0.0);
+                set_state(PART:"elm.swallow.icon_new.proxy", "default", 0.0);
                 set_state(PART:"elm.icon.clipper", "selected", 0.0);
                 set_state(PART:"elm.icon.proxy.clipper", "selected", 0.0);
                 set_state(PART:"elm.icon.proxy.clipper.2", "selected", 0.0);
@@ -1952,6 +1998,8 @@ group { name: "elm/toolbar/item/tabbar";
             else
               {
                 set_state(PART:"elm.text", "visible", 0.0);
+                set_state(PART:"elm.swallow.icon.proxy", "default", 0.0);
+                set_state(PART:"elm.swallow.icon_new.proxy", "default", 0.0);
                 set_state(PART:"elm.icon.clipper", "default", 0.0);
                 set_state(PART:"elm.icon.proxy.clipper", "default", 0.0);
                 set_state(PART:"elm.icon.proxy.clipper.2", "default", 0.0);
@@ -2104,7 +2152,9 @@ group { name: "elm/toolbar/item/tabbar";
                  set_state(PART:"padding_after_icon", "visible", 0.0);
                  set_state(PART:"bg", "icon_text", 0.0);
               }
-            if (get_int(selected))
+            if (get_int(pressed))
+              set_state(PART:"elm.text", "pressed", 0.0);
+            else if (get_int(selected))
               set_state(PART:"elm.text", "selected", 0.0);
             else
               set_state(PART:"elm.text", "visible", 0.0);
