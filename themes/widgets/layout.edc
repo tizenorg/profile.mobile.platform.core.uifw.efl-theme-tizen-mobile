@@ -1826,6 +1826,8 @@ group {
          public direct;          //-1: left, 0: center, 1: right
          public right_swallowed; //0 or 1
          public left_swallowed;  //0 or 1
+         public left_dx;         //mouse down cursor on left swallow
+         public right_dx;        //mouse down cursor on right swallow
       }
       parts {
          part { name: "base";
@@ -2154,6 +2156,70 @@ group {
                         set_drag(PART:"right_dragable", 0, 0);
                         set_int(direct, 0);
                      }
+                  }
+               }
+            }
+         }
+         program { name: "mouse,down,left,swallow";
+            signal: "mouse,down,1";
+            source: "elm.swallow.left";
+            script {
+               if (get_int(cur_page) == 1) {
+                  new dx, dy;
+                  get_mouse(dx, dy);
+                  set_int(left_dx, dx);
+               }
+            }
+         }
+         program { name: "mouse,up,left,swallow";
+            signal: "mouse,up,1";
+            source: "elm.swallow.left";
+            script {
+               if (get_int(cur_page) == 1) {
+                  new dx, dy, dx_down;
+                  get_mouse(dx, dy);
+                  dx_down = get_int(left_dx);
+                  if (dx < dx_down - 100) {
+                     set_state(PART:"elm.swallow.center", "default", 0.0);
+                     set_state(PART:"elm.swallow.left", "default", 0.0);
+                     set_drag(PART:"right_dragable", 0, 0);
+                     set_drag(PART:"left_dragable", 1, 0);
+                     set_int(cur_page, 0);
+                     set_int(direct, 0);
+                     emit("elm,state,center,active", "");
+                     emit("elm,state,left,inactive", "");
+                  }
+               }
+            }
+         }
+         program { name: "mouse,down,right,swallow";
+            signal: "mouse,down,1";
+            source: "elm.swallow.right";
+            script {
+               if (get_int(cur_page) == -1) {
+                  new dx, dy;
+                  get_mouse(dx, dy);
+                  set_int(right_dx, dx);
+               }
+            }
+         }
+         program { name: "mouse,up,right,swallow";
+            signal: "mouse,up,1";
+            source: "elm.swallow.right";
+            script {
+               if (get_int(cur_page) == -1) {
+                  new dx, dy, dx_down;
+                  get_mouse(dx, dy);
+                  dx_down = get_int(right_dx);
+                  if (dx > dx_down + 100) {
+                     set_state(PART:"elm.swallow.center", "default", 0.0);
+                     set_state(PART:"elm.swallow.right", "default", 0.0);
+                     set_drag(PART:"right_dragable", 0, 0);
+                     set_drag(PART:"left_dragable", 1, 0);
+                     set_int(cur_page, 0);
+                     set_int(direct, 0);
+                     emit("elm,state,center,active", "");
+                     emit("elm,state,right,inactive", "");
                   }
                }
             }
