@@ -1822,8 +1822,8 @@ group {
          public down_right;      //0 or 1
          public down_left;       //0 or 1
          public down_dx;         //mouse down cursor position.
-         public cur_page;        //-1: left, 0: center, 1: right
-         public direct;          //-1: left, 0: center, 1: right
+         public cur_pos;         //center current position. -1: left, 0: center, 1: right
+         public direct;          //center moving direction. -1: left, 0: center, 1: right
          public right_swallowed; //0 or 1
          public left_swallowed;  //0 or 1
          public left_dx;         //mouse down cursor on left swallow
@@ -1999,7 +1999,7 @@ group {
             signal: "mouse,down,1";
             source: "elm.swallow.center";
             script {
-               if (get_int(cur_page) == 0) {
+               if (get_int(cur_pos) == 0) {
                   new dx, dy;
                   get_mouse(dx, dy);
                   set_int(down_dx, dx);
@@ -2011,7 +2011,7 @@ group {
             signal: "mouse,move";
             source: "elm.swallow.center";
             script {
-               if (get_int(cur_page) == 0) {
+               if (get_int(cur_pos) == 0) {
                   if (get_int(down_center) == 1) {
 
                      //decide the drag direction here.
@@ -2063,7 +2063,7 @@ group {
                   get_drag(PART:"right_dragable", dx, dy);
 
                   //Right -> Center
-                  if (get_int(cur_page) == 1) {
+                  if (get_int(cur_pos) == 1) {
 
                      //Roll back the drag position if the drag size is smaller
                      //than threshold.
@@ -2076,7 +2076,7 @@ group {
                         set_state(PART:"elm.swallow.left", "default", 0.0);
                         set_drag(PART:"right_dragable", 0, 0);
                         set_drag(PART:"left_dragable", 1, 0);
-                        set_int(cur_page, 0);
+                        set_int(cur_pos, 0);
                         set_int(direct, 0);
                         emit("elm,state,center,active", "");
                         emit("elm,state,left,inactive", "");
@@ -2094,7 +2094,7 @@ group {
                      //set to right
                      else {
                         set_drag(PART:"right_dragable", 1, 0);
-                        set_int(cur_page, 1);
+                        set_int(cur_pos, 1);
                         emit("elm,state,left,active", "");
                         emit("elm,state,center,inactive", "");
                      }
@@ -2122,7 +2122,7 @@ group {
                   get_drag(PART:"left_dragable", dx, dy);
 
                   //Left -> Center
-                  if (get_int(cur_page) == -1) {
+                  if (get_int(cur_pos) == -1) {
 
                      //Roll back the drag position if the drag size is smaller
                      //than threshold.
@@ -2133,7 +2133,7 @@ group {
                      else {
                         set_drag(PART:"left_dragable", 1, 0);
                         set_drag(PART:"right_dragable", 0, 0);
-                        set_int(cur_page, 0);
+                        set_int(cur_pos, 0);
                         set_int(direct, 0);
                         set_state(PART:"elm.swallow.center", "default", 0.0);
                         set_state(PART:"elm.swallow.right", "default", 0.0);
@@ -2145,7 +2145,7 @@ group {
                   else {
                      if (dx < (1.0 - DRAWER_THRES)) {
                         set_drag(PART:"left_dragable", 0, 0);
-                        set_int(cur_page, -1);
+                        set_int(cur_pos, -1);
                         emit("elm,state,right,active", "");
                         emit("elm,state,center,inactive", "");
                      }
@@ -2164,7 +2164,7 @@ group {
             signal: "mouse,down,1";
             source: "elm.swallow.left";
             script {
-               if (get_int(cur_page) == 1) {
+               if (get_int(cur_pos) == 1) {
                   new dx, dy;
                   get_mouse(dx, dy);
                   set_int(left_dx, dx);
@@ -2175,7 +2175,7 @@ group {
             signal: "mouse,up,1";
             source: "elm.swallow.left";
             script {
-               if (get_int(cur_page) == 1) {
+               if (get_int(cur_pos) == 1) {
                   new dx, dy, dx_down;
                   get_mouse(dx, dy);
                   dx_down = get_int(left_dx);
@@ -2184,7 +2184,7 @@ group {
                      set_state(PART:"elm.swallow.left", "default", 0.0);
                      set_drag(PART:"right_dragable", 0, 0);
                      set_drag(PART:"left_dragable", 1, 0);
-                     set_int(cur_page, 0);
+                     set_int(cur_pos, 0);
                      set_int(direct, 0);
                      emit("elm,state,center,active", "");
                      emit("elm,state,left,inactive", "");
@@ -2196,7 +2196,7 @@ group {
             signal: "mouse,down,1";
             source: "elm.swallow.right";
             script {
-               if (get_int(cur_page) == -1) {
+               if (get_int(cur_pos) == -1) {
                   new dx, dy;
                   get_mouse(dx, dy);
                   set_int(right_dx, dx);
@@ -2207,7 +2207,7 @@ group {
             signal: "mouse,up,1";
             source: "elm.swallow.right";
             script {
-               if (get_int(cur_page) == -1) {
+               if (get_int(cur_pos) == -1) {
                   new dx, dy, dx_down;
                   get_mouse(dx, dy);
                   dx_down = get_int(right_dx);
@@ -2216,7 +2216,7 @@ group {
                      set_state(PART:"elm.swallow.right", "default", 0.0);
                      set_drag(PART:"right_dragable", 0, 0);
                      set_drag(PART:"left_dragable", 1, 0);
-                     set_int(cur_page, 0);
+                     set_int(cur_pos, 0);
                      set_int(direct, 0);
                      emit("elm,state,center,active", "");
                      emit("elm,state,right,inactive", "");
@@ -2228,7 +2228,7 @@ group {
             source: "elm";
             signal: "elm,action,left,active";
             script {
-               if (get_int(cur_page) != 1 && get_int(left_swallowed) == 1) {
+               if (get_int(cur_pos) != 1 && get_int(left_swallowed) == 1) {
                   set_state(PART:"elm.swallow.center", "right", 0.0);
                   set_state(PART:"elm.swallow.right", "default", 0.0);
                   set_state(PART:"elm.swallow.left", "show", 0.0);
@@ -2236,12 +2236,12 @@ group {
                   emit("elm,state,left,active", "");
                   emit("elm,state,center,inactive", "");
 
-                  if (get_int(cur_page) == -1)
+                  if (get_int(cur_pos) == -1)
                      emit("elm,state,right,inactive", "");
                   else
                      emit("elm,state,center,inactive", "");
 
-                  set_int(cur_page, 1);
+                  set_int(cur_pos, 1);
                   set_int(direct, 1);
                }
             }
@@ -2250,7 +2250,7 @@ group {
             source: "elm";
             signal: "elm,action,right,active";
             script {
-               if (get_int(cur_page) != -1 && get_int(right_swallowed) == 1) {
+               if (get_int(cur_pos) != -1 && get_int(right_swallowed) == 1) {
                   set_state(PART:"elm.swallow.center", "left", 0.0);
                   set_state(PART:"elm.swallow.right", "show", 0.0);
                   set_state(PART:"elm.swallow.left", "default", 0.0);
@@ -2258,13 +2258,13 @@ group {
                   emit("elm,state,right,active", "");
                   emit("elm,state,center,inactive", "");
 
-                  if (get_int(cur_page) == 1)
+                  if (get_int(cur_pos) == 1)
                      emit("elm,state,left,inactive", "");
                   else
                      emit("elm,state,center,inactive", "");
 
                   set_int(direct, -1);
-                  set_int(cur_page, -1);
+                  set_int(cur_pos, -1);
                }
             }
          }
@@ -2272,7 +2272,7 @@ group {
             source: "elm";
             signal: "elm,action,center,active";
             script {
-               if (get_int(cur_page) != 0) {
+               if (get_int(cur_pos) != 0) {
                   set_state(PART:"elm.swallow.center", "default", 0.0);
                   set_state(PART:"elm.swallow.right", "default", 0.0);
                   set_state(PART:"elm.swallow.left", "default", 0.0);
@@ -2280,13 +2280,13 @@ group {
                   set_drag(PART:"left_dragable", 1, 0);
                   set_drag(PART:"right_dragable", 0, 0);
 
-                  if (get_int(cur_page) == -1)
+                  if (get_int(cur_pos) == -1)
                      emit("elm,state,left,inactive", "");
                   else
                      emit("elm,state,right,inactive", "");
 
                   set_int(direct, 0);
-                  set_int(cur_page, 0);
+                  set_int(cur_pos, 0);
                }
             }
          }
@@ -2302,11 +2302,11 @@ group {
             signal: "elm,state,right,hidden";
             script {
                set_int(right_swallowed, 0);
-               if (get_int(cur_page) == 1) {
+               if (get_int(cur_pos) == 1) {
                   set_state(PART:"elm.swallow.center", "default", 0.0);
                   set_drag(PART:"right_dragable", 0, 0);
                   set_drag(PART:"left_dragable", 1, 0);
-                  set_int(cur_page, 0);
+                  set_int(cur_pos, 0);
                }
             }
          }
@@ -2322,11 +2322,11 @@ group {
             signal: "elm,state,left,hidden";
             script {
                set_int(left_swallowed, 0);
-               if (get_int(cur_page) == -1) {
+               if (get_int(cur_pos) == -1) {
                   set_state(PART:"elm.swallow.center", "default", 0.0);
                   set_drag(PART:"right_dragable", 0, 0);
                   set_drag(PART:"left_dragable", 1, 0);
-                  set_int(cur_page, 0);
+                  set_int(cur_pos, 0);
                }
             }
          }
