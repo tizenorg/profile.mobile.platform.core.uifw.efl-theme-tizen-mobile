@@ -426,8 +426,11 @@ group { name: "elm/toolbar/item/default";
       program { name: "go";
          signal:  "mouse,clicked,1";
          source:  "event";
-         action:  SIGNAL_EMIT "elm,action,click" "elm";
-         after: "play_sound";
+         script {
+            emit("elm,action,click", "elm");
+            if (get_int(item_state) != ITEM_STATE_DISABLED)
+              run_program(PROGRAM:"play_sound");
+         }
       }
       program { name: "play_sound";
          action: PLAY_SAMPLE "touch_sound" 1.0;
@@ -1035,6 +1038,10 @@ group { name: "elm/toolbar/item/tabbar";
          description { state: "moving" 0.0;
             inherit: "default" 0.0;
             visible: 1;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
          }
       }
       part { name: "padding_left_top";
@@ -1903,40 +1910,46 @@ group { name: "elm/toolbar/item/tabbar";
          signal:  "elm,state,moving";
          source:  "elm";
          script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
+            if (get_int(item_state) != ITEM_STATE_DISABLED)
+              {
+                new st[31];
+                new Float:vl;
+                get_state(PART:"elm.text", st, 30, vl);
 
-            set_state(PART:"bg_cover", "moving", 0.0);
-            set_state(PART:"elm.text", "pressed", 0.0);
-            set_state(PART:"elm.swallow.icon.proxy", "pressed", 0.0);
-            set_state(PART:"elm.swallow.icon_new.proxy", "pressed", 0.0);
-            set_state(PART:"elm.icon.clipper", "pressed", 0.0);
-            set_state(PART:"elm.icon.proxy.clipper", "pressed", 0.0);
-            set_state(PART:"elm.icon.proxy.clipper.2", "pressed", 0.0);
-            set_int(pressed, 1);
-            if (strcmp(st, "default"))
-              run_program(PROGRAM:"slide_stop");
+                set_state(PART:"bg_cover", "moving", 0.0);
+                set_state(PART:"elm.text", "pressed", 0.0);
+                set_state(PART:"elm.swallow.icon.proxy", "pressed", 0.0);
+                set_state(PART:"elm.swallow.icon_new.proxy", "pressed", 0.0);
+                set_state(PART:"elm.icon.clipper", "pressed", 0.0);
+                set_state(PART:"elm.icon.proxy.clipper", "pressed", 0.0);
+                set_state(PART:"elm.icon.proxy.clipper.2", "pressed", 0.0);
+                set_int(pressed, 1);
+                if (strcmp(st, "default"))
+                  run_program(PROGRAM:"slide_stop");
+              }
          }
       }
       program { name: "pressed";
          signal:  "mouse,down,1";
          source:  "event";
          script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
+            if (get_int(item_state) != ITEM_STATE_DISABLED)
+              {
+                new st[31];
+                new Float:vl;
+                get_state(PART:"elm.text", st, 30, vl);
 
-            set_state(PART:"bg_cover", "pressed", 0.0);
-            set_state(PART:"elm.text", "pressed", 0.0);
-            set_state(PART:"elm.swallow.icon.proxy", "pressed", 0.0);
-            set_state(PART:"elm.swallow.icon_new.proxy", "pressed", 0.0);
-            set_state(PART:"elm.icon.clipper", "pressed", 0.0);
-            set_state(PART:"elm.icon.proxy.clipper", "pressed", 0.0);
-            set_state(PART:"elm.icon.proxy.clipper.2", "pressed", 0.0);
-            set_int(pressed, 1);
-            if (strcmp(st, "default"))
-              run_program(PROGRAM:"slide_stop");
+                set_state(PART:"bg_cover", "pressed", 0.0);
+                set_state(PART:"elm.text", "pressed", 0.0);
+                set_state(PART:"elm.swallow.icon.proxy", "pressed", 0.0);
+                set_state(PART:"elm.swallow.icon_new.proxy", "pressed", 0.0);
+                set_state(PART:"elm.icon.clipper", "pressed", 0.0);
+                set_state(PART:"elm.icon.proxy.clipper", "pressed", 0.0);
+                set_state(PART:"elm.icon.proxy.clipper.2", "pressed", 0.0);
+                set_int(pressed, 1);
+                if (strcmp(st, "default"))
+                  run_program(PROGRAM:"slide_stop");
+              }
          }
       }
       program {
@@ -2009,8 +2022,11 @@ group { name: "elm/toolbar/item/tabbar";
       program { name: "go";
          signal:  "mouse,clicked,1";
          source:  "event";
-         action:  SIGNAL_EMIT "elm,action,click" "elm";
-         after: "play_sound";
+         script {
+            emit("elm,action,click", "elm");
+            if (get_int(item_state) != ITEM_STATE_DISABLED)
+              run_program(PROGRAM:"play_sound");
+         }
       }
       program { name: "play_sound";
          action: PLAY_SAMPLE "touch_sound" 1.0;
@@ -2030,7 +2046,7 @@ group { name: "elm/toolbar/item/tabbar";
          source: "elm";
          script {
             set_int(item_state, ITEM_STATE_DISABLED);
-            set_state(PART:"bg", "disabled", 0.0);
+            set_state(PART:"bg_cover", "disabled", 0.0);
             set_state(PART:"elm.text.clipper", "disabled", 0.0);
             set_state(PART:"elm.icon.clipper", "disabled", 0.0);
             set_state(PART:"elm.icon.proxy.clipper", "disabled", 0.0);
@@ -2044,7 +2060,7 @@ group { name: "elm/toolbar/item/tabbar";
          source: "elm";
          script {
             set_int(item_state, ITEM_STATE_ENABLED);
-            set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"bg_cover", "default", 0.0);
             set_state(PART:"elm.text.clipper", "default", 0.0);
             set_state(PART:"elm.icon.clipper", "default", 0.0);
             set_state(PART:"elm.icon.proxy.clipper", "default", 0.0);
