@@ -1819,8 +1819,6 @@ group {
    group { name: "elm/layout/drawer/default";
       script {
          public down_center;     //0 or 1
-         public down_right;      //0 or 1
-         public down_left;       //0 or 1
          public down_dx;         //mouse down cursor position.
          public cur_pos;         //center current position. -1: left, 0: center, 1: right
          public direct;          //center moving direction. -1: left, 0: center, 1: right
@@ -2024,35 +2022,29 @@ group {
                      //right
                      if (dx1 > dx2 && get_int(left_swallowed) == 1) {
                         set_state(PART:"elm.swallow.center", "right", 0.0);
+                        set_state(PART:"elm.swallow.left", "show", 0.0);
+                        set_state(PART:"elm.swallow.right", "default", 0.0);
                         set_int(direct, 1);
-                        set_int(down_right, 1);
                      }
                      //left
                      else if (dx1 < dx2 && get_int(right_swallowed) == 1){
                         set_state(PART:"elm.swallow.center", "left", 0.0);
+                        set_state(PART:"elm.swallow.right", "show", 0.0);
+                        set_state(PART:"elm.swallow.left", "default", 0.0);
                         set_int(direct, -1);
-                        set_int(down_left, 1);
-                     }
-                     //no change
-                     else {
-                        set_state(PART:"elm.swallow.center", "default", 0.0);
-                        set_int(direct, 0);
-                        set_drag(PART:"left_dragable", 1, 0);
-                        set_drag(PART:"right_dragable", 0, 0);
                      }
                      set_int(down_center, 0);
                   }
                }
             }
          }
-         program { name: "mouse,move,right";
-            signal: "mouse,move";
-            source: "right_dragable";
+         program { name: "mouse,up,center";
+            signal: "mouse,up,1";
+            source: "elm.swallow.center";
             script {
-               if (get_int(down_right) == 1) {
-                  set_state(PART:"elm.swallow.left", "show", 0.0);
-                  set_state(PART:"elm.swallow.right", "default", 0.0);
-                  set_int(down_right, 0);
+               if (get_int(direct) == 0) {
+                  set_drag(PART:"left_dragable", 1, 0);
+                  set_drag(PART:"right_dragable", 0, 0);
                }
             }
          }
@@ -2089,6 +2081,8 @@ group {
                      //Roll back the drag position if the drag size is smaller
                      //than threshold.
                      if (dx < DRAWER_THRES) {
+                        set_state(PART:"elm.swallow.center", "default", 0.0);
+                        set_state(PART:"elm.swallow.left", "default", 0.0);
                         set_drag(PART:"right_dragable", 0, 0);
                         set_drag(PART:"left_dragable", 1, 0);
                         set_int(direct, 0);
@@ -2101,17 +2095,6 @@ group {
                         emit("elm,state,center,inactive", "");
                      }
                   }
-               }
-            }
-         }
-         program { name: "mouse,move,left";
-            signal: "mouse,move";
-            source: "left_dragable";
-            script {
-               if (get_int(down_left) == 1) {
-                  set_state(PART:"elm.swallow.right", "show", 0.0);
-                  set_state(PART:"elm.swallow.left", "default", 0.0);
-                  set_int(down_left, 0);
                }
             }
          }
@@ -2133,12 +2116,12 @@ group {
                      }
                      //set to center
                      else {
+                        set_state(PART:"elm.swallow.center", "default", 0.0);
+                        set_state(PART:"elm.swallow.right", "default", 0.0);
                         set_drag(PART:"left_dragable", 1, 0);
                         set_drag(PART:"right_dragable", 0, 0);
                         set_int(cur_pos, 0);
                         set_int(direct, 0);
-                        set_state(PART:"elm.swallow.center", "default", 0.0);
-                        set_state(PART:"elm.swallow.right", "default", 0.0);
                         emit("elm,state,center,active", "");
                         emit("elm,state,right,inactive", "");
                      }
@@ -2154,6 +2137,8 @@ group {
                      //Roll back the drag position if the drag size is smaller
                      //than threshold.
                      else {
+                        set_state(PART:"elm.swallow.center", "default", 0.0);
+                        set_state(PART:"elm.swallow.right", "default", 0.0);
                         set_drag(PART:"left_dragable", 1, 0);
                         set_drag(PART:"right_dragable", 0, 0);
                         set_int(direct, 0);
