@@ -1458,6 +1458,10 @@ group {
          tag:  "tab" "\t";
       }
    }
+   script {
+      public center_align = 0;
+      public landscape_mode = 0;
+   }
    images {
       image: "00_nocontents_picture.png" COMP;
    }
@@ -1467,14 +1471,26 @@ group {
          scale: 1;
          description { state: "default" 0.0;
             visible: 0;
-            fixed: 1 1;
-            min: NOCONTENT_BASE_MIN_WIDTH_HEIGHT_INC;
+            fixed: 0 1;
+            min: NOCONTENT_BASE_PORTRAIT_MIN_WIDTH_HEIGHT_INC;
             rel1 {
-               relative: 0.5 0.5;
+               relative: 0.0 0.5;
             }
             rel2 {
-               relative: 0.5 0.5;
+               relative: 1.0 0.5;
             }
+         }
+         description { state: "help_txt_port_centre_align";
+            inherit: "default" 0.0;
+            min: NOCONTENT_BASE_PORTRAIT_MIN_WIDTH_HEIGHT_WITH_TEXT;
+         }
+         description { state: "landscape" 0.0;
+            inherit: "default" 0.0;
+            min: NOCONTENT_BASE_LANDS_MIN_WIDTH_HEIGHT_INC;
+         }
+         description { state: "help_txt_lands_centre_align";
+            inherit: "default" 0.0;
+            min: NOCONTENT_BASE_LANDS_MIN_WIDTH_HEIGHT_WITH_TEXT;
          }
       }
       part { name: "nocontents.image";
@@ -1502,15 +1518,15 @@ group {
          type: TEXTBLOCK;
          description { state: "default" 0.0;
             min: NOCONTENT_TEXT_STYLE_BG_MIN_INC;
-            align: 0.5 1.0;
+            align: 0.5 0.0;
             fixed: 0 1;
             rel1 {
                relative: 0.0 1.0;
-               to_y: "bg";
+               to: "nocontents.image";
             }
             rel2 {
                relative: 1.0 1.0;
-               to_y: "bg";
+               to: "nocontents.image";
             }
             text {
                style: "nocontent_style";
@@ -1531,17 +1547,17 @@ group {
          mouse_events: 0;
          type: RECT;
          description { state: "default" 0.0;
-            align: 0.5 0.0;
+            align: 0.0 0.0;
             min: NOCONTENT_PORTRAIT_AFTER_TEXT_PADDING_INC;
             visible: 0;
-            fixed: 0 1;
+            fixed: 1 1;
             rel1 {
                relative: 0.0 1.0;
-               to: "elm.text";
+               to_y: "elm.text";
             }
             rel2 {
-               relative: 1.0 1.0;
-               to: "elm.text";
+               relative: 0.0 1.0;
+               to_y: "elm.text";
             }
          }
          description { state: "landscape" 0.0;
@@ -1556,12 +1572,13 @@ group {
             min: NOCONTENT_PORTRAIT_HELP_TEXT_STYLE_BG_MIN_INC;
             fixed: 1 1;
             rel1 {
-               relative: 0.5 1.0;
+               relative: 1.0 1.0;
                to: "padding_after_text";
             }
             rel2 {
-               relative: 0.5 1.0;
-               to: "padding_after_text";
+               relative: 0.0 1.0;
+               to_x: "pad_after_help_text";
+               to_y: "padding_after_text";
             }
             text {
                style: "nocontent_help_text";
@@ -1580,16 +1597,16 @@ group {
          type: RECT;
          description { state: "default" 0.0;
             visible: 0;
-            align: 0.5 0.0;
+            align: 1.0 0.0;
             min: NOCONTENT_PORTRAIT_AFTER_HELP_TEXT_PADDING_INC;
-            fixed: 0 1;
+            fixed: 1 1;
             rel1 {
-               relative: 0.0 1.0;
-               to: "elm.help.text";
+               relative: 1.0 1.0;
+               to_y: "elm.help.text";
             }
             rel2 {
                relative: 1.0 1.0;
-               to: "elm.help.text";
+               to_y: "elm.help.text";
             }
          }
          description { state: "landscape" 0.0;
@@ -1600,21 +1617,18 @@ group {
       part { name: "swallow_area";
          type: SWALLOW;
          description { state: "default" 0.0;
-            min: NOCONTENT_PORTRAIT_SWALLOW_AREA_MIN_INC;
+            min: NOCONTENT_SWALLOW_AREA_MIN_INC;
             fixed: 1 1;
             align: 0.5 0.0;
             rel1 {
-               relative: 0.5 1.0;
-               to: "pad_after_help_text";
+               relative: 1.0 1.0;
+               to_x: "padding_after_text";
+               to_y: "pad_after_help_text";
             }
             rel2 {
-               relative: 0.5 1.0;
+               relative: 0.0 1.0;
                to: "pad_after_help_text";
             }
-         }
-         description { state: "landscape" 0.0;
-            inherit: "default" 0.0;
-            min: NOCONTENT_LANDSCAPE_SWALLOW_AREA_MIN_INC;
          }
       }
    }
@@ -1622,44 +1636,75 @@ group {
       program { name: "landscape_mode";
          source: "elm";
          signal: "elm,state,orient,90";
-         action: STATE_SET "landscape" 0.0;
-         target: "swallow_area";
-         target: "elm.help.text";
-         target: "padding_after_text";
-         target: "pad_after_help_text";
+         script {
+            set_int(landscape_mode, 1);
+            if (get_int(center_align) == 1)
+               set_state(PART:"bg", "help_txt_lands_centre_align", 0.0);
+            else
+               set_state(PART:"bg", "landscape", 0.0);
+            set_state(PART:"elm.help.text", "landscape", 0.0);
+            set_state(PART:"padding_after_text", "landscape", 0.0);
+            set_state(PART:"pad_after_help_text", "landscape", 0.0);
+         }
       }
       program { name: "landscape_mode2";
          source: "elm";
          signal: "elm,state,orient,270";
-         action: STATE_SET "landscape" 0.0;
-         target: "swallow_area";
-         target: "elm.help.text";
-         target: "padding_after_text";
-         target: "pad_after_help_text";
+         script {
+            set_int(landscape_mode, 1);
+            if (get_int(center_align) == 1)
+               set_state(PART:"bg", "help_txt_lands_centre_align", 0.0);
+            else
+               set_state(PART:"bg", "landscape", 0.0);
+            set_state(PART:"elm.help.text", "landscape", 0.0);
+            set_state(PART:"padding_after_text", "landscape", 0.0);
+            set_state(PART:"pad_after_help_text", "landscape", 0.0);
+         }
       }
       program { name: "portrait_mode";
          source: "elm";
          signal: "elm,state,orient,0";
-         action: STATE_SET "default" 0.0;
-         target: "swallow_area";
-         target: "elm.help.text";
-         target: "padding_after_text";
-         target: "pad_after_help_text";
+         script {
+            set_int(landscape_mode, 0);
+            if (get_int(center_align) == 1)
+               set_state(PART:"bg", "help_txt_port_centre_align", 0.0);
+            else
+               set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"elm.help.text", "default", 0.0);
+            set_state(PART:"padding_after_text", "default", 0.0);
+            set_state(PART:"pad_after_help_text", "default", 0.0);
+         }
       }
       program { name: "portrait_mode2";
          source: "elm";
          signal: "elm,state,orient,180";
-         action: STATE_SET "default" 0.0;
-         target: "swallow_area";
-         target: "elm.help.text";
-         target: "padding_after_text";
-         target: "pad_after_help_text";
+         script {
+            set_int(landscape_mode, 0);
+            if (get_int(center_align) == 1)
+               set_state(PART:"bg", "help_txt_port_centre_align", 0.0);
+            else
+               set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"elm.help.text", "default", 0.0);
+            set_state(PART:"padding_after_text", "default", 0.0);
+            set_state(PART:"pad_after_help_text", "default", 0.0);
+         }
       }
       program { name: "disabled";
             signal: "text,disabled";
             source: "";
             action: STATE_SET "disabled" 0.0;
             target: "elm.text";
+      }
+      program { name: "align_center";
+         signal: "align.center";
+         source: "elm";
+         script {
+            if (get_int(landscape_mode) == 1)
+               set_state(PART:"bg", "help_txt_lands_centre_align", 0.0);
+            else
+               set_state(PART:"bg", "help_txt_port_centre_align", 0.0);
+            set_int(center_align, 1);
+         }
       }
    }
 }
