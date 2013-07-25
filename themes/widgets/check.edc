@@ -2149,16 +2149,28 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
          program { name: "bg_normal";
             signal: "mouse,up,1";
             source: "events2";
-            action: STATE_SET "default" 0.0;
-            target: "bg2";
-            target: "check";
+            script {
+               if (CHECK_SHOW == get_int(check_visible))
+                 {
+                    set_state(PART:"check", "visible", 0.0);
+                 }
+               else
+                 {
+                    set_state(PART:"check", "default", 0.0);
+                 }
+               set_state(PART:"bg2", "default", 0.0);
+            }
          }
          program { name: "pressed";
             signal: "mouse,down,1";
             source: "events2";
-            action: STATE_SET "pressed" 0.0;
-            target: "bg2";
-            target: "check";
+            script {
+               if (CHECK_SHOW == get_int(check_visible))
+                 {
+                    set_state(PART:"check", "pressed", 0.0);
+                 }
+               set_state(PART:"bg2", "pressed", 0.0);
+            }
          }
          program { name: "mouse,out";
             signal: "mouse,out";
