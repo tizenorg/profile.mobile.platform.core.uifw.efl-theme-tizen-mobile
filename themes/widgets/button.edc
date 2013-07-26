@@ -4367,7 +4367,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          image: "00_icon_focus.png" COMP;
       }
       parts {
-         part { name: "button_image";
+         part { name: "button_bg";
             type: RECT;
             scale: 1;
             description { state: "default" 0.0;
@@ -4381,14 +4381,35 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                max: BUTTON_NAVIFRAME_LANDSCAPE_TITLE_ICON_BG_MIN_MAX_INC;
             }
          }
+         part { name: "button_image";
+            type: IMAGE;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 { to: "button_bg"; }
+               rel2 { to: "button_bg"; }
+            }
+            description { state: "clicked" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               image {
+                  normal: "00_title_press.png";
+                  border: BUTTON_NAVIFRAME_TITLE_TEXT_BG_PRESSED_BORDER_INC;
+                  border_scale: 1;
+               }
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+            }
+         }
          part { name: "focus_image";
             scale: 1;
             mouse_events: 0;
             repeat_events: 1;
             description { state: "default" 0.0;
                visible: 0;
-               rel1.to : "button_image";
-               rel2.to : "button_image";
+               rel1.to : "button_bg";
+               rel2.to : "button_bg";
                image {
                   normal: "00_icon_focus.png";
                   border_scale: 1;
@@ -4406,8 +4427,8 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                visible: 0;
                max: BUTTON_NAVIFRAME_TITLE_ICON_IMAGE_MIN_MAX_INC;
                align: 0.5 0.5;
-               rel1 { to: "button_image"; }
-               rel2 { to: "button_image"; }
+               rel1 { to: "button_bg"; }
+               rel2 { to: "button_bg"; }
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -4501,6 +4522,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          }
          program { name: "button_click_anim";
             script {
+               set_state(PART:"button_image", "clicked", 0.0);
                set_state(PART:"elm.icon.proxy_shadow.clipper", "clicked", 0.0);
                set_state(PART:"elm.icon.proxy.clipper", "clicked", 0.0);
                set_state(PART:"elm.swallow.content.proxy_shadow", "clicked", 0.0);
@@ -4518,6 +4540,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             signal: "mouse,up,1";
             source: "over3";
             script {
+               set_state(PART:"button_image", "default", 0.0);
                set_state(PART:"elm.icon.proxy_shadow.clipper", "default", 0.0);
                set_state(PART:"elm.icon.proxy.clipper", "default", 0.0);
                set_state(PART:"elm.swallow.content.proxy_shadow", "default", 0.0);
@@ -4550,6 +4573,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             source: "elm";
             script {
                set_state(PART:"disabler", "disabled", 0.0);
+               set_state(PART:"button_image", "disabled", 0.0);
                set_state(PART:"elm.icon.proxy_shadow.clipper", "disabled", 0.0);
                set_state(PART:"elm.icon.proxy.clipper", "disabled", 0.0);
                set_state(PART:"elm.swallow.content.proxy_shadow", "disabled", 0.0);
@@ -4560,6 +4584,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             source: "elm";
             script {
                set_state(PART:"disabler", "default", 0.0);
+               set_state(PART:"button_image", "default", 0.0);
                set_state(PART:"elm.icon.proxy_shadow.clipper", "default", 0.0);
                set_state(PART:"elm.icon.proxy.clipper", "default", 0.0);
                set_state(PART:"elm.swallow.content.proxy_shadow", "default", 0.0);
@@ -4569,13 +4594,13 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             signal: "elm,state,landscape";
             source: "elm";
             action: STATE_SET "landscape" 0.0;
-            target: "button_image";
+            target: "button_bg";
          }
          program { name: "change_to_portrait";
             signal: "elm,state,portrait";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "button_image";
+            target: "button_bg";
          }
          program { name: "landscape_mode";
             source: "elm";
