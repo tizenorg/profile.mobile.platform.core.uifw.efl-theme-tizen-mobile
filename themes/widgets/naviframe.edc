@@ -16,8 +16,7 @@
  *
  */
 
-#define NAVIFRAME_VIEW_TRANS_TIME 0.333
-#define NAVIFRAME_VIEW_TRANS_PREPARE_TIME 0.05
+#define NAVIFRAME_VIEW_TRANS_TIME 0.3
 #define NAVIFRAME_TITLE_SLIDE_TEXT_GAP 60
 #define NAVIFRAME_SUBTITLE_SLIDE_TEXT_GAP 40
 #define NAVIFRAME_TITLE_SLIDE_MAX_COUNT 3
@@ -3641,60 +3640,18 @@
    }
 
    group { name: "elm/naviframe/item/basic/uglib";
-      script {
-         public pushed_trans_prepare_timer = 0; // Preparing timer for pushed transtion
-         public popped_trans_prepare_timer = 0; // Preparing timer for popped transtion
-
-         public start_pushed_trans(val) {
-            cancel_timer(pushed_trans_prepare_timer);
-            set_int(pushed_trans_prepare_timer, 0);
-            emit("elm,action,new,pushed", "");
-         }
-
-         public start_popped_trans(val) {
-            cancel_timer(popped_trans_prepare_timer);
-            set_int(popped_trans_prepare_timer, 0);
-            emit("elm,action,prev,popped", "");
-         }
-      }
       parts {
          part { name: "base";
             type: RECT;
             mouse_events:  0;
             description { state: "default" 0.0;
+               color: 255 255 255 255;
             }
-         }
-         part { name: "persp";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               color: 0 0 0 0;
-               perspective {
-                  zplane: 0;
-                  focal: 1000;
-               }
-            }
-         }
-         part { name: "persp_zoom_in";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               color: 0 0 0 0;
-               perspective {
-                  zplane: 100;
-                  focal: 1000;
-               }
-            }
-         }
-         part { name: "persp_zoom_out";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               color: 0 0 0 0;
-               perspective {
-                  zplane: -100;
-                  focal: 1000;
-               }
+            description { state: "right" 0.0;
+               inherit: "default" 0.0;
+               rel1.relative: 1.0 0.0;
+               rel2.relative: 2.0 1.0;
+               color: 255 255 255 0;
             }
          }
          part { name: "elm.swallow.content";
@@ -3709,110 +3666,64 @@
                rel2.relative: 1.0 1.0;
                rel2.to: "base";
             }
-            description { state: "no_zoom" 0.0;
-               inherit: "default" 0.0;
-               map {
-                  on: 1;
-                  perspective: "persp";
-                  smooth: 0;
-               }
-            }
-            description { state: "zoom_in" 0.0;
-               inherit: "default" 0.0;
-               map {
-                  on: 1;
-                  perspective: "persp_zoom_in";
-                  smooth: 0;
-                  color[0]: 0 0 0 0;
-                  color[1]: 0 0 0 0;
-                  color[2]: 0 0 0 0;
-                  color[3]: 0 0 0 0;
-               }
-            }
-            description { state: "zoom_out" 0.0;
-               inherit: "default" 0.0;
-               map {
-                  on: 1;
-                  perspective: "persp_zoom_out";
-                  smooth: 0;
-                  color[0]: 0 0 0 0;
-                  color[1]: 0 0 0 0;
-                  color[2]: 0 0 0 0;
-                  color[3]: 0 0 0 0;
-               }
-            }
          }
       }
       programs {
-         program { name: "content_new_pushed_prepare";
+         program { name: "content_new_pushed";
             signal: "elm,state,new,pushed,deferred";
             source: "elm";
-            script {
-               set_int(pushed_trans_prepare_timer, timer(NAVIFRAME_VIEW_TRANS_PREPARE_TIME, "start_pushed_trans", 0));
-            }
-         }
-         program { name: "content_new_pushed";
-            signal: "elm,action,new,pushed";
-            source: "";
-            action: STATE_SET "no_zoom" 0.0;
-            target: "elm.swallow.content";
-            transition: DECEL_FAC NAVIFRAME_VIEW_TRANS_TIME 0.8;
+            action: STATE_SET "default" 0.0;
+            target: "base";
+            transition: DECELERATE NAVIFRAME_VIEW_TRANS_TIME;
             after: "show_finished";
          }
          program { name: "content_cur_pushed";
             signal: "elm,state,cur,pushed,deferred";
             source: "elm";
-            action: STATE_SET "zoom_in" 0.0;
-            target: "elm.swallow.content";
-            transition: DECEL_FAC NAVIFRAME_VIEW_TRANS_TIME 0.8;
+            action: STATE_SET "default" 0.0;
+            target: "base";
+            transition: DECELERATE NAVIFRAME_VIEW_TRANS_TIME;
             after: "pushed_finished";
          }
-         program { name: "content_prev_popped_prepare";
+         program { name: "content_prev_popped";
             signal: "elm,state,prev,popped,deferred";
             source: "elm";
-            script {
-               set_int(popped_trans_prepare_timer, timer(NAVIFRAME_VIEW_TRANS_PREPARE_TIME, "start_popped_trans", 0));
-            }
-         }
-         program { name: "content_prev_popped";
-            signal: "elm,action,prev,popped";
-            source: "";
-            action: STATE_SET "no_zoom" 0.0;
-            target: "elm.swallow.content";
-            transition: DECEL_FAC NAVIFRAME_VIEW_TRANS_TIME 0.8;
+            action: STATE_SET "default" 0.0;
+            target: "base";
+            transition: DECELERATE NAVIFRAME_VIEW_TRANS_TIME;
             after: "show_finished";
          }
          program { name: "content_cur_popped";
             signal: "elm,state,cur,popped,deferred";
             source: "elm";
-            action: STATE_SET "zoom_out" 0.0;
-            target: "elm.swallow.content";
-            transition: DECEL_FAC NAVIFRAME_VIEW_TRANS_TIME 0.8;
+            action: STATE_SET "right" 0.0;
+            target: "base";
+            transition: DECELERATE NAVIFRAME_VIEW_TRANS_TIME;
             after: "popped_finished";
          }
          program { name: "cur_pushed";
             signal: "elm,state,cur,pushed";
             source: "elm";
-            action: STATE_SET "no_zoom" 0.0;
-            target: "elm.swallow.content";
+            action: STATE_SET "default" 0.0;
+            target: "base";
          }
          program { name: "new_pushed";
             signal: "elm,state,new,pushed";
             source: "elm";
-            action: STATE_SET "zoom_out" 0.0;
-            target: "elm.swallow.content";
+            action: STATE_SET "right" 0.0;
+            target: "base";
          }
          program { name: "prev_popped";
             signal: "elm,state,prev,popped";
             source: "elm";
-            action: STATE_SET "zoom_in" 0.0;
-            target: "elm.swallow.content";
+            action: STATE_SET "default" 0.0;
+            target: "base";
          }
          program { name: "cur_popped";
             signal: "elm,state,cur,popped";
             source: "elm";
-            action: STATE_SET "no_zoom" 0.0;
-            target: "elm.swallow.content";
+            action: STATE_SET "default" 0.0;
+            target: "base";
          }
          program { name: "visible";
             signal: "elm,state,visible";
