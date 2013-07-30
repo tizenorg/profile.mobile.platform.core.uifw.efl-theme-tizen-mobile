@@ -174,12 +174,20 @@
             script {
                set_int(indicator_visible, 1);
                set_state(PART:"elm.swallow.indicator", "default", 0.0);
-               if (get_int(indicator_opacity) == 0)
-                  set_state(PART:"indicator_bg", "opaque", 0.0);
-               if (get_int(indicator_opacity) == 1)
-                  set_state(PART:"indicator_bg", "translucent", 0.0);
-               if (get_int(indicator_opacity) == 2)
-                  set_state(PART:"indicator_bg", "transparent", 0.0);
+               if (get_int(landscape) == 0)
+                 {
+                    if (get_int(indicator_opacity) == 0)
+                      set_state(PART:"indicator_bg", "opaque", 0.0);
+                    if (get_int(indicator_opacity) == 1)
+                      set_state(PART:"indicator_bg", "translucent", 0.0);
+                    if (get_int(indicator_opacity) == 2)
+                      set_state(PART:"indicator_bg", "transparent", 0.0);
+                 }
+               else
+                 {
+                    set_int(landscape, 0);
+                    emit("elm,state,landscape", "elm");
+                 }
             }
         }
         program {
@@ -197,9 +205,17 @@
             signal: "elm,state,indicator,opaque";
             source: "elm";
             script {
-               set_int(indicator_opacity, 0);
-               if (get_int(indicator_visible) == 1)
-                  set_state(PART:"indicator_bg", "opaque", 0.0);
+               if (get_int(landscape) == 0)
+                 {
+                    set_int(indicator_opacity, 0);
+                    if (get_int(indicator_visible) == 1)
+                      set_state(PART:"indicator_bg", "opaque", 0.0);
+                 }
+               else
+                 {
+                    set_int(landscape, 0);
+                    emit("elm,state,landscape", "elm");
+                 }
             }
         }
         program {
@@ -207,9 +223,17 @@
             signal: "elm,state,indicator,translucent";
             source: "elm";
             script {
-               set_int(indicator_opacity, 1);
-               if (get_int(indicator_visible) == 1)
-                  set_state(PART:"indicator_bg", "translucent", 0.0);
+               if (get_int(landscape) == 0)
+                 {
+                    set_int(indicator_opacity, 1);
+                    if (get_int(indicator_visible) == 1)
+                      set_state(PART:"indicator_bg", "translucent", 0.0);
+                 }
+               else
+                 {
+                    set_int(landscape, 0);
+                    emit("elm,state,landscape", "elm");
+                 }
             }
         }
         program {
