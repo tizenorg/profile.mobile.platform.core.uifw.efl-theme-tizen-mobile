@@ -190,6 +190,7 @@ group { name: "elm/toolbar/item/default";
          mouse_events: 0;
          description { state: "default" 0.0;
             visible: 0;
+            min: 120 0;
             image {
                normal: "00_toolbar_press.png";
                border: TOOLBAR_ITEM_BG_PRESSED_BORDER_INC;
@@ -1047,7 +1048,77 @@ group { name: "elm/toolbar/object/default";
          type: SWALLOW;
          description {
              state: "default" 0.0;
+             min: 120 0;
          }
+      }
+      part { name: "divider";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: TOOLBAR_ITEM_DIVIDER_SIZE;
+            max: TOOLBAR_ITEM_DIVIDER_SIZE;
+            fixed: 1 1;
+            rel1 {
+                relative: 1.0 0.5;
+            }
+            rel2 {
+                relative: 1.0 0.5;
+            }
+         }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "divider_left";
+         type: RECT;
+         clip_to: "divider";
+         description { state: "default" 0.0;
+            color: TOOLBAR_ITEM_DIVIDER_LEFT_COLOR_INC;
+            rel1 {
+                relative: 0.0 0.0;
+                to: "divider";
+            }
+            rel2 {
+                relative: 0.5 1.0;
+                to: "divider";
+            }
+         }
+      }
+      part { name: "divider_right";
+         type: RECT;
+         clip_to: "divider";
+         description { state: "default" 0.0;
+            color: TOOLBAR_ITEM_DIVIDER_RIGHT_COLOR_INC;
+            rel1 {
+                relative: 0.5 0.0;
+                to: "divider";
+            }
+            rel2 {
+                relative: 1.0 1.0;
+                to: "divider";
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "divider_visible_1";
+         signal: "elm,order,first,item";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "divider";
+      }
+      program { name: "divider_visible_2";
+         signal: "elm,order,default,item";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "divider";
+      }
+      program { name: "divider_hidden";
+         signal: "elm,order,last,item";
+         source: "elm";
+         action: STATE_SET "hidden" 0.0;
+         target: "divider";
       }
    }
 }
