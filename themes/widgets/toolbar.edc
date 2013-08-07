@@ -22,6 +22,12 @@
 #define TOOLBAR_SLIDING_FPS         40.0
 #define TOOLBAR_SLIDING_TEXT_GAP    40
 #define TOOLBAR_SLIDING_TEXT_OFFSET 5
+#define TOOLBAR_SLIDING_WAIT_TIME 1.2
+
+// sliding motion
+#define TOOLBAR_SLIDING_NO_EFFECT 0
+#define TOOLBAR_SLIDING_DOING 1
+#define TOOLBAR_SLIDING_END 2
 
 #define TOOLBAR_TEXT_STYLE(_font_size) \
    style { name: "toolbar_text_style_"_font_size; \
@@ -1351,6 +1357,8 @@ group { name: "elm/toolbar/item/tabbar";
       image: "00_tab_select_bar.png" COMP;
       image: "00_effect_tab_text_dim_left.png" COMP;
       image: "00_effect_tab_text_dim_right.png" COMP;
+      image: "00_effect_tab_press_text_dim_left.png" COMP;
+      image: "00_effect_tab_press_text_dim_right.png" COMP;
    }
 
    data.item: "transition_animation_on" "0";
@@ -1364,6 +1372,7 @@ group { name: "elm/toolbar/item/tabbar";
       public loop_count = 0;
       public selected = 0;
       public pressed = 0;
+      public sliding = 0;
 
       public get_width() {
          new x, y, w, h;
@@ -1391,11 +1400,13 @@ group { name: "elm/toolbar/item/tabbar";
          set_state(PART:"elm.text.dim.left", "default", 0.0);
          set_state(PART:"elm.text_new.clipper", "default", 0.0);
          if (val == 1) {
+            set_int(sliding, TOOLBAR_SLIDING_END);
             custom_state(PART:"elm.text", "sliding", 0.0);
             set_state_val(PART:"elm.text", STATE_REL1_OFFSET, TOOLBAR_SLIDING_TEXT_OFFSET, 0);
             set_state_val(PART:"elm.text", STATE_REL2_OFFSET, TOOLBAR_SLIDING_TEXT_OFFSET, 0);
             set_state(PART:"elm.text", "custom", 0.0);
          } else {
+            set_int(sliding, TOOLBAR_SLIDING_NO_EFFECT);
             if(get_int(pressed))
             {
                set_state(PART:"elm.text", "pressed", 0.0);
@@ -1411,7 +1422,7 @@ group { name: "elm/toolbar/item/tabbar";
             set_state(PART:"elm.text.dim.right", "default", 0.0);
          }
       }
-      public sliding(val) {
+      public slide_text(val) {
          new buf[128];
          if (val == TOOLBAR_SLIDING_TEXT_OFFSET) {
             set_int(loop_count, get_int(loop_count) + 1);
@@ -1427,36 +1438,62 @@ group { name: "elm/toolbar/item/tabbar";
             val, get_int(org_text_w), get_int(text_w));
          set_text(PART:"dbg", buf);*/
 
+         set_int(sliding, TOOLBAR_SLIDING_DOING);
+
          if (val <= -get_int(text_w) - TOOLBAR_SLIDING_TEXT_GAP + TOOLBAR_SLIDING_TEXT_OFFSET)
             val = TOOLBAR_SLIDING_TEXT_OFFSET;
+
          custom_state(PART:"elm.text", "sliding", 0.0);
          set_state_val(PART:"elm.text", STATE_REL1_OFFSET, val, 0);
          set_state_val(PART:"elm.text", STATE_REL2_OFFSET, val, 0);
+         if (!get_int(pressed))
+             set_state_val(PART:"elm.text", STATE_TEXT_STYLE, "tabbar_selected_text_style_30");
+         else
+             set_state_val(PART:"elm.text", STATE_TEXT_STYLE, "tabbar_pressed_text_style_30");
          set_state(PART:"elm.text", "custom", 0.0);
 
          set_state(PART:"elm.text_new.clipper", "animation", 0.0);
          get_text(PART:"elm.text", buf, 128);
          set_text(PART:"elm.text_new", buf);
+
          custom_state(PART:"elm.text_new", "sliding", 0.0);
          set_state_val(PART:"elm.text_new", STATE_REL1_OFFSET,
             val + get_int(text_w) + TOOLBAR_SLIDING_TEXT_GAP, 0);
          set_state_val(PART:"elm.text_new", STATE_REL2_OFFSET,
             val + get_int(text_w) + TOOLBAR_SLIDING_TEXT_GAP, 0);
+         if (!get_int(pressed))
+             set_state_val(PART:"elm.text_new", STATE_TEXT_STYLE, "tabbar_selected_text_style_30");
+         else
+             set_state_val(PART:"elm.text_new", STATE_TEXT_STYLE, "tabbar_pressed_text_style_30");
          set_state(PART:"elm.text_new", "custom", 0.0);
 
-         set_state(PART:"elm.text.dim.left", "show", 0.0);
-         set_state(PART:"elm.text.dim.right", "show", 0.0);
+         if (!get_int(pressed))
+           {
+             set_state(PART:"elm.text.dim.left", "show", 0.0);
+             set_state(PART:"elm.text.dim.right", "show", 0.0);
+           }
+         else
+           {
+             set_state(PART:"elm.text.dim.left", "show_pressed", 0.0);
+             set_state(PART:"elm.text.dim.right", "show_pressed", 0.0);
+           }
 
          if (val == TOOLBAR_SLIDING_TEXT_OFFSET || val <= -get_int(text_w))
+          {
             set_state(PART:"elm.text.dim.left", "default", 0.0);
+            set_int(sliding, TOOLBAR_SLIDING_END);
+          }
+        else
+            set_int(sliding, TOOLBAR_SLIDING_DOING);
+
 
          if (val == TOOLBAR_SLIDING_TEXT_OFFSET) {
             if (get_int(loop_count) < 3)
-               set_int(sliding_timer, timer(2.0, "sliding", TOOLBAR_SLIDING_TEXT_OFFSET));
+               set_int(sliding_timer, timer(TOOLBAR_SLIDING_WAIT_TIME, "slide_text", TOOLBAR_SLIDING_TEXT_OFFSET));
             else
                set_int(end_timer, timer(0.5, "ender", 1));
          } else
-            set_int(sliding_timer, timer(1.0/TOOLBAR_SLIDING_FPS, "sliding", val));
+            set_int(sliding_timer, timer(1.0/TOOLBAR_SLIDING_FPS, "slide_text", val));
       }
    }
    parts {
@@ -2219,6 +2256,10 @@ group { name: "elm/toolbar/item/tabbar";
             inherit: "default" 0.0;
             visible: 1;
          }
+         description { state: "show_pressed" 0.0;
+            inherit: "show" 0.0;
+            image.normal: "00_effect_tab_press_text_dim_left.png";
+         }
       }
       part { name: "elm.text.dim.right";
          type: IMAGE;
@@ -2244,6 +2285,10 @@ group { name: "elm/toolbar/item/tabbar";
          description { state: "show" 0.0;
             inherit: "default" 0.0;
             visible: 1;
+         }
+         description { state: "show_pressed" 0.0;
+            inherit: "show" 0.0;
+            image.normal: "00_effect_tab_press_text_dim_right.png";
          }
       }
       part { name: "divider";
@@ -2378,6 +2423,7 @@ group { name: "elm/toolbar/item/tabbar";
             new st[31];
             new Float:vl;
             set_int(selected, 0);
+            set_int(sliding, TOOLBAR_SLIDING_NO_EFFECT);
             get_state(PART:"elm.text", st, 30, vl);
             if (!strcmp(st, "selected"))
               set_state(PART:"elm.text", "visible", vl);
@@ -2419,15 +2465,27 @@ group { name: "elm/toolbar/item/tabbar";
                 get_state(PART:"elm.text", st, 30, vl);
 
                 set_state(PART:"bg_cover", "pressed", 0.0);
-                set_state(PART:"elm.text", "pressed", 0.0);
+                if (!get_int(sliding))
+                    set_state(PART:"elm.text", "pressed", 0.0);
+                else if (get_int(sliding) == TOOLBAR_SLIDING_END)
+                  {
+                    set_state_val(PART:"elm.text", STATE_TEXT_STYLE, "tabbar_pressed_text_style_30");
+                    set_state(PART:"elm.text", "custom", 0.0);
+                    set_state_val(PART:"elm.text_new", STATE_TEXT_STYLE, "tabbar_pressed_text_style_30");
+                    set_state(PART:"elm.text_new", "custom", 0.0);
+                    set_state(PART:"elm.text.dim.right", "show_pressed", 0.0);
+                  }
+                else
+                 {
+                    set_state(PART:"elm.text.dim.left", "show_pressed", 0.0);
+                    set_state(PART:"elm.text.dim.right", "show_pressed", 0.0);
+                 }
                 set_state(PART:"elm.swallow.icon.proxy", "pressed", 0.0);
                 set_state(PART:"elm.swallow.icon_new.proxy", "pressed", 0.0);
                 set_state(PART:"elm.icon.clipper", "pressed", 0.0);
                 set_state(PART:"elm.icon.proxy.clipper", "pressed", 0.0);
                 set_state(PART:"elm.icon.proxy.clipper.2", "pressed", 0.0);
                 set_int(pressed, 1);
-                if (strcmp(st, "default"))
-                  run_program(PROGRAM:"slide_stop");
               }
          }
       }
@@ -2452,7 +2510,21 @@ group { name: "elm/toolbar/item/tabbar";
                         set_int(pressed, 0);
                         if (get_int(selected))
                           {
-                            set_state(PART:"elm.text", "selected", 0.0);
+                            if (!get_int(sliding))
+                                set_state(PART:"elm.text", "selected", 0.0);
+                            else if (get_int(sliding) == TOOLBAR_SLIDING_END)
+                              {
+                                set_state_val(PART:"elm.text", STATE_TEXT_STYLE, "tabbar_selected_text_style_30");
+                                set_state(PART:"elm.text", "custom", 0.0);
+                                set_state_val(PART:"elm.text_new", STATE_TEXT_STYLE, "tabbar_selected_text_style_30");
+                                set_state(PART:"elm.text_new", "custom", 0.0);
+                                set_state(PART:"elm.text.dim.right", "show", 0.0);
+                              }
+                            else
+                              {
+                                set_state(PART:"elm.text.dim.left", "show", 0.0);
+                                set_state(PART:"elm.text.dim.right", "show", 0.0);
+                              }
                             set_state(PART:"elm.swallow.icon.proxy", "default", 0.0);
                             set_state(PART:"elm.swallow.icon_new.proxy", "default", 0.0);
                             set_state(PART:"elm.icon.clipper", "selected", 0.0);
@@ -2485,7 +2557,21 @@ group { name: "elm/toolbar/item/tabbar";
                 set_int(pressed, 0);
                 if (get_int(selected))
                   {
-                    set_state(PART:"elm.text", "selected", 0.0);
+                    if (!get_int(sliding))
+                        set_state(PART:"elm.text", "selected", 0.0);
+                    else if (get_int(sliding) == TOOLBAR_SLIDING_END)
+                      {
+                        set_state_val(PART:"elm.text", STATE_TEXT_STYLE, "tabbar_selected_text_style_30");
+                        set_state(PART:"elm.text", "custom", 0.0);
+                        set_state_val(PART:"elm.text_new", STATE_TEXT_STYLE, "tabbar_selected_text_style_30");
+                        set_state(PART:"elm.text_new", "custom", 0.0);
+                        set_state(PART:"elm.text.dim.right", "show", 0.0);
+                      }
+                    else
+                      {
+                        set_state(PART:"elm.text.dim.left", "show", 0.0);
+                        set_state(PART:"elm.text.dim.right", "show", 0.0);
+                      }
                     set_state(PART:"elm.swallow.icon.proxy", "default", 0.0);
                     set_state(PART:"elm.swallow.icon_new.proxy", "default", 0.0);
                     set_state(PART:"elm.icon.clipper", "selected", 0.0);
@@ -2836,7 +2922,7 @@ group { name: "elm/toolbar/item/tabbar";
       program { name: "slide_start";
          script {
             if (!get_int(sliding_timer) && !get_int(end_timer)) {
-               set_int(sliding_timer, timer(1.5, "sliding", TOOLBAR_SLIDING_TEXT_OFFSET));
+               set_int(sliding_timer, timer(TOOLBAR_SLIDING_WAIT_TIME, "slide_text", TOOLBAR_SLIDING_TEXT_OFFSET));
             }
          }
       }
@@ -2892,6 +2978,10 @@ group { name: "elm/toolbar/item/tabbar/item_with_title";
             inherit: "default" 0.0;
             visible: 1;
          }
+         description { state: "show_pressed" 0.0;
+            inherit: "show" 0.0;
+            image.normal: "00_effect_tab_press_text_dim_left.png";
+         }
       }
       part { name: "elm.text.dim.right";
          description { state: "default" 0.0;
@@ -2900,6 +2990,10 @@ group { name: "elm/toolbar/item/tabbar/item_with_title";
          description { state: "show" 0.0;
             inherit: "default" 0.0;
             visible: 1;
+         }
+         description { state: "show_pressed" 0.0;
+            inherit: "show" 0.0;
+            image.normal: "00_effect_tab_press_text_dim_right.png";
          }
       }
       part { name: "divider";
