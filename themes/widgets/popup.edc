@@ -451,6 +451,36 @@ group { name: "elm/popup/base/default";
             max: POPUP_BASE_DEFAULT_BASE_LANDSCAPE_MAX_INC;
          }
       }
+      part { name: "left_pad";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 2 0;
+            max: 2 0;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            rel1.to: "base";
+            rel2 {
+               to: "base";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "right_pad";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 2 0;
+            max: 2 0;
+            fixed: 1 1;
+            align: 1.0 1.0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "base";
+            }
+            rel2.to: "base";
+         }
+      }
       part { name: "elm.bg.title";
          scale: 1;
          description { state: "default" 0.0;
@@ -529,8 +559,8 @@ group { name: "elm/popup/base/default";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: 0 7;
-            max: 0 7;
+            min: 0 0;
+            max: 0 0;
             fixed: 1 1;
             align: 0.5 1.0;
             rel1 {
@@ -541,11 +571,6 @@ group { name: "elm/popup/base/default";
                relative: 0.5 0.0;
                to_y: "shadow_right_bottom_padding";
             }
-         }
-         description { state: "show_action_area" 0.0;
-            inherit: "default" 0.0;
-            min: 0 0;
-            max: 0 0;
          }
       }
       part { name: "title_left_top_padding";
@@ -660,39 +685,39 @@ group { name: "elm/popup/base/default";
          description { state: "default" 0.0;
             fixed: 1 0;
             rel1 {
-               relative: 0.0 1.0;
-               to_x: "base";
+               relative: 1.0 1.0;
+               to_x: "left_pad";
                to_y: "label_top_padding";
             }
             rel2 {
-               relative: 1.0 0.0;
-               to_x: "base";
+               relative: 0.0 0.0;
+               to_x: "right_pad";
                to_y: "label_bottom_padding";
             }
          }
          description { state: "show_title_area" 0.0;
             inherit: "default" 0.0;
             rel1 {
-               relative: 0.0 1.0;
-               to_x: "base";
+               relative: 1.0 1.0;
+               to_x: "left_pad";
                to_y: "elm.bg.title";
             }
             rel2 {
-               relative: 1.0 0.0;
-               to_x: "base";
-               to_y: "label_bottom_padding";
+               relative: 0.0 0.0;
+               to_x: "right_pad";
+               to_y: "shadow_right_bottom_padding";
             }
          }
          description { state: "show_action_area" 0.0;
             inherit: "default" 0.0;
             rel1 {
-               relative: 0.0 1.0;
-               to_x: "base";
+               relative: 1.0 1.0;
+               to_x: "left_pad";
                to_y: "action_top_padding";
             }
             rel2 {
-               relative: 1.0 0.0;
-               to_x: "base";
+               relative: 0.0 0.0;
+               to_x: "right_pad";
                to_y: "elm.swallow.action_area";
             }
          }
@@ -700,12 +725,12 @@ group { name: "elm/popup/base/default";
             inherit: "default" 0.0;
             rel1 {
                relative: 0.0 1.0;
-               to_x: "base";
+               to_x: "left_pad";
                to_y: "elm.bg.title";
             }
             rel2 {
-               relative: 1.0 0.0;
-               to_x: "base";
+               relative: 0.0 0.0;
+               to_x: "right_pad";
                to_y: "elm.swallow.action_area";
             }
          }
@@ -845,15 +870,9 @@ group { name: "elm/popup/base/default";
             new Float:vl;
             get_state(PART:"elm.swallow.action_area", st, 30, vl);
             if (!strcmp(st, "visible"))
-              {
-                 set_state(PART:"elm.swallow.content", "show_action_area", 0.0);
-                 set_state(PART:"label_bottom_padding", "show_action_area", 0.0);
-              }
+              set_state(PART:"elm.swallow.content", "show_action_area", 0.0);
             else
-              {
-                 set_state(PART:"elm.swallow.content", "default", 0.0);
-                 set_state(PART:"label_bottom_padding", "default", 0.0);
-              }
+              set_state(PART:"elm.swallow.content", "default", 0.0);
             get_state(PART:"base", st, 30, vl);
             if (!strcmp(st, "landscape"))
               set_state(PART:"elm.bg.title", "landscape", 0.0);
@@ -873,7 +892,6 @@ group { name: "elm/popup/base/default";
             else
               set_state(PART:"elm.swallow.content", "show_action_area", 0.0);
             set_state(PART:"elm.bg.action_area", "visible", 0.0);
-            set_state(PART:"label_bottom_padding", "show_action_area", 0.0);
          }
       }
       program { name: hide_action_area;
@@ -889,7 +907,6 @@ group { name: "elm/popup/base/default";
             else
               set_state(PART:"elm.swallow.content", "default", 0.0);
             set_state(PART:"elm.bg.action_area", "default", 0.0);
-            set_state(PART:"label_bottom_padding", "default", 0.0);
          }
       }
       program { name: "change_to_landscape";
