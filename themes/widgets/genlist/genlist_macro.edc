@@ -703,8 +703,13 @@
             inherit: "default"; \
             visible: 0; \
          } \
-      )
-
+      ) \
+      GENLIST_PART_RECT("sound",  \
+         repeat_events: 1;  /*for play_sound to check selected state*/ \
+         description { state: "default" 0.0; \
+            color: 0 0 0 0; \
+         } \
+      ) \
 
 #define GENLIST_PART_BG_NORMAL_OFF \
    GENLIST_PART_RECT("bg_clip", \
@@ -897,7 +902,13 @@
             border_scale: 1; \
          } \
       } \
-   )
+   ) \
+   GENLIST_PART_RECT("sound",  \
+      repeat_events: 1;  /*for play_sound to check selected state*/ \
+      description { state: "default" 0.0; \
+         color: 0 0 0 0; \
+      } \
+   ) \
 
 //****************************************************************************//
 // ****************************** BASE  ********************************//
@@ -1921,10 +1932,15 @@
          signal: "mouse,clicked,1"; \
          source: SRC; \
          script { \
-            new st[31]; \
-            new Float:vl; \
+            new st[31], st2[31]; \
+            new Float:vl, Float:vl2; \
             get_state(PART:"base", st, 30, vl); \
-            if (strcmp(st, "disabled")) \
+            get_state(PART:SRC, st2, 30, vl2); \
+            if (strcmp(st, "disabled") && \
+                (!strcmp(st2, "selected") || \
+                 !strcmp(st2, "top_selected") || \
+                 !strcmp(st2, "center_selected") || \
+                 !strcmp(st2, "bottom_selected"))) \
                play_sample("touch_sound", 1.0); \
          } \
       }
@@ -1934,16 +1950,19 @@
          signal: "mouse,clicked,1"; \
          source: SRC; \
          script { \
-            new st[31]; \
-            new Float:vl; \
+            new st[31], st2[31]; \
+            new Float:vl, Float:vl2; \
             get_state(PART:"base", st, 30, vl); \
-            if (strcmp(st, "disabled")) \
-               run_program(PROGRAM:"play_button_press"SRC); \
+            get_state(PART:SRC, st2, 30, vl2); \
+            if (strcmp(st, "disabled") && \
+                (!strcmp(st2, "selected") || \
+                 !strcmp(st2, "top_selected") || \
+                 !strcmp(st2, "center_selected") || \
+                 !strcmp(st2, "bottom_selected"))) \
+               play_sample("touch_sound", 1.0); \
          } \
-      } \
-      program { name: "play_button_press"SRC; \
-         action: PLAY_SAMPLE "reorder_sound" 1.0; \
       }
+
 
 #define GENLIST_PROGRAM_SELECT( TARGET ) \
          program { name: "selected"; \
