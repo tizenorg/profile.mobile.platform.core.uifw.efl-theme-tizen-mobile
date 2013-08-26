@@ -41,6 +41,8 @@
          public subtitle_duration = 0;
          public title_slide_stop;
          public subtitle_slide_stop;
+         public title_slide_start_timer;
+         public subtitle_slide_start_timer;
          public title_slide_anim_id;
          public subtitle_slide_anim_id;
          public title_text_w;
@@ -60,7 +62,6 @@
             if (val == 0) {
                get_geometry(PART:"elm.text.title", x, y, w, h);
                set_int(org_title_text_w, w);
-
                get_text(PART:"elm.text.title", buf, 127);
                set_text(PART:"elm.text.full_title", buf);
                get_state(PART:"elm.text.title", st, 30, vl);
@@ -72,32 +73,12 @@
             else {
                get_geometry(PART:"elm.text.subtitle", x, y, w, h);
                set_int(org_subtitle_text_w, w);
-
                get_text(PART:"elm.text.subtitle", buf, 127);
                set_text(PART:"elm.text.full_subtitle", buf);
                get_state(PART:"elm.text.subtitle", st, 30, vl);
                set_state(PART:"elm.text.full_subtitle", st, 0.0);
                get_geometry(PART:"elm.text.full_subtitle", x, y, w, h);
                set_int(subtitle_text_w, w);
-            }
-         }
-
-         public slide_end_pending(val, Float:pos) {
-            if (pos >= 1.0) {
-               // Title Text
-               if (val == 0) {
-                  if (get_int(title_slide_count) < NAVIFRAME_TITLE_SLIDE_MAX_COUNT)
-                    start_slide(0);
-                  else
-                    stop_slide(0);
-               }
-               // Subtitle Text
-               else{
-                  if (get_int(subtitle_slide_count) < NAVIFRAME_TITLE_SLIDE_MAX_COUNT)
-                    start_slide(1);
-                  else
-                    stop_slide(1);
-               }
             }
          }
 
@@ -121,8 +102,12 @@
                   }
                }
 
-               if (pos >= 1.0)
-                 anim(1, "slide_end_pending", 0);
+               if (pos >= 1.0) {
+                  if (get_int(title_slide_count) < NAVIFRAME_TITLE_SLIDE_MAX_COUNT)
+                    set_int(title_slide_start_timer, timer(1.0, "start_slide", 0));
+                  else
+                    stop_slide(0);
+               }
             }
             // Subtitle Text
             else {
@@ -137,30 +122,25 @@
                   set_tween_state(PART:"elm.text.slide_end_subtitle", pos, "slide_begin_landscape", 0.0, "slide_end_landscape", 0.0);
                }
 
-               if (pos >= 1.0)
-                 anim(1, "slide_end_pending", 1);
+               if (pos >= 1.0) {
+                  if (get_int(subtitle_slide_count) < NAVIFRAME_TITLE_SLIDE_MAX_COUNT)
+                    set_int(subtitle_slide_start_timer ,timer(1.0, "start_slide", 1));
+                  else
+                    stop_slide(1);
+               }
             }
          }
 
          public slide_to_end(val) {
-            new slide_anim_id;
-            new Float:duration;
-
             // Title Text
             if (val == 0) {
                if (get_int(title_slide_stop)) return;
-
-               duration = get_float(title_duration);
-               slide_anim_id = anim(duration, "slide_to_end_anim", 0);
-               set_int(title_slide_anim_id, slide_anim_id);
+               set_int(title_slide_anim_id, anim(get_float(title_duration), "slide_to_end_anim", 0));
             }
             // Subtitle Text
             else {
                if (get_int(subtitle_slide_stop)) return;
-
-               duration = get_float(subtitle_duration);
-               slide_anim_id = anim(duration, "slide_to_end_anim", 1);
-               set_int(subtitle_slide_anim_id, slide_anim_id);
+               set_int(subtitle_slide_anim_id, anim(get_float(subtitle_duration), "slide_to_end_anim", 1));
             }
          }
 
@@ -261,6 +241,7 @@
          }
 
          public stop_slide(val) {
+            new slide_start_timer;
             new slide_anim_id;
 
             // Title Text
@@ -268,19 +249,23 @@
                set_int(title_slide_stop, 1);
                set_int(title_slide_count, 0);
 
+               slide_start_timer = get_int(title_slide_start_timer);
+               if (slide_start_timer) {
+                  cancel_timer(slide_start_timer);
+                  set_int(title_slide_start_timer, 0);
+               }
                slide_anim_id = get_int(title_slide_anim_id);
-               cancel_anim(slide_anim_id);
-               set_int(title_slide_anim_id, 0);
+               if (slide_anim_id) {
+                  cancel_anim(slide_anim_id);
+                  set_int(title_slide_anim_id, 0);
+               }
 
                set_text(PART:"elm.text.slide_begin_title", "");
                set_text(PART:"elm.text.slide_end_title", "");
-
                set_state(PART:"elm.text.slide_begin_title", "default", 0.0);
                set_state(PART:"elm.text.slide_end_title", "default", 0.0);
-
                set_state(PART:"title_text_clip", "default", 0.0);
                set_state(PART:"slide_title_text_clip", "default", 0.0);
-
                set_state(PART:"title_text_slide_effect_left", "default", 0.0);
                set_state(PART:"title_text_slide_effect_right", "default", 0.0);
             }
@@ -289,19 +274,23 @@
                set_int(subtitle_slide_stop, 1);
                set_int(subtitle_slide_count, 0);
 
+               slide_start_timer = get_int(subtitle_slide_start_timer);
+               if (slide_start_timer) {
+                  cancel_timer(slide_start_timer);
+                  set_int(subtitle_slide_start_timer, 0);
+               }
                slide_anim_id = get_int(subtitle_slide_anim_id);
-               cancel_anim(slide_anim_id);
-               set_int(subtitle_slide_anim_id, 0);
+               if (slide_anim_id) {
+                  cancel_anim(slide_anim_id);
+                  set_int(subtitle_slide_anim_id, 0);
+               }
 
                set_text(PART:"elm.text.slide_begin_subtitle", "");
                set_text(PART:"elm.text.slide_end_subtitle", "");
-
                set_state(PART:"elm.text.slide_begin_subtitle", "default", 0.0);
                set_state(PART:"elm.text.slide_end_subtitle", "default", 0.0);
-
                set_state(PART:"subtitle_text_clip", "default", 0.0);
                set_state(PART:"slide_subtitle_text_clip", "default", 0.0);
-
                set_state(PART:"subtitle_text_slide_effect_left", "default", 0.0);
                set_state(PART:"subtitle_text_slide_effect_right", "default", 0.0);
             }
@@ -1495,22 +1484,28 @@
             script {
                set_state(PART:"base", "default", 0.0);
                set_state(PART:"clipper", "default", 0.0);
-               emit("elm,action,title,slide", "");
+               run_program(PROGRAM:"start_title_slide");
             }
          }
-         program { name: "title_slide";
-            signal: "elm,action,title,slide";
+         program { name: "start_title_slide";
+            signal: "elm,action,title,slide,start";
             source: "";
             script {
-               if (get_int(title_slide_anim_id))
+               run_program(PROGRAM:"stop_title_slide");
+               set_int(title_slide_start_timer, timer(1.5, "start_slide", 0));
+               if (get_int(subtitle))
+                 set_int(subtitle_slide_start_timer, timer(1.5, "start_slide", 1));
+            }
+         }
+         program { name: "stop_title_slide";
+            signal: "elm,action,title,slide,stop";
+            source: "";
+            script {
+               if (!get_int(title_slide_stop) || get_int(title_slide_start_timer))
                  stop_slide(0);
-               timer(1.5, "start_slide", 0);
-
-               if (get_int(subtitle)) {
-                 if (get_int(subtitle_slide_anim_id))
+               if (get_int(subtitle))
+                 if (!get_int(subtitle_slide_stop) || get_int(subtitle_slide_start_timer))
                    stop_slide(1);
-                 timer(1.5, "start_slide", 1);
-               }
             }
          }
          program { name: "title_show";
@@ -1521,13 +1516,14 @@
                  set_state(PART:"title_bg", "default", 0.0);
                else
                  set_state(PART:"title_bg", "landscape", 0.0);
-               emit("elm,action,title,slide", "");
+               run_program(PROGRAM:"start_title_slide");
             }
          }
          program { name: "title_hide";
             signal: "elm,state,title,hide";
             source: "elm";
             script {
+               run_program(PROGRAM:"stop_title_slide");
                set_state(PART:"title_bg", "hide", 0.0);
             }
          }
@@ -1559,20 +1555,16 @@
          }
          program { name: "title_show_anim_finished";
             script {
-               emit("elm,action,title,slide", "");
                emit("elm,action,title,transition,finished", "");
+               run_program(PROGRAM:"start_title_slide");
             }
          }
          program { name: "title_hide_trans";
             signal: "elm,action,title,hide";
             source: "elm";
             script {
-               if (get_int(title_slide_anim_id))
-                 stop_slide(0);
-               if (get_int(subtitle)) {
-                 if (get_int(subtitle_slide_anim_id))
-                   stop_slide(1);
-               }
+               run_program(PROGRAM:"stop_title_slide");
+
                if (!get_int(landscape)) {
                   set_state(PART:"title_bg", "default", 0.0);
                   run_program(PROGRAM:"title_hide_trans_start_default");
@@ -1601,6 +1593,20 @@
                emit("elm,action,title,transition,finished", "");
             }
          }
+         program { name: "title_label_show";
+            signal: "elm,state,title_label,show";
+            source: "elm";
+            script {
+               run_program(PROGRAM:"start_title_slide");
+            }
+         }
+         program { name: "title_label_hide";
+            signal: "elm,state,title_label,hide";
+            source: "elm";
+            script {
+               run_program(PROGRAM:"stop_title_slide");
+            }
+         }
          program { name: "subtitle_show";
             signal: "elm,state,subtitle,show";
             source: "elm";
@@ -1618,6 +1624,7 @@
                   set_state(PART:"subtitle_text_bg", "visible_landscape", 0.0);
                }
                set_int(subtitle, 1);
+               run_program(PROGRAM:"start_title_slide");
             }
          }
          program { name: "subtitle_hide";
@@ -1630,6 +1637,7 @@
                set_state(PART:"subtitle_text_bg", "default", 0.0);
                set_state(PART:"elm.text.title", "default", 0.0);
                set_int(subtitle, 0);
+               run_program(PROGRAM:"stop_title_slide");
             }
          }
          program { name: "icon_show";
@@ -1750,25 +1758,13 @@
          }
          program { name: "pushed_finished";
             script {
-               if (get_int(title_slide_anim_id))
-                 stop_slide(0);
-
-               if (get_int(subtitle)) {
-                 if (get_int(subtitle_slide_anim_id))
-                   stop_slide(1);
-               }
+               run_program(PROGRAM:"stop_title_slide");
                emit("elm,action,pushed,finished", "");
             }
          }
          program { name: "popped_finished";
             script {
-               if (get_int(title_slide_anim_id))
-                 stop_slide(0);
-
-               if (get_int(subtitle)) {
-                 if (get_int(subtitle_slide_anim_id))
-                   stop_slide(1);
-               }
+               run_program(PROGRAM:"stop_title_slide");
                emit("elm,action,popped,finished", "");
             }
          }
@@ -1792,6 +1788,7 @@
                set_state(PART:"badge_bg", "visible", 0.0);
                set_state(PART:"title_badge", "visible", 0.0);
                set_int(title_badge_visible, 1);
+               run_program(PROGRAM:"start_title_slide");
             }
          }
          program {
@@ -1806,6 +1803,7 @@
                set_state(PART:"badge_bg", "default", 0.0);
                set_state(PART:"title_badge", "default", 0.0);
                set_int(title_badge_visible, 0);
+               run_program(PROGRAM:"start_title_slide");
             }
          }
          program {
@@ -1842,7 +1840,7 @@
                     set_state(PART:"toolbar", "visible_landscape", 0.0);
 
                   set_int(landscape, 1);
-                  emit("elm,action,title,slide", "");
+                  run_program(PROGRAM:"start_title_slide");
                }
             }
          }
@@ -1880,7 +1878,7 @@
                     set_state(PART:"toolbar", "visible", 0.0);
 
                   set_int(landscape, 0);
-                  emit("elm,action,title,slide", "");
+                  run_program(PROGRAM:"start_title_slide");
                }
             }
          }
@@ -1920,6 +1918,7 @@
 
          public title_duration = 0;
          public title_slide_stop;
+         public title_slide_start_timer;
          public title_slide_anim_id;
          public title_text_w;
          public org_title_text_w;
@@ -1942,15 +1941,6 @@
             set_int(title_text_w, w);
          }
 
-         public slide_end_pending(val, Float:pos) {
-            if (pos >= 1.0) {
-               if (get_int(title_slide_count) < NAVIFRAME_TITLE_SLIDE_MAX_COUNT)
-                 start_slide(0);
-               else
-                 stop_slide(0);
-            }
-         }
-
          public slide_to_end_anim(val, Float:pos) {
             if (get_int(title_slide_stop)) return;
 
@@ -1963,19 +1953,17 @@
                set_tween_state(PART:"elm.text.slide_end_title", pos, "slide_begin_landscape", 0.0, "slide_end_landscape", 0.0);
             }
 
-            if (pos >= 1.0)
-              anim(1, "slide_end_pending", 0);
+            if (pos >= 1.0) {
+               if (get_int(title_slide_count) < NAVIFRAME_TITLE_SLIDE_MAX_COUNT)
+                 set_int(title_slide_start_timer, timer(1.0, "start_slide", 0));
+               else
+                 stop_slide(0);
+            }
          }
 
          public slide_to_end(val) {
-            new slide_anim_id;
-            new Float:duration;
-
             if (get_int(title_slide_stop)) return;
-
-            duration = get_float(title_duration);
-            slide_anim_id = anim(duration, "slide_to_end_anim", 0);
-            set_int(title_slide_anim_id, slide_anim_id);
+            set_int(title_slide_anim_id, anim(get_float(title_duration), "slide_to_end_anim", 0));
          }
 
          public start_slide(val) {
@@ -2032,24 +2020,29 @@
          }
 
          public stop_slide(val) {
+            new slide_start_timer;
             new slide_anim_id;
 
             set_int(title_slide_stop, 1);
             set_int(title_slide_count, 0);
 
+            slide_start_timer = get_int(title_slide_start_timer);
+            if (slide_start_timer) {
+               cancel_timer(slide_start_timer);
+               set_int(title_slide_start_timer, 0);
+            }
             slide_anim_id = get_int(title_slide_anim_id);
-            cancel_anim(slide_anim_id);
-            set_int(title_slide_anim_id, 0);
+            if (slide_anim_id) {
+               cancel_anim(slide_anim_id);
+               set_int(title_slide_anim_id, 0);
+            }
 
             set_text(PART:"elm.text.slide_begin_title", "");
             set_text(PART:"elm.text.slide_end_title", "");
-
             set_state(PART:"elm.text.slide_begin_title", "default", 0.0);
             set_state(PART:"elm.text.slide_end_title", "default", 0.0);
-
             set_state(PART:"title_text_clip", "default", 0.0);
             set_state(PART:"slide_title_text_clip", "default", 0.0);
-
             set_state(PART:"title_text_slide_effect_left", "default", 0.0);
             set_state(PART:"title_text_slide_effect_right", "default", 0.0);
          }
@@ -2633,16 +2626,23 @@
             script {
                set_state(PART:"base", "default", 0.0);
                set_state(PART:"clipper", "default", 0.0);
-               emit("elm,action,title,slide", "");
+               run_program(PROGRAM:"start_title_slide");
             }
          }
-         program { name: "title_slide";
-            signal: "elm,action,title,slide";
+         program { name: "start_title_slide";
+            signal: "elm,action,title,slide,start";
             source: "";
             script {
-               if (get_int(title_slide_anim_id))
+               run_program(PROGRAM:"stop_title_slide");
+               set_int(title_slide_start_timer, timer(1.5, "start_slide", 0));
+            }
+         }
+         program { name: "stop_title_slide";
+            signal: "elm,action,title,slide,stop";
+            source: "";
+            script {
+               if (!get_int(title_slide_stop) || get_int(title_slide_start_timer))
                  stop_slide(0);
-               timer(1.5, "start_slide", 0);
             }
          }
          program { name: "title_show";
@@ -2653,13 +2653,14 @@
                  set_state(PART:"title_bg", "default", 0.0);
                else
                  set_state(PART:"title_bg", "landscape", 0.0);
-               emit("elm,action,title,slide", "");
+               run_program(PROGRAM:"start_title_slide");
             }
          }
          program { name: "title_hide";
             signal: "elm,state,title,hide";
             source: "elm";
             script {
+               run_program(PROGRAM:"stop_title_slide");
                set_state(PART:"title_bg", "hide", 0.0);
             }
          }
@@ -2691,16 +2692,15 @@
          }
          program { name: "title_show_anim_finished";
             script {
-               emit("elm,action,title,slide", "");
                emit("elm,action,title,transition,finished", "");
+               run_program(PROGRAM:"start_title_slide");
             }
          }
          program { name: "title_hide_trans";
             signal: "elm,action,title,hide";
             source: "elm";
             script {
-               if (get_int(title_slide_anim_id))
-                 stop_slide(0);
+               run_program(PROGRAM:"stop_title_slide");
                if (!get_int(landscape)) {
                   set_state(PART:"title_bg", "default", 0.0);
                   run_program(PROGRAM:"title_hide_trans_start_default");
@@ -2727,6 +2727,20 @@
             script {
                set_state(PART:"title_bg", "hide", 0.0);
                emit("elm,action,title,transition,finished", "");
+            }
+         }
+         program { name: "title_label_show";
+            signal: "elm,state,title_label,show";
+            source: "elm";
+            script {
+               run_program(PROGRAM:"start_title_slide");
+            }
+         }
+         program { name: "title_label_hide";
+            signal: "elm,state,title_label,hide";
+            source: "elm";
+            script {
+               run_program(PROGRAM:"stop_title_slide");
             }
          }
          program { name: "toolbar_show";
@@ -2807,15 +2821,13 @@
          }
          program { name: "pushed_finished";
             script {
-               if (get_int(title_slide_anim_id))
-                 stop_slide(0);
+               run_program(PROGRAM:"stop_title_slide");
                emit("elm,action,pushed,finished", "");
             }
          }
          program { name: "popped_finished";
             script {
-               if (get_int(title_slide_anim_id))
-                 stop_slide(0);
+               run_program(PROGRAM:"stop_title_slide");
                emit("elm,action,popped,finished", "");
             }
          }
@@ -2847,7 +2859,7 @@
                     set_state(PART:"toolbar", "visible_landscape", 0.0);
 
                   set_int(landscape, 1);
-                  emit("elm,action,title,slide", "");
+                  run_program(PROGRAM:"start_title_slide");
                }
             }
          }
@@ -2871,7 +2883,7 @@
                     set_state(PART:"toolbar", "visible", 0.0);
 
                   set_int(landscape, 0);
-                  emit("elm,action,title,slide", "");
+                  run_program(PROGRAM:"start_title_slide");
                }
             }
          }
