@@ -19,6 +19,7 @@
 /////////////////////////////////////////////////////////////////////////////
  group { name: "elm/conformant/base/default";
      script {
+        public indicator_effect = 0;     //Indicator need effect
         public indicator_visible = 0;     //Indicator visible check
         public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent
         public indicator_overlap = 0;     //check indicator overlap/nooverlap
@@ -121,10 +122,6 @@
               inherit: "default" 0.0;
               color: CONFORMANT_INDICATOR_BG_TRANSLUCENT_COLOR_INC;
            }
-           description { state: "transparent" 0.0;
-              inherit: "default" 0.0;
-              color: CONFORMANT_INDICATOR_BG_TRANSPARENT_COLOR_INC;
-           }
         }
         part { name: "elm.swallow.indicator";
            type: SWALLOW;
@@ -168,6 +165,13 @@
               rel1.relative: 0.0 1.0;
            }
         }
+        part { name: "elm.swallow.indicator_event";
+           type: SWALLOW;
+           description { state: "default" 0.0;
+              rel1 { relative: 0.0 0.0; to: "indicator_base"; }
+              rel2 { relative: 1.0 1.0; to: "indicator_base"; }
+           }
+        }
      }
      programs {
         program {
@@ -178,16 +182,18 @@
                set_int(indicator_visible, 1);
                set_state(PART:"indicator_base", "default", 0.0);
                //it is possible app call show after opacity call
-               if (get_int(landscape) == 0) {//portrait
+               /////Portrait
+               if (get_int(landscape) == 0) {
                  if (get_int(indicator_opacity) == 0)
-                    set_state(PART:"indicator_bg", "opaque", 0.0);
+                   run_program(PROGRAM:"opaque_state");
                  if (get_int(indicator_opacity) == 1)
-                    set_state(PART:"indicator_bg", "translucent", 0.0);
-                 if (get_int(indicator_opacity) == 2)
-                    set_state(PART:"indicator_bg", "transparent", 0.0);
+                   run_program(PROGRAM:"translucent_state");
+                 if (get_int(indicator_opacity) == 2) 
+                   run_program(PROGRAM:"transparent_state");
                }
-               else
-                 set_state(PART:"indicator_bg", "transparent", 0.0);
+               /////Landscape
+               else 
+                 run_program(PROGRAM:"transparent_state");
             }
         }
         program {
@@ -200,17 +206,67 @@
             }
         }
         program {
+            name: "show_indicator_transition"; //show indicator using effect
+            action: STATE_SET "default" 0.0;
+            target: "indicator_clipper";
+            transition: DECELERATE 0.5;
+        }
+        program {
+            name: "hide_indicator_transition"; //show indicator using effect
+            action: STATE_SET "hide" 0.0;
+            target: "indicator_clipper";
+            transition: DECELERATE 0.5;
+        }
+        program {
+            name: "show_indicator_effect"; //show indicator using effect
+            signal: "indicator,show,effect";
+            source: "elm";
+            script {
+               if (get_int(indicator_visible) == 1)
+                 run_program(PROGRAM:"show_indicator_transition");
+            }
+        }
+        program {
+            name: "hide_indicator_effect"; //show indicator using effect
+            signal: "indicator,hide,effect";
+            source: "elm";
+            script {
+               if (get_int(indicator_visible) == 1)
+                 run_program(PROGRAM:"hide_indicator_transition");
+            }
+        }
+        program {
+            name: "opaque_state";
+            script {
+               set_state(PART:"indicator_bg", "default", 0.0);
+               set_state(PART:"indicator_clipper", "default", 0.0);
+               set_state(PART:"indicator_overlap_base", "default", 0.0);
+            }
+        }
+        program {
+            name: "translucent_state";
+            script {
+               set_state(PART:"indicator_bg", "translucent", 0.0);
+               set_state(PART:"indicator_clipper", "default", 0.0);
+               set_state(PART:"indicator_overlap_base", "overlap", 0.0);
+            }
+        }
+        program {
+            name: "transparent_state";
+            script {
+               set_state(PART:"indicator_bg", "default", 0.0);
+               set_state(PART:"indicator_clipper", "hide", 0.0);
+               set_state(PART:"indicator_overlap_base", "overlap", 0.0);
+            }
+        }
+        program {
             name: "opaque_indicator";
             signal: "elm,state,indicator,opaque";
             source: "elm";
             script {
-               set_int(indicator_opacity, 0);
-               //Only portrait can show opaque mode
-               if (get_int(indicator_visible) == 1)
-                 {
-                    if (get_int(landscape) == 0)
-                      set_state(PART:"indicator_bg", "opaque", 0.0);
-                 }
+              set_int(indicator_opacity, 0);
+              if ((get_int(indicator_visible) == 1) && (get_int(landscape) == 0))
+                run_program(PROGRAM:"opaque_state");
             }
         }
         program {
@@ -219,14 +275,8 @@
             source: "elm";
             script {
                set_int(indicator_opacity, 1);
-               if (get_int(indicator_visible) == 1)
-                 {
-                    set_state(PART:"indicator_overlap_base", "overlap", 0.0);
-                    if (get_int(landscape) == 0)
-                      set_state(PART:"indicator_bg", "transparent", 0.0);
-                    else
-                      set_state(PART:"indicator_bg", "translucent", 0.0);
-                 }
+               if ((get_int(indicator_visible) == 1) && (get_int(landscape) == 0))
+                 run_program(PROGRAM:"translucent_state");
             }
         }
         program {
@@ -236,16 +286,13 @@
             script {
                set_int(indicator_opacity, 2);
                if (get_int(indicator_visible) == 1)
-                 {
-                    set_state(PART:"indicator_overlap_base", "overlap", 0.0);
-                    set_state(PART:"indicator_bg", "transparent", 0.0);
-                 }
+                 run_program(PROGRAM:"transparent_state");
             }
         }
         program {
            name: "overlap_indicator";
            signal: "elm,state,indicator,overlap";
-           source: "";
+           source: "elm";
            script {
               set_int(indicator_overlap, 1);
               set_state(PART:"indicator_overlap_base", "overlap", 0.0);
@@ -254,7 +301,7 @@
         program {
            name: "nooverlap_indicator";
            signal: "elm,state,indicator,nooverlap";
-           source: "";
+           source: "elm";
            script {
               //Only portrait state get nooverlap mode
               set_int(indicator_overlap, 0);
@@ -312,12 +359,10 @@
         program {
             name: "change_to_landscape";
             script {
-               if (get_int(indicator_visible) == 1) { 
-                 if (get_int(landscape) == 0) {
-                   set_int(landscape, 1);
-                   set_state(PART:"indicator_overlap_base", "overlap", 0.0);
-                   set_state(PART:"indicator_bg", "translucent", 0.0);
-                 }
+               if (get_int(landscape) == 0) { 
+                 set_int(landscape, 1);
+                 if (get_int(indicator_visible) == 1)
+                   run_program(PROGRAM:"transparent_state");
                }
             }
          }
@@ -327,18 +372,12 @@
                if (get_int(indicator_visible) == 1) { 
                  if (get_int(landscape) == 1) {  //content start (0, indicator height)
                     set_int(landscape, 0);
-                    if ((get_int(indicator_overlap) == 0) && (get_int(indicator_opacity) == 0)) {
-                      set_state(PART:"indicator_overlap_base", "default", 0.0);
-                    }
-                    else {
-                       set_state(PART:"indicator_overlap_base", "overlap", 0.0);
-                    }
-                    if (get_int(indicator_opacity) == 2) //transparent
-                      set_state(PART:"indicator_bg", "transparent", 0.0);
-                    else if (get_int(indicator_opacity) == 1) //translucent
-                      set_state(PART:"indicator_bg", "translucent", 0.0);
-                    else
-                      set_state(PART:"indicator_bg", "default", 0.0);
+                    if (get_int(indicator_opacity) == 2)
+                      run_program(PROGRAM:"transparent_state");
+                    else if (get_int(indicator_opacity) == 1)
+                      run_program(PROGRAM:"translucent_state");
+                    else 
+                      run_program(PROGRAM:"opaque_state");
                  }
                }
             }
@@ -436,7 +475,7 @@
               min: 0 LAYOUT_INDICATOR_HEIGHT_INC;
               rel2.relative: 1.0 0.0;
               visible: 1;
-              color: CONFORMANT_INDICATOR_BG_TRANSPARENT_COLOR_INC;
+              color: CONFORMANT_INDICATOR_BG_DEFAULT_COLOR_INC;
            }
             description { state: "hide" 0.0;
               inherit: "default" 0.0;
