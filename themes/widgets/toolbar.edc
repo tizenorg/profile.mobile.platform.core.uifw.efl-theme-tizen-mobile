@@ -1367,12 +1367,15 @@ group { name: "elm/toolbar/item/tabbar";
       public items_number = 0;
       public sliding_timer;
       public end_timer;
+      public check_timer;
       public text_w;
       public org_text_w;
+      public bg_w;
       public loop_count = 0;
       public selected = 0;
       public pressed = 0;
       public sliding = 0;
+      public landscape = 0;
 
       public get_width() {
          new x, y, w, h;
@@ -1391,6 +1394,16 @@ group { name: "elm/toolbar/item/tabbar";
          get_geometry(PART:"elm.text", x, y, w, h);
          set_int(text_w, w);
       }
+      public get_width_landscape() {
+         new x, y, w, h;
+         get_geometry(PART:"bg", x, y, w, h);
+         set_int(bg_w, w);
+
+         set_state(PART:"elm.text", "sliding", 0.0);
+         get_geometry(PART:"elm.text", x, y, w, h);
+         set_int(text_w, w);
+      }
+
       public ender(val) {
          set_int(loop_count, 0);
          if (get_int(sliding_timer)) cancel_timer(get_int(sliding_timer));
@@ -1422,15 +1435,37 @@ group { name: "elm/toolbar/item/tabbar";
             set_state(PART:"elm.text.dim.right", "default", 0.0);
          }
       }
+      public check_text(val) {
+         if (get_int(landscape))
+           {
+              get_width_landscape();
+              if (get_int(text_w) <= get_int(bg_w)) {
+                 ender(0);
+                 return;
+              }
+           }
+      }
       public slide_text(val) {
          new buf[128];
+         new st[31];
          if (val == TOOLBAR_SLIDING_TEXT_OFFSET) {
             set_int(loop_count, get_int(loop_count) + 1);
-            get_width();
-            if (get_int(text_w) <= get_int(org_text_w)) {
-               ender(0);
-               return;
-            }
+            if (get_int(landscape))
+              {
+                 get_width_landscape();
+                 if (get_int(text_w) <= get_int(bg_w)) {
+                    ender(0);
+                    return;
+                 }
+              }
+            else
+              {
+                 get_width();
+                 if (get_int(text_w) <= get_int(org_text_w)) {
+                    ender(0);
+                   return;
+                 }
+              }
          }
          val -= TOOLBAR_SLIDING_PER_FPS;
 // for debuging //////////////////////////////
@@ -1508,6 +1543,10 @@ group { name: "elm/toolbar/item/tabbar";
          description { state: "icon_text" 0.0;
             inherit: "default" 0.0;
             min: 180 0;
+         }
+         description { state: "landscape" 0.0;
+            inherit: "default" 0.0;
+            min: 320 0;
          }
       }
       part { name: "selected_line";
@@ -2930,6 +2969,60 @@ group { name: "elm/toolbar/item/tabbar";
          script {
              ender(0);
          }
+      }
+      program {
+         name: "change_to_landscape";
+         script {
+            if (!get_int(landscape)) {
+               set_state(PART:"bg", "landscape", 0.0);
+               set_int(landscape, 1);
+               if (!get_int(sliding))
+                 {
+                    ender(0);
+                 }
+               else
+                 {
+                   if (get_int(landscape))
+                      {
+                            set_int(check_timer, timer(0, "check_text", 0));
+                      }
+                 }
+            }
+         }
+      }
+      program {
+         name: "change_to_portrait";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (get_int(landscape)) {
+               set_state(PART:"bg", "icon_text", 0.0);
+               set_int(landscape, 0);
+               if (!get_int(sliding) && !strcmp(st, "selected"))
+                  run_program(PROGRAM:"slide_start");
+            }
+         }
+      }
+      program { name: "landscape_mode";
+         source: "elm";
+         signal: "elm,state,orient,90";
+         after: "change_to_landscape";
+      }
+      program { name: "landscape_mode2";
+         source: "elm";
+         signal: "elm,state,orient,270";
+         after: "change_to_landscape";
+      }
+      program { name: "portrait_mode";
+         source: "elm";
+         signal: "elm,state,orient,0";
+         after: "change_to_portrait";
+      }
+      program { name: "portrait_mode2";
+         source: "elm";
+         signal: "elm,state,orient,180";
+         after: "change_to_portrait";
       }
    }
 }
