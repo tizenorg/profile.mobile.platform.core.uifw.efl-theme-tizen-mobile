@@ -31,7 +31,7 @@ group { name: "elm/scroller/base/default";
 
    script {
       public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
-      public sh_v, sh_h, sh_timer, edge_timer;
+      public sh_v, sh_h, edge_timer;
       public timer0(val) {
          new v;
          v = get_int(sbvis_v);
@@ -51,12 +51,6 @@ group { name: "elm/scroller/base/default";
             }
          }
          set_int(sbvis_timer, 0);
-         return 0;
-      }
-      public timer1(val) {
-         emit("do-hide-vshadow", "");
-         emit("do-hide-hshadow", "");
-         set_int(sh_timer, 0);
          return 0;
       }
       public timer2(val) {
@@ -529,7 +523,7 @@ group { name: "elm/scroller/base/handler";
    }
    script {
       public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
-      public sh_timer, edge_timer;
+      public edge_timer;
       public timer0(val) {
          new v;
          v = get_int(sbvis_v);
@@ -549,12 +543,6 @@ group { name: "elm/scroller/base/handler";
             }
          }
          set_int(sbvis_timer, 0);
-         return 0;
-      }
-      public timer1(val) {
-         emit("do-hide-vshadow", "");
-         emit("do-hide-hshadow", "");
-         set_int(sh_timer, 0);
          return 0;
       }
       public timer2(val) {
@@ -1293,7 +1281,6 @@ group { name: "elm/genlist/base/default";
             set_int(sbalways_h, 0);
             set_int(sbvis_timer, 0);
             set_int(sh_v, 0);
-            set_int(sh_timer, 0);
             set_int(edge_timer, 0);
             emit("reload", "elm");
          }
@@ -1349,56 +1336,6 @@ group { name: "elm/genlist/base/default";
             set_int(sbvis_timer, v);
          }
       }
-      program { name: "scroll_up";
-         signal: "elm,action,scroll,up";
-         source: "elm";
-         after: "scroll_vertical";
-      }
-      program { name: "scroll_down";
-         signal: "elm,action,scroll,down";
-         source: "elm";
-         after: "scroll_vertical";
-      }
-      program { name: "scroll_vertical";
-         script {
-            new v;
-            v = get_int(edge_timer);
-            if (!v) {
-               set_state(PART:"shadow_top", "default", 0.0);
-               set_state(PART:"shadow_bottom", "default", 0.0);
-               emit("do-show-vshadow", "");
-               v = get_int(sh_timer);
-               if (v > 0) cancel_timer(v);
-               v = timer(0.1, "timer1", 0);
-               set_int(sh_timer, v);
-            }
-         }
-      }
-      program { name: "scroll_left";
-         signal: "elm,action,scroll,left";
-         source: "elm";
-         after: "scroll_horizontal";
-      }
-      program { name: "scroll_right";
-         signal: "elm,action,scroll,right";
-         source: "elm";
-         after: "scroll_horizontal";
-      }
-      program { name: "scroll_horizontal";
-         script {
-            new v;
-            v = get_int(edge_timer);
-            if (!v) {
-               set_state(PART:"shadow_left", "default", 0.0);
-               set_state(PART:"shadow_right", "default", 0.0);
-               emit("do-show-hshadow", "");
-               v = get_int(sh_timer);
-               if (v > 0) cancel_timer(v);
-               v = timer(0.1, "timer1", 0);
-               set_int(sh_timer, v);
-            }
-         }
-      }
       program { name: "edge_top";
          signal: "elm,edge,top";
          source: "elm";
@@ -1438,8 +1375,6 @@ group { name: "elm/genlist/base/default";
       program { name: "edge_vertical";
          script {
             new v;
-            v = get_int(sh_timer);
-            if (v > 0) cancel_timer(v);
             v = get_int(edge_timer);
             if (!v) {
                 emit("do-show-vshadow", "");
@@ -1452,8 +1387,6 @@ group { name: "elm/genlist/base/default";
       program { name: "edge_horizontal";
          script {
             new v;
-            v = get_int(sh_timer);
-            if (v > 0) cancel_timer(v);
             v = get_int(edge_timer);
             if (!v) {
                 emit("do-show-hshadow", "");
@@ -1616,7 +1549,6 @@ group { name: "elm/genlist/base/handler";
             set_int(sbalways_v, 0);
             set_int(sbalways_h, 0);
             set_int(sbvis_timer, 0);
-            set_int(sh_timer, 0);
             set_int(edge_timer, 0);
             emit("reload", "elm");
          }
@@ -1732,56 +1664,6 @@ group { name: "elm/genlist/base/handler";
             set_int(sbvis_timer, v);
          }
       }
-      program { name: "scroll_up";
-         signal: "elm,action,scroll,up";
-         source: "elm";
-         after: "scroll_vertical";
-      }
-      program { name: "scroll_down";
-         signal: "elm,action,scroll,down";
-         source: "elm";
-         after: "scroll_vertical";
-      }
-      program { name: "scroll_vertical";
-         script {
-            new v;
-            v = get_int(edge_timer);
-            if (!v) {
-               set_state(PART:"shadow_top", "default", 0.0);
-               set_state(PART:"shadow_bottom", "default", 0.0);
-               emit("do-show-vshadow", "");
-               v = get_int(sh_timer);
-               if (v > 0) cancel_timer(v);
-               v = timer(0.1, "timer1", 0);
-               set_int(sh_timer, v);
-            }
-         }
-      }
-      program { name: "scroll_left";
-         signal: "elm,action,scroll,left";
-         source: "elm";
-         after: "scroll_horizontal";
-      }
-      program { name: "scroll_right";
-         signal: "elm,action,scroll,right";
-         source: "elm";
-         after: "scroll_horizontal";
-      }
-      program { name: "scroll_horizontal";
-         script {
-            new v;
-            v = get_int(edge_timer);
-            if (!v) {
-               set_state(PART:"shadow_left", "default", 0.0);
-               set_state(PART:"shadow_right", "default", 0.0);
-               emit("do-show-hshadow", "");
-               v = get_int(sh_timer);
-               if (v > 0) cancel_timer(v);
-               v = timer(0.1, "timer1", 0);
-               set_int(sh_timer, v);
-            }
-         }
-      }
       program { name: "edge_top";
          signal: "elm,edge,top";
          source: "elm";
@@ -1821,8 +1703,6 @@ group { name: "elm/genlist/base/handler";
       program { name: "edge_vertical";
          script {
             new v;
-            v = get_int(sh_timer);
-            if (v > 0) cancel_timer(v);
             v = get_int(edge_timer);
             if (!v) {
                 emit("do-show-vshadow", "");
@@ -1835,8 +1715,6 @@ group { name: "elm/genlist/base/handler";
       program { name: "edge_horizontal";
          script {
             new v;
-            v = get_int(sh_timer);
-            if (v > 0) cancel_timer(v);
             v = get_int(edge_timer);
             if (!v) {
                 emit("do-show-hshadow", "");
