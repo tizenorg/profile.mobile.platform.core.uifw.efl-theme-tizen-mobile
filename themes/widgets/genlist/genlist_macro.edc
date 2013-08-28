@@ -1911,6 +1911,22 @@
          target: "focus_part_dialogue"; \
       }
 
+#define GENLIST_PROGRAM_PLAY_SOUND( SRC ) \
+      program { name: "play_sound"SRC; \
+         signal: "mouse,clicked,1"; \
+         source: SRC; \
+         script { \
+            new st[31]; \
+            new Float:vl; \
+            get_state(PART:SRC, st, 30, vl); \
+            if (!strcmp(st, "selected") || \
+                !strcmp(st, "top_selected") || \
+                !strcmp(st, "center_selected") || \
+                !strcmp(st, "bottom_selected")) \
+               play_sample("touch_sound", 1.0); \
+         } \
+      }
+
 #define GENLIST_PROGRAM_SOUND( SRC ) \
       program { \
          name: "sound_disable"SRC; \
@@ -1926,41 +1942,7 @@
          action: STATE_SET "default" 0.0; \
          target: "base"; \
       } \
-      program { name: "play_sound"SRC; \
-         signal: "mouse,clicked,1"; \
-         source: SRC; \
-         script { \
-            new st[31], st2[31]; \
-            new Float:vl, Float:vl2; \
-            get_state(PART:"base", st, 30, vl); \
-            get_state(PART:SRC, st2, 30, vl2); \
-            if (strcmp(st, "disabled") && \
-                (!strcmp(st2, "selected") || \
-                 !strcmp(st2, "top_selected") || \
-                 !strcmp(st2, "center_selected") || \
-                 !strcmp(st2, "bottom_selected"))) \
-               play_sample("touch_sound", 1.0); \
-         } \
-      }
-
-#define GENLIST_PROGRAM_REORDER_SOUND( SRC ) \
-      program { name: "play_sound"SRC; \
-         signal: "mouse,clicked,1"; \
-         source: SRC; \
-         script { \
-            new st[31], st2[31]; \
-            new Float:vl, Float:vl2; \
-            get_state(PART:"base", st, 30, vl); \
-            get_state(PART:SRC, st2, 30, vl2); \
-            if (strcmp(st, "disabled") && \
-                (!strcmp(st2, "selected") || \
-                 !strcmp(st2, "top_selected") || \
-                 !strcmp(st2, "center_selected") || \
-                 !strcmp(st2, "bottom_selected"))) \
-               play_sample("touch_sound", 1.0); \
-         } \
-      }
-
+      GENLIST_PROGRAM_PLAY_SOUND( SRC )
 
 #define GENLIST_PROGRAM_SELECT( TARGET ) \
          program { name: "selected"; \
@@ -2397,7 +2379,7 @@
          target: "bg_reorder"; \
       ) \
       GENLIST_PROGRAM_SOUND("bg") \
-      GENLIST_PROGRAM_REORDER_SOUND("bg_reorder") \
+      GENLIST_PROGRAM_PLAY_SOUND("bg_reorder") \
       GENLIST_PROGRAM_DECORATE_REORDER("normal", TARGET \
          target: "bg_clip"; \
          target: "bg_reorder_clip"; \
