@@ -3473,25 +3473,87 @@
 #define GENLIST_POPUP_STYLE(NAME) \
    group { GENLIST_NAME(NAME"/popup/default") \
       inherit: "elm/genlist/item/"NAME"/default"; \
+      images { \
+         image: "00_popup_list_press.png" COMP; \
+      } \
       parts { \
-         GENLIST_PART_RECT("bg",  \
+         GENLIST_PART_SPACER("bg_left_top_padding", \
             description { state: "default" 0.0; \
+               min: POPUP_ITEM_BG_LEFT_TOP_PAD_MIN_INC; \
+               fixed: 1 1; \
+               align: 0 0; \
+               rel2.relative: 0 0; \
+            } \
+         ) \
+         GENLIST_PART_SPACER("bg_right_bottom_padding", \
+            description { state: "default" 0.0; \
+               min: POPUP_ITEM_BG_RIGHT_BOTTOM_PAD_MIN_INC; \
+               fixed: 1 1; \
+               align: 1 1; \
+               rel1.relative: 1 1; \
+            } \
+         ) \
+         GENLIST_PART_IMAGE("bg", \
+            description { state: "default" 0.0; \
+               image { \
+                  normal: "00_popup_list_press.png"; \
+                  border: POPUP_ITEM_BG_PRESSED_BORDER_INC; \
+                  border_scale: 1; \
+               } \
+               rel1 { \
+                  relative: 1 1; \
+                  to_x: "bg_left_top_padding"; \
+                  to_y: "bg_left_top_padding"; \
+               } \
+               rel2 { \
+                  relative: 0 0; \
+                  to_x: "bg_right_bottom_padding"; \
+                  to_y: "bg_right_bottom_padding"; \
+               } \
                color: GENLIST_LIST_BG_POPUP_COLOR; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
                color: GENLIST_LIST_BG_POPUP_COLOR; \
             } \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               color: GENLIST_LIST_BG_POPUP_PRESS_COLOR; \
+            } \
          ) \
          GENLIST_PART_RECT("bottom_line", \
             description { state: "default" 0.0; \
                color: GENLIST_LIST_LINE1_POPUP_COLOR; \
+            } \
+            description { state: "disable" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 0; \
             } \
          ) \
          GENLIST_PART_RECT("bottom_line2", \
             description { state: "default" 0.0; \
                color: GENLIST_LIST_LINE2_POPUP_COLOR; \
             } \
+            description { state: "disable" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 0; \
+            } \
          ) \
+      } \
+      programs { \
+         program { name : "hide_bottomline"; \
+            signal: "elm,state,bottomline,hide"; \
+            source: ""; \
+            action: STATE_SET "disable" 0.0; \
+            target: "bottom_line"; \
+            target: "bottom_line2"; \
+         } \
+         program { name : "show_bottomline"; \
+            signal: "elm,state,bottomline,show"; \
+            source: ""; \
+            action: STATE_SET "default" 0.0; \
+            target: "bottom_line"; \
+            target: "bottom_line2"; \
+         } \
       } \
    }
