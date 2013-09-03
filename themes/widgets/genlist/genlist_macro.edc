@@ -345,7 +345,6 @@
       }
 
 #define GENLIST_PROLOG \
-      data.item: "stacking" "above"; \
       data.item: "selectraise" "on"; \
       data.item: "treesize" 0;
 
@@ -381,14 +380,7 @@
 
 
 #define GENLIST_NAME(NAME) \
-      name: "elm/genlist/item/"NAME; \
-      alias: "elm/genlist/item_odd/"NAME; \
-      alias: "elm/genlist/item_compress/"NAME; \
-      alias: "elm/genlist/item_compress_odd/"NAME; \
-      alias: "elm/genlist/tree/"NAME; \
-      alias: "elm/genlist/tree_odd/"NAME; \
-      alias: "elm/genlist/tree_compress/"NAME; \
-      alias: "elm/genlist/tree_compress_odd/"NAME; \
+      name: "elm/genlist/item/"NAME;
 
 /*****************************************************************************/
 /******************************* Dialogue group ******************************/
@@ -919,9 +911,6 @@
             description { state: "default" 0.0; \
                color: 0 0 0 0; \
                min: 0 HEIGHT; \
-            } \
-            description { state: "disabled" 0.0; \
-               inherit: "default"; \
             } \
          } \
          part { name: "state"; \
@@ -1839,14 +1828,12 @@
             signal: "elm,state,enabled"; \
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
-            target: "base"; \
             TARGET \
          } \
          program { name: "disabled"; \
             signal: "elm,state,disabled"; \
             source: "elm"; \
             action: STATE_SET "disabled" 0.0; \
-            target: "base"; \
             TARGET \
          }
 
@@ -1911,7 +1898,7 @@
          target: "focus_part_dialogue"; \
       }
 
-#define GENLIST_PROGRAM_PLAY_SOUND( SRC ) \
+#define GENLIST_PROGRAM_SOUND( SRC ) \
       program { name: "play_sound"SRC; \
          signal: "mouse,clicked,1"; \
          source: SRC; \
@@ -1926,23 +1913,6 @@
                play_sample("touch_sound", 1.0); \
          } \
       }
-
-#define GENLIST_PROGRAM_SOUND( SRC ) \
-      program { \
-         name: "sound_disable"SRC; \
-         signal: "elm,state,slide,active"; \
-         source: "elm"; \
-         action: STATE_SET "disabled" 0.0; \
-         target: "base"; \
-      } \
-      program { \
-         name: "sound_enable"SRC; \
-         signal: "elm,state,slide,passive"; \
-         source: "elm"; \
-         action: STATE_SET "default" 0.0; \
-         target: "base"; \
-      } \
-      GENLIST_PROGRAM_PLAY_SOUND( SRC )
 
 #define GENLIST_PROGRAM_SELECT( TARGET ) \
          program { name: "selected"; \
@@ -2359,7 +2329,6 @@
 #define GENLIST_PROGRAMS_NORMAL( TARGET ) \
    programs { \
       GENLIST_PROGRAM_DEFAULT( TARGET \
-         target: "base"; \
          target: "bg"; \
          target: "bg_clip"; \
          target: "bottom_line"; \
@@ -2379,7 +2348,7 @@
          target: "bg_reorder"; \
       ) \
       GENLIST_PROGRAM_SOUND("bg") \
-      GENLIST_PROGRAM_PLAY_SOUND("bg_reorder") \
+      GENLIST_PROGRAM_SOUND("bg_reorder") \
       GENLIST_PROGRAM_DECORATE_REORDER("normal", TARGET \
          target: "bg_clip"; \
          target: "bg_reorder_clip"; \
@@ -2393,7 +2362,6 @@
 #define GENLIST_PROGRAMS_DIALOGUE( TARGET ) \
    programs { \
       GENLIST_PROGRAM_DEFAULT( TARGET \
-         target: "base"; \
          target: "bg_dialogue"; \
          target: "elm.padding.left"; \
          target: "elm.padding.right"; \
@@ -2449,7 +2417,6 @@
 
 #define GENLIST_PROGRAMS_ENTRY( TARGET ) \
    GENLIST_PROGRAM_DEFAULT( TARGET \
-      target: "base"; \
       target: "bg"; \
       target: "bg_clip"; \
       target: "bottom_line"; \
@@ -2499,14 +2466,12 @@
       signal: "elm,state,enabled"; \
       source: "elm"; \
       action: STATE_SET "default" 0.0; \
-      target: "base"; \
       target: "elm.thumb"; \
    } \
    program { name: "disabled_thumb"; \
       signal: "elm,state,disabled"; \
       source: "elm"; \
       action: STATE_SET "disabled" 0.0; \
-      target: "base"; \
       target: "elm.thumb"; \
    } \
    program { name: "selected_thumb"; \
@@ -2846,17 +2811,17 @@
 /*************************** parameters **********************************/
 #define GENLIST_PARAM_TEXT_LIMIT_RB \
    rel1.to_x: "base"; /* This limits text growing. */\
-   rel1.relative: 0.35 0; /* This limits text growing. */\
+   rel1.relative: 0.65 0; /* This limits text growing. */\
    text.max: 1 0; /* This limits text growing. */
 
 #define GENLIST_PARAM_TEXT_LIMIT_RT \
    rel1.to_x: "base"; /* This limits text growing. */\
-   rel1.relative: 0.35 1; /* This limits text growing. */\
+   rel1.relative: 0.65 1; /* This limits text growing. */\
    text.max: 1 0; /* This limits text growing. */
 
-#define GENLIST_PARAM_TEXT_LIMIT_RTB \
+#define GENLIST_PARAM_TEXT_LIMIT_RT_( LIMIT ) \
    rel1.to_x: "base"; /* This limits text growing. */\
-   rel1.relative: 0.35 1; /* This limits text growing. */\
+   rel1.relative: LIMIT 1; /* This limits text growing. */\
    text.max: 1 0; /* This limits text growing. */
 
 // Group Title
@@ -3417,6 +3382,17 @@
       GENLIST_DESCRIPTION_SUBITEM_DEFAULT_OTHERS \
    )
 
+#define GENLIST_PART_SUBITEM_RTB_LIMIT(NAME, HEIGHT, RIGHT, TOP, BOTTOM, LIMIT) \
+   GENLIST_PART_TEXT(NAME, \
+      GENLIST_DESCRIPTION_RTB(RIGHT, TOP, BOTTOM, \
+         min: 0 HEIGHT; \
+         GENLIST_PARAM_TEXT_LIMIT_RT_(LIMIT) \
+         GENLIST_PARAM_SUBITEM_DEFAULT \
+         fixed: 1 0; \
+      ) \
+      GENLIST_DESCRIPTION_SUBITEM_DEFAULT_OTHERS \
+   )
+
 #define GENLIST_PART_SUBITEM_RTB(NAME, HEIGHT, RIGHT, TOP, BOTTOM) \
    GENLIST_PART_TEXT(NAME, \
       GENLIST_DESCRIPTION_RTB(RIGHT, TOP, BOTTOM, \
@@ -3497,25 +3473,87 @@
 #define GENLIST_POPUP_STYLE(NAME) \
    group { GENLIST_NAME(NAME"/popup/default") \
       inherit: "elm/genlist/item/"NAME"/default"; \
+      images { \
+         image: "00_popup_list_press.png" COMP; \
+      } \
       parts { \
-         GENLIST_PART_RECT("bg",  \
+         GENLIST_PART_SPACER("bg_left_top_padding", \
             description { state: "default" 0.0; \
+               min: 4 4; \
+               fixed: 1 1; \
+               align: 0 0; \
+               rel2.relative: 0 0; \
+            } \
+         ) \
+         GENLIST_PART_SPACER("bg_right_bottom_padding", \
+            description { state: "default" 0.0; \
+               min: 4 5; \
+               fixed: 1 1; \
+               align: 1 1; \
+               rel1.relative: 1 1; \
+            } \
+         ) \
+         GENLIST_PART_IMAGE("bg", \
+            description { state: "default" 0.0; \
+               image { \
+                  normal: "00_popup_list_press.png"; \
+                  border: 8 8 8 8; \
+                  border_scale: 1; \
+               } \
+               rel1 { \
+                  relative: 1 1; \
+                  to_x: "bg_left_top_padding"; \
+                  to_y: "bg_left_top_padding"; \
+               } \
+               rel2 { \
+                  relative: 0 0; \
+                  to_x: "bg_right_bottom_padding"; \
+                  to_y: "bg_right_bottom_padding"; \
+               } \
                color: GENLIST_LIST_BG_POPUP_COLOR; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
                color: GENLIST_LIST_BG_POPUP_COLOR; \
             } \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               color: GENLIST_LIST_BG_POPUP_PRESS_COLOR; \
+            } \
          ) \
          GENLIST_PART_RECT("bottom_line", \
             description { state: "default" 0.0; \
                color: GENLIST_LIST_LINE1_POPUP_COLOR; \
+            } \
+            description { state: "disable" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 0; \
             } \
          ) \
          GENLIST_PART_RECT("bottom_line2", \
             description { state: "default" 0.0; \
                color: GENLIST_LIST_LINE2_POPUP_COLOR; \
             } \
+            description { state: "disable" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 0; \
+            } \
          ) \
+      } \
+      programs { \
+         program { name : "hide_bottomline"; \
+            signal: "elm,state,bottomline,hide"; \
+            source: ""; \
+            action: STATE_SET "disable" 0.0; \
+            target: "bottom_line"; \
+            target: "bottom_line2"; \
+         } \
+         program { name : "show_bottomline"; \
+            signal: "elm,state,bottomline,show"; \
+            source: ""; \
+            action: STATE_SET "default" 0.0; \
+            target: "bottom_line"; \
+            target: "bottom_line2"; \
+         } \
       } \
    }
