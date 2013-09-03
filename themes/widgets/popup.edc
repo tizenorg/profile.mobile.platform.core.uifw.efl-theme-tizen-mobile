@@ -492,8 +492,8 @@ group { name: "elm/popup/base/default";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: 2 0;
-            max: 2 0;
+            min: 16 0;
+            max: 16 0;
             fixed: 1 1;
             align: 0.0 0.0;
             rel1.to: "base";
@@ -507,8 +507,8 @@ group { name: "elm/popup/base/default";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: 2 0;
-            max: 2 0;
+            min: 16 0;
+            max: 16 0;
             fixed: 1 1;
             align: 1.0 1.0;
             rel1 {
@@ -761,7 +761,7 @@ group { name: "elm/popup/base/default";
          description { state: "show_action_title_area" 0.0;
             inherit: "default" 0.0;
             rel1 {
-               relative: 0.0 1.0;
+               relative: 1.0 1.0;
                to_x: "left_pad";
                to_y: "elm.bg.title";
             }
@@ -1221,6 +1221,9 @@ group { name: "elm/popup/item/default";
    script {
       public item_state = POPUP_ITEM_STATE_ENABLED;
    }
+   images {
+      image: "00_popup_list_press.png" COMP;
+   }
    parts {
       part { name: "event_blocker";
          type: RECT;
@@ -1228,17 +1231,52 @@ group { name: "elm/popup/item/default";
             color: 0 0 0 0;
          }
       }
+      part { name: "left_top_pad";
+         scale: 1;
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: POPUP_ITEM_BG_LEFT_TOP_PAD_MIN_INC;
+            max: POPUP_ITEM_BG_LEFT_TOP_PAD_MIN_INC;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
+         }
+      }
+      part { name: "right_bottom_pad";
+         scale: 1;
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: POPUP_ITEM_BG_RIGHT_BOTTOM_PAD_MIN_INC;
+            max: POPUP_ITEM_BG_RIGHT_BOTTOM_PAD_MIN_INC;
+            fixed: 1 1;
+            align: 1.0 1.0;
+            rel1.relative: 1.0 0.0;
+         }
+      }
       part { name: "bg";
-         type: RECT;
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
-            color: GENLIST_LIST_BG_POPUP_COLOR;
             min: POPUP_ITEM_BG_DEFAULT_MIN_INC;
             align: 0.5 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "left_top_pad";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "right_bottom_pad";
+            }
+            image {
+               normal: "00_popup_list_press.png";
+               border_scale: 1;
+               border: POPUP_ITEM_BG_PRESSED_BORDER_INC;
+            }
+            visible: 0;
          }
          description { state: "clicked" 0.0;
-            color: GENLIST_LIST_PRESS_COLOR;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
       part { name: "padding_left_top";
@@ -1274,7 +1312,11 @@ group { name: "elm/popup/item/default";
            rel1.to: "bottom_line2";
            rel2.to: "bottom_line2";
            rel2.relative: 1 0;
-           rel1.offset: -1 -1;
+           //rel1.offset: -1 -1;
+        }
+        description { state: "disabled" 0.0;
+           inherit: "default" 0.0;
+           visible: 0;
         }
       }
       part { name: "bottom_line2";
@@ -1289,9 +1331,13 @@ group { name: "elm/popup/item/default";
            color: GENLIST_LIST_LINE2_POPUP_COLOR;
            rel1.relative: 0 0;
            rel2.relative: 1 1;
-           rel1.offset: -1 -1;
+           //rel1.offset: -1 -1;
         }
         description { state: "flipped" 0.0;
+           inherit: "default" 0.0;
+           visible: 0;
+        }
+        description { state: "disabled" 0.0;
            inherit: "default" 0.0;
            visible: 0;
         }
@@ -1561,6 +1607,30 @@ group { name: "elm/popup/item/default";
          action:  STATE_SET "default" 0.0;
          target: "elm.swallow.content";
       }
+      program { name: "hide_bottom_line";
+         signal: "elm,state,item,bottomline,hide";
+         source: "elm";
+         action:  STATE_SET "disabled" 0.0;
+         target: "bottom_line";
+         target: "bottom_line2";
+      }
+      program { name: "show_bottom_line";
+         signal: "elm,state,item,bottomline,show";
+         source: "elm";
+         action:  STATE_SET "default" 0.0;
+         target: "bottom_line";
+         target: "bottom_line2";
+      }
+      program { name: "hide_bottomline";
+         signal: "elm,state,bottomline,hide";
+         source: "";
+         action: SIGNAL_EMIT "elm,action,bottomline,hide" "";
+      }
+      program { name: "show_bottomline";
+         signal: "elm,state,bottomline,show";
+         source: "";
+         action: SIGNAL_EMIT "elm,action,bottomline,show" "";
+      }
    }
 }
 
@@ -1569,16 +1639,29 @@ group { name: "elm/popup/item/landscape/default";
    inherit: "elm/popup/item/default";
    parts {
       part { name: "bg";
-         type: RECT;
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
-            color: GENLIST_LIST_BG_POPUP_COLOR;
             min: POPUP_ITEM_BG_LANDCAPE_MIN_INC;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "left_top_pad";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "right_bottom_pad";
+            }
             align: 0.5 0.0;
+            image {
+               normal: "00_popup_list_press.png";
+               border_scale: 1;
+               border: POPUP_ITEM_BG_PRESSED_BORDER_INC;
+            }
+            visible: 0;
          }
          description { state: "clicked" 0.0;
-            color: GENLIST_LIST_PRESS_COLOR;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
    }
