@@ -48,6 +48,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 #define CHECK_STYLE_DEFAULT(style_name, min_width, min_height) \
    group { name: "elm/check/base/"style_name; \
+      data { \
+         item: "access_highlight" "on"; \
+      } \
       images { \
          image: "00_check_bg.png" COMP; \
          image: "00_check_dim_bg.png" COMP; \
@@ -56,6 +59,7 @@
          image: "00_check_activated.png" COMP; \
          image: "00_check_press_bg.png" COMP; \
          image: "00_check_focus.png" COMP; \
+         image: "B16-8_TTS_focus.png" COMP; \
       } \
       script { \
          public check_state = CHECK_STATE_DEFAULT; \
@@ -266,6 +270,23 @@
                visible: 1; \
             } \
          } \
+         part { name: "access_image"; \
+            mouse_events:  0; \
+            description { state: "default" 0.0; \
+               rel1.to: "bg"; \
+               rel2.to: "bg"; \
+               visible: 0; \
+               image { \
+                   normal: "B16-8_TTS_focus.png"; \
+                   border: TTS_FOCUS_BORDER; \
+                   border_scale: 1; \
+               } \
+            } \
+            description { state: "highlighted" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
+            } \
+         } \
       } \
       programs { \
          program { name: "show"; \
@@ -455,6 +476,18 @@
                else \
                  set_int(check_state, CHECK_STATE_DEFAULT); \
             } \
+         } \
+         program { name: "action_highlight"; \
+            signal: "elm,action,access_highlight,show"; \
+            source: "elm"; \
+            action: STATE_SET "highlighted" 0.0; \
+            target: "access_image"; \
+         } \
+         program { name: "action_no_highlight"; \
+            signal: "elm,action,access_highlight,hide"; \
+            source: "elm"; \
+            action: STATE_SET "default" 0.0; \
+            target: "access_image"; \
          } \
       } \
    }
@@ -1754,6 +1787,9 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
 
 #define CHECK_STYLE_FAVORITE(style_name, on_image, on_dim_image, off_image, off_dim_image, min_width, min_height) \
    group { name: "elm/check/base/"style_name; \
+      data { \
+         item: "access_highlight" "on"; \
+      } \
       images { \
          image: on_image COMP; \
          image: on_dim_image COMP; \
@@ -1907,6 +1943,23 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                visible: 1; \
             } \
          } \
+         part { name: "access_image"; \
+            mouse_events:  0; \
+            description { state: "default" 0.0; \
+               rel1.to: "bg"; \
+               rel2.to: "bg"; \
+               visible: 0; \
+               image { \
+                   normal: "B16-8_TTS_focus.png"; \
+                   border: TTS_FOCUS_BORDER; \
+                   border_scale: 1; \
+               } \
+            } \
+            description { state: "highlighted" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
+            } \
+         } \
       } \
       programs { \
          program { name: "click"; \
@@ -2009,6 +2062,18 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                else \
                  set_state(PART:"check", "default", 0.0); \
             } \
+         } \
+         program { name: "action_highlight"; \
+            signal: "elm,action,access_highlight,show"; \
+            source: "elm"; \
+            action: STATE_SET "highlighted" 0.0; \
+            target: "access_image"; \
+         } \
+         program { name: "action_no_highlight"; \
+            signal: "elm,action,access_highlight,hide"; \
+            source: "elm"; \
+            action: STATE_SET "default" 0.0; \
+            target: "access_image"; \
          } \
       } \
    }
