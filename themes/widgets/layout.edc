@@ -563,6 +563,10 @@ group { name: "elm/layout/editfield/default";
    images {
       image: "00_edit_field_clear.png" COMP;
    }
+   script {
+      public mouse_down = 0;
+      public multi_down = 0;
+   }
    parts {
       part {
          name: "base";
@@ -789,21 +793,48 @@ group { name: "elm/layout/editfield/default";
          name: "eraser_clicked";
          signal: "mouse,clicked,1";
          source: "eraser";
-         action: SIGNAL_EMIT "elm,eraser,clicked" "elm";
+         script {
+            if (get_int(multi_down) == 0)
+               emit("elm,eraser,clicked", "elm");
+         }
       }
       program {
          name: "eraser_pressed";
          signal: "mouse,down,1";
          source: "eraser";
-         action: STATE_SET "elm.eraser.pressed" 0.0;
-         target: "eraser_image.clipper";
+         script {
+            if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
+               set_int(mouse_down, 1);
+               set_state(PART:"eraser_image.clipper", "elm.eraser.pressed", 0.0);
+            }
+         }
       }
       program {
          name: "eraser_unpressed";
          signal: "mouse,up,1";
          source: "eraser";
-         action: STATE_SET "elm.eraser.show" 0.0;
-         target: "eraser_image.clipper";
+         script {
+            if (get_int(mouse_down) == 1) {
+               set_int(mouse_down, 0);
+               set_state(PART:"eraser_image.clipper", "elm.eraser.show", 0.0);
+            }
+         }
+      }
+      program {
+         name: "multi_down";
+         signal: "elm,action,multi,down";
+         source: "elm";
+         script {
+            set_int(multi_down, 1);
+         }
+      }
+      program {
+         name: "multi_up";
+         signal: "elm,action,multi,up";
+         source: "elm";
+         script {
+            set_int(multi_down, 0);
+         }
       }
    }
 }
@@ -811,6 +842,10 @@ group { name: "elm/layout/editfield/default";
 group { name: "elm/layout/editfield/title";
    images {
       image: "00_edit_field_clear.png" COMP;
+   }
+   script {
+      public mouse_down = 0;
+      public multi_down = 0;
    }
    parts {
       part {
@@ -1124,21 +1159,48 @@ group { name: "elm/layout/editfield/title";
          name: "eraser_clicked";
          signal: "mouse,clicked,1";
          source: "eraser";
-         action: SIGNAL_EMIT "elm,eraser,clicked" "elm";
+         script {
+            if (get_int(multi_down) == 0)
+               emit("elm,eraser,clicked", "elm");
+         }
       }
       program {
          name: "eraser_pressed";
          signal: "mouse,down,1";
          source: "eraser";
-         action: STATE_SET "elm.eraser.pressed" 0.0;
-         target: "eraser_image.clipper";
+         script {
+            if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
+               set_int(mouse_down, 1);
+               set_state(PART:"eraser_image.clipper", "elm.eraser.pressed", 0.0);
+            }
+         }
       }
       program {
          name: "eraser_unpressed";
          signal: "mouse,up,1";
          source: "eraser";
-         action: STATE_SET "elm.eraser.show" 0.0;
-         target: "eraser_image.clipper";
+         script {
+            if (get_int(mouse_down) == 1) {
+               set_int(mouse_down, 0);
+               set_state(PART:"eraser_image.clipper", "elm.eraser.show", 0.0);
+            }
+         }
+      }
+      program {
+         name: "multi_down";
+         signal: "elm,action,multi,down";
+         source: "elm";
+         script {
+            set_int(multi_down, 1);
+         }
+      }
+      program {
+         name: "multi_up";
+         signal: "elm,action,multi,up";
+         source: "elm";
+         script {
+            set_int(multi_down, 0);
+         }
       }
    }
 }
@@ -1146,6 +1208,9 @@ group { name: "elm/layout/editfield/title";
 group { name: "elm/layout/searchbar/default";
    images {
       image: "00_search_edit_field_bg.png" COMP;
+   }
+   script {
+      public multi_down = 0;
    }
    parts {
       part { name: "inputfield_base";
@@ -1215,18 +1280,47 @@ group { name: "elm/layout/searchbar/default";
          name: "bg_clicked";
          signal: "mouse,clicked,1";
          source: "inputfield_rect";
-         action: SIGNAL_EMIT "elm,bg,clicked" "elm";
+         script {
+            if (get_int(multi_down) == 0)
+               emit("elm,bg,clicked", "elm");
+         }
       }
       program {
          name: "sound_play";
          signal: "mouse,clicked,1";
          source: "elm.text";
+         script {
+            if (get_int(multi_down) == 0)
+               run_program(PROGRAM:"play_sample");
+         }
+      }
+      program {
+         name: "play_sample";
          action: PLAY_SAMPLE "touch_sound" 1.0;
+      }
+      program {
+         name: "multi_down";
+         signal: "elm,action,multi,down";
+         source: "elm";
+         script {
+            set_int(multi_down, 1);
+         }
+      }
+      program {
+         name: "multi_up";
+         signal: "elm,action,multi,up";
+         source: "elm";
+         script {
+            set_int(multi_down, 0);
+         }
       }
    }
 }
 
 group { name: "elm/layout/searchbar/cancel_button";
+   script {
+      public multi_down = 0;
+   }
    parts {
       part { name: "inputfield_base";
          type: SPACER;
@@ -1384,13 +1478,39 @@ group { name: "elm/layout/searchbar/cancel_button";
          name: "sound_play";
          signal: "mouse,clicked,1";
          source: "elm.text";
+         script {
+            if (get_int(multi_down) == 0)
+               run_program(PROGRAM:"play_sample");
+         }
+      }
+      program {
+         name: "play_sample";
          action: PLAY_SAMPLE "touch_sound" 1.0;
       }
      program {
          name: "bg_clicked";
          signal: "mouse,clicked,1";
          source: "inputfield_rect";
-         action: SIGNAL_EMIT "elm,bg,clicked" "elm";
+         script {
+            if (get_int(multi_down) == 0)
+               emit("elm,bg,clicked", "elm");
+         }
+      }
+      program {
+         name: "multi_down";
+         signal: "elm,action,multi,down";
+         source: "elm";
+         script {
+            set_int(multi_down, 1);
+         }
+      }
+      program {
+         name: "multi_up";
+         signal: "elm,action,multi,up";
+         source: "elm";
+         script {
+            set_int(multi_down, 0);
+         }
       }
       program { name: "cancel_in";
          signal: "cancel,in";
@@ -1847,6 +1967,8 @@ group {
          public left_swallowed;  //0 or 1
          public left_dx;         //mouse down cursor on left swallow
          public right_dx;        //mouse down cursor on right swallow
+         public mouse_down = 0;
+         public multi_down = 0;
       }
       parts {
          part { name: "base";
@@ -2029,14 +2151,16 @@ group {
             signal: "mouse,down,1,double";
             source: "elm.swallow.center";
             script {
-               emit("mouse,down,1", "elm.swallow.center");
+               if (get_int(multi_down) == 0 && get_int(mouse_down) == 0)
+                  emit("mouse,down,1", "elm.swallow.center");
             }
          }
          program { name: "mouse,down,center";
             signal: "mouse,down,1";
             source: "elm.swallow.center";
             script {
-               if (get_int(cur_pos) == 0) {
+               if (get_int(cur_pos) == 0 && get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
+                  set_int(mouse_down, 1);
                   new dx, dy;
                   get_mouse(dx, dy);
                   set_int(down_dx, dx);
@@ -2079,7 +2203,8 @@ group {
             signal: "mouse,up,1";
             source: "elm.swallow.center";
             script {
-               if (get_int(direct) == 0) {
+               if (get_int(direct) == 0 && get_int(mouse_down) == 1) {
+                  set_int(mouse_down, 0);
                   set_drag(PART:"left_dragable", 1, 0);
                   set_drag(PART:"right_dragable", 0, 0);
                }
@@ -2089,7 +2214,8 @@ group {
             signal: "mouse,up,1";
             source: "right_dragable";
             script {
-               if (get_int(direct) == 1) {
+               if (get_int(direct) == 1 && get_int(mouse_down) == 1) {
+                  set_int(mouse_down, 0);
                   new Float:dx, Float:dy;
                   get_drag(PART:"right_dragable", dx, dy);
 
@@ -2139,7 +2265,8 @@ group {
             signal: "mouse,up,1";
             source: "left_dragable";
             script {
-               if (get_int(direct) == -1) {
+               if (get_int(direct) == -1 && get_int(mouse_down) == 1) {
+                  set_int(mouse_down, 0);
                   new Float:dx, Float:dy;
                   get_drag(PART:"left_dragable", dx, dy);
 
@@ -2188,7 +2315,8 @@ group {
             signal: "mouse,down,1";
             source: "elm.swallow.left";
             script {
-               if (get_int(cur_pos) == 1) {
+               if (get_int(cur_pos) == 1 && get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
+                  set_int(mouse_down, 1);
                   new dx, dy;
                   get_mouse(dx, dy);
                   set_int(left_dx, dx);
@@ -2199,7 +2327,8 @@ group {
             signal: "mouse,up,1";
             source: "elm.swallow.left";
             script {
-               if (get_int(cur_pos) == 1) {
+               if (get_int(cur_pos) == 1 && get_int(mouse_down) == 1) {
+                  set_int(mouse_down, 0);
                   new dx, dy, dx_down;
                   get_mouse(dx, dy);
                   dx_down = get_int(left_dx);
@@ -2220,7 +2349,8 @@ group {
             signal: "mouse,down,1";
             source: "elm.swallow.right";
             script {
-               if (get_int(cur_pos) == -1) {
+               if (get_int(cur_pos) == -1 && get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
+                  set_int(mouse_down, 1);
                   new dx, dy;
                   get_mouse(dx, dy);
                   set_int(right_dx, dx);
@@ -2231,7 +2361,8 @@ group {
             signal: "mouse,up,1";
             source: "elm.swallow.right";
             script {
-               if (get_int(cur_pos) == -1) {
+               if (get_int(cur_pos) == -1 && get_int(mouse_down) == 1) {
+                  set_int(mouse_down, 0);
                   new dx, dy, dx_down;
                   get_mouse(dx, dy);
                   dx_down = get_int(right_dx);
@@ -2246,6 +2377,22 @@ group {
                      emit("elm,state,right,inactive", "");
                   }
                }
+            }
+         }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
             }
          }
          program { name: "active_left";
