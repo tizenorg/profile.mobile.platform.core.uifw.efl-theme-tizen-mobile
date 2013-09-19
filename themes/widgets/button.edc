@@ -61,6 +61,8 @@
       }
       script {
          public button_state = BUTTON_STATE_ENABLED;
+         public mouse_down = 0;
+         public multi_down = 0;
       }
       parts {
          part { name: "button_image";
@@ -388,6 +390,15 @@
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over2";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click1");
+                 }
+            }
+         }
+         program { name: "button_click1";
             action: SIGNAL_EMIT "elm,action,press" "";
             after: "button_click_anim";
          }
@@ -411,7 +422,13 @@
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
             source: "over2";
-            after: "button_click_anim";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click_anim");
+                 }
+            }
          }
          program { name: "button_unpress";
             action: SIGNAL_EMIT "elm,action,unpress" "";
@@ -423,24 +440,35 @@
                new st[31];
                new Float:vl;
                get_state(PART:"elm.swallow.content", st, 30, vl);
-               if (strcmp(st, "icononly"))
+               if (get_int(mouse_down) == 1)
                  {
-                    emit("elm,action,default,text,set", "");
-                    set_state(PART:"elm.text", "visible", 0.0);
+                    set_int(mouse_down, 0);
+                    if (strcmp(st, "icononly"))
+                      {
+                         emit("elm,action,default,text,set", "");
+                         set_state(PART:"elm.text", "visible", 0.0);
+                      }
+                    if (get_int(button_state) != BUTTON_STATE_DISABLED)
+                      set_state(PART:"button_image", "default", 0.0);
+                    set_state(PART:"elm.swallow.content.shadow.proxy", "default", 0.0);
+                    set_state(PART:"elm.swallow.content.shadow.clipper", "default", 0.0);
+                    set_state(PART:"icon_clipper", "default", 0.0);
+                    run_program(PROGRAM:"button_unpress");
                  }
-               if (get_int(button_state) != BUTTON_STATE_DISABLED)
-                 set_state(PART:"button_image", "default", 0.0);
-               set_state(PART:"elm.swallow.content.shadow.proxy", "default", 0.0);
-               set_state(PART:"elm.swallow.content.shadow.clipper", "default", 0.0);
-               set_state(PART:"icon_clipper", "default", 0.0);
             }
-            after: button_unpress;
          }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "over2";
+            script {
+               if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
+                 run_program(PROGRAM:"button_unclick3");
+               }
+            }
+         }
+         program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: button_unclick3;
          }
          program { name: "button_unclick3";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -571,6 +599,22 @@
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "focus_image";
+         }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
          }
       }
    }
@@ -1362,6 +1406,8 @@
       }
       script {
          public button_state = BUTTON_STATE_ENABLED;
+         public mouse_down = 0;
+         public multi_down = 0;
       }
       parts {
          part { name: "button_image";
@@ -1627,6 +1673,15 @@
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over2";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click1");
+                 }
+            }
+         }
+         program { name: "button_click1";
             action: SIGNAL_EMIT "elm,action,press" "";
             after: "button_click_anim";
          }
@@ -1650,7 +1705,13 @@
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
             source: "over2";
-            after: "button_click_anim";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click_anim");
+                 }
+            }
          }
          program { name: "button_unpress";
             action: SIGNAL_EMIT "elm,action,unpress" "";
@@ -1661,25 +1722,35 @@
             script {
                new st[31];
                new Float:vl;
-               get_state(PART:"elm.swallow.content", st, 30, vl);
-               if (strcmp(st, "icononly"))
-                 {
-                    emit("elm,action,default,text,set", "");
-                    set_state(PART:"elm.text", "visible", 0.0);
-                 }
-               if (get_int(button_state) != BUTTON_STATE_DISABLED)
-                 set_state(PART:"button_image", "default", 0.0);
-               set_state(PART:"elm.swallow.content.shadow.proxy", "default", 0.0);
-               set_state(PART:"elm.swallow.content.shadow.clipper", "default", 0.0);
-               set_state(PART:"icon_clipper", "default", 0.0);
+               if (get_int(mouse_down) == 1) {
+                 set_int(mouse_down, 0);
+                 get_state(PART:"elm.swallow.content", st, 30, vl);
+                 if (strcmp(st, "icononly"))
+                   {
+                      emit("elm,action,default,text,set", "");
+                      set_state(PART:"elm.text", "visible", 0.0);
+                   }
+                 if (get_int(button_state) != BUTTON_STATE_DISABLED)
+                   set_state(PART:"button_image", "default", 0.0);
+                 set_state(PART:"elm.swallow.content.shadow.proxy", "default", 0.0);
+                 set_state(PART:"elm.swallow.content.shadow.clipper", "default", 0.0);
+                 set_state(PART:"icon_clipper", "default", 0.0);
+                 run_program(PROGRAM:"button_unpress");
+               }
             }
-            after: button_unpress;
          }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "over2";
+            script {
+               if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
+                 run_program(PROGRAM:"button_unclick3");
+               }
+            }
+         }
+         program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: button_unclick3;
          }
          program { name: "button_unclick3";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -1800,6 +1871,22 @@
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "focus_image";
+         }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
          }
       }
    }
@@ -3402,6 +3489,8 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
       }
       script {
          public button_state = BUTTON_STATE_ENABLED;
+         public mouse_down = 0;
+         public multi_down = 0;
       }
       parts {
          part { name: "button_image";
@@ -3566,6 +3655,15 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over2";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click1");
+                 }
+            }
+         }
+         program { name: "button_click1";
             action: SIGNAL_EMIT "elm,action,press" "";
             after: "button_click_anim";
          }
@@ -3577,7 +3675,13 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
             source: "over2";
-            after: "button_click_anim";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click_anim");
+                 }
+            }
          }
          program { name: "button_unpress";
             action: SIGNAL_EMIT "elm,action,unpress" "";
@@ -3588,22 +3692,32 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             script {
                new st[31];
                new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "clicked") || !strcmp(st, "focused"))
-                 {
-                    emit("elm,action,default,text,set", "");
-                    set_state(PART:"elm.text", "visible", 0.0);
-                 }
-               if (get_int(button_state) != BUTTON_STATE_DISABLED)
-                 set_state(PART:"button_image", "default", 0.0);
+               if (get_int(mouse_down) == 1) {
+                 set_int(mouse_down, 0);
+                 get_state(PART:"elm.text", st, 30, vl);
+                 if (!strcmp(st, "clicked") || !strcmp(st, "focused"))
+                   {
+                      emit("elm,action,default,text,set", "");
+                      set_state(PART:"elm.text", "visible", 0.0);
+                   }
+                 if (get_int(button_state) != BUTTON_STATE_DISABLED)
+                   set_state(PART:"button_image", "default", 0.0);
+                 run_program(PROGRAM:"button_unpress");
+               }
             }
-            after: button_unpress;
          }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "over2";
+            script {
+               if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
+                 run_program(PROGRAM:"button_unclick3");
+               }
+            }
+         }
+         program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: button_unclick3;
          }
          program { name: "button_unclick3";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -3675,6 +3789,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "focus_image";
+         }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
          }
       }
    }
@@ -4669,6 +4799,8 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
       }
       script {
          public button_state = BUTTON_STATE_ENABLED;
+         public mouse_down = 0;
+         public multi_down = 0;
       }
       parts {
          part { name: "button_image";
@@ -4920,6 +5052,15 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over2";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click1");
+                 }
+            }
+         }
+         program { name: "button_click1";
             action: SIGNAL_EMIT "elm,action,press" "";
             after: "button_click_anim";
          }
@@ -4943,7 +5084,13 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
             source: "over2";
-            after: "button_click_anim";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click_anim");
+                 }
+            }
          }
          program { name: "button_unpress";
             action: SIGNAL_EMIT "elm,action,unpress" "";
@@ -4952,22 +5099,32 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             signal: "mouse,up,1";
             source: "over3";
             script {
-               if (get_int(button_state) != BUTTON_STATE_DISABLED)
-                 {
-                    set_state(PART:"button_image", "default", 0.0);
-                    set_state(PART:"elm.text", "visible", 0.0);
-                    set_state(PART:"arrow_expand.shadow.proxy", "visible", 0.0);
-                    set_state(PART:"arrow_expand.shadow.clipper", "visible", 0.0);
-                    set_state(PART:"icon_clipper", "default", 0.0);
-                 }
+               if (get_int(mouse_down) == 1) {
+                 set_int(mouse_down, 0);
+                 if (get_int(button_state) != BUTTON_STATE_DISABLED)
+                   {
+                      set_state(PART:"button_image", "default", 0.0);
+                      set_state(PART:"elm.text", "visible", 0.0);
+                      set_state(PART:"arrow_expand.shadow.proxy", "visible", 0.0);
+                      set_state(PART:"arrow_expand.shadow.clipper", "visible", 0.0);
+                      set_state(PART:"icon_clipper", "default", 0.0);
+                   }
+                 run_program(PROGRAM:"button_unpress");
+               }
             }
-            after: button_unpress;
          }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "over2";
+            script {
+               if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
+                 run_program(PROGRAM:"button_unclick3");
+               }
+            }
+         }
+         program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: button_unclick3;
          }
          program { name: "button_unclick3";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -5046,6 +5203,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "focus_image";
+         }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
          }
       }
    }
