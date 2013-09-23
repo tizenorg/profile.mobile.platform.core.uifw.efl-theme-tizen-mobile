@@ -1885,6 +1885,11 @@ group {
       image: "00_more_popup_press.png" COMP;
    }
 
+   script {
+      public mouse_down = 0;
+      public multi_down = 0;
+   }
+
    data.item: "item_max_size" CTXPOPUP_TEXT_MAX_INC;
 
    parts {
@@ -2153,8 +2158,12 @@ group {
          name: "item_unclick";
          signal: "mouse,clicked,1";
          source: "over1";
-         action: SIGNAL_EMIT "elm,action,click" "";
-         after: "touch_snd";
+         script {
+            if (get_int(multi_down) == 0) {
+               emit("elm,action,click", "");
+               run_program(PROGRAM:"touch_snd");
+            }
+         }
       }
       program {
          name: "touch_snd";
@@ -2215,8 +2224,11 @@ group {
          signal: "mouse,down,1";
          source: "over2";
          script {
-            set_state(PART:"elm.text", "clicked", 0.0);
-            set_state(PART:"bg", "clicked", 0.0);
+            if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
+               set_int(mouse_down, 1);
+               set_state(PART:"elm.text", "clicked", 0.0);
+               set_state(PART:"bg", "clicked", 0.0);
+            }
          }
       }
       program {
@@ -2238,8 +2250,27 @@ group {
          signal: "mouse,up,1";
          source: "over2";
          script {
-            set_drag(PART:"over2", 0.0, 0.0);
-            set_state(PART:"bg", "default", 0.0);
+            if (get_int(mouse_down) == 1) {
+               set_int(mouse_down, 0);
+               set_drag(PART:"over2", 0.0, 0.0);
+               set_state(PART:"bg", "default", 0.0);
+            }
+         }
+      }
+      program {
+         name: "multi_down";
+         signal: "elm,action,multi,down";
+         source: "elm";
+         script {
+            set_int(multi_down, 1);
+         }
+      }
+      program {
+         name: "multi_up";
+         signal: "elm,action,multi,up";
+         source: "elm";
+         script {
+            set_int(multi_down, 0);
          }
       }
    }
@@ -2250,6 +2281,11 @@ group {
 
    images {
       image: "00_more_popup_press.png" COMP;
+   }
+
+   script {
+      public mouse_down = 0;
+      public multi_down = 0;
    }
 
    parts {
@@ -2470,8 +2506,12 @@ group {
          name: "item_unclick";
          signal: "mouse,clicked,1";
          source: "over1";
-         action: SIGNAL_EMIT "elm,action,click" "";
-         after: "touch_snd";
+         script {
+            if (get_int(multi_down) == 0) {
+               emit("elm,action,click", "");
+               run_program(PROGRAM:"touch_snd");
+            }
+         }
       }
       program {
          name: "touch_snd";
@@ -2518,8 +2558,11 @@ group {
          signal: "mouse,down,1";
          source: "over2";
          script {
-            set_state(PART:"elm.text", "clicked", 0.0);
-            set_state(PART:"bg", "clicked", 0.0);
+            if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
+               set_int(mouse_down, 1);
+               set_state(PART:"elm.text", "clicked", 0.0);
+               set_state(PART:"bg", "clicked", 0.0);
+            }
          }
       }
       program {
@@ -2541,8 +2584,27 @@ group {
          signal: "mouse,up,1";
          source: "over2";
          script {
-            set_drag(PART:"over2", 0.0, 0.0);
-            set_state(PART:"bg", "default", 0.0);
+            if (get_int(mouse_down) == 1) {
+               set_int(mouse_down, 0);
+               set_drag(PART:"over2", 0.0, 0.0);
+               set_state(PART:"bg", "default", 0.0);
+            }
+         }
+      }
+      program {
+         name: "multi_down";
+         signal: "elm,action,multi,down";
+         source: "elm";
+         script {
+            set_int(multi_down, 1);
+         }
+      }
+      program {
+         name: "multi_up";
+         signal: "elm,action,multi,up";
+         source: "elm";
+         script {
+            set_int(multi_down, 0);
          }
       }
    }
@@ -2553,6 +2615,11 @@ group {
 
    images {
       image: "00_more_popup_press.png" COMP;
+   }
+
+   script {
+      public mouse_down = 0;
+      public multi_down = 0;
    }
 
    parts {
@@ -2789,8 +2856,12 @@ group {
          name: "item_unclick";
          signal: "mouse,clicked,1";
          source: "over1";
-         action: SIGNAL_EMIT "elm,action,click" "";
-         after: "touch_snd";
+         script {
+            if (get_int(multi_down) == 0) {
+               emit("elm,action,click", "");
+               run_program(PROGRAM:"touch_snd");
+            }
+         }
       }
       program {
          name: "touch_snd";
@@ -2817,7 +2888,10 @@ group {
          signal: "mouse,down,1";
          source: "over2";
          script {
-            set_state(PART:"bg", "clicked", 0.0);
+            if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
+               set_int(mouse_down, 1);
+               set_state(PART:"bg", "clicked", 0.0);
+            }
          }
       }
       program {
@@ -2839,8 +2913,27 @@ group {
          signal: "mouse,up,1";
          source: "over2";
          script {
-            set_drag(PART:"over2", 0.0, 0.0);
-            set_state(PART:"bg", "default", 0.0);
+            if (get_int(mouse_down) == 1) {
+               set_int(mouse_down, 0);
+               set_drag(PART:"over2", 0.0, 0.0);
+               set_state(PART:"bg", "default", 0.0);
+            }
+         }
+      }
+      program {
+         name: "multi_down";
+         signal: "elm,action,multi,down";
+         source: "elm";
+         script {
+            set_int(multi_down, 1);
+         }
+      }
+      program {
+         name: "multi_up";
+         signal: "elm,action,multi,up";
+         source: "elm";
+         script {
+            set_int(multi_down, 0);
          }
       }
    }
@@ -2851,6 +2944,11 @@ group {
 
    images {
       image: "00_more_popup_press.png" COMP;
+   }
+
+   script {
+      public mouse_down = 0;
+      public multi_down = 0;
    }
 
    data.item: "item_max_size" CTXPOPUP_ICON_TEXT_MAX_INC;
@@ -3164,8 +3262,12 @@ group {
          name: "item_unclick";
          signal: "mouse,clicked,1";
          source: "over1";
-         action: SIGNAL_EMIT "elm,action,click" "";
-         after: "touch_snd";
+         script {
+            if (get_int(multi_down) == 0) {
+               emit("elm,action,click", "");
+               run_program(PROGRAM:"touch_snd");
+            }
+         }
       }
       program {
          name: "touch_snd";
@@ -3226,8 +3328,10 @@ group {
          signal: "mouse,down,1";
          source: "over2";
          script {
-            set_state(PART:"elm.text", "clicked", 0.0);
-            set_state(PART:"bg", "clicked", 0.0);
+            if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
+               set_int(mouse_down, 1);
+               set_state(PART:"bg", "clicked", 0.0);
+            }
          }
       }
       program {
@@ -3249,8 +3353,27 @@ group {
          signal: "mouse,up,1";
          source: "over2";
          script {
-            set_drag(PART:"over2", 0.0, 0.0);
-            set_state(PART:"bg", "default", 0.0);
+            if (get_int(mouse_down) == 1) {
+               set_int(mouse_down, 0);
+               set_drag(PART:"over2", 0.0, 0.0);
+               set_state(PART:"bg", "default", 0.0);
+            }
+         }
+      }
+      program {
+         name: "multi_down";
+         signal: "elm,action,multi,down";
+         source: "elm";
+         script {
+            set_int(multi_down, 1);
+         }
+      }
+      program {
+         name: "multi_up";
+         signal: "elm,action,multi,up";
+         source: "elm";
+         script {
+            set_int(multi_down, 0);
          }
       }
    }
@@ -3265,6 +3388,11 @@ group {
 
    images {
       image: "00_more_popup_press.png" COMP;
+   }
+
+   script {
+      public mouse_down = 0;
+      public multi_down = 0;
    }
 
    data.item: "item_max_size" CTXPOPUP_ICON_TEXT_MAX_INC;
@@ -3530,8 +3658,12 @@ group {
          name: "item_unclick";
          signal: "mouse,clicked,1";
          source: "over1";
-         action: SIGNAL_EMIT "elm,action,click" "";
-         after: "touch_snd";
+         script {
+            if (get_int(multi_down) == 0) {
+               emit("elm,action,click", "");
+               run_program(PROGRAM:"touch_snd");
+            }
+         }
       }
       program {
          name: "touch_snd";
@@ -3580,8 +3712,10 @@ group {
          signal: "mouse,down,1";
          source: "over2";
          script {
-            set_state(PART:"elm.text", "clicked", 0.0);
-            set_state(PART:"bg", "clicked", 0.0);
+            if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
+               set_int(mouse_down, 1);
+               set_state(PART:"bg", "clicked", 0.0);
+            }
          }
       }
       program {
@@ -3603,8 +3737,27 @@ group {
          signal: "mouse,up,1";
          source: "over2";
          script {
-            set_drag(PART:"over2", 0.0, 0.0);
-            set_state(PART:"bg", "default", 0.0);
+            if (get_int(mouse_down) == 1) {
+               set_int(mouse_down, 0);
+               set_drag(PART:"over2", 0.0, 0.0);
+               set_state(PART:"bg", "default", 0.0);
+            }
+         }
+      }
+      program {
+         name: "multi_down";
+         signal: "elm,action,multi,down";
+         source: "elm";
+         script {
+            set_int(multi_down, 1);
+         }
+      }
+      program {
+         name: "multi_up";
+         signal: "elm,action,multi,up";
+         source: "elm";
+         script {
+            set_int(multi_down, 0);
          }
       }
    }
@@ -3715,6 +3868,11 @@ group {
 
    images {
       image: "00_more_popup_press.png" COMP;
+   }
+
+   script {
+      public mouse_down = 0;
+      public multi_down = 0;
    }
 
    data.item: "item_max_size" CTXPOPUP_MORE_TEXT_MAX_INC;
@@ -4030,8 +4188,12 @@ group {
          name: "item_unclick";
          signal: "mouse,clicked,1";
          source: "over1";
-         action: SIGNAL_EMIT "elm,action,click" "";
-         after: "touch_snd";
+         script {
+            if (get_int(multi_down) == 0) {
+               emit("elm,action,click", "");
+               run_program(PROGRAM:"touch_snd");
+            }
+         }
       }
       program {
          name: "touch_snd";
@@ -4092,8 +4254,11 @@ group {
          signal: "mouse,down,1";
          source: "over2";
          script {
-            set_state(PART:"elm.text", "clicked", 0.0);
-            set_state(PART:"bg", "clicked", 0.0);
+            if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
+               set_int(mouse_down, 1);
+               set_state(PART:"elm.text", "clicked", 0.0);
+               set_state(PART:"bg", "clicked", 0.0);
+            }
          }
       }
       program {
@@ -4115,8 +4280,27 @@ group {
          signal: "mouse,up,1";
          source: "over2";
          script {
-            set_drag(PART:"over2", 0.0, 0.0);
-            set_state(PART:"bg", "default", 0.0);
+            if (get_int(mouse_down) == 1) {
+               set_int(mouse_down, 0);
+               set_drag(PART:"over2", 0.0, 0.0);
+               set_state(PART:"bg", "default", 0.0);
+            }
+         }
+      }
+      program {
+         name: "multi_down";
+         signal: "elm,action,multi,down";
+         source: "elm";
+         script {
+            set_int(multi_down, 1);
+         }
+      }
+      program {
+         name: "multi_up";
+         signal: "elm,action,multi,up";
+         source: "elm";
+         script {
+            set_int(multi_down, 0);
          }
       }
    }
