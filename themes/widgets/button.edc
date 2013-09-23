@@ -61,6 +61,8 @@
       }
       script {
          public button_state = BUTTON_STATE_ENABLED;
+         public mouse_down = 0;
+         public multi_down = 0;
       }
       parts {
          part { name: "button_image";
@@ -105,24 +107,20 @@
             }
          }
          part { name: "padding_left_top";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0;
                align: 0.0 0.0;
                rel2.relative: 0.0 0.0;
                min: BUTTON_TEXT_STYLE1_PADDING_MIN_INC;
                fixed: 1 1;
-               visible: 0;
             }
          }
          part { name: "bg";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0;
                min: BUTTON_TEXT_STYLE1_BG_MIN_INC;
-               visible: 0;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -134,23 +132,19 @@
             }
          }
          part { name: "padding_right_bottom";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0;
                align: 1.0 1.0;
                rel1.relative: 1.0 1.0;
                min: BUTTON_TEXT_STYLE1_PADDING_MIN_INC;
                fixed: 1 1;
-               visible: 0;
             }
          }
          part { name: "icon_rect";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0;
-               visible: 0;
                min: 0 0;
                fixed: 1 0;
                rel1 {
@@ -174,9 +168,8 @@
             }
          }
          part { name: "padding_after_icon";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0; //when only icon or no icon is there
                align: 0.0 0.0;
                rel1 {
@@ -186,7 +179,6 @@
                rel2.to: "icon_rect";
                fixed: 1 0;
                min: 0 0;
-               visible: 0;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -197,9 +189,8 @@
             }
          }
          part { name: "padding_before_text";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0; //when only icon or no icon is there
                align: 1.0 0.5;
                rel1 {
@@ -214,7 +205,6 @@
                }
                fixed: 1 0;
                min: BUTTON_TEXT_STYLE1_VISIBLE_PADDING_ICON_TEXT_MIN_INC;
-               visible: 0;
             }
          }
          part { name: "elm.swallow.content";
@@ -400,6 +390,15 @@
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over2";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click1");
+                 }
+            }
+         }
+         program { name: "button_click1";
             action: SIGNAL_EMIT "elm,action,press" "";
             after: "button_click_anim";
          }
@@ -423,7 +422,13 @@
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
             source: "over2";
-            after: "button_click_anim";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click_anim");
+                 }
+            }
          }
          program { name: "button_unpress";
             action: SIGNAL_EMIT "elm,action,unpress" "";
@@ -435,24 +440,35 @@
                new st[31];
                new Float:vl;
                get_state(PART:"elm.swallow.content", st, 30, vl);
-               if (strcmp(st, "icononly"))
+               if (get_int(mouse_down) == 1)
                  {
-                    emit("elm,action,default,text,set", "");
-                    set_state(PART:"elm.text", "visible", 0.0);
+                    set_int(mouse_down, 0);
+                    if (strcmp(st, "icononly"))
+                      {
+                         emit("elm,action,default,text,set", "");
+                         set_state(PART:"elm.text", "visible", 0.0);
+                      }
+                    if (get_int(button_state) != BUTTON_STATE_DISABLED)
+                      set_state(PART:"button_image", "default", 0.0);
+                    set_state(PART:"elm.swallow.content.shadow.proxy", "default", 0.0);
+                    set_state(PART:"elm.swallow.content.shadow.clipper", "default", 0.0);
+                    set_state(PART:"icon_clipper", "default", 0.0);
+                    run_program(PROGRAM:"button_unpress");
                  }
-               if (get_int(button_state) != BUTTON_STATE_DISABLED)
-                 set_state(PART:"button_image", "default", 0.0);
-               set_state(PART:"elm.swallow.content.shadow.proxy", "default", 0.0);
-               set_state(PART:"elm.swallow.content.shadow.clipper", "default", 0.0);
-               set_state(PART:"icon_clipper", "default", 0.0);
             }
-            after: button_unpress;
          }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "over2";
+            script {
+               if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
+                 run_program(PROGRAM:"button_unclick3");
+               }
+            }
+         }
+         program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: button_unclick3;
          }
          program { name: "button_unclick3";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -584,6 +600,22 @@
             action: STATE_SET "default" 0.0;
             target: "focus_image";
          }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
+         }
       }
    }
 
@@ -672,12 +704,10 @@
             }
          }
          part { name: "bg";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0;
                min: 0 0;
-               visible: 0;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -1025,12 +1055,10 @@
       }
       parts {
          part { name: "bg";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0;
                min: BUTTON_SEARCH_BUTTON_BG_MIN_INC;
-               visible: 0;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -1150,12 +1178,10 @@
             }
          }
          part { name: "bg";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0;
                min: BUTTON_SEARCH_BUTTON_BG_MIN_INC;
-               visible: 0;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -1275,12 +1301,10 @@
             }
          }
          part { name: "bg";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0;
                min: BUTTON_SEARCH_BUTTON_BG_MIN_INC;
-               visible: 0;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -1382,6 +1406,8 @@
       }
       script {
          public button_state = BUTTON_STATE_ENABLED;
+         public mouse_down = 0;
+         public multi_down = 0;
       }
       parts {
          part { name: "button_image";
@@ -1427,30 +1453,27 @@
             }
          }
          part { name: "padding_left_top";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0;
                align: 0.0 0.0;
                rel2.relative: 0.0 0.0;
                min: BUTTON_POPUP_PADDING_MIN_INC;
                fixed: 1 1;
-               visible: 0;
             }
          }
          part { name: "padding_right_bottom";
-            type: RECT;
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
                align: 1.0 0.0;
                rel1.relative: 1.0 1.0;
                min: BUTTON_POPUP_PADDING_MIN_INC;
                fixed: 1 1;
-               visible: 0;
             }
          }
          part { name: "padding_icon_text";
-            type: RECT;
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0; //when only icon or no icon is there
                align: 0.0 0.0;
@@ -1461,7 +1484,6 @@
                rel2.to: "elm.swallow.content";
                fixed: 1 0;
                min: 0 0;
-               visible: 0;
             }
             description { state: "icononly" 0.0;
                inherit: "default" 0.0;
@@ -1651,6 +1673,15 @@
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over2";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click1");
+                 }
+            }
+         }
+         program { name: "button_click1";
             action: SIGNAL_EMIT "elm,action,press" "";
             after: "button_click_anim";
          }
@@ -1674,7 +1705,13 @@
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
             source: "over2";
-            after: "button_click_anim";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click_anim");
+                 }
+            }
          }
          program { name: "button_unpress";
             action: SIGNAL_EMIT "elm,action,unpress" "";
@@ -1685,25 +1722,35 @@
             script {
                new st[31];
                new Float:vl;
-               get_state(PART:"elm.swallow.content", st, 30, vl);
-               if (strcmp(st, "icononly"))
-                 {
-                    emit("elm,action,default,text,set", "");
-                    set_state(PART:"elm.text", "visible", 0.0);
-                 }
-               if (get_int(button_state) != BUTTON_STATE_DISABLED)
-                 set_state(PART:"button_image", "default", 0.0);
-               set_state(PART:"elm.swallow.content.shadow.proxy", "default", 0.0);
-               set_state(PART:"elm.swallow.content.shadow.clipper", "default", 0.0);
-               set_state(PART:"icon_clipper", "default", 0.0);
+               if (get_int(mouse_down) == 1) {
+                 set_int(mouse_down, 0);
+                 get_state(PART:"elm.swallow.content", st, 30, vl);
+                 if (strcmp(st, "icononly"))
+                   {
+                      emit("elm,action,default,text,set", "");
+                      set_state(PART:"elm.text", "visible", 0.0);
+                   }
+                 if (get_int(button_state) != BUTTON_STATE_DISABLED)
+                   set_state(PART:"button_image", "default", 0.0);
+                 set_state(PART:"elm.swallow.content.shadow.proxy", "default", 0.0);
+                 set_state(PART:"elm.swallow.content.shadow.clipper", "default", 0.0);
+                 set_state(PART:"icon_clipper", "default", 0.0);
+                 run_program(PROGRAM:"button_unpress");
+               }
             }
-            after: button_unpress;
          }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "over2";
+            script {
+               if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
+                 run_program(PROGRAM:"button_unclick3");
+               }
+            }
+         }
+         program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: button_unclick3;
          }
          program { name: "button_unclick3";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -1824,6 +1871,22 @@
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "focus_image";
+         }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
          }
       }
    }
@@ -3426,6 +3489,8 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
       }
       script {
          public button_state = BUTTON_STATE_ENABLED;
+         public mouse_down = 0;
+         public multi_down = 0;
       }
       parts {
          part { name: "button_image";
@@ -3479,13 +3544,11 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             }
          }
          part { name: "padding.left";
-            type: RECT;
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
                min: BUTTON_CONTACT_LEFT_PADDING_MIN_INC;
                fixed: 1 0;
-               color: 0 0 0 0;
                rel2 {
                   relative: 0.0 1.0;
                   to_x: "elm.text";
@@ -3494,13 +3557,11 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             }
          }
          part { name: "padding.right";
-            type: RECT;
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
                min: BUTTON_CONTACT_RIGHT_PADDING_MIN_INC;
                fixed: 1 0;
-               color: 0 0 0 0;
                rel1 {
                   relative: 1.0 0.0;
                   to_x: "elm.text";
@@ -3594,6 +3655,15 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over2";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click1");
+                 }
+            }
+         }
+         program { name: "button_click1";
             action: SIGNAL_EMIT "elm,action,press" "";
             after: "button_click_anim";
          }
@@ -3605,7 +3675,13 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
             source: "over2";
-            after: "button_click_anim";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click_anim");
+                 }
+            }
          }
          program { name: "button_unpress";
             action: SIGNAL_EMIT "elm,action,unpress" "";
@@ -3616,22 +3692,32 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             script {
                new st[31];
                new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "clicked") || !strcmp(st, "focused"))
-                 {
-                    emit("elm,action,default,text,set", "");
-                    set_state(PART:"elm.text", "visible", 0.0);
-                 }
-               if (get_int(button_state) != BUTTON_STATE_DISABLED)
-                 set_state(PART:"button_image", "default", 0.0);
+               if (get_int(mouse_down) == 1) {
+                 set_int(mouse_down, 0);
+                 get_state(PART:"elm.text", st, 30, vl);
+                 if (!strcmp(st, "clicked") || !strcmp(st, "focused"))
+                   {
+                      emit("elm,action,default,text,set", "");
+                      set_state(PART:"elm.text", "visible", 0.0);
+                   }
+                 if (get_int(button_state) != BUTTON_STATE_DISABLED)
+                   set_state(PART:"button_image", "default", 0.0);
+                 run_program(PROGRAM:"button_unpress");
+               }
             }
-            after: button_unpress;
          }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "over2";
+            script {
+               if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
+                 run_program(PROGRAM:"button_unclick3");
+               }
+            }
+         }
+         program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: button_unclick3;
          }
          program { name: "button_unclick3";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -3704,6 +3790,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             action: STATE_SET "default" 0.0;
             target: "focus_image";
          }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
+         }
       }
    }
 
@@ -3721,17 +3823,15 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
       }
       parts {
          part { name: "button_image";
-            type: RECT;
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
                min: BUTTON_NAVIFRAME_BACK_BUTTON_BG_MIN_MAX_INC;
                max: BUTTON_NAVIFRAME_BACK_BUTTON_BG_MIN_MAX_INC;
-               visible: 0;
             }
             description { state: "landscape" 0.0;
                min: BUTTON_NAVIFRAME_LANDSCAPE_BACK_BUTTON_BG_MIN_MAX_INC;
                max: BUTTON_NAVIFRAME_LANDSCAPE_BACK_BUTTON_BG_MIN_MAX_INC;
-               visible: 0;
             }
          }
          part { name: "focus_image";
@@ -3923,15 +4023,13 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
       }
       parts {
          part { name: "button_bg";
-            type: RECT;
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
                min: BUTTON_NAVIFRAME_TITLE_ICON_BG_MIN_MAX_INC;
                max: BUTTON_NAVIFRAME_TITLE_ICON_BG_MIN_MAX_INC;
             }
             description { state: "landscape" 0.0;
-               visible: 0;
                min: BUTTON_NAVIFRAME_LANDSCAPE_TITLE_ICON_BG_MIN_MAX_INC;
                max: BUTTON_NAVIFRAME_LANDSCAPE_TITLE_ICON_BG_MIN_MAX_INC;
             }
@@ -4219,15 +4317,13 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
       }
       parts {
          part { name: "button_bg";
-            type: RECT;
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
                min: BUTTON_NAVIFRAME_TITLE_TEXT_BG_MIN_INC;
                max: BUTTON_NAVIFRAME_TITLE_TEXT_BG_MAX_INC;
             }
             description { state: "landscape" 0.0;
-               visible: 0;
                min: BUTTON_NAVIFRAME_LANDSCAPE_TITLE_TEXT_BG_MIN_INC;
                max: BUTTON_NAVIFRAME_LANDSCAPE_TITLE_TEXT_BG_MAX_INC;
             }
@@ -4254,10 +4350,9 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             }
          }
          part { name: "left_padding";
-            type: RECT;
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
                min: BUTTON_NAVIFRAME_TITLE_TEXT_LEFT_PADDING_INC 0;
                max: BUTTON_NAVIFRAME_TITLE_TEXT_LEFT_PADDING_INC -1;
                align: 0.0 0.5;
@@ -4267,10 +4362,9 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             }
          }
          part { name: "right_padding";
-            type: RECT;
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
                min: BUTTON_NAVIFRAME_TITLE_TEXT_LEFT_PADDING_INC 0;
                max: BUTTON_NAVIFRAME_TITLE_TEXT_LEFT_PADDING_INC -1;
                align: 1.0 0.5;
@@ -4489,17 +4583,15 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
       }
       parts {
          part { name: "button_image";
-            type: RECT;
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
                min: BUTTON_NAVIFRAME_MORE_BG_MIN_MAX_INC;
                max: BUTTON_NAVIFRAME_MORE_BG_MIN_MAX_INC;
-               visible: 0;
             }
             description { state: "landscape" 0.0;
                min: BUTTON_NAVIFRAME_LANDSCAPE_MORE_BG_MIN_MAX_INC;
                max: BUTTON_NAVIFRAME_LANDSCAPE_MORE_BG_MIN_MAX_INC;
-               visible: 0;
             }
          }
          part { name: "focus_image";
@@ -4707,6 +4799,8 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
       }
       script {
          public button_state = BUTTON_STATE_ENABLED;
+         public mouse_down = 0;
+         public multi_down = 0;
       }
       parts {
          part { name: "button_image";
@@ -4755,11 +4849,9 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             }
          }
          part { name: "padding_left_top";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0;
-               visible: 0;
                align: 0.0 0.0;
                rel2.relative: 0.0 0.0;
                min: BUTTON_EXPANDABLE_NUMBER_PADDING_MIN_INC;
@@ -4767,11 +4859,9 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             }
          }
          part { name: "padding_right_bottom";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0;
-               visible: 0;
                align: 1.0 1.0;
                rel1.relative: 1.0 1.0;
                min: BUTTON_EXPANDABLE_NUMBER_PADDING_MIN_INC;
@@ -4779,11 +4869,9 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             }
          }
          part { name: "icon_rect";
-            type: RECT;
+            type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0;
-               visible: 0;
                min: BUTTON_EXPANDABLE_NUMBER_ICON_RECT_EXPAND_MIN_MAX_INC;
                max: BUTTON_EXPANDABLE_NUMBER_ICON_RECT_EXPAND_MIN_MAX_INC;
                fixed: 1 0;
@@ -4964,6 +5052,15 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over2";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click1");
+                 }
+            }
+         }
+         program { name: "button_click1";
             action: SIGNAL_EMIT "elm,action,press" "";
             after: "button_click_anim";
          }
@@ -4987,7 +5084,13 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
             source: "over2";
-            after: "button_click_anim";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click_anim");
+                 }
+            }
          }
          program { name: "button_unpress";
             action: SIGNAL_EMIT "elm,action,unpress" "";
@@ -4996,22 +5099,32 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             signal: "mouse,up,1";
             source: "over3";
             script {
-               if (get_int(button_state) != BUTTON_STATE_DISABLED)
-                 {
-                    set_state(PART:"button_image", "default", 0.0);
-                    set_state(PART:"elm.text", "visible", 0.0);
-                    set_state(PART:"arrow_expand.shadow.proxy", "visible", 0.0);
-                    set_state(PART:"arrow_expand.shadow.clipper", "visible", 0.0);
-                    set_state(PART:"icon_clipper", "default", 0.0);
-                 }
+               if (get_int(mouse_down) == 1) {
+                 set_int(mouse_down, 0);
+                 if (get_int(button_state) != BUTTON_STATE_DISABLED)
+                   {
+                      set_state(PART:"button_image", "default", 0.0);
+                      set_state(PART:"elm.text", "visible", 0.0);
+                      set_state(PART:"arrow_expand.shadow.proxy", "visible", 0.0);
+                      set_state(PART:"arrow_expand.shadow.clipper", "visible", 0.0);
+                      set_state(PART:"icon_clipper", "default", 0.0);
+                   }
+                 run_program(PROGRAM:"button_unpress");
+               }
             }
-            after: button_unpress;
          }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "over2";
+            script {
+               if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
+                 run_program(PROGRAM:"button_unclick3");
+               }
+            }
+         }
+         program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: button_unclick3;
          }
          program { name: "button_unclick3";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -5091,6 +5204,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             action: STATE_SET "default" 0.0;
             target: "focus_image";
          }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
+         }
       }
    }
 
@@ -5103,7 +5232,6 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          part { name: "bg";
             type: SPACER;
             scale: 1;
-            mouse_events: 0;
             description { state: "default" 0.0;
                min: BUTTON_EDITFIELD_CLEAR_BUTTON_MIN_MAX_INC;
                max: BUTTON_EDITFIELD_CLEAR_BUTTON_MIN_MAX_INC;
