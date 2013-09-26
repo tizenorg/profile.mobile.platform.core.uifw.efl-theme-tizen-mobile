@@ -4,6 +4,12 @@ group { name: "elm/panel/left/default";
       item: "handler_width" "60";
       item: "handler_height" "-1";
    }
+   script {
+      public timer_id;
+      public signal_emit_timer(val) {
+         run_program(PROGRAM:"signal,emit");
+      }
+   }
    parts {
       part { name: "clipper";
          type: RECT;
@@ -21,6 +27,7 @@ group { name: "elm/panel/left/default";
       }
       part { name: "elm.rect.event";
          type: RECT;
+         repeat_events: 1;
          description { state: "default" 0.0;
             rel2.relative: 0.0 1.0;
             min: PANEL_HANDLER_MIN_INC;
@@ -38,6 +45,15 @@ group { name: "elm/panel/left/default";
       program { name: "mouse,down";
          signal: "mouse,down,1";
          source: "elm.rect.event";
+         script {
+            new v;
+            v = get_int(timer_id);
+            if (v > 0) cancel_timer(v);
+            v = timer(0.5, "signal_emit_timer", 0);
+            set_int(timer_id, v);
+         }
+      }
+      program { name: "signal,emit";
          action: SIGNAL_EMIT "elm,state,event,active" "elm";
       }
       program { name: "mouse,down,double";
@@ -45,6 +61,16 @@ group { name: "elm/panel/left/default";
          source: "elm.rect.event";
          script {
             emit("mouse,down,1", "elm.rect.event");
+         }
+      }
+      program { name: "mouse,up";
+         signal: "mouse,up,1";
+         source: "elm.rect.event";
+         script {
+            new v;
+            v = get_int(timer_id);
+            if (v > 0) cancel_timer(v);
+            set_int(timer_id, 0);
          }
       }
       program { name: "disable";
@@ -154,6 +180,12 @@ group { name: "elm/panel/right/default";
       item: "handler_width" "60";
       item: "handler_height" "-1";
    }
+   script {
+      public timer_id;
+      public signal_emit_timer(val) {
+         run_program(PROGRAM:"signal,emit");
+      }
+   }
    parts {
       part { name: "clipper";
          type: RECT;
@@ -171,6 +203,7 @@ group { name: "elm/panel/right/default";
       }
       part { name: "elm.rect.event";
          type: RECT;
+         repeat_events: 1;
          description { state: "default" 0.0;
             rel1.relative: 1.0 0.0;
             min: PANEL_HANDLER_MIN_INC;
@@ -188,6 +221,15 @@ group { name: "elm/panel/right/default";
       program { name: "mouse,down";
          signal: "mouse,down,1";
          source: "elm.rect.event";
+         script {
+            new v;
+            v = get_int(timer_id);
+            if (v > 0) cancel_timer(v);
+            v = timer(0.5, "signal_emit_timer", 0);
+            set_int(timer_id, v);
+         }
+      }
+      program { name: "signal,emit";
          action: SIGNAL_EMIT "elm,state,event,active" "elm";
       }
       program { name: "mouse,down,double";
@@ -195,6 +237,16 @@ group { name: "elm/panel/right/default";
          source: "elm.rect.event";
          script {
             emit("mouse,down,1", "elm.rect.event");
+         }
+      }
+      program { name: "mouse,up";
+         signal: "mouse,up,1";
+         source: "elm.rect.event";
+         script {
+            new v;
+            v = get_int(timer_id);
+            if (v > 0) cancel_timer(v);
+            set_int(timer_id, 0);
          }
       }
       program { name: "disable";

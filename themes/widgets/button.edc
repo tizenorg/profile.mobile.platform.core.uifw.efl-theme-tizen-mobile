@@ -675,9 +675,35 @@
    }
 
 //////////////////////////////////////////////////////////////////////////////////////
-   group { name: "elm/button/base/datetime/ampm/default";
-      alias: "elm/button/base/datetime_ampm/default";
+   group { name: "elm/button/base/datetime/ampm";
+      alias: "elm/button/base/datetime_ampm";
       inherit: "elm/button/base/style1/auto_expand";
+      styles{
+         style { name: "btn_base_ampm";
+            base: "font=Tizen:style=Regular font_size="BUTTON_DATETIME_AMPM_TEXT_FONT_SIZE_INC" align=center color="BUTTON_TEXT_STYLE1_TEXTBLOCK_NORMAL_COLOR_INC" style=far_shadow,bottom shadow_color="BUTTON_TEXT_SHADOW_TEXTBLOCK_NORMAL_COLOR_INC" ellipsis=1.0 wrap=none text_class=tizen";
+            tag: "br" "\n";
+            tag: "ps" "ps";
+            tag: "tab" "\t";
+         }
+         style { name: "btn_base_ampm_pressed";
+            base: "font=Tizen:style=Regular font_size="BUTTON_DATETIME_AMPM_TEXT_FONT_SIZE_INC" align=center color="BUTTON_TEXT_STYLE1_TEXTBLOCK_PRESSED_COLOR_INC" style=far_shadow,top shadow_color="BUTTON_TEXT_SHADOW_TEXTBLOCK_PRESSED_COLOR_INC" ellipsis=1.0 wrap=none text_class=tizen";
+            tag: "br" "\n";
+            tag: "ps" "ps";
+            tag: "tab" "\t";
+         }
+         style { name: "btn_base_ampm_dim";
+            base: "font=Tizen:style=Regular font_size="BUTTON_DATETIME_AMPM_TEXT_FONT_SIZE_INC" align=center color="BUTTON_TEXT_STYLE1_TEXTBLOCK_DISABLED_COLOR_INC" style=far_shadow,bottom shadow_color="BUTTON_TEXT_SHADOW_TEXTBLOCK_DIM_COLOR_INC" ellipsis=1.0 wrap=none text_class=tizen";
+            tag: "br" "\n";
+            tag: "ps" "ps";
+            tag: "tab" "\t";
+         }
+         style { name: "btn_base_ampm_focus";
+            base: "font=Tizen:style=Regular font_size="BUTTON_DATETIME_AMPM_TEXT_FONT_SIZE_INC" align=center color="BUTTON_TEXT_STYLE1_TEXTBLOCK_FOCUSED_COLOR_INC" ellipsis=1.0 wrap=none text_class=tizen";
+            tag: "br" "\n";
+            tag: "ps" "ps";
+            tag: "tab" "\t";
+         }
+      }
       parts {
          part { name: "button_image";
             scale: 1;
@@ -725,8 +751,7 @@
                visible: 0;
                fixed: 1 1;
                text {
-                  style: "btn_base_style1";
-                  size: BUTTON_DATETIME_AMPM_TEXT_FONT_SIZE_INC;
+                  style: "btn_base_ampm";
                   min: 1 1;
                }
             }
@@ -737,7 +762,7 @@
             description { state: "clicked" 0.0;
                inherit: "visible" 0.0;
                text {
-                  style: "btn_base_style1_pressed";
+                  style: "btn_base_ampm_pressed";
                }
             }
             description { state: "disabled" 0.0;
@@ -746,13 +771,13 @@
             description { state: "disabled_visible" 0.0;
                inherit: "visible" 0.0;
                text {
-                  style: "btn_base_style1_dim";
+                  style: "btn_base_ampm_dim";
                }
             }
             description { state: "focused" 0.0;
                inherit: "visible" 0.0;
                text {
-                  style: "btn_base_style1_focus";
+                  style: "btn_base_ampm_focus";
                }
             }
          }
@@ -1904,6 +1929,10 @@
          image: image_normal COMP; \
          image: 00_circle_button_focus.png COMP; \
       } \
+      script { \
+         public mouse_down = 0; \
+         public multi_down = 0; \
+      } \
       parts { \
          part { name: "button_image"; \
             scale: 1; \
@@ -2084,6 +2113,15 @@
          program { name: "button_click"; \
             signal: "mouse,down,1"; \
             source: "over1"; \
+            script { \
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
+                 { \
+                     set_int(mouse_down, 1); \
+                     run_program(PROGRAM:"button_click1"); \
+                 } \
+            } \
+         } \
+         program { name: "button_click1"; \
             action: SIGNAL_EMIT "elm,action,press" ""; \
             after: "button_click_anim"; \
          } \
@@ -2097,13 +2135,28 @@
          program { name: "button_double_click"; \
             signal: "mouse,down,1,double"; \
             source: "over1"; \
-            after: "button_click_anim"; \
+            script { \
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
+                 { \
+                     set_int(mouse_down, 1); \
+                     run_program(PROGRAM:"button_click_anim"); \
+                 } \
+            } \
          } \
          program { name: "button_unclick"; \
             signal: "mouse,up,1"; \
             source: "over2"; \
+            script { \
+               if (get_int(mouse_down) == 1) \
+                 { \
+                    set_int(mouse_down, 0); \
+                    run_program(PROGRAM:"button_unpress"); \
+                    run_program(PROGRAM:"button_unclick_anim"); \
+                 } \
+            } \
+         } \
+         program { name: "button_unpress"; \
             action: SIGNAL_EMIT "elm,action,unpress" ""; \
-            after: "button_unclick_anim"; \
          } \
          program { name: "button_unclick_anim"; \
             action: STATE_SET "default" 0.0; \
@@ -2115,8 +2168,15 @@
          program { name: "touch_snd"; \
             signal: "mouse,clicked,1"; \
             source: "over1"; \
+            script { \
+               if (get_int(multi_down) == 0) { \
+                 run_program(PROGRAM:"play_sound"); \
+                 run_program(PROGRAM:"button_unclick3"); \
+               } \
+            } \
+         } \
+         program { name: "play_sound"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
-            after: button_unclick3; \
          } \
          program { name: "button_unclick3"; \
             action: SIGNAL_EMIT "elm,action,click" ""; \
@@ -2152,6 +2212,22 @@
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
             target: "focus_image"; \
+         } \
+         program { \
+            name: "multi_down"; \
+            signal: "elm,action,multi,down"; \
+            source: "elm"; \
+            script { \
+               set_int(multi_down, 1); \
+            } \
+         } \
+         program { \
+            name: "multi_up"; \
+            signal: "elm,action,multi,up"; \
+            source: "elm"; \
+            script { \
+               set_int(multi_down, 0); \
+            } \
          } \
       } \
    }
@@ -2347,6 +2423,10 @@
          image: "00_circle_button_dim.png" COMP;
          image: 00_circle_button_focus.png COMP;
       }
+      script {
+         public mouse_down = 0;
+         public multi_down = 0;
+      }
       parts {
          part { name: "button_image";
             scale: 1;
@@ -2526,6 +2606,15 @@
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over1";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click1");
+                 }
+            }
+         }
+         program { name: "button_click1";
             action: SIGNAL_EMIT "elm,action,press" "";
             after: "button_click_anim";
          }
@@ -2539,13 +2628,26 @@
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
             source: "over1";
-            after: "button_click_anim";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click_anim");
+                 }
+            }
          }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "over1";
+            script {
+               if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
+                 run_program(PROGRAM:"button_unclick2");
+               }
+            }
+         }
+         program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: button_unclick2;
          }
          program { name: "button_unclick2";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -2553,8 +2655,17 @@
          program { name: "button_unclick";
             signal: "mouse,up,1";
             source: "over2";
+            script {
+               if (get_int(mouse_down) == 1)
+                 {
+                    set_int(mouse_down, 0);
+                    run_program(PROGRAM:"button_unpress");
+                    run_program(PROGRAM:"button_unclick_anim");
+                 }
+            }
+         }
+         program { name: "button_unpress";
             action: SIGNAL_EMIT "elm,action,unpress" "";
-            after: "button_unclick_anim";
          }
          program { name: "button_unclick_anim";
             action: STATE_SET "default" 0.0;
@@ -2595,6 +2706,22 @@
             action: STATE_SET "default" 0.0;
             target: "focus_image";
          }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
+         }
       }
    }
 
@@ -2610,6 +2737,10 @@
          image: "00_circle_button_dim.png" COMP; \
          image: image_normal COMP; \
          image: 00_circle_button_focus.png COMP;\
+      } \
+      script { \
+         public mouse_down = 0; \
+         public multi_down = 0; \
       } \
       parts { \
          part { name: "button_image"; \
@@ -2756,6 +2887,15 @@
          program { name: "button_click"; \
             signal: "mouse,down,1"; \
             source: "over1"; \
+            script { \
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
+                 { \
+                     set_int(mouse_down, 1); \
+                     run_program(PROGRAM:"button_click1"); \
+                 } \
+            } \
+         } \
+         program { name: "button_click1"; \
             action: SIGNAL_EMIT "elm,action,press" ""; \
             after: "button_click_anim"; \
          } \
@@ -2769,13 +2909,28 @@
          program { name: "button_double_click"; \
             signal: "mouse,down,1,double"; \
             source: "over1"; \
-            after: "button_click_anim"; \
+            script { \
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
+                 { \
+                     set_int(mouse_down, 1); \
+                     run_program(PROGRAM:"button_click_anim"); \
+                 } \
+            } \
+         } \
+         program { name: "button_unpress"; \
+            action: SIGNAL_EMIT "elm,action,unpress" ""; \
          } \
          program { name: "button_unclick"; \
             signal: "mouse,up,1"; \
             source: "over2"; \
-            action: SIGNAL_EMIT "elm,action,unpress" ""; \
-            after: "button_unclick_anim"; \
+            script { \
+               if (get_int(mouse_down) == 1) \
+                 { \
+                    set_int(mouse_down, 0); \
+                    run_program(PROGRAM:"button_unpress"); \
+                    run_program(PROGRAM:"button_unclick_anim"); \
+                 } \
+            } \
          } \
          program { name: "button_unclick_anim"; \
             action: STATE_SET "default" 0.0; \
@@ -2787,8 +2942,15 @@
          program { name: "touch_snd"; \
             signal: "mouse,clicked,1"; \
             source: "over1"; \
+            script { \
+               if (get_int(multi_down) == 0) { \
+                 run_program(PROGRAM:"play_sound"); \
+                 run_program(PROGRAM:"button_unclick3"); \
+               } \
+            } \
+         } \
+         program { name: "play_sound"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
-            after: button_unclick3; \
          } \
          program { name: "button_unclick3"; \
             action: SIGNAL_EMIT "elm,action,click" ""; \
@@ -2824,6 +2986,22 @@
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
             target: "focus_image"; \
+         } \
+         program { \
+            name: "multi_down"; \
+            signal: "elm,action,multi,down"; \
+            source: "elm"; \
+            script { \
+               set_int(multi_down, 1); \
+            } \
+         } \
+         program { \
+            name: "multi_up"; \
+            signal: "elm,action,multi,up"; \
+            source: "elm"; \
+            script { \
+               set_int(multi_down, 0); \
+            } \
          } \
       } \
    }
@@ -2964,6 +3142,10 @@
          image: image_normal COMP; \
          image: "00_button_01_focus.png" COMP; \
       }\
+      script { \
+         public mouse_down = 0; \
+         public multi_down = 0; \
+      } \
       parts { \
          part { name: "button_image";\
             type: IMAGE; \
@@ -3132,6 +3314,15 @@
          program { name: "button_click"; \
             signal: "mouse,down,1"; \
             source: "over1"; \
+            script { \
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
+                 { \
+                     set_int(mouse_down, 1); \
+                     run_program(PROGRAM:"button_click1"); \
+                 } \
+            } \
+         } \
+         program { name: "button_click1"; \
             action: SIGNAL_EMIT "elm,action,press" ""; \
             after: "button_click_anim"; \
          } \
@@ -3145,13 +3336,28 @@
          program { name: "button_double_click"; \
             signal: "mouse,down,1,double"; \
             source: "over1"; \
-            after: "button_click_anim"; \
+            script { \
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
+                 { \
+                     set_int(mouse_down, 1); \
+                     run_program(PROGRAM:"button_click_anim"); \
+                 } \
+            } \
          } \
          program { name: "button_unclick"; \
             signal: "mouse,up,1"; \
             source: "over2"; \
+            script { \
+               if (get_int(mouse_down) == 1) \
+                 { \
+                     set_int(mouse_down, 0); \
+                     run_program(PROGRAM:"button_unpress"); \
+                     run_program(PROGRAM:"button_unclick_anim"); \
+                  } \
+            } \
+         } \
+         program { name: "button_unpress"; \
             action: SIGNAL_EMIT "elm,action,unpress" ""; \
-            after: "button_unclick_anim"; \
          } \
          program { name: "button_unclick_anim"; \
             action: STATE_SET "default" 0.0; \
@@ -3163,8 +3369,15 @@
          program { name: "touch_snd"; \
             signal: "mouse,clicked,1"; \
             source: "over1"; \
+            script { \
+               if (get_int(multi_down) == 0) { \
+                 run_program(PROGRAM:"play_sound"); \
+                 run_program(PROGRAM:"button_unclick3"); \
+               } \
+            } \
+         } \
+         program { name: "play_sound"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
-            after: button_unclick3; \
          } \
          program { name: "button_unclick3"; \
             action: SIGNAL_EMIT "elm,action,click" ""; \
@@ -3199,6 +3412,22 @@
             action: STATE_SET "default" 0.0; \
             target: "focus_image"; \
          } \
+         program { \
+            name: "multi_down"; \
+            signal: "elm,action,multi,down"; \
+            source: "elm"; \
+            script { \
+               set_int(multi_down, 1); \
+            } \
+         } \
+         program { \
+            name: "multi_up"; \
+            signal: "elm,action,multi,up"; \
+            source: "elm"; \
+            script { \
+               set_int(multi_down, 0); \
+            } \
+         } \
       } \
    }
 
@@ -3219,6 +3448,10 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          image: "00_button_01.png" COMP; \
          image: "00_button_01_press.png" COMP; \
          image: "00_button_01_focus.png" COMP; \
+      } \
+      script { \
+         public mouse_down = 0; \
+         public multi_down = 0; \
       } \
       parts { \
          part { name: "button_image"; \
@@ -3374,6 +3607,15 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_click"; \
             signal: "mouse,down,1"; \
             source: "over1"; \
+            script { \
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
+                 { \
+                     set_int(mouse_down, 1); \
+                     run_program(PROGRAM:"button_click1"); \
+                 } \
+            } \
+         } \
+         program { name: "button_click1"; \
             action: SIGNAL_EMIT "elm,action,press" ""; \
             after: "button_click_anim"; \
          } \
@@ -3387,13 +3629,28 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_double_click"; \
             signal: "mouse,down,1,double"; \
             source: "over1"; \
-            after: "button_click_anim"; \
+            script { \
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
+                 { \
+                     set_int(mouse_down, 1); \
+                     run_program(PROGRAM:"button_click_anim"); \
+                 } \
+            } \
          } \
          program { name: "button_unclick"; \
             signal: "mouse,up,1"; \
             source: "over2"; \
+            script { \
+               if (get_int(mouse_down) == 1) \
+                 { \
+                     set_int(mouse_down, 0); \
+                     run_program(PROGRAM:"button_unpress"); \
+                     run_program(PROGRAM:"button_unclick_anim"); \
+                  } \
+            } \
+         } \
+         program { name: "button_unpress"; \
             action: SIGNAL_EMIT "elm,action,unpress" ""; \
-            after: "button_unclick_anim"; \
          } \
          program { name: "button_unclick_anim"; \
             action: STATE_SET "default" 0.0; \
@@ -3405,8 +3662,15 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "touch_snd"; \
             signal: "mouse,clicked,1"; \
             source: "over1"; \
+            script { \
+               if (get_int(multi_down) == 0) { \
+                 run_program(PROGRAM:"play_sound"); \
+                 run_program(PROGRAM:"button_unclick3"); \
+               } \
+            } \
+         } \
+         program { name: "play_sound"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
-            after: button_unclick3; \
          } \
          program { name: "button_unclick3"; \
             action: SIGNAL_EMIT "elm,action,click" ""; \
@@ -3442,6 +3706,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
             target: "focus_image"; \
+         } \
+         program { \
+            name: "multi_down"; \
+            signal: "elm,action,multi,down"; \
+            source: "elm"; \
+            script { \
+               set_int(multi_down, 1); \
+            } \
+         } \
+         program { \
+            name: "multi_up"; \
+            signal: "elm,action,multi,up"; \
+            source: "elm"; \
+            script { \
+               set_int(multi_down, 0); \
+            } \
          } \
       } \
    }
@@ -4021,6 +4301,10 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
       images {
          image: "00_icon_focus.png" COMP;
       }
+      script {
+         public mouse_down = 0;
+         public multi_down = 0;
+      }
       parts {
          part { name: "button_bg";
             type: SPACER;
@@ -4170,6 +4454,15 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over2";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click1");
+                 }
+            }
+         }
+         program { name: "button_click1";
             action: SIGNAL_EMIT "elm,action,press" "";
             after: "button_click_anim";
          }
@@ -4184,7 +4477,13 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
             source: "over2";
-            after: "button_click_anim";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click_anim");
+                 }
+            }
          }
          program { name: "button_unpress";
             action: SIGNAL_EMIT "elm,action,unpress" "";
@@ -4193,18 +4492,29 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             signal: "mouse,up,1";
             source: "over3";
             script {
-               set_state(PART:"button_image", "default", 0.0);
-               set_state(PART:"elm.icon.proxy_shadow.clipper", "default", 0.0);
-               set_state(PART:"elm.icon.proxy.clipper", "default", 0.0);
-               set_state(PART:"elm.swallow.content.proxy_shadow", "default", 0.0);
+               if (get_int(mouse_down) == 1)
+                 {
+                    set_int(mouse_down, 0);
+                    set_state(PART:"button_image", "default", 0.0);
+                    set_state(PART:"elm.icon.proxy_shadow.clipper", "default", 0.0);
+                    set_state(PART:"elm.icon.proxy.clipper", "default", 0.0);
+                    set_state(PART:"elm.swallow.content.proxy_shadow", "default", 0.0);
+                    run_program(PROGRAM:"button_unpress");
+                 }
             }
-            after: button_unpress;
          }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "over2";
+            script {
+               if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
+                 run_program(PROGRAM:"button_unclick3");
+               }
+            }
+         }
+         program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: button_unclick3;
          }
          program { name: "button_unclick3";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -4283,6 +4593,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             action: STATE_SET "default" 0.0;
             target: "focus_image";
          }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
+         }
       }
    }
 
@@ -4294,6 +4620,8 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
       script {
          public landscape = 0;
          public disabled = 0;
+         public mouse_down = 0;
+         public multi_down = 0;
       }
       styles{
          style { name: "btn_naviframe_title_text";
@@ -4456,6 +4784,15 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over2";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click1");
+                 }
+            }
+         }
+         program { name: "button_click1";
             action: SIGNAL_EMIT "elm,action,press" "";
             after: "button_click_anim";
          }
@@ -4472,13 +4809,28 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
             source: "over2";
-            after: "button_click_anim";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click_anim");
+                 }
+            }
+         }
+         program { name: "button_unpress";
+            action: SIGNAL_EMIT "elm,action,unpress" "";
          }
          program { name: "button_unclick";
             signal: "mouse,up,1";
             source: "over3";
-            action: SIGNAL_EMIT "elm,action,unpress" "";
-            after: "button_unclick_anim";
+            script {
+               if (get_int(mouse_down) == 1)
+                 {
+                    set_int(mouse_down, 0);
+                    run_program(PROGRAM:"button_unpress");
+                    run_program(PROGRAM:"button_unclick_anim");
+                 }
+            }
          }
          program { name: "button_unclick_anim";
             script {
@@ -4493,8 +4845,15 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "over2";
+            script {
+               if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
+                 run_program(PROGRAM:"button_unclick3");
+               }
+            }
+         }
+         program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: "button_unclick3";
          }
          program { name: "button_unclick3";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -4568,6 +4927,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             source: "elm";
             signal: "elm,state,orient,180";
             after: "change_to_portrait";
+         }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
          }
       }
    }
@@ -5228,6 +5603,10 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
       images {
          image: "00_edit_field_clear.png" COMP;
       }
+      script {
+         public mouse_down = 0;
+         public multi_down = 0;
+      }
       parts {
          part { name: "bg";
             type: SPACER;
@@ -5306,6 +5685,15 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over2";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click1");
+                 }
+            }
+         }
+         program { name: "button_click1";
             action: SIGNAL_EMIT "elm,action,press" "";
             after: "button_click_anim";
          }
@@ -5317,13 +5705,28 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
             source: "over1";
-            after: "button_click_anim";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_click_anim");
+                 }
+            }
          }
          program { name: "button_unclick";
             signal: "mouse,up,1";
             source: "over3";
+            script {
+               if (get_int(mouse_down) == 1)
+                 {
+                     set_int(mouse_down, 0);
+                     run_program(PROGRAM:"button_unpress");
+                     run_program(PROGRAM:"button_unclick_anim");
+                  }
+            }
+         }
+         program { name: "button_unpress";
             action: SIGNAL_EMIT "elm,action,unpress" "";
-            after: "button_unclick_anim";
          }
          program { name: "button_unclick_anim";
             action: STATE_SET "default" 0.0;
@@ -5333,8 +5736,15 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "over2";
+            script {
+               if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
+                 run_program(PROGRAM:"button_unclick3");
+               }
+            }
+         }
+         program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: button_unclick3;
          }
          program { name: "button_unclick3";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -5355,6 +5765,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             target: "disabler";
             target: "clear_button.clipper";
          }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
+         }
       }
    }
 
@@ -5365,6 +5791,10 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
       } \
       images { \
          image: image_normal COMP; \
+      } \
+      script { \
+         public mouse_down = 0; \
+         public multi_down = 0; \
       } \
       parts { \
          part { name: "elm.swallow.content"; \
@@ -5410,17 +5840,33 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_click"; \
             signal: "mouse,down,1"; \
             source: "over2"; \
-            action: SIGNAL_EMIT "elm,action,press" ""; \
+            script { \
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
+                 { \
+                     set_int(mouse_down, 1); \
+                     emit("elm,action,press", ""); \
+                 } \
+            } \
          } \
          program { name: "button_unclick"; \
             signal: "mouse,up,1"; \
             source: "over3"; \
-            action: SIGNAL_EMIT "elm,action,unpress" ""; \
+            script { \
+               if (get_int(mouse_down) == 1) \
+                 { \
+                     set_int(mouse_down, 0); \
+                     emit("elm,action,unpress", ""); \
+                  } \
+            } \
          } \
          program { name: "button_click3"; \
             signal: "mouse,clicked,1"; \
             source: "over2"; \
-            action: SIGNAL_EMIT "elm,action,click" ""; \
+            script { \
+               if (get_int(multi_down) == 0) { \
+                 emit("elm,action,click", ""); \
+               } \
+            } \
          } \
          program { name: "action_focus"; \
             signal: "elm,action,focus_highlight,show"; \
@@ -5434,6 +5880,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             action: STATE_SET "default" 0.0; \
             target: "focus_image"; \
          } \
+         program { \
+            name: "multi_down"; \
+            signal: "elm,action,multi,down"; \
+            source: "elm"; \
+            script { \
+               set_int(multi_down, 1); \
+            } \
+         } \
+         program { \
+            name: "multi_up"; \
+            signal: "elm,action,multi,up"; \
+            source: "elm"; \
+            script { \
+               set_int(multi_down, 0); \
+            } \
+         } \
       } \
    } \
 
@@ -5446,6 +5908,10 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus_bottom", "00_list_group_bg_bottom_focus.png")
    group { name: "elm/button/base/transparent";
       data {
          item: "focus_highlight" "on";
+      }
+      script {
+         public mouse_down = 0;
+         public multi_down = 0;
       }
       parts {
          part { name: "elm.swallow.content";
@@ -5474,17 +5940,49 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus_bottom", "00_list_group_bg_bottom_focus.png")
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over2";
-            action: SIGNAL_EMIT "elm,action,press" "";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     emit("elm,action,press", "");
+                 }
+            }
          }
          program { name: "button_unclick";
             signal: "mouse,up,1";
             source: "over3";
-            action: SIGNAL_EMIT "elm,action,unpress" "";
+            script {
+               if (get_int(mouse_down) == 1)
+                 {
+                     set_int(mouse_down, 0);
+                     emit("elm,action,unpress", "");
+                  }
+            }
          }
          program { name: "button_click3";
             signal: "mouse,clicked,1";
             source: "over2";
-            action: SIGNAL_EMIT "elm,action,click" "";
+            script {
+               if (get_int(multi_down) == 0) {
+                 emit("elm,action,click", "");
+               }
+            }
+         }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
          }
       }
    }
