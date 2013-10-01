@@ -144,6 +144,19 @@
             }
          )
          GENLIST_PART_FOCUS_NORMAL
+         part { name: "block_events_on_animation";
+            type: RECT;
+            description { state: "default" 0.0;
+              color: 0 0 0 0;
+               rel1.to: "base";
+               rel2.to: "base";
+               visible: 0;
+            }
+            description { state: "block" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
       }
       programs {
          GENLIST_PROGRAM_DISABLED(
@@ -177,24 +190,32 @@
             transition: DECELERATE 0.5;
             target: "elm.edit.icon.1";
             target: "elm.edit.icon.2";
+            after: "disable_events_block";
+         }
+         program { name: "disable_events_block";
+            action:  STATE_SET "default" 0.0;
+            target: "block_events_on_animation";
          }
          program { name: "flip_decorate_flipped";
             action:  STATE_SET "decorate_flipped" 0.0;
             transition: DECELERATE 0.5;
             target: "elm.edit.icon.1";
             target: "elm.edit.icon.2";
+            after: "disable_events_block";
          }
          program { name: "unflip_default";
             action:  STATE_SET "default" 0.0;
             transition: DECELERATE 0.5;
             target: "elm.edit.icon.1";
             target: "elm.edit.icon.2";
+            after: "disable_events_block";
          }
          program { name: "unflip_decorated";
             action:  STATE_SET "decorate" 0.0;
             transition: DECELERATE 0.5;
             target: "elm.edit.icon.1";
             target: "elm.edit.icon.2";
+            after: "disable_events_block";
          }
          program { name: "flip_enabled_effect";
             signal:  "elm,state,flip,enabled";
@@ -203,6 +224,7 @@
                new st[31];
                new Float:vl;
                get_state(PART:"elm.edit.icon.1", st, 30, vl);
+               set_state(PART:"block_events_on_animation", "block", 0.0);
                if (!strcmp(st, "decorate")) {
                   run_program(PROGRAM:"flip_decorate_flipped");
                 } else {
@@ -217,6 +239,7 @@
                new st[31];
                new Float:vl;
                get_state(PART:"elm.edit.icon.1", st, 30, vl);
+               set_state(PART:"block_events_on_animation", "block", 0.0);
                if (!strcmp(st, "decorate_flipped")) {
                   run_program(PROGRAM:"unflip_decorated");
                 } else {
