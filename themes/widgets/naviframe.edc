@@ -1275,6 +1275,10 @@
                inherit: "default" 0.0;
                max: NAVIFRAME_LANDSCAPE_TITLE_FUNC_BTN_SIZE_INC;
             }
+            description { state: "hide" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
          }
          part { name: "divider2";
             type: RECT;
@@ -1309,6 +1313,10 @@
                aspect_preference: VERTICAL;
                align: 1.0 0.5;
             }
+            description { state: "hide" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
          }
          part { name: "title_right_btn";
             type: SWALLOW;
@@ -1324,6 +1332,10 @@
             description { state: "landscape" 0.0;
                inherit: "default" 0.0;
                max: NAVIFRAME_LANDSCAPE_TITLE_FUNC_BTN_SIZE_INC;
+            }
+            description { state: "hide" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
             }
          }
          part { name: "toolbar";
@@ -1510,10 +1522,17 @@
             signal: "elm,state,title,show";
             source: "elm";
             script {
-               if (!get_int(landscape))
-                 set_state(PART:"title_bg", "default", 0.0);
-               else
-                 set_state(PART:"title_bg", "landscape", 0.0);
+               if (!get_int(landscape)) {
+                  set_state(PART:"title_bg", "default", 0.0);
+                  set_state(PART:"title_right_btn", "default", 0.0);
+                  set_state(PART:"title_left_btn", "default", 0.0);
+               }
+               else {
+                  set_state(PART:"title_bg", "landscape", 0.0);
+                  set_state(PART:"title_right_btn", "landscape", 0.0);
+                  set_state(PART:"title_left_btn", "landscape", 0.0);
+               }
+               set_state(PART:"elm.swallow.icon", "default", 0.0);
                run_program(PROGRAM:"start_title_slide");
             }
          }
@@ -1523,18 +1542,26 @@
             script {
                run_program(PROGRAM:"stop_title_slide");
                set_state(PART:"title_bg", "hide", 0.0);
+               set_state(PART:"title_right_btn", "hide", 0.0);
+               set_state(PART:"title_left_btn", "hide", 0.0);
+               set_state(PART:"elm.swallow.icon", "hide", 0.0);
             }
          }
          program { name: "title_show_anim";
             signal: "elm,action,title,show";
             source: "elm";
             script {
+               set_state(PART:"elm.swallow.icon", "default", 0.0);
                if (!get_int(landscape)) {
                   set_state(PART:"title_bg", "hide_trans", 0.0);
+                  set_state(PART:"title_right_btn", "default", 0.0);
+                  set_state(PART:"title_left_btn", "default", 0.0);
                   run_program(PROGRAM:"title_show_anim_start_default");
                }
                else {
                   set_state(PART:"title_bg", "hide_trans_landscape", 0.0);
+                  set_state(PART:"title_right_btn", "landscape", 0.0);
+                  set_state(PART:"title_left_btn", "landscape", 0.0);
                   run_program(PROGRAM:"title_show_anim_start_landscape");
                }
             }
@@ -1588,6 +1615,9 @@
          program { name: "title_hide_trans_finished";
             script {
                set_state(PART:"title_bg", "hide", 0.0);
+               set_state(PART:"title_right_btn", "hide", 0.0);
+               set_state(PART:"title_left_btn", "hide", 0.0);
+               set_state(PART:"elm.swallow.icon", "hide", 0.0);
                emit("elm,action,title,transition,finished", "");
             }
          }
@@ -2463,6 +2493,10 @@
                rel1 { relative: 0.0 1.0; to: "title_bg"; }
                rel2 { relative: 1.0 1.0; to: "title_bg"; }
             }
+            description { state: "hide" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
          }
          part { name: "toolbar";
             type: SWALLOW;
@@ -2647,6 +2681,7 @@
                  set_state(PART:"title_bg", "default", 0.0);
                else
                  set_state(PART:"title_bg", "landscape", 0.0);
+               set_state(PART:"tabbar", "default", 0.0);
                run_program(PROGRAM:"start_title_slide");
             }
          }
@@ -2656,12 +2691,14 @@
             script {
                run_program(PROGRAM:"stop_title_slide");
                set_state(PART:"title_bg", "hide", 0.0);
+               set_state(PART:"tabbar", "hide", 0.0);
             }
          }
          program { name: "title_show_anim";
             signal: "elm,action,title,show";
             source: "elm";
             script {
+               set_state(PART:"tabbar", "default", 0.0);
                if (!get_int(landscape)) {
                   set_state(PART:"title_bg", "hide_trans", 0.0);
                   run_program(PROGRAM:"title_show_anim_start_default");
@@ -2720,6 +2757,7 @@
          program { name: "title_hide_trans_finished";
             script {
                set_state(PART:"title_bg", "hide", 0.0);
+               set_state(PART:"tabbar", "hide", 0.0);
                emit("elm,action,title,transition,finished", "");
             }
          }
@@ -2973,6 +3011,10 @@
                rel1 { relative: 0.0 0.0; to: "title_bg"; }
                rel2 { relative: 1.0 1.0; to: "title_bg"; }
             }
+            description { state: "hide" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
          }
          part { name: "elm.swallow.content";
             type: SWALLOW;
@@ -3160,6 +3202,7 @@
             source: "elm";
             script {
                set_state(PART:"title_bg", "default", 0.0);
+               set_state(PART:"tabbar", "default", 0.0);
             }
          }
          program { name: "title_hide";
@@ -3167,12 +3210,14 @@
             source: "elm";
             script {
                set_state(PART:"title_bg", "hide", 0.0);
+               set_state(PART:"tabbar", "hide", 0.0);
             }
          }
          program { name: "title_show_anim";
             signal: "elm,action,title,show";
             source: "elm";
             script {
+               set_state(PART:"tabbar", "default", 0.0);
                set_state(PART:"title_bg", "hide_trans", 0.0);
                run_program(PROGRAM:"title_show_anim_start");
             }
@@ -3205,6 +3250,7 @@
          program { name: "title_hide_trans_finished";
             script {
                set_state(PART:"title_bg", "hide", 0.0);
+               set_state(PART:"tabbar", "hide", 0.0);
                emit("elm,action,title,transition,finished", "");
             }
          }
