@@ -63,6 +63,10 @@
 
       data.item: "contents" "elm.edit.icon.1 elm.edit.icon.2";
 
+      script {
+         public enabling;
+         public disabling;
+      }
       parts {
          GENLIST_PART_BASE
          GENLIST_PART_BG_NORMAL
@@ -190,7 +194,18 @@
             transition: DECELERATE 0.5;
             target: "elm.edit.icon.1";
             target: "elm.edit.icon.2";
-            after: "disable_events_block";
+            after: "disable_required";
+         }
+         program { name: "disable_required";
+            script {
+               if ((get_int(enabling) == 1) && (get_int(disabling) == 1)) {
+                  set_int(enabling, 0);
+                  emit("elm,state,flip,disabled", "elm");
+               } else {
+                  run_program(PROGRAM:"disable_events_block");
+                  set_int(enabling, 0);
+               }
+            }
          }
          program { name: "disable_events_block";
             action:  STATE_SET "default" 0.0;
@@ -201,7 +216,7 @@
             transition: DECELERATE 0.5;
             target: "elm.edit.icon.1";
             target: "elm.edit.icon.2";
-            after: "disable_events_block";
+            after: "disable_required";
          }
          program { name: "unflip_default";
             action:  STATE_SET "default" 0.0;
@@ -230,6 +245,7 @@
                 } else {
                   run_program(PROGRAM:"flip_flipped");
                 }
+                set_int(enabling, 1);
             }
          }
          program { name: "flip_disabled_effect";
@@ -238,13 +254,17 @@
             script {
                new st[31];
                new Float:vl;
-               get_state(PART:"elm.edit.icon.1", st, 30, vl);
-               set_state(PART:"block_events_on_animation", "block", 0.0);
-               if (!strcmp(st, "decorate_flipped")) {
-                  run_program(PROGRAM:"unflip_decorated");
-                } else {
-                  run_program(PROGRAM:"unflip_default");
-                }
+               set_int(disabling, 1);
+               if (get_int(enabling) == 0) {
+                  set_int(disabling, 0);
+                  get_state(PART:"elm.edit.icon.1", st, 30, vl);
+                  set_state(PART:"block_events_on_animation", "block", 0.0);
+                  if (!strcmp(st, "decorate_flipped")) {
+                     run_program(PROGRAM:"unflip_decorated");
+                  } else {
+                     run_program(PROGRAM:"unflip_default");
+                  }
+               }
             }
          }
          program { name: "flip_enabled";
