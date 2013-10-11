@@ -2428,6 +2428,14 @@ group { name: "elm/toolbar/item/tabbar";
       part { name: "event";
          type: RECT;
          mouse_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "event2";
+         type: RECT;
+         mouse_events: 1;
+         repeat_events: 1;
          dragable {
             x: 1 0 0;
             y: 1 0 0;
@@ -2564,7 +2572,7 @@ group { name: "elm/toolbar/item/tabbar";
       program {
          name: "drag";
          signal: "drag";
-         source: "event";
+         source: "event2";
          script {
             if (get_int(item_state) != ITEM_STATE_DISABLED)
               {
@@ -2574,10 +2582,10 @@ group { name: "elm/toolbar/item/tabbar";
                 get_state(PART:"bg_cover", st, 30, vl);
                 if (strcmp(st, "moving"))
                   {
-                    get_drag(PART:"event", dx, dy);
+                    get_drag(PART:"event2", dx, dy);
                     if ((abs(dx)*abs(dx))+(abs(dy)*abs(dy)) > 400)
                       {
-                        set_drag(PART:"event", 0.0, 0.0);
+                        set_drag(PART:"event2", 0.0, 0.0);
                         set_state(PART:"bg_cover", "default", 0.0);
                         set_int(pressed, 0);
                         if (get_int(selected))
@@ -2613,7 +2621,7 @@ group { name: "elm/toolbar/item/tabbar";
                             set_state(PART:"elm.icon.proxy.clipper.2", "default", 0.0);
                           }
                       }
-                    set_drag(PART:"event", 0.0, 0.0);
+                    set_drag(PART:"event2", 0.0, 0.0);
                   }
              }
          }
@@ -2626,7 +2634,7 @@ group { name: "elm/toolbar/item/tabbar";
                 && get_int(mouse_down) == 1)
               {
                 set_int(mouse_down, 0);
-                set_drag(PART:"event", 0.0, 0.0);
+                set_drag(PART:"event2", 0.0, 0.0);
                 set_state(PART:"bg_cover", "default", 0.0);
                 set_int(pressed, 0);
                 if (get_int(selected))
