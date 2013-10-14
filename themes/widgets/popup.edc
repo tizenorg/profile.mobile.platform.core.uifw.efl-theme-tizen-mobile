@@ -139,6 +139,30 @@ group { name: "elm/notify/center/content_expand";
    }
 }
 
+group { name: "elm/notify/center/no_effect";
+   alias: "elm/notify/bottom/no_effect";
+   alias: "elm/notify/top/no_effect";
+   parts {
+      part { name: "base";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      part { name: "elm.swallow.content";
+        type: SWALLOW;
+        scale: 1;
+        description { state: "default" 0.0;
+           rel1.to: "base";
+           rel2.to: "base";
+        }
+     }
+   }
+}
+
 group { name: "elm/notify/center/popup";
    alias: "elm/notify/bottom/popup";
    alias: "elm/notify/top/popup";
@@ -254,6 +278,31 @@ group { name: "elm/notify/block_events/popup";
    }
 }
 
+group { name: "elm/notify/block_events/no_effect";
+   parts {
+      part { name: "block_events_color";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: POPUP_DIM_BG_COLOR_INC;
+         }
+      }
+   }
+   programs {
+      program { name: "show";
+         signal: "show";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "block_events_color";
+      }
+      program { name: "block_clicked";
+         signal: "mouse,clicked,1";
+         source: "block_events_color";
+         action: SIGNAL_EMIT "elm,action,click" "elm";
+      }
+   }
+}
+
 group { name: "elm/notify/block_events/transparent";
    alias: "elm/notify/block_events/verticalbuttonstyle_transparent";
    alias: "elm/notify/block_events/content_expand_transparent";
@@ -291,6 +340,7 @@ group { name: "elm/label/base/popup/default";
    alias: "elm/label/base/popup/transparent";
    alias: "elm/label/base/popup/verticalbuttonstyle";
    alias: "elm/label/base/popup/dimrect";
+   alias: "elm/label/base/popup/no_effect";
    styles {
       style { name: "popup_desc_style";
          base: "font=Tizen:style=Medium font_size="POPUP_DESCRIPTION_DEFAULT_TEXT_FONT_SIZE_INC" align=left color="POPUP_DEFAULT_DESCRIPTION_TEXT_COLOR_INC" wrap=char text_class=tizen";
@@ -2156,7 +2206,6 @@ group { name: "elm/popup/base/content_expand";
       }
    }
 }
-
 group { name: "elm/popup/buttons1/content_expand";
    alias: "elm/popup/buttons1/content_expand_transparent";
    data.item: "action_area_height" POPUP_BUTTON_DEFAULT_ACTION_AREA_HEIGHT;
