@@ -29,6 +29,9 @@
         public portrait_overlap = 0; //save portrait_overlap mode
         public portrait_opacity = 0; //save portrait_opacity
      }
+     images {
+        image: "00_indicator_translucent_bg.png" COMP;
+     }
      parts {
         part { name: "elm.swallow.bg";
            type: SWALLOW;
@@ -130,7 +133,24 @@
            }
            description { state: "translucent" 0.0;
               inherit: "default" 0.0;
-              color: CONFORMANT_INDICATOR_BG_TRANSLUCENT_COLOR_INC;
+              visible: 0;
+           }
+        }
+        part { name: "indicator_bg_image";
+           type: IMAGE;
+#     mouse_events: 0;
+           clip_to: "indicator_clipper";
+           description { state: "default" 0.0;
+              rel1 { relative: 0.0 0.0; to: "indicator_clipper"; }
+              rel2 { relative: 1.0 1.0; to: "indicator_clipper"; }
+              visible: 0;
+              image {
+                  normal: "00_indicator_translucent_bg.png";
+              }
+           }
+           description { state: "translucent" 0.0;
+              inherit: "default" 0.0;
+              visible: 1;
            }
         }
         part { name: "elm.swallow.indicator";
@@ -258,6 +278,7 @@
             name: "opaque_state";
             script {
                set_state(PART:"indicator_bg", "default", 0.0);
+               set_state(PART:"indicator_bg_image", "default", 0.0);
                set_state(PART:"indicator_clipper", "default", 0.0);
                if (get_int(indicator_overlap) == 0)
                  set_state(PART:"indicator_overlap_base", "default", 0.0);
@@ -269,6 +290,7 @@
             name: "translucent_state";
             script {
                set_state(PART:"indicator_bg", "translucent", 0.0);
+               set_state(PART:"indicator_bg_image", "translucent", 0.0);
                set_state(PART:"indicator_clipper", "default", 0.0);
                set_state(PART:"indicator_overlap_base", "overlap", 0.0);
             }
@@ -277,6 +299,7 @@
             name: "transparent_state";
             script {
                set_state(PART:"indicator_bg", "default", 0.0);
+               set_state(PART:"indicator_bg_image", "default", 0.0);
                set_state(PART:"indicator_clipper", "hide", 0.0);
                set_state(PART:"indicator_overlap_base", "overlap", 0.0);
             }
@@ -450,6 +473,9 @@
         public indicator_visible = 0;     //Indicator visible check
         public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent
      }
+     images {
+        image: "00_indicator_translucent_bg.png" COMP;
+     }
      parts {
         part { name: "elm.swallow.bg";
            type: SWALLOW;
@@ -493,8 +519,7 @@
               align: 0.5 0.0;
               min: 0 LAYOUT_INDICATOR_HEIGHT_INC;
               rel2.relative: 1.0 0.0;
-              visible: 1;
-              color: CONFORMANT_INDICATOR_BG_TRANSLUCENT_COLOR_INC;
+              visible: 0;
            }
            description { state: "transparent" 0.0;
               fixed: 0 1;
@@ -502,12 +527,30 @@
               min: 0 LAYOUT_INDICATOR_HEIGHT_INC;
               rel2.relative: 1.0 0.0;
               visible: 1;
-              color: CONFORMANT_INDICATOR_BG_DEFAULT_COLOR_INC;
+              color: CONFORMANT_INDICATOR_BG_TRANSPARENT_COLOR_INC;
            }
             description { state: "hide" 0.0;
               inherit: "default" 0.0;
               visible: 0;
               min: 0 0;
+           }
+        }
+        part { name: "indicator_bg_image";
+           type: IMAGE;
+           scale: 1;
+           description { state: "default" 0.0;
+              fixed: 0 1;
+              align: 0.5 0.0;
+              min: 0 LAYOUT_INDICATOR_HEIGHT_INC;
+              rel2.relative: 1.0 0.0;
+              visible: 0;
+              image {
+                  normal: "00_indicator_translucent_bg.png";
+              }
+           }
+           description { state: "translucent" 0.0;
+              inherit: "default" 0.0;
+              visible: 1;
            }
         }
         part { name: "elm.swallow.indicator";
@@ -585,11 +628,20 @@
                set_int(indicator_visible, 1);
                set_state(PART:"elm.swallow.indicator", "default", 0.0);
                if (get_int(indicator_opacity) == 0)
-                  set_state(PART:"indicator_bg", "opaque", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "opaque", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
                if (get_int(indicator_opacity) == 1)
-                  set_state(PART:"indicator_bg", "translucent", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "translucent", 0.0);
+                   set_state(PART:"indicator_bg_image", "translucent", 0.0);
+                 }
                if (get_int(indicator_opacity) == 2)
-                  set_state(PART:"indicator_bg", "transparent", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "transparent", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
             }
         }
         program {
@@ -609,7 +661,10 @@
             script {
                set_int(indicator_opacity, 0);
                if (get_int(indicator_visible) == 1)
-                  set_state(PART:"indicator_bg", "opaque", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "opaque", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
             }
         }
         program {
@@ -619,7 +674,10 @@
             script {
                set_int(indicator_opacity, 1);
                if (get_int(indicator_visible) == 1)
-                  set_state(PART:"indicator_bg", "translucent", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "translucent", 0.0);
+                   set_state(PART:"indicator_bg_image", "translucent", 0.0);
+                 }
             }
         }
         program {
@@ -629,7 +687,10 @@
             script {
                set_int(indicator_opacity, 2);
                if (get_int(indicator_visible) == 1)
-                  set_state(PART:"indicator_bg", "transparent", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "transparent", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
             }
         }
         program {
@@ -653,6 +714,9 @@
      script {
         public indicator_visible = 0;     //Indicator visible check
         public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent
+     }
+     images {
+        image: "00_indicator_translucent_bg.png" COMP;
      }
      parts {
         part { name: "elm.swallow.bg";
@@ -695,8 +759,7 @@
               align: 0.5 0.0;
               min: 0 LAYOUT_INDICATOR_HEIGHT_INC;
               rel2.relative: 1.0 0.0;
-              visible: 1;
-              color: CONFORMANT_INDICATOR_BG_TRANSLUCENT_COLOR_INC;
+              visible: 0;
            }
            description { state: "transparent" 0.0;
               fixed: 0 1;
@@ -710,6 +773,24 @@
               inherit: "default" 0.0;
               visible: 0;
               min: 0 0;
+           }
+        }
+        part { name: "indicator_bg_image";
+           type: IMAGE;
+           scale: 1;
+           description { state: "default" 0.0;
+              fixed: 0 1;
+              align: 0.5 0.0;
+              min: 0 LAYOUT_INDICATOR_HEIGHT_INC;
+              rel2.relative: 1.0 0.0;
+              visible: 0;
+              image {
+                  normal: "00_indicator_translucent_bg.png";
+              }
+           }
+           description { state: "translucent" 0.0;
+              inherit: "default" 0.0;
+              visible: 1;
            }
         }
         part { name: "elm.swallow.indicator";
@@ -738,11 +819,20 @@
                set_int(indicator_visible, 1);
                set_state(PART:"elm.swallow.indicator", "default", 0.0);
                if (get_int(indicator_opacity) == 0)
-                  set_state(PART:"indicator_bg", "opaque", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "opaque", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
                if (get_int(indicator_opacity) == 1)
-                  set_state(PART:"indicator_bg", "translucent", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "translucent", 0.0);
+                   set_state(PART:"indicator_bg_image", "translucent", 0.0);
+                 }
                if (get_int(indicator_opacity) == 2)
-                  set_state(PART:"indicator_bg", "transparent", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "transparent", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
             }
         }
         program {
@@ -762,7 +852,10 @@
             script {
                set_int(indicator_opacity, 0);
                if (get_int(indicator_visible) == 1)
-                  set_state(PART:"indicator_bg", "opaque", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "opaque", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
             }
         }
         program {
@@ -772,7 +865,10 @@
             script {
                set_int(indicator_opacity, 1);
                if (get_int(indicator_visible) == 1)
-                  set_state(PART:"indicator_bg", "translucent", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "translucent", 0.0);
+                   set_state(PART:"indicator_bg_image", "translucent", 0.0);
+                 }
             }
         }
         program {
@@ -782,7 +878,10 @@
             script {
                set_int(indicator_opacity, 2);
                if (get_int(indicator_visible) == 1)
-                  set_state(PART:"indicator_bg", "transparent", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "transparent", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
             }
         }
      }
@@ -791,6 +890,9 @@
      script {
         public indicator_visible = 0;     //Indicator visible check
         public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent
+     }
+     images {
+        image: "00_indicator_translucent_bg.png" COMP;
      }
      parts {
         part { name: "elm.swallow.bg";
@@ -835,8 +937,7 @@
               align: 0.5 0.0;
               min: 0 LAYOUT_INDICATOR_HEIGHT_INC;
               rel2.relative: 1.0 0.0;
-              visible: 1;
-              color: CONFORMANT_INDICATOR_BG_TRANSLUCENT_COLOR_INC;
+              visible: 0;
            }
            description { state: "transparent" 0.0;
               fixed: 0 1;
@@ -850,6 +951,24 @@
               inherit: "default" 0.0;
               visible: 0;
               min: 0 0;
+           }
+        }
+        part { name: "indicator_bg_image";
+           type: IMAGE;
+           scale: 1;
+           description { state: "default" 0.0;
+              fixed: 0 1;
+              align: 0.5 0.0;
+              min: 0 LAYOUT_INDICATOR_HEIGHT_INC;
+              rel2.relative: 1.0 0.0;
+              visible: 0;
+              image {
+                  normal: "00_indicator_translucent_bg.png";
+              }
+           }
+           description { state: "translucent" 0.0;
+              inherit: "default" 0.0;
+              visible: 1;
            }
         }
         part { name: "elm.swallow.indicator";
@@ -878,11 +997,20 @@
                set_int(indicator_visible, 1);
                set_state(PART:"elm.swallow.indicator", "default", 0.0);
                if (get_int(indicator_opacity) == 0)
-                  set_state(PART:"indicator_bg", "opaque", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "opaque", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
                if (get_int(indicator_opacity) == 1)
-                  set_state(PART:"indicator_bg", "translucent", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "translucent", 0.0);
+                   set_state(PART:"indicator_bg_image", "translucent", 0.0);
+                 }
                if (get_int(indicator_opacity) == 2)
-                  set_state(PART:"indicator_bg", "transparent", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "transparent", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
             }
         }
         program {
@@ -902,7 +1030,10 @@
             script {
                set_int(indicator_opacity, 0);
                if (get_int(indicator_visible) == 1)
-                  set_state(PART:"indicator_bg", "opaque", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "opaque", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
             }
         }
         program {
@@ -912,7 +1043,10 @@
             script {
                set_int(indicator_opacity, 1);
                if (get_int(indicator_visible) == 1)
-                  set_state(PART:"indicator_bg", "translucent", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "translucent", 0.0);
+                   set_state(PART:"indicator_bg_image", "translucent", 0.0);
+                 }
             }
         }
         program {
@@ -922,7 +1056,10 @@
             script {
                set_int(indicator_opacity, 2);
                if (get_int(indicator_visible) == 1)
-                  set_state(PART:"indicator_bg", "transparent", 0.0);
+                 {
+                   set_state(PART:"indicator_bg", "transparent", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
             }
         }
      }
