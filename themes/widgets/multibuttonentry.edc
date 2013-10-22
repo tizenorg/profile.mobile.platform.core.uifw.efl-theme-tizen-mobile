@@ -203,7 +203,7 @@ group {
             }
          }
          description {
-            state: "focused" 0.0;
+            state: "pressed" 0.0;
             inherit: "default" 0.0;
             image.normal: "00_contacts_button_press.png";
          }
@@ -211,6 +211,27 @@ group {
             state: "disabled" 0.0;
             inherit: "default" 0.0;
             image.normal: "00_contacts_button_dim.png";
+         }
+      }
+      part {
+         name: "elm.btn.bg_focus";
+         type: IMAGE;
+         mouse_events: 0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 MULTIBUTTONENTRY_BUTTON_HEIGHT_INC;
+            image {
+               normal: "00_contacts_button_press.png";
+               border: MULTIBUTTONENTRY_BUTTON_NINEPATCH_INC;
+               border_scale: 1;
+            }
+            visible: 0;
+         }
+         description {
+            state: "focused" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
       part {
@@ -277,11 +298,28 @@ group {
             text.style: "multibuttonentry_btn_text_ellipsis_dim_style";
          }
       }
-      part { name: "events";
+      part {
+         name: "events";
          type: RECT;
          ignore_flags: ON_HOLD;
          description {
             state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+      part {
+         name: "drag";
+         type: RECT;
+         scale: 1;
+         repeat_events: 1;
+         dragable {
+            x: 1 1 0;
+            y: 1 1 0;
+         }
+         description {
+            state: "default" 0.0;
+            rel1.to: "elm.btn.bg";
+            rel2.to: "elm.btn.bg";
             color: 0 0 0 0;
          }
       }
@@ -302,6 +340,58 @@ group {
          }
       }
       program {
+         name: "pressed";
+         signal: "mouse,down,1";
+         source: "drag";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.btn.text", st, 30, vl);
+            if (!strcmp(st, "disabled"))
+              set_state(PART:"elm.btn.text", "default", 0.0);
+            else
+              set_state(PART:"elm.btn.text", "ellipsis", 0.0);
+
+            set_state(PART:"elm.btn.bg", "pressed", 0.0);
+         }
+      }
+      program {
+         name: "move";
+         signal: "drag";
+         source: "drag";
+         script {
+            new Float:dx, Float:dy;
+            get_drag(PART:"drag", dx, dy);
+            if ((abs(dx) > 20) || (abs(dy) > 20)) {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.btn.text", st, 30, vl);
+               if (!strcmp(st, "disabled"))
+                 set_state(PART:"elm.btn.text", "default", 0.0);
+               else
+                 set_state(PART:"elm.btn.text", "ellipsis", 0.0);
+               set_state(PART:"elm.btn.bg", "default", 0.0);
+            }
+         }
+      }
+      program {
+         name: "released";
+         signal: "mouse,up,1";
+         source: "drag";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.btn.text", st, 30, vl);
+            if (!strcmp(st, "disabled"))
+              set_state(PART:"elm.btn.text", "default", 0.0);
+            else
+              set_state(PART:"elm.btn.text", "ellipsis", 0.0);
+
+            set_state(PART:"elm.btn.bg", "default", 0.0);
+            set_drag(PART:"drag", 0.0, 0.0);
+         }
+      }
+      program {
          name: "focused";
          signal: "focused";
          source: "";
@@ -313,8 +403,7 @@ group {
               set_state(PART:"elm.btn.text", "default", 0.0);
             else
               set_state(PART:"elm.btn.text", "ellipsis", 0.0);
-
-            set_state(PART:"elm.btn.bg", "focused", 0.0);
+            set_state(PART:"elm.btn.bg_focus", "focused", 0.0);
          }
          after: "selected";
       }
@@ -330,8 +419,7 @@ group {
               set_state(PART:"elm.btn.text", "default", 0.0);
             else
               set_state(PART:"elm.btn.text", "ellipsis", 0.0);
-
-            set_state(PART:"elm.btn.bg", "default", 0.0);
+            set_state(PART:"elm.btn.bg_focus", "default", 0.0);
          }
       }
       program {
