@@ -1,19 +1,27 @@
 /*
  * Copyright (c) 2010 Samsung Electronics Co., Ltd All Rights Reserved
  *
- * PROPRIETARY/CONFIDENTIAL
+ * BSD 2-Clause License (http://www.opensource.org/licenses/bsd-license.php)
  *
- * This software is the confidential and proprietary information of SAMSUNG
- * ELECTRONICS ("Confidential Information"). You agree and acknowledge that this
- * software is owned by Samsung and you shall not disclose such Confidential
- * Information and shall use it only in accordance with the terms of the license
- * agreement you entered into with SAMSUNG ELECTRONICS. SAMSUNG make no
- * representations or warranties about the suitability of the software, either
- * express or implied, including but not limited to the implied warranties of
- * merchantability, fitness for a particular purpose, or non-infringement.
- * SAMSUNG shall not be liable for any damages suffered by licensee arising out
- * of or releated to this software.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
+ *   1. Redistributions of source code must retain the above copyright notice, this
+ *      list of conditions and the following disclaimer.
+ *   2. Redistributions in binary form must reproduce the above copyright notice,
+ *      this list of conditions and the following disclaimer in the documentation
+ *      and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 group {
@@ -195,7 +203,7 @@ group {
             }
          }
          description {
-            state: "focused" 0.0;
+            state: "pressed" 0.0;
             inherit: "default" 0.0;
             image.normal: "00_contacts_button_press.png";
          }
@@ -203,6 +211,27 @@ group {
             state: "disabled" 0.0;
             inherit: "default" 0.0;
             image.normal: "00_contacts_button_dim.png";
+         }
+      }
+      part {
+         name: "elm.btn.bg_focus";
+         type: IMAGE;
+         mouse_events: 0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 MULTIBUTTONENTRY_BUTTON_HEIGHT_INC;
+            image {
+               normal: "00_contacts_button_press.png";
+               border: MULTIBUTTONENTRY_BUTTON_NINEPATCH_INC;
+               border_scale: 1;
+            }
+            visible: 0;
+         }
+         description {
+            state: "focused" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
       part {
@@ -269,11 +298,28 @@ group {
             text.style: "multibuttonentry_btn_text_ellipsis_dim_style";
          }
       }
-      part { name: "events";
+      part {
+         name: "events";
          type: RECT;
          ignore_flags: ON_HOLD;
          description {
             state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+      part {
+         name: "drag";
+         type: RECT;
+         scale: 1;
+         repeat_events: 1;
+         dragable {
+            x: 1 1 0;
+            y: 1 1 0;
+         }
+         description {
+            state: "default" 0.0;
+            rel1.to: "elm.btn.bg";
+            rel2.to: "elm.btn.bg";
             color: 0 0 0 0;
          }
       }
@@ -294,6 +340,58 @@ group {
          }
       }
       program {
+         name: "pressed";
+         signal: "mouse,down,1";
+         source: "drag";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.btn.text", st, 30, vl);
+            if (!strcmp(st, "disabled"))
+              set_state(PART:"elm.btn.text", "default", 0.0);
+            else
+              set_state(PART:"elm.btn.text", "ellipsis", 0.0);
+
+            set_state(PART:"elm.btn.bg", "pressed", 0.0);
+         }
+      }
+      program {
+         name: "move";
+         signal: "drag";
+         source: "drag";
+         script {
+            new Float:dx, Float:dy;
+            get_drag(PART:"drag", dx, dy);
+            if ((abs(dx) > 20) || (abs(dy) > 20)) {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.btn.text", st, 30, vl);
+               if (!strcmp(st, "disabled"))
+                 set_state(PART:"elm.btn.text", "default", 0.0);
+               else
+                 set_state(PART:"elm.btn.text", "ellipsis", 0.0);
+               set_state(PART:"elm.btn.bg", "default", 0.0);
+            }
+         }
+      }
+      program {
+         name: "released";
+         signal: "mouse,up,1";
+         source: "drag";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.btn.text", st, 30, vl);
+            if (!strcmp(st, "disabled"))
+              set_state(PART:"elm.btn.text", "default", 0.0);
+            else
+              set_state(PART:"elm.btn.text", "ellipsis", 0.0);
+
+            set_state(PART:"elm.btn.bg", "default", 0.0);
+            set_drag(PART:"drag", 0.0, 0.0);
+         }
+      }
+      program {
          name: "focused";
          signal: "focused";
          source: "";
@@ -305,8 +403,7 @@ group {
               set_state(PART:"elm.btn.text", "default", 0.0);
             else
               set_state(PART:"elm.btn.text", "ellipsis", 0.0);
-
-            set_state(PART:"elm.btn.bg", "focused", 0.0);
+            set_state(PART:"elm.btn.bg_focus", "focused", 0.0);
          }
          after: "selected";
       }
@@ -322,8 +419,7 @@ group {
               set_state(PART:"elm.btn.text", "default", 0.0);
             else
               set_state(PART:"elm.btn.text", "ellipsis", 0.0);
-
-            set_state(PART:"elm.btn.bg", "default", 0.0);
+            set_state(PART:"elm.btn.bg_focus", "default", 0.0);
          }
       }
       program {
