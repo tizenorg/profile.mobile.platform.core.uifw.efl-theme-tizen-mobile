@@ -2068,7 +2068,6 @@ group {
             state: "clicked" 0.0;
             inherit: "default" 0.0;
             color: CTXPOPUP_LIST_MAIN_TEXT_PRESS_COLOR_INC;
-            text.min: 0 1;
          }
          description {
             state: "disabled" 0.0;
@@ -2080,6 +2079,11 @@ group {
             inherit: "default" 0.0;
             min: CTXPOPUP_TEXT_MAX_INC CTXPOPUP_ITEM_HEIGHT_MIN_INC;
             text.min: 0 1;
+         }
+         description {
+            state: "ellipsis_clicked" 0.0;
+            inherit: "ellipsis" 0.0;
+            color: CTXPOPUP_LIST_MAIN_TEXT_PRESS_COLOR_INC;
          }
          description {
             state: "ellipsis_disabled" 0.0;
@@ -2240,8 +2244,14 @@ group {
          script {
             if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
                set_int(mouse_down, 1);
-               set_state(PART:"elm.text", "clicked", 0.0);
                set_state(PART:"bg", "clicked", 0.0);
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "default"))
+                 set_state(PART:"elm.text", "clicked", 0.0);
+               else
+                 set_state(PART:"elm.text", "ellipsis_clicked", 0.0);
             }
          }
       }
@@ -2253,10 +2263,15 @@ group {
             new Float:dx, Float:dy;
             get_drag(PART:"over2", dx, dy);
             if ((abs(dx) > 20) || (abs(dy) > 20)) {
-               set_drag(PART:"over2", 0.0, 0.0);
                set_state(PART:"bg", "default", 0.0);
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "default") || !strcmp(st, "clicked"))
+                 set_state(PART:"elm.text", "default", 0.0);
+               else
+                 set_state(PART:"elm.text", "ellipsis", 0.0);
             }
-            set_drag(PART:"over2", 0.0, 0.0);
          }
       }
       program {
@@ -2268,6 +2283,13 @@ group {
                set_int(mouse_down, 0);
                set_drag(PART:"over2", 0.0, 0.0);
                set_state(PART:"bg", "default", 0.0);
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "default") || !strcmp(st, "clicked"))
+                 set_state(PART:"elm.text", "default", 0.0);
+               else
+                 set_state(PART:"elm.text", "ellipsis", 0.0);
             }
          }
       }
@@ -3186,6 +3208,11 @@ group {
             text.min: 0 1;
          }
          description {
+            state: "ellipsis_clicked" 0.0;
+            inherit: "ellipsis" 0.0;
+            color: CTXPOPUP_LIST_MAIN_TEXT_PRESS_COLOR_INC;
+         }
+         description {
             state: "ellipsis_disabled" 0.0;
             inherit: "ellipsis" 0.0;
             color: CTXPOPUP_LIST_MAIN_TEXT_DIM_COLOR_INC;
@@ -3345,6 +3372,13 @@ group {
             if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
                set_int(mouse_down, 1);
                set_state(PART:"bg", "clicked", 0.0);
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "default"))
+                 set_state(PART:"elm.text", "clicked", 0.0);
+               else
+                 set_state(PART:"elm.text", "ellipsis_clicked", 0.0);
             }
          }
       }
@@ -3356,10 +3390,15 @@ group {
             new Float:dx, Float:dy;
             get_drag(PART:"over2", dx, dy);
             if ((abs(dx) > 20) || (abs(dy) > 20)) {
-               set_drag(PART:"over2", 0.0, 0.0);
                set_state(PART:"bg", "default", 0.0);
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "default") || !strcmp(st, "clicked"))
+                 set_state(PART:"elm.text", "default", 0.0);
+               else
+                 set_state(PART:"elm.text", "ellipsis", 0.0);
             }
-            set_drag(PART:"over2", 0.0, 0.0);
          }
       }
       program {
@@ -3371,6 +3410,13 @@ group {
                set_int(mouse_down, 0);
                set_drag(PART:"over2", 0.0, 0.0);
                set_state(PART:"bg", "default", 0.0);
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "default") || !strcmp(st, "clicked"))
+                 set_state(PART:"elm.text", "default", 0.0);
+               else
+                 set_state(PART:"elm.text", "ellipsis", 0.0);
             }
          }
       }
@@ -4110,7 +4156,6 @@ group {
             state: "clicked" 0.0;
             inherit: "default" 0.0;
             color: CTXPOPUP_LIST_MAIN_TEXT_PRESS_COLOR_INC;
-            text.min: 0 1;
          }
          description {
             state: "disabled" 0.0;
@@ -4122,6 +4167,11 @@ group {
             inherit: "default" 0.0;
             min: CTXPOPUP_MORE_TEXT_MAX_INC CTXPOPUP_MORE_ITEM_HEIGHT_MIN_INC;
             text.min: 0 1;
+         }
+         description {
+            state: "ellipsis_clicked" 0.0;
+            inherit: "ellipsis" 0.0;
+            color: CTXPOPUP_LIST_MAIN_TEXT_PRESS_COLOR_INC;
          }
          description {
             state: "ellipsis_disabled" 0.0;
@@ -4282,8 +4332,14 @@ group {
          script {
             if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
                set_int(mouse_down, 1);
-               set_state(PART:"elm.text", "clicked", 0.0);
                set_state(PART:"bg", "clicked", 0.0);
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "default"))
+                 set_state(PART:"elm.text", "clicked", 0.0);
+               else
+                 set_state(PART:"elm.text", "ellipsis_clicked", 0.0);
             }
          }
       }
@@ -4295,10 +4351,15 @@ group {
             new Float:dx, Float:dy;
             get_drag(PART:"over2", dx, dy);
             if ((abs(dx) > 20) || (abs(dy) > 20)) {
-               set_drag(PART:"over2", 0.0, 0.0);
                set_state(PART:"bg", "default", 0.0);
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "default") || !strcmp(st, "clicked"))
+                 set_state(PART:"elm.text", "default", 0.0);
+               else
+                 set_state(PART:"elm.text", "ellipsis", 0.0);
             }
-            set_drag(PART:"over2", 0.0, 0.0);
          }
       }
       program {
@@ -4310,6 +4371,13 @@ group {
                set_int(mouse_down, 0);
                set_drag(PART:"over2", 0.0, 0.0);
                set_state(PART:"bg", "default", 0.0);
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "default") || !strcmp(st, "clicked"))
+                 set_state(PART:"elm.text", "default", 0.0);
+               else
+                 set_state(PART:"elm.text", "ellipsis", 0.0);
             }
          }
       }
