@@ -1671,14 +1671,18 @@
          program { name: "icon_show";
             signal: "elm,state,icon,show";
             source: "elm";
-            action: STATE_SET "icon" 0.0;
-            target: "title_left_padding";
+            script {
+               set_state(PART:"elm.swallow.icon", "default", 0.0);
+               set_state(PART:"title_left_padding", "icon", 0.0);
+            }
          }
          program { name: "icon_hide";
             signal: "elm,state,icon,hide";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "title_left_padding";
+            script {
+               set_state(PART:"elm.swallow.icon", "hide", 0.0);
+               set_state(PART:"title_left_padding", "default", 0.0);
+            }
          }
          program { name: "title_left_btn_show";
             signal: "elm,state,title_left_btn,show";
@@ -1973,6 +1977,7 @@
             }
             description { state: "hide" 0.0;
                inherit: "default" 0.0;
+               max: 0 -1;
                visible: 0;
             }
          }
@@ -2070,6 +2075,11 @@
             source: "elm";
             script {
                set_int(drawers_visible, 1);
+               if (!get_int(landscape))
+                 set_state(PART:"drawers", "default", 0.0);
+               else
+                 set_state(PART:"drawers", "landscape", 0.0);
+
                if (get_int(icon_visible)) {
                   set_state(PART:"icon_left_padding", "drawers_with_icon", 0.0);
                   set_state(PART:"title_left_padding", "drawers_with_icon", 0.0);
@@ -2085,6 +2095,7 @@
             source: "elm";
             script {
                set_int(drawers_visible, 0);
+               set_state(PART:"drawers", "hide", 0.0);
                if (get_int(icon_visible)) {
                   set_state(PART:"icon_left_padding", "title_icon", 0.0);
                   set_state(PART:"title_left_padding", "title_icon", 0.0);
@@ -2095,11 +2106,12 @@
                }
             }
          }
-         program { name: "title_icon_show";
+         program { name: "icon_show";
             signal: "elm,state,icon,show";
             source: "elm";
             script {
                set_int(icon_visible, 1);
+               set_state(PART:"elm.swallow.icon", "default", 0.0);
                if (get_int(drawers_visible)) {
                   set_state(PART:"icon_left_padding", "drawers_with_icon", 0.0);
                   set_state(PART:"title_left_padding", "drawers_with_icon", 0.0);
@@ -2110,11 +2122,12 @@
                }
             }
          }
-         program { name: "title_icon_hide";
+         program { name: "icon_hide";
             signal: "elm,state,icon,hide";
             source: "elm";
             script {
                set_int(icon_visible, 0);
+               set_state(PART:"elm.swallow.icon", "hide", 0.0);
                if (get_int(drawers_visible)) {
                   set_state(PART:"icon_left_padding", "drawers", 0.0);
                   set_state(PART:"title_left_padding", "drawers", 0.0);
