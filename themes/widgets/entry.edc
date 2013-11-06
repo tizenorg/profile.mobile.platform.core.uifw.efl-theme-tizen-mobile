@@ -3328,6 +3328,7 @@ group { name: "elm/entry/base-password/popup";
 		script {
 			public handler_ontop;
 			public handler_focused;
+			public handler_disabled;
 		}
 		programs {
 			program { name: "focused";
@@ -3349,24 +3350,43 @@ group { name: "elm/entry/base-password/popup";
 				signal: "elm,state,bottom,reversed";
 				source: "elm";
 				script {
-					set_state(PART:"handle", "bottom_reversed", 0.0);
+					new disabled;
+					disabled = get_int(handler_disabled);
+					if (disabled == 0)
+					{
+						set_state(PART:"handle", "bottom_reversed", 0.0);
+					}
+					else
+					{
+						set_state(PART:"handle", "default", 0.0);
+					}
 				}
 			}
 			program { name: "top_reversed";
 				signal: "elm,state,top,reversed";
 				source: "elm";
 				script {
-					set_state(PART:"handle", "top_reversed", 0.0);
+					new disabled;
+					disabled = get_int(handler_disabled);
+					if (disabled == 0)
+					{
+						set_state(PART:"handle", "top_reversed", 0.0);
+					}
+					else
+					{
+						set_state(PART:"handle", "default", 0.0);
+					}
 				}
 			}
 			program { name: "top";
 				signal: "elm,state,top";
 				source: "elm";
 				script {
-					new focused;
+					new focused, disabled;
 					focused = get_int(handler_focused);
+					disabled = get_int(handler_disabled);
 					set_int(handler_ontop, 1);
-					if (focused)
+					if ((focused == 1) && (disabled == 0))
 					{
 						set_state(PART:"handle", "top", 0.0);
 					}
@@ -3380,10 +3400,11 @@ group { name: "elm/entry/base-password/popup";
 				signal: "elm,state,bottom";
 				source: "elm";
 				script {
-					new focused;
+					new focused, disabled;
 					focused = get_int(handler_focused);
+					disabled = get_int(handler_disabled);
 					set_int(handler_ontop, 0);
-					if (focused)
+					if ((focused == 1) && (disabled == 0))
 					{
 						set_state(PART:"handle", "show", 0.0);
 					}
@@ -3391,6 +3412,20 @@ group { name: "elm/entry/base-password/popup";
 					{
 						set_state(PART:"handle", "default", 0.0);
 					}
+				}
+			}
+			program { name: "disabled";
+				signal: "app,selection,handler,disable";
+				source: "app";
+				script {
+					set_int(handler_disabled, 1);
+				}
+			}
+			program { name: "enabled";
+				signal: "app,selection,handler,enable";
+				source: "app";
+				script {
+					set_int(handler_disabled, 0);
 				}
 			}
 		}
@@ -3455,6 +3490,7 @@ group { name: "elm/entry/base-password/popup";
 		script {
 			public handler_ontop;
 			public handler_focused;
+			public handler_disabled;
 		}
 		programs {
 			program { name: "focused";
@@ -3476,10 +3512,11 @@ group { name: "elm/entry/base-password/popup";
 				signal: "elm,state,top";
 				source: "elm";
 				script {
-					new focused;
+					new focused, disabled;
 					focused = get_int(handler_focused);
+					disabled = get_int(handler_disabled);
 					set_int(handler_ontop, 1);
-					if (focused)
+					if ((focused == 1) && (disabled == 0))
 						{
 							set_state(PART:"handle", "top", 0.0);
 						}
@@ -3493,10 +3530,11 @@ group { name: "elm/entry/base-password/popup";
 				signal: "elm,state,bottom";
 				source: "elm";
 				script {
-					new focused;
+					new focused, disabled;
 					focused = get_int(handler_focused);
+					disabled = get_int(handler_disabled);
 					set_int(handler_ontop, 0);
-					if (focused)
+					if ((focused == 1) && (disabled == 0))
 						{
 							set_state(PART:"handle", "show", 0.0);
 						}
@@ -3510,14 +3548,46 @@ group { name: "elm/entry/base-password/popup";
 				signal: "elm,state,bottom,reversed";
 				source: "elm";
 				script {
-					set_state(PART:"handle", "bottom_reversed", 0.0);
+					new disabled;
+					disabled = get_int(handler_disabled);
+					if (disabled == 0)
+					{
+						set_state(PART:"handle", "bottom_reversed", 0.0);
+					}
+					else
+					{
+						set_state(PART:"handle", "default", 0.0);
+					}
 				}
 			}
 			program { name: "top_reversed";
 				signal: "elm,state,top,reversed";
 				source: "elm";
 				script {
-					set_state(PART:"handle", "top_reversed", 0.0);
+					new disabled;
+					disabled = get_int(handler_disabled);
+					if (disabled == 0)
+					{
+						set_state(PART:"handle", "top_reversed", 0.0);
+					}
+					else
+					{
+						set_state(PART:"handle", "default", 0.0);
+					}
+				}
+			}
+			program { name: "disabled";
+				signal: "app,selection,handler,disable";
+				source: "app";
+				script {
+					set_int(handler_disabled, 1);
+				}
+			}
+			program { name: "enabled";
+				signal: "app,selection,handler,enable";
+				source: "app";
+				script {
+					set_int(handler_disabled, 0);
 				}
 			}
 		}
