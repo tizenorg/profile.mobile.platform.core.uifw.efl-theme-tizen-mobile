@@ -24,6 +24,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#define RADIO_HIDE 0
+#define RADIO_SHOW 1
 #define RADIO_STATE_DEFAULT 0 // radio is off
 #define RADIO_STATE_VISIBLE 1 // radio is on
 
@@ -62,6 +64,7 @@
       } \
       script { \
          public radio_state = RADIO_STATE_DEFAULT; \
+         public radio_visible = RADIO_HIDE; \
       } \
       parts { \
          part { name: "back_bg"; \
@@ -245,14 +248,25 @@
          } \
       } \
       programs { \
+         program { name: "show"; \
+            signal: "show"; \
+            script { \
+               set_int(radio_visible, RADIO_SHOW); \
+            } \
+         } \
+         program { name: "hide"; \
+            signal: "hide"; \
+            script { \
+               set_int(radio_visible, RADIO_HIDE); \
+            } \
+         } \
          program { name: "click"; \
             signal: "mouse,clicked,1"; \
             source: "over1"; \
             action: SIGNAL_EMIT "elm,action,radio,toggle" ""; \
+            after: "touch_sound"; \
          } \
          program { name: "touch_sound"; \
-            signal: "mouse,clicked,1"; \
-            source: "over2"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
          } \
          program { name: "bg_normal"; \
@@ -293,17 +307,28 @@
             source: "elm"; \
             script { \
                set_int(radio_state, RADIO_STATE_VISIBLE); \
-               run_program(PROGRAM:"radio_show_effect"); \
-               run_program(PROGRAM:"radio_draw_effect"); \
+               if (get_int(radio_visible) == RADIO_SHOW) \
+                 { \
+                    run_program(PROGRAM:"radio_show_effect"); \
+                   run_program(PROGRAM:"radio_draw_effect"); \
+                 } \
+               else \
+                 { \
+                    set_state(PART:"radio", "visible", 0.0); \
+                    set_state(PART:"opacity_clip", "visible", 0.0); \
+                 } \
             } \
          } \
          program { name: "radio_off"; \
             signal: "elm,state,radio,off"; \
             source: "elm"; \
             script { \
-               set_int(radio_state, RADIO_STATE_DEFAULT); \
-               set_state(PART:"opacity_clip", "default", 0.0); \
-               set_state(PART:"radio", "default", 0.0); \
+               if (get_int(radio_state) == RADIO_STATE_VISIBLE) \
+                 { \
+                    set_int(radio_state, RADIO_STATE_DEFAULT); \
+                    set_state(PART:"radio", "default", 0.0); \
+                    set_state(PART:"opacity_clip", "default", 0.0); \
+                 } \
             } \
          } \
          program { name: "radio_show_effect"; \
@@ -419,3 +444,5 @@ RADIO_STYLE_DEFAULT("default/extended", RADIO_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
 
 #undef RADIO_STATE_DEFAULT
 #undef RADIO_STATE_VISIBLE
+#undef RADIO_HIDE
+#undef RADIO_SHOW
