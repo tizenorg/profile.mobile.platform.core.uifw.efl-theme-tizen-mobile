@@ -24,8 +24,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define MOVE_THRESHOLD 10
-#define DOWN_TIME 0.1
    styles {
       style { name: "gengrid_textblock_style";
          base: "font=Tizen:style=Bold font_size="GENGRID_FONT_STYLE_INC" color="GENGRID_PART_TEXTBLOCK_STYLE_COLOR_INC" align=center wrap=mixed ellipsis=1.0 text_class=tizen";
@@ -70,35 +68,6 @@
          image : "00_thumbs_line_bg.png" COMP;
          image : "00_thumbs_bg_focus.png" COMP;
          image : "00_thumbs_loading_bg.png" COMP;
-      }
-      script {
-         public downed;
-         public movement;
-         public highlight_timer;
-         public focus_mouse_down(val) {
-            if (get_int(highlight_timer))
-               cancel_timer(get_int(highlight_timer));
-            set_int(highlight_timer, 0);
-            set_state(PART:"focus_bg", "enabled", 0.0);
-         }
-         public focus_mouse_up(val) {
-            if (get_int(highlight_timer))
-               cancel_timer(get_int(highlight_timer));
-            set_int(highlight_timer, 0);
-            set_state(PART:"focus_bg", "default", 0.0);
-         }
-          public select_mouse_down(val) {
-            if (get_int(highlight_timer))
-               cancel_timer(get_int(highlight_timer));
-            set_int(highlight_timer, 0);
-            set_state(PART:"select_clip", "selected", 0.0);
-         }
-         public select_mouse_up(val) {
-            if (get_int(highlight_timer))
-               cancel_timer(get_int(highlight_timer));
-            set_int(highlight_timer, 0);
-            set_state(PART:"select_clip", "default", 0.0);
-         }
       }
       parts {
          part { name: "select_clip";
@@ -320,7 +289,6 @@
          }
       }
       programs {
-#if 0
          // FIXME: gengrid should use this also
          // but has side-effects.
          program { name: "selected";
@@ -336,47 +304,6 @@
             action: STATE_SET "default" 0.0;
             target: "focus_bg";
             transition: DECELERATE 0.2;
-         }
-#endif
-         program { name: "go_mouse_down";
-            signal: "mouse,down,1";
-            source: "reorder_bg";
-            script {
-               set_int(downed, 1);
-               set_int(highlight_timer, timer(DOWN_TIME, "focus_mouse_down", 1));
-            }
-         }
-         program { name: "go_mouse_up";
-            signal: "mouse,up,1";
-            source: "reorder_bg";
-            script {
-               if (get_int(highlight_timer)) {
-                  set_state(PART:"focus_bg", "enabled", 0.0);
-                  cancel_timer(get_int(highlight_timer));
-                  set_int(highlight_timer, timer(DOWN_TIME, "focus_mouse_up", 1));
-               } else {
-                  set_state(PART:"focus_bg", "default", 0.0);
-               }
-               set_int(downed, 0);
-               set_int(movement, 0);
-            }
-         }
-         program { name: "go_mouse_move";
-            signal: "mouse,move";
-            source: "reorder_bg";
-            script {
-               if (!get_int(downed)) return;
-               set_int(movement, get_int(movement) + 1);
-               if (get_int(movement) >= MOVE_THRESHOLD) {
-                  if (get_int(highlight_timer)) {
-                     cancel_timer(get_int(highlight_timer));
-                     set_int(highlight_timer, 0);
-                  } else {
-                     set_state(PART:"focus_bg", "default", 0.0);
-                  }
-                  set_int(movement, 0);
-               }
-            }
          }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
@@ -1496,45 +1423,19 @@
             source: "reorder_bg";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
-         program { name: "go_mouse_down";
-            signal: "mouse,down,1";
-            source: "reorder_bg";
-            script {
-               set_int(downed, 1);
-               set_int(highlight_timer, timer(DOWN_TIME, "select_mouse_down", 1));
-            }
+         // FIXME: gengrid should use this also
+         // but has side-effects.
+         program { name: "selected";
+            signal: "elm,state,selected";
+            source: "elm";
+            action: STATE_SET "selected" 0.0;
+            target: "select_clip";
          }
-         program { name: "go_mouse_up";
-            signal: "mouse,up,1";
-            source: "reorder_bg";
-            script {
-               if (get_int(highlight_timer)) {
-                  set_state(PART:"select_clip", "selected", 0.0);
-                  cancel_timer(get_int(highlight_timer));
-                  set_int(highlight_timer, timer(DOWN_TIME, "select_mouse_up", 1));
-               } else {
-                  set_state(PART:"select_clip", "default", 0.0);
-               }
-               set_int(downed, 0);
-               set_int(movement, 0);
-            }
-         }
-         program { name: "go_mouse_move";
-            signal: "mouse,move";
-            source: "reorder_bg";
-            script {
-               if (!get_int(downed)) return;
-               set_int(movement, get_int(movement) + 1);
-               if (get_int(movement) >= MOVE_THRESHOLD) {
-                  if (get_int(highlight_timer)) {
-                     cancel_timer(get_int(highlight_timer));
-                     set_int(highlight_timer, 0);
-                  } else {
-                     set_state(PART:"select_clip", "default", 0.0);
-                  }
-                  set_int(movement, 0);
-               }
-            }
+         program { name: "unselected";
+            signal: "elm,state,unselected";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "select_clip";
          }
          program { name: "select_enabled";
             signal: "elm,select,enabled";
