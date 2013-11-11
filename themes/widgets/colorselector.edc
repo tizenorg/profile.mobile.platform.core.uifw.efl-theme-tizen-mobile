@@ -422,6 +422,10 @@ group{
 
 group{
    name: "elm/colorselector/base/default";
+   images{
+      image: "00_color_picker_handler.png" COMP;
+      image: "00_color_picker_handler_focus.png" COMP;
+   }
    parts{
       part{
          name: "bg_rect";
@@ -546,15 +550,16 @@ group{
             y: 0 0 0;
          }
       }
-      part{
-         name: "elm.arrow_icon";
-         type: SWALLOW;
+      part {
+         name: "elm.arrow_image";
+         type: IMAGE;
          mouse_events: 0;
          scale: 1;
          description{
             state: "default" 0.0;
             fixed: 1 1;
             align: 0.5 0.5;
+            image.normal: "00_color_picker_handler.png";
             rel1 {
                to: "elm.arrow";
                offset: COLORSELECTOR_ARROW_REL1_OFFSET;
@@ -563,6 +568,11 @@ group{
                to: "elm.arrow";
                offset: COLORSELECTOR_ARROW_REL2_OFFSET;
             }
+         }
+         description {
+            state: "focused" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "00_color_picker_handler_focus.png";
          }
       }
       part{
@@ -573,8 +583,8 @@ group{
             state: "default" 0.0;
             min: COLORSELECTOR_DRAGGABLE_EVENT_AREA;
             fixed: 1 1;
-            rel1.to: "elm.arrow_icon";
-            rel2.to: "elm.arrow_icon";
+            rel1.to: "elm.arrow_image";
+            rel2.to: "elm.arrow_image";
             color: 0 0 0 0;
          }
          dragable{
@@ -634,6 +644,20 @@ group{
             rel2 {relative: 0.0 1.0; to_x: "r_button_padding_rect"; to_y: "button_top_padding";}
             align: 1.0 0.0;
          }
+      }
+   }
+   programs {
+      program { name: "action_focus";
+         signal: "elm,action,focus_highlight,show";
+         source: "elm";
+         action: STATE_SET "focused" 0.0;
+         target: "elm.arrow_image";
+      }
+      program { name: "action_unfocus";
+         signal: "elm,action,focus_highlight,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.arrow_image";
       }
    }
 }
@@ -826,25 +850,6 @@ group{
          signal: "elm,state,orient,180";
          action: STATE_SET "default" 0.0;
          target: "colorbar_2_image";
-      }
-   }
-}
-
-group{
-   name: "elm/colorselector/arrow/default";
-   images{
-      image:"00_color_picker_handler.png" COMP;
-   }
-   parts{
-      part{
-         name: arrow_image;
-         scale: 1;
-         type: IMAGE;
-         mouse_events: 1;
-         description{
-            state: "default" 0.0;
-            image.normal: "00_color_picker_handler.png";
-         }
       }
    }
 }
