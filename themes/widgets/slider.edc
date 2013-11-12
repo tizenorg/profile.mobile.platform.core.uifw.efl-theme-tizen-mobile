@@ -740,7 +740,21 @@
             if(get_int(popup_show) == 1)
                emit("popup,hide", "elm");
             }
+         public drag_state() {
+            new Float:dx, Float:dy;
+            get_drag(PART:"elm.dragable.slider", dx, dy);
+            if(dx > 0.5) {
+              set_state(PART:"level", "default", 0.0);
+              set_state(PART:"level2", "default", 0.0);
+              set_int(invert_on, 0);
+            }
+            else {
+              set_state(PART:"level", "inverted", 0.0);
+              set_state(PART:"level2", "inverted", 0.0);
+              set_int(invert_on, 1);
+            }
          }
+      }
          parts {
             part { name: "access";
                type: RECT;
@@ -1507,6 +1521,119 @@
             }
          }
      }
+
+   group { name: "elm/slider/horizontal/center_point";
+      inherit: "elm/slider/horizontal/default";
+         parts {
+            part { name: "level";
+               mouse_events: 0;
+               scale: 1;
+               clip_to: "clipper";
+               description { state: "default" 0.0;
+                  fixed: 1 1;
+                  rel1 {
+                     to_x: "center_point";
+                     to_y: "base";
+                     relative: 0.5 0.0;
+                  }
+                  rel2 {
+                     to_x: "elm.dragable.slider";
+                     to_y: "base";
+                     relative: 0.5 1.0;
+                  }
+                  image.normal: "00_progress_bar.png";
+                  image.border: PROGRESS_BAR_IMAGE_BORDER_INC;
+                  image.border_scale: 1;
+               }
+               description { state: "inverted" 0.0;
+                  inherit: "default" 0.0;
+                  visible: 0;
+               }
+               description { state: "pressed" 0.0;
+                  inherit: "default" 0.0;
+               }
+            }
+            part { name: "level2";
+               mouse_events: 0;
+               scale: 1;
+               clip_to: "clipper";
+               description { state: "default" 0.0;
+                  fixed: 1 1;
+                  visible: 0;
+                  rel1 {
+                     to_x: "elm.dragable.slider";
+                     to_y: "base";
+                     relative: 0.5 0.0;
+                  }
+                  rel2 {
+                     to_x: "center_point";
+                     to_y: "base";
+                     relative: 0.5 1.0;
+                  }
+                  image.normal: "00_progress_bar.png";
+                  image.border: PROGRESS_BAR_IMAGE_BORDER_INC;
+                  image.border_scale: 1;
+               }
+               description { state: "inverted" 0.0;
+                  inherit: "default" 0.0;
+                  visible: 1;
+               }
+               description { state: "pressed" 0.0;
+                  inherit: "default" 0.0;
+                  visible: 1;
+               }
+            }
+            part { name:"center_point";
+               scale: 1;
+               description { state: "default" 0.0;
+                  min: SLIDER_CENTER_POINT_MIN_SIZE_INC;
+                  max: SLIDER_CENTER_POINT_MAX_SIZE_INC;
+                  image.normal: "00_slider_center_point_bg.png";
+                  rel1.to: "bg";
+                  rel2.to: "bg";
+                  fixed: 0 1;
+                  visible: 1;
+               }
+            }
+         }
+         programs {
+            program { name: "center_point_calc";
+               signal: "drag";
+               source: "elm.dragable.slider";
+               script {
+                  drag_state();
+               }
+            }
+            program { name: "center_point_calc1";
+               signal: "drag,start";
+               source: "elm.dragable.slider";
+               script {
+                  drag_state();
+               }
+            }
+            program { name: "center_point_calc2";
+               signal: "drag,set";
+               source: "elm.dragable.slider";
+               script {
+                  drag_state();
+               }
+            }
+            program { name: "center_point_calc3";
+               signal: "mouse,up,*";
+               source: "elm.swallow.bar";
+               script {
+                  drag_state();
+               }
+            }
+            program { name: "center_point_calc4";
+               signal: "mouse,move";
+               source: "elm.swallow.bar";
+               script {
+                  drag_state();
+               }
+            }
+         }
+   }
 
    group { name: "elm/slider/horizontal/popup/default";
       alias: "elm/slider/horizontal/popup/tap_to_drag";
