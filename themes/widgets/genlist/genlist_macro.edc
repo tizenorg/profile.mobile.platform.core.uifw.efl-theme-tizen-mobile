@@ -1193,6 +1193,10 @@
                inherit: "default" 0.0; \
                visible: 0; \
             } \
+            description { state: "hidden" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 0; \
+            } \
          ) \
          GENLIST_PART_RECT("bottom_line2", \
             mouse_events: 0; \
@@ -1210,6 +1214,10 @@
                rel1.offset: -1 -1; \
             } \
             description { state: "flipped" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 0; \
+            } \
+            description { state: "hidden" 0.0; \
                inherit: "default" 0.0; \
                visible: 0; \
             } \
@@ -1994,6 +2002,22 @@
             TARGET \
          }
 
+#define GENLIST_PROGRAM_BOTTOMLINE \
+      program { name : "hide_bottomline"; \
+         signal: "elm,state,bottomline,hide"; \
+         source: ""; \
+         action: STATE_SET "hidden" 0.0; \
+         target: "bottom_line"; \
+         target: "bottom_line2"; \
+      } \
+      program { name : "show_bottomline"; \
+         signal: "elm,state,bottomline,show"; \
+         source: ""; \
+         action: STATE_SET "default" 0.0; \
+         target: "bottom_line"; \
+         target: "bottom_line2"; \
+      }
+
 #define GENLIST_PROGRAM_FOCUS \
       program { name: "focused"; \
          signal: "elm,state,focused"; \
@@ -2502,6 +2526,7 @@
          target: "bg"; \
          target: "bg_reorder"; \
       ) \
+      GENLIST_PROGRAM_BOTTOMLINE \
       GENLIST_PROGRAM_FOCUS_NORMAL \
       GENLIST_PROGRAM_SELECT( TARGET \
          target: "bg"; \
@@ -2590,6 +2615,7 @@
       target: "elm.padding.right"; \
    ) \
    GENLIST_PROGRAM_DISABLED( TARGET ) \
+   GENLIST_PROGRAM_BOTTOMLINE \
    GENLIST_PROGRAM_FOCUS_NORMAL \
    GENLIST_PROGRAM_DECORATE_REORDER("editfield", TARGET \
       target: "bg_clip"; \
@@ -3727,21 +3753,5 @@
                color: 0 0 0 0; \
             } \
          ) \
-      } \
-      programs { \
-         program { name : "hide_bottomline"; \
-            signal: "elm,state,bottomline,hide"; \
-            source: ""; \
-            action: STATE_SET "disabled" 0.0; \
-            target: "bottom_line"; \
-            target: "bottom_line2"; \
-         } \
-         program { name : "show_bottomline"; \
-            signal: "elm,state,bottomline,show"; \
-            source: ""; \
-            action: STATE_SET "default" 0.0; \
-            target: "bottom_line"; \
-            target: "bottom_line2"; \
-         } \
       } \
    }
