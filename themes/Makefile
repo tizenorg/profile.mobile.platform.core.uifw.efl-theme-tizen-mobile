@@ -26,6 +26,7 @@ all: light dark
 	 -id ./images/$(TARGET)/$(@:.edj=)/Copy_Paste\
 	 -id ./images/$(TARGET)/$(@:.edj=)/Focus\
 	 -id ./images/$(TARGET)/$(@:.edj=)/GUI_Style_Guide\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Indicator\
 	 -id ./images/$(TARGET)/$(@:.edj=)/Map\
 	 -id ./images/$(TARGET)/$(@:.edj=)/Naviframe\
 	 -id ./images/$(TARGET)/$(@:.edj=)/Naviframe/Icon\
