@@ -31,7 +31,7 @@
 
    styles {
       style { name: "radio_label_textblock_style";
-         base: "font=Tizen:style=Regular font_size="RADIO_STYLE_DEFAULT_FONT_SIZE_INC" color="RADIO_DEFAULT_TEXT_NORMAL_COLOR_INC" wrap=char text_class=tizen";
+         base: "font=Tizen:style=Regular font_size="RADIO_STYLE_DEFAULT_FONT_SIZE_INC" color="RADIO_DEFAULT_TEXT_NORMAL_COLOR_INC" wrap=mixed ellipsis=1.0 text_class=tizen";
          tag: "br" "\n";
          tag: "ps" "ps";
          tag: "hilight" "+ font_weight=Bold";
@@ -40,7 +40,7 @@
          tag: "tab" "\t";
       }
       style { name: "radio_label_textblock_style_disable";
-         base: "font=Tizen:style=Regular font_size="RADIO_STYLE_DEFAULT_FONT_SIZE_INC" color="RADIO_DEFAULT_TEXT_NORMAL_COLOR_INC" wrap=char text_class=tizen";
+         base: "font=Tizen:style=Regular font_size="RADIO_STYLE_DEFAULT_FONT_SIZE_INC" color="RADIO_DEFAULT_TEXT_NORMAL_COLOR_INC" wrap=mixed ellipsis=1.0 text_class=tizen";
          tag: "br" "\n";
          tag: "ps" "ps";
          tag: "hilight" "+ font_weight=Bold";
@@ -130,6 +130,8 @@
             type: RECT; \
             mouse_events: 0; \
             description { state: "default" 0.0; \
+               rel1.to: "bg"; \
+               rel2.to: "bg"; \
                color: 255 255 255 0; \
             } \
             description { state: "visible" 0.0; \
@@ -147,11 +149,9 @@
                rel1 { \
                   to_x: "bg"; \
                   relative: 1.0 0.0; \
-                  offset: 1 1; \
                } \
                rel2 { \
                   to_x: "bg"; \
-                  offset: 2 -2; \
                } \
             } \
             description { state: "visible" 0.0; \
@@ -171,6 +171,29 @@
                aspect: 1.0 1.0; \
             } \
          } \
+         part { name: "padding_before_text"; \
+            type: SPACER; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               align: 0.0 0.5; \
+               min: 0 0; \
+               fixed: 1 1; \
+               rel1 { \
+                  to_x: "elm.swallow.content"; \
+                  relative: 1.0 0.0; \
+               } \
+               rel2 { \
+                  to_x: "elm.swallow.content"; \
+                  relative: 1.0 1.0; \
+               } \
+            } \
+            description { state: "visible" 0.0; \
+               inherit: "default" 0.0; \
+               min: RADIO_STYLE_DEFAULT_PADDING_BEFORE_TEXT_INC; \
+               max: RADIO_STYLE_DEFAULT_PADDING_BEFORE_TEXT_INC; \
+               fixed: 1 1; \
+            } \
+         } \
          part { name: "elm.text"; \
             type: TEXTBLOCK; \
             mouse_events: 0; \
@@ -178,26 +201,25 @@
             scale: 1; \
             description { state: "default" 0.0; \
                visible: 0; \
-               fixed: 0 1; \
+               fixed: 1 1; \
                rel1 { \
-                  relative: 1.0 0.5; \
-                  offset: 1 1; \
-                  to_x: "elm.swallow.content"; \
+                  relative: 1.0 0.0; \
+                  to_x: "padding_before_text"; \
                } \
                rel2 { \
-                  relative: 1.0 0.5; \
-                  offset: -2 -2; \
+                  relative: 1.0 1.0; \
+                  offset: 0 0; \
                } \
-               align: 0.0 0.5; \
                text { \
                   style: "radio_label_textblock_style"; \
+                  align: 0.0 0.5; \
                   min: 0 0; \
                } \
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
                visible: 1; \
-               text.min: 1 1; \
+               text.min: 0 0; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
@@ -207,6 +229,7 @@
                visible: 1; \
                text { \
                   style: "radio_label_textblock_style_disable"; \
+                  align: 0.0 0.5; \
                   min: 0 0; \
                } \
             } \
@@ -345,12 +368,14 @@
             signal: "elm,state,text,visible"; \
             source: "elm"; \
             action: STATE_SET "visible" 0.0; \
+            target: "padding_before_text"; \
             target: "elm.text"; \
          } \
          program { name: "text_hide"; \
             signal: "elm,state,text,hidden"; \
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
+            target: "padding_before_text"; \
             target: "elm.text"; \
          } \
          program { name: "icon_show"; \
