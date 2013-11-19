@@ -61,6 +61,26 @@
       }
    }
 
+   #define GENGRID_ITEM_SELECT_VI_EFFECT \
+      map { \
+         on: 1; \
+         perspective: "persp1"; \
+         smooth: 0; \
+      } \
+   } \
+   description { state: "selected" 0.0; \
+      inherit: "default" 0.0; \
+      map { \
+         perspective: "persp"; \
+         smooth: 1; \
+      }
+
+   #define GENGRID_TRANS_VI_SELECTED \
+      transition: SIN_FAC 0.167 1.1;
+
+   #define GENGRID_TRANS_VI_UNSELECTED \
+      transition: SIN_FAC 0.167 1.1;
+
    group { name: "elm/gengrid/item/default/default";
       alias: "elm/gengrid/item/default_grid/default";
       data.item: "contents" "elm.swallow.icon elm.swallow.end elm.swallow.video";
@@ -68,6 +88,9 @@
          image : "00_thumbs_line_bg.png" COMP;
          image : "00_thumbs_bg_focus.png" COMP;
          image : "00_thumbs_loading_bg.png" COMP;
+      }
+      script {
+         public selected = 0;
       }
       parts {
          part { name: "select_clip";
@@ -77,6 +100,36 @@
             }
             description { state: "selected" 0.0;
                visible: 0;
+            }
+         }
+         part { name: "persp";
+            type: RECT;
+            description { state: "default" 0.0;
+               min: 32 32;
+               max: 32 32;
+               fixed: 1 1;
+               align: 0.5 0.5;
+               color: 0 0 0 0;
+               visible: 1;
+               perspective {
+                  zplane: -70;
+                  focal: 1000;
+               }
+            }
+         }
+         part { name: "persp1";
+            type: RECT;
+            description { state: "default" 0.0;
+               min: 32 32;
+               max: 32 32;
+               fixed: 1 1;
+               align: 0.5 0.5;
+               color: 0 0 0 0;
+               visible: 1;
+               perspective {
+                  zplane: 0;
+                  focal: 1000;
+               }
             }
          }
          part { name: "bg";
@@ -126,6 +179,7 @@
                }
                image.normal: "00_thumbs_line_bg.png";
                image.border: 1 1 1 1;
+               GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
          part { name: "item_bg_left_top_padding";
@@ -169,6 +223,7 @@
                   to: "item_bg_right_bottom_padding";
                }
                image.normal: "00_thumbs_loading_bg.png";
+               GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
          part { name: "item_real_bg_left_top_padding";
@@ -210,6 +265,7 @@
                   relative: 0.0 0.0;
                   to: "item_real_bg_right_bottom_padding";
                }
+               GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
          part { name: "elm.swallow.video";
@@ -224,19 +280,16 @@
             description { state: "default" 0.0;
                rel1.to: "elm.swallow.icon";
                rel2.to: "elm.swallow.icon";
+               GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
          part { name: "reorder_bg";
             type: RECT;
             repeat_events: 1;
             description { state: "default" 0.0;
-               color: GENGRID_PART_BG_COLOR_INC;
                rel1.to: "item_bg";
                rel2.to: "item_bg";
-            }
-            description { state: "enabled" 0.0;
-               inherit: "default" 0.0;
-               color: GENGRID_PART_REORDER_DEFAULT_BG_COLOR_INC;
+               color: 0 0 0 0;
             }
          }
          part { name: "focus_bg_left_top_padding";
@@ -289,42 +342,46 @@
          }
       }
       programs {
-         // FIXME: gengrid should use this also
-         // but has side-effects.
          program { name: "selected";
             signal: "elm,state,selected";
             source: "elm";
-            action: STATE_SET "enabled" 0.0;
-            target: "focus_bg";
-            transition: ACCELERATE 0.2;
+            script {
+               if (!get_int(selected)) {
+                  set_int(selected, 1);
+                  run_program(PROGRAM:"vi_zoom_in");
+               }
+            }
+         }
+         program { name: "vi_zoom_in";
+            action: STATE_SET "selected" 0.0;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.icon";
+            target: "elm.swallow.end";
+            GENGRID_TRANS_VI_SELECTED
          }
          program { name: "unselected";
             signal: "elm,state,unselected";
             source: "elm";
+            script {
+               if (get_int(selected)) {
+                  set_int(selected, 0);
+                  run_program(PROGRAM:"vi_zoom_out");
+               }
+            }
+         }
+         program { name: "vi_zoom_out";
             action: STATE_SET "default" 0.0;
-            target: "focus_bg";
-            transition: DECELERATE 0.2;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.icon";
+            target: "elm.swallow.end";
+            GENGRID_TRANS_VI_UNSELECTED
          }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "reorder_bg";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-         }
-         program { name: "go_reorder_disabled";
-            signal: "elm,state,reorder,disabled";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "reorder_bg";
-            target: "focus_bg";
-            transition: ACCELERATE 0.3;
-         }
-         program { name: "go_reorder_enabled";
-            signal: "elm,state,reorder,enabled";
-            source: "elm";
-            action: STATE_SET "enabled" 0.0;
-            target: "reorder_bg";
-            target: "focus_bg";
-            transition: DECELERATE 0.3;
          }
          program { name: "focus_in";
             signal: "elm,state,focused";
@@ -345,32 +402,33 @@
       inherit: "elm/gengrid/item/default/default";
       data.item: "texts" "elm.text.video";
       parts {
-          part { name: "video_text_bg";
-             type: RECT;
-             scale: 1;
-             description { state: "default" 0.0;
-                min: 0 41;
-                align: 0.5 1.0;
-                rel1 {
-                   relative: 0.0 1.0;
-                   to: "item_real_bg";
-                  }
-                rel2 {
-                   relative: 1.0 1.0;
-                   to: "item_real_bg";
-                  }
-                color: GENGRID_VIDEO_TEXT_BG_COLOR;
+         part { name: "video_text_bg";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 41;
+               align: 0.5 1.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to: "item_real_bg";
                }
-           }
-          part { name: "elm.video_text.padding.left";
+               rel2 {
+                  relative: 1.0 1.0;
+                  to: "item_real_bg";
+               }
+               color: GENGRID_VIDEO_TEXT_BG_COLOR;
+               GENGRID_ITEM_SELECT_VI_EFFECT
+            }
+         }
+         part { name: "elm.video_text.padding.left";
             scale: 1;
             type: SPACER;
             description { state: "default" 0.0;
                align: 0 0.5;
                fixed: 1 0;
                rel1 {
-               relative: 0 0;
-               to: "video_text_bg";
+                  relative: 0 0;
+                  to: "video_text_bg";
                }
                rel2 {
                   relative: 0 1;
@@ -380,8 +438,8 @@
                max: 12 -1;
                fixed: 1 0;
             }
-          }
-          part { name: "elm.text.video";
+         }
+         part { name: "elm.text.video";
             type: TEXTBLOCK;
             mouse_events: 0;
             scale: 1;
@@ -391,25 +449,51 @@
                   relative: 1.0 0.0;
                   to_x: "elm.video_text.padding.left";
                   to_y: "video_text_bg";
-                 }
+               }
                rel2.to: "video_text_bg";
                text {
                   style: "gengrid_videotext_style";
                   min: 0 1;
                   align: 0.0 0.5;
-                 }
-              }
-           }
-          part { name: "elm.swallow.video";
+               }
+               GENGRID_ITEM_SELECT_VI_EFFECT
+            }
+         }
+         part { name: "elm.swallow.video";
             description { state: "default" 0.0;
                rel1.to: "elm.swallow.icon";
                rel2{
                   relative: 1.0 0.0;
                   to: "video_text_bg";
                }
-           }
-        }
-     }
+               GENGRID_ITEM_SELECT_VI_EFFECT
+            }
+         }
+      }
+      programs {
+         program { name: "vi_zoom_in";
+            action: STATE_SET "selected" 0.0;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.icon";
+            target: "video_text_bg";
+            target: "elm.text.video";
+            target: "elm.swallow.video";
+            target: "elm.swallow.end";
+            GENGRID_TRANS_VI_SELECTED
+         }
+         program { name: "vi_zoom_out";
+            action: STATE_SET "default" 0.0;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.icon";
+            target: "video_text_bg";
+            target: "elm.text.video";
+            target: "elm.swallow.video";
+            target: "elm.swallow.end";
+            GENGRID_TRANS_VI_UNSELECTED
+         }
+      }
    }
 
    group { name: "elm/gengrid/item/gallery/default";
@@ -444,6 +528,7 @@
                   to: "item_bg";
                }
                color: 64 64 64 255;
+               GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
          part { name: "item_bg_top_1pxl_inner_padding";
@@ -463,6 +548,7 @@
                   to_y: "item_bg";
                }
                color: 64 64 64 255;
+               GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
          part { name: "item_bg_right_1pxl_inner_padding";
@@ -480,6 +566,7 @@
                   to: "item_bg";
                }
                color: 64 64 64 255;
+               GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
          part { name: "item_bg_bottom_1pxl_inner_padding";
@@ -499,6 +586,7 @@
                   to_y: "item_bg";
                }
                color: 64 64 64 255;
+               GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
          part { name: "item_real_bg";
@@ -527,78 +615,32 @@
             }
          }
       }
-   }
-
- group { name: "elm/gengrid/item/gallery_video/default";
-      inherit: "elm/gengrid/item/gallery/default";
-      alias: "elm/gengrid/item/gallery_grid/default";
-      data.item: "texts" "elm.text.video";
-      parts {
-          part { name: "video_text_bg";
-             type: RECT;
-             scale: 1;
-             description { state: "default" 0.0;
-                min: 0 41;
-                align: 0.5 1.0;
-                rel1 {
-                   relative: 0.0 1.0;
-                   to: "item_real_bg";
-                  }
-                rel2 {
-                   relative: 1.0 1.0;
-                   to: "item_real_bg";
-                  }
-                color: GENGRID_VIDEO_TEXT_BG_COLOR;
-               }
-           }
-          part { name: "elm.video_text.padding.left";
-            scale: 1;
-            type: SPACER;
-            description { state: "default" 0.0;
-               align: 0 0.5;
-               fixed: 1 0;
-               rel1 {
-               relative: 0 0;
-               to: "video_text_bg";
-               }
-               rel2 {
-                  relative: 0 1;
-                  to: "video_text_bg";
-               }
-               min: 12 0;
-               max: 12 -1;
-               fixed: 1 0;
-            }
-          }
-          part { name: "elm.text.video";
-            type: TEXTBLOCK;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               align: 0.0 0.5;
-               rel1{
-                  relative: 1.0 0.0;
-                  to_x: "elm.video_text.padding.left";
-                  to_y: "video_text_bg";
-                 }
-               rel2.to: "video_text_bg";
-               text {
-                  style: "gengrid_videotext_style";
-                  min: 0 1;
-                  align: 0.0 0.5;
-                 }
-              }
-           }
-          part { name: "elm.swallow.video";
-            description { state: "default" 0.0;
-               rel1.to: "elm.swallow.icon";
-               rel2{
-                  relative: 1.0 0.0;
-                  to: "video_text_bg";
-               }
-            }
+      programs {
+         program { name: "vi_zoom_in";
+            action: STATE_SET "selected" 0.0;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.icon";
+            target: "elm.swallow.end";
+            target: "item_bg_top_1pxl_inner_padding";
+            target: "item_bg_left_1pxl_inner_padding";
+            target: "item_bg_right_1pxl_inner_padding";
+            target: "item_bg_bottom_1pxl_inner_padding";
+            GENGRID_TRANS_VI_SELECTED
          }
-      }
+         program { name: "vi_zoom_out";
+            action: STATE_SET "default" 0.0;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.icon";
+            target: "elm.swallow.end";
+            target: "item_bg_top_1pxl_inner_padding";
+            target: "item_bg_left_1pxl_inner_padding";
+            target: "item_bg_right_1pxl_inner_padding";
+            target: "item_bg_bottom_1pxl_inner_padding";
+            GENGRID_TRANS_VI_UNSELECTED
+        }
+     }
    }
 
    group { name: "elm/gengrid/item/myfile/default";
@@ -684,6 +726,7 @@
                   min: 0 1;
                   align: 0.5 1.0;
                }
+               GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
          part { name: "elm.swallow.block";
@@ -692,6 +735,7 @@
             description { state: "default" 0.0;
                rel1.to : "elm.text";
                rel2.to : "elm.text";
+               GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
          part { name: "focus_bg_left_top_padding";
@@ -705,7 +749,30 @@
             }
          }
       }
+      programs {
+         program { name: "vi_zoom_in";
+            action: STATE_SET "selected" 0.0;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.icon";
+            target: "elm.swallow.end";
+            target: "elm.text";
+            target: "elm.swallow.block";
+            GENGRID_TRANS_VI_SELECTED
+         }
+         program { name: "vi_zoom_out";
+            action: STATE_SET "default" 0.0;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.icon";
+            target: "elm.swallow.end";
+            target: "elm.text";
+            target: "elm.swallow.block";
+            GENGRID_TRANS_VI_UNSELECTED
+         }
+      }
    }
+
    group { name: "elm/gengrid/item/myfile_video/default";
       inherit: "elm/gengrid/item/myfile/default";
       data.item: "texts" "elm.text.video";
@@ -730,6 +797,7 @@
                   to: "item_real_bg";
                }
                color: GENGRID_VIDEO_TEXT_BG_COLOR;
+               GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
          part { name: "elm.video_text.padding.left";
@@ -768,16 +836,42 @@
                   min: 0 1;
                   align: 0.0 0.5;
                  }
-              }
-           }
-          part { name: "elm.swallow.video";
+               GENGRID_ITEM_SELECT_VI_EFFECT
+            }
+         }
+         part { name: "elm.swallow.video";
             description { state: "default" 0.0;
                rel1.to: "elm.swallow.icon";
                rel2{
                   relative: 1.0 0.0;
                   to: "video_text_bg";
                }
+               GENGRID_ITEM_SELECT_VI_EFFECT
             }
+         }
+      }
+      programs {
+         program { name: "vi_zoom_in";
+            action: STATE_SET "selected" 0.0;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.icon";
+            target: "video_text_bg";
+            target: "elm.text.video";
+            target: "elm.swallow.video";
+            target: "elm.swallow.end";
+            GENGRID_TRANS_VI_SELECTED
+         }
+         program { name: "vi_zoom_out";
+            action: STATE_SET "default" 0.0;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.icon";
+            target: "video_text_bg";
+            target: "elm.text.video";
+            target: "elm.swallow.video";
+            target: "elm.swallow.end";
+            GENGRID_TRANS_VI_UNSELECTED
          }
       }
    }
@@ -849,6 +943,7 @@
                   min: 0 1;
                   align: 0.5 0.0;
                }
+               GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
          part { name: "elm.swallow.block";
@@ -870,38 +965,56 @@
             }
          }
       }
+      programs {
+         program { name: "vi_zoom_in";
+            action: STATE_SET "selected" 0.0;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.icon";
+            target: "elm.swallow.end";
+            GENGRID_TRANS_VI_SELECTED
+         }
+         program { name: "vi_zoom_out";
+            action: STATE_SET "default" 0.0;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.end";
+            GENGRID_TRANS_VI_UNSELECTED
+         }
+      }
    }
 
  group { name: "elm/gengrid/item/myfile_video/text/default";
       inherit: "elm/gengrid/item/myfile/text/default";
       data.item: "texts" "elm.text elm.text.video";
       parts {
-          part { name: "video_text_bg";
-             type: RECT;
-             scale: 1;
-             description { state: "default" 0.0;
-                min: 0 41;
-                align: 0.5 1.0;
-                rel1 {
-                   relative: 0.0 1.0;
-                   to: "item_real_bg";
-                  }
-                rel2 {
-                   relative: 1.0 1.0;
-                   to: "item_real_bg";
-                  }
-                color: GENGRID_VIDEO_TEXT_BG_COLOR;
+         part { name: "video_text_bg";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 41;
+               align: 0.5 1.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to: "item_real_bg";
                }
-           }
-          part { name: "elm.video_text.padding.left";
+               rel2 {
+                  relative: 1.0 1.0;
+                  to: "item_real_bg";
+               }
+               color: GENGRID_VIDEO_TEXT_BG_COLOR;
+               GENGRID_ITEM_SELECT_VI_EFFECT
+            }
+         }
+         part { name: "elm.video_text.padding.left";
             scale: 1;
             type: SPACER;
             description { state: "default" 0.0;
                align: 0 0.5;
                fixed: 1 0;
                rel1 {
-               relative: 0 0;
-               to: "video_text_bg";
+                  relative: 0 0;
+                  to: "video_text_bg";
                }
                rel2 {
                   relative: 0 1;
@@ -911,8 +1024,8 @@
                max: 12 -1;
                fixed: 1 0;
             }
-          }
-          part { name: "elm.text.video";
+         }
+         part { name: "elm.text.video";
             type: TEXTBLOCK;
             mouse_events: 0;
             scale: 1;
@@ -922,25 +1035,51 @@
                   relative: 1.0 0.0;
                   to_x: "elm.video_text.padding.left";
                   to_y: "video_text_bg";
-                 }
+               }
                rel2.to: "video_text_bg";
                text {
                   style: "gengrid_videotext_style";
                   min: 0 1;
                   align: 0.0 0.5;
-                 }
-              }
-           }
-          part { name: "elm.swallow.video";
+               }
+               GENGRID_ITEM_SELECT_VI_EFFECT
+            }
+         }
+         part { name: "elm.swallow.video";
             description { state: "default" 0.0;
                rel1.to: "elm.swallow.icon";
                rel2{
                   relative: 1.0 0.0;
                   to: "video_text_bg";
                }
-           }
-        }
-     }
+               GENGRID_ITEM_SELECT_VI_EFFECT
+            }
+         }
+      }
+      programs {
+         program { name: "vi_zoom_in";
+            action: STATE_SET "selected" 0.0;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.icon";
+            target: "video_text_bg";
+            target: "elm.text.video";
+            target: "elm.swallow.video";
+            target: "elm.swallow.end";
+            GENGRID_TRANS_VI_SELECTED
+         }
+         program { name: "vi_zoom_out";
+            action: STATE_SET "default" 0.0;
+            target: "item_bg";
+            target: "item_real_bg";
+            target: "elm.swallow.icon";
+            target: "video_text_bg";
+            target: "elm.text.video";
+            target: "elm.swallow.video";
+            target: "elm.swallow.end";
+            GENGRID_TRANS_VI_UNSELECTED
+         }
+      }
    }
 
    group { name: "elm/gengrid/item/block/default";
@@ -1359,12 +1498,8 @@
             repeat_events: 1;
             description { state: "default" 0.0;
                color: GENGRID_PART_BG_COLOR_INC;
-               rel1.to: "item_real_bg";
-               rel2.to: "item_real_bg";
-            }
-            description { state: "enabled" 0.0;
-               inherit: "default" 0.0;
-               color: GENGRID_PART_REORDER_DEFAULT_BG_COLOR_INC;
+               rel1.to: "selected_bg";
+               rel2.to: "selected_bg";
             }
          }
          part { name: "focus_bg_left_top_padding";
@@ -1423,8 +1558,6 @@
             source: "reorder_bg";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
-         // FIXME: gengrid should use this also
-         // but has side-effects.
          program { name: "selected";
             signal: "elm,state,selected";
             source: "elm";
