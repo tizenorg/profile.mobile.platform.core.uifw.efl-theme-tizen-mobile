@@ -62,6 +62,9 @@
    }
 
    #define GENGRID_ITEM_SELECT_VI_EFFECT \
+   } \
+   description { state: "pressed" 0.0; \
+      inherit: "default" 0.0; \
       map { \
          on: 1; \
          perspective: "persp1"; \
@@ -71,15 +74,32 @@
    description { state: "selected" 0.0; \
       inherit: "default" 0.0; \
       map { \
+         on: 1; \
          perspective: "persp"; \
          smooth: 1; \
       }
 
-   #define GENGRID_TRANS_VI_SELECTED \
-      transition: SIN_FAC 0.167 1.1;
-
-   #define GENGRID_TRANS_VI_UNSELECTED \
-      transition: SIN_FAC 0.167 1.1;
+   #define GENGRID_PROGRAM_ITEM_SELECT_VI_EFFECT( TARGET ) \
+         program { name: "vi_pressed"; \
+            action: STATE_SET "pressed" 0.0; \
+            TARGET \
+            after: "vi_zoom_in"; \
+         } \
+         program { name: "vi_zoom_in"; \
+            action: STATE_SET "selected" 0.0; \
+            TARGET \
+            transition: SIN_FAC 0.167 1.1; \
+         } \
+         program { name: "vi_zoom_out"; \
+            action: STATE_SET "pressed" 0.0; \
+            TARGET \
+            transition: SIN_FAC 0.167 1.1; \
+            after: "vi_default"; \
+         } \
+         program { name: "vi_default"; \
+            action: STATE_SET "default" 0.0; \
+            TARGET \
+         }
 
    group { name: "elm/gengrid/item/default/default";
       alias: "elm/gengrid/item/default_grid/default";
@@ -348,17 +368,9 @@
             script {
                if (!get_int(selected)) {
                   set_int(selected, 1);
-                  run_program(PROGRAM:"vi_zoom_in");
+                  run_program(PROGRAM:"vi_pressed");
                }
             }
-         }
-         program { name: "vi_zoom_in";
-            action: STATE_SET "selected" 0.0;
-            target: "item_bg";
-            target: "item_real_bg";
-            target: "elm.swallow.icon";
-            target: "elm.swallow.end";
-            GENGRID_TRANS_VI_SELECTED
          }
          program { name: "unselected";
             signal: "elm,state,unselected";
@@ -370,14 +382,12 @@
                }
             }
          }
-         program { name: "vi_zoom_out";
-            action: STATE_SET "default" 0.0;
+         GENGRID_PROGRAM_ITEM_SELECT_VI_EFFECT(
             target: "item_bg";
             target: "item_real_bg";
             target: "elm.swallow.icon";
             target: "elm.swallow.end";
-            GENGRID_TRANS_VI_UNSELECTED
-         }
+         ) 
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "reorder_bg";
@@ -471,8 +481,7 @@
          }
       }
       programs {
-         program { name: "vi_zoom_in";
-            action: STATE_SET "selected" 0.0;
+         GENGRID_PROGRAM_ITEM_SELECT_VI_EFFECT(
             target: "item_bg";
             target: "item_real_bg";
             target: "elm.swallow.icon";
@@ -480,19 +489,7 @@
             target: "elm.text.video";
             target: "elm.swallow.video";
             target: "elm.swallow.end";
-            GENGRID_TRANS_VI_SELECTED
-         }
-         program { name: "vi_zoom_out";
-            action: STATE_SET "default" 0.0;
-            target: "item_bg";
-            target: "item_real_bg";
-            target: "elm.swallow.icon";
-            target: "video_text_bg";
-            target: "elm.text.video";
-            target: "elm.swallow.video";
-            target: "elm.swallow.end";
-            GENGRID_TRANS_VI_UNSELECTED
-         }
+         ) 
       }
    }
 
@@ -616,8 +613,7 @@
          }
       }
       programs {
-         program { name: "vi_zoom_in";
-            action: STATE_SET "selected" 0.0;
+         GENGRID_PROGRAM_ITEM_SELECT_VI_EFFECT(
             target: "item_bg";
             target: "item_real_bg";
             target: "elm.swallow.icon";
@@ -626,20 +622,7 @@
             target: "item_bg_left_1pxl_inner_padding";
             target: "item_bg_right_1pxl_inner_padding";
             target: "item_bg_bottom_1pxl_inner_padding";
-            GENGRID_TRANS_VI_SELECTED
-         }
-         program { name: "vi_zoom_out";
-            action: STATE_SET "default" 0.0;
-            target: "item_bg";
-            target: "item_real_bg";
-            target: "elm.swallow.icon";
-            target: "elm.swallow.end";
-            target: "item_bg_top_1pxl_inner_padding";
-            target: "item_bg_left_1pxl_inner_padding";
-            target: "item_bg_right_1pxl_inner_padding";
-            target: "item_bg_bottom_1pxl_inner_padding";
-            GENGRID_TRANS_VI_UNSELECTED
-        }
+         )
      }
    }
 
@@ -750,26 +733,14 @@
          }
       }
       programs {
-         program { name: "vi_zoom_in";
-            action: STATE_SET "selected" 0.0;
+         GENGRID_PROGRAM_ITEM_SELECT_VI_EFFECT(
             target: "item_bg";
             target: "item_real_bg";
             target: "elm.swallow.icon";
             target: "elm.swallow.end";
             target: "elm.text";
             target: "elm.swallow.block";
-            GENGRID_TRANS_VI_SELECTED
-         }
-         program { name: "vi_zoom_out";
-            action: STATE_SET "default" 0.0;
-            target: "item_bg";
-            target: "item_real_bg";
-            target: "elm.swallow.icon";
-            target: "elm.swallow.end";
-            target: "elm.text";
-            target: "elm.swallow.block";
-            GENGRID_TRANS_VI_UNSELECTED
-         }
+         )
       }
    }
 
@@ -851,8 +822,7 @@
          }
       }
       programs {
-         program { name: "vi_zoom_in";
-            action: STATE_SET "selected" 0.0;
+         GENGRID_PROGRAM_ITEM_SELECT_VI_EFFECT(
             target: "item_bg";
             target: "item_real_bg";
             target: "elm.swallow.icon";
@@ -860,19 +830,7 @@
             target: "elm.text.video";
             target: "elm.swallow.video";
             target: "elm.swallow.end";
-            GENGRID_TRANS_VI_SELECTED
-         }
-         program { name: "vi_zoom_out";
-            action: STATE_SET "default" 0.0;
-            target: "item_bg";
-            target: "item_real_bg";
-            target: "elm.swallow.icon";
-            target: "video_text_bg";
-            target: "elm.text.video";
-            target: "elm.swallow.video";
-            target: "elm.swallow.end";
-            GENGRID_TRANS_VI_UNSELECTED
-         }
+         )
       }
    }
 
@@ -966,21 +924,12 @@
          }
       }
       programs {
-         program { name: "vi_zoom_in";
-            action: STATE_SET "selected" 0.0;
+         GENGRID_PROGRAM_ITEM_SELECT_VI_EFFECT(
             target: "item_bg";
             target: "item_real_bg";
             target: "elm.swallow.icon";
             target: "elm.swallow.end";
-            GENGRID_TRANS_VI_SELECTED
-         }
-         program { name: "vi_zoom_out";
-            action: STATE_SET "default" 0.0;
-            target: "item_bg";
-            target: "item_real_bg";
-            target: "elm.swallow.end";
-            GENGRID_TRANS_VI_UNSELECTED
-         }
+         ) 
       }
    }
 
@@ -1057,8 +1006,7 @@
          }
       }
       programs {
-         program { name: "vi_zoom_in";
-            action: STATE_SET "selected" 0.0;
+         GENGRID_PROGRAM_ITEM_SELECT_VI_EFFECT(
             target: "item_bg";
             target: "item_real_bg";
             target: "elm.swallow.icon";
@@ -1066,19 +1014,7 @@
             target: "elm.text.video";
             target: "elm.swallow.video";
             target: "elm.swallow.end";
-            GENGRID_TRANS_VI_SELECTED
-         }
-         program { name: "vi_zoom_out";
-            action: STATE_SET "default" 0.0;
-            target: "item_bg";
-            target: "item_real_bg";
-            target: "elm.swallow.icon";
-            target: "video_text_bg";
-            target: "elm.text.video";
-            target: "elm.swallow.video";
-            target: "elm.swallow.end";
-            GENGRID_TRANS_VI_UNSELECTED
-         }
+         )
       }
    }
 
