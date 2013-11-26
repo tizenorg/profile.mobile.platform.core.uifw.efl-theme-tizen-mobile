@@ -564,7 +564,6 @@ CHECK_STYLE_DEFAULT("default/default_highlight", CHECK_STYLE_DEFAULT_DEFAULT_BG_
          image: "00_check_activated_press.png" COMP; \
          image: "00_check_bg.png" COMP; \
          image: "00_check_dim_bg.png" COMP; \
-         image: "00_check_focus.png" COMP; \
          image: "00_check_inactivated.png" COMP; \
          image: "00_check_inactivated_dim.png" COMP; \
          image: "00_check_inactivated_press.png" COMP; \
@@ -575,26 +574,14 @@ CHECK_STYLE_DEFAULT("default/default_highlight", CHECK_STYLE_DEFAULT_DEFAULT_BG_
          public check_visible = CHECK_HIDE; \
       } \
       parts { \
-         part { name: "back_bg"; \
-            type: RECT; \
-            scale: 1; \
-            description { state: "default" 0.0; \
-               rel2.relative: 0.0 1.0; \
-               align: 0 0.5; \
-               min: min_width min_height; \
-               fixed: 1 0; \
-               color: 0 0 0 0; \
-            } \
-         } \
          part { name: "bg"; \
             mouse_events: 0; \
             scale: 1; \
             description { state: "default" 0.0; \
                min: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
                max: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
+               align: 0.0 0.5; \
                fixed: 1 1; \
-               rel1.to: "back_bg"; \
-               rel2.to: "back_bg"; \
                image.normal: "00_check_bg.png"; \
                fill.smooth : 0; \
             } \
@@ -667,111 +654,6 @@ CHECK_STYLE_DEFAULT("default/default_highlight", CHECK_STYLE_DEFAULT_DEFAULT_BG_
                   relative: 1.0 1.0; \
                   to: "bg"; \
                } \
-            } \
-         } \
-         part { name: "elm.swallow.content"; \
-            type: SWALLOW; \
-            clip_to: "disclip"; \
-            description { state: "default" 0.0; \
-               fixed: 1 0; \
-               visible: 0; \
-               align: 0.0 0.5; \
-               rel1 { \
-                  to_x: "bg"; \
-                  relative: 1.0 0.0; \
-               } \
-               rel2 { \
-                  to_x: "bg"; \
-                  relative: 1.0 1.0; \
-               } \
-            } \
-            description { state: "visible" 0.0; \
-               inherit: "default" 0.0; \
-               fixed: 1 1; \
-               visible: 1; \
-               aspect: 1.0 1.0; \
-               aspect_preference: VERTICAL; \
-            } \
-            description { state: "disabled" 0.0; \
-               inherit: "default" 0.0; \
-            } \
-            description { state: "disabled_visible" 0.0; \
-               inherit: "default" 0.0; \
-               fixed: 1 1; \
-               visible: 1; \
-               aspect: 1.0 1.0; \
-            } \
-         } \
-         part { name: "padding_before_text"; \
-            type: SPACER; \
-            scale: 1; \
-            description { state: "default" 0.0; \
-               align: 0.0 0.5; \
-               min: 0 0; \
-               fixed: 1 1; \
-               rel1 { \
-                  to_x: "elm.swallow.content"; \
-                  relative: 1.0 0.0; \
-               } \
-               rel2 { \
-                  to_x: "elm.swallow.content"; \
-                  relative: 1.0 1.0; \
-               } \
-            } \
-            description { state: "visible" 0.0; \
-               inherit: "default" 0.0; \
-               min: CHECK_STYLE_DEFAULT_PADDING_BEFORE_TEXT_INC; \
-               max: CHECK_STYLE_DEFAULT_PADDING_BEFORE_TEXT_INC; \
-               fixed: 1 1; \
-            } \
-         } \
-         part { name: "elm.text"; \
-            type: TEXTBLOCK; \
-            mouse_events: 0; \
-            clip_to: "disclip"; \
-            scale: 1; \
-            description { state: "default" 0.0; \
-               visible: 0; \
-               fixed: 1 1; \
-               rel1 { \
-                  relative: 1.0 0.5; \
-                  to_x: "padding_before_text"; \
-               } \
-               rel2 { \
-                  relative: 1.0 0.5; \
-               } \
-               align: 0.0 0.5; \
-               text { \
-                  style: "check_label_textblock_style"; \
-                  min: 0 0; \
-               } \
-            } \
-            description { state: "visible" 0.0; \
-               inherit: "default" 0.0; \
-               visible: 1; \
-               text.min: 1 1; \
-            } \
-            description { state: "disabled" 0.0; \
-               inherit: "default" 0.0; \
-            } \
-            description { state: "disabled_visible" 0.0; \
-               inherit: "default" 0.0; \
-               visible: 1; \
-               text { \
-                  style: "check_label_textblock_style_disable"; \
-                  min: 1 1; \
-               } \
-            } \
-         } \
-         part { name: "disclip"; \
-            type: RECT; \
-            mouse_events: 0; \
-            description { state: "default" 0.0; \
-               color: CHECK_DISCLIP_NORMAL_COLOR_INC; \
-            } \
-            description { state: "disabled" 0.0; \
-               inherit: "default" 0.0; \
-               color: CHECK_DISCLIP_DISABLED_COLOR_INC; \
             } \
          } \
          part { name: "disabler"; \
@@ -875,38 +757,11 @@ CHECK_STYLE_DEFAULT("default/default_highlight", CHECK_STYLE_DEFAULT_DEFAULT_BG_
             transition: LINEAR 0.267; \
             target: "sequence_clip"; \
          } \
-         program { name: "text_show"; \
-            signal: "elm,state,text,visible"; \
-            source: "elm"; \
-            action: STATE_SET "visible" 0.0; \
-            target: "padding_before_text"; \
-            target: "elm.text"; \
-         } \
-         program { name: "text_hide"; \
-            signal: "elm,state,text,hidden"; \
-            source: "elm"; \
-            action: STATE_SET "default" 0.0; \
-            target: "padding_before_text"; \
-            target: "elm.text"; \
-         } \
-         program { name: "icon_show"; \
-            signal: "elm,state,icon,visible"; \
-            source: "elm"; \
-            action: STATE_SET "visible" 0.0; \
-            target: "elm.swallow.content"; \
-         } \
-         program { name: "icon_hide"; \
-            signal: "elm,state,icon,hidden"; \
-            source: "elm"; \
-            action: STATE_SET "default" 0.0; \
-            target: "elm.swallow.content"; \
-         } \
          program { name: "disable"; \
             signal: "elm,state,disabled"; \
             source: "elm"; \
             action: STATE_SET "disabled" 0.0; \
             target: "disabler"; \
-            target: "disclip"; \
             target: "bg"; \
             after: "disable_text"; \
          } \
@@ -914,16 +769,6 @@ CHECK_STYLE_DEFAULT("default/default_highlight", CHECK_STYLE_DEFAULT_DEFAULT_BG_
             script { \
                new st[31]; \
                new Float:vl; \
-               get_state(PART:"elm.text", st, 30, vl); \
-               if (!strcmp(st, "visible")) \
-                 set_state(PART:"elm.text", "disabled_visible", 0.0); \
-               else \
-                 set_state(PART:"elm.text", "disabled", 0.0); \
-               get_state(PART:"elm.swallow.content", st, 30, vl); \
-               if (!strcmp(st, "visible")) \
-                 set_state(PART:"elm.swallow.content", "disabled_visible", 0.0); \
-               else \
-                 set_state(PART:"elm.swallow.content", "disabled", 0.0); \
                get_state(PART:"check", st, 30, vl); \
                if (!strcmp(st, "visible")) \
                  { \
@@ -941,7 +786,6 @@ CHECK_STYLE_DEFAULT("default/default_highlight", CHECK_STYLE_DEFAULT_DEFAULT_BG_
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
             target: "disabler"; \
-            target: "disclip"; \
             target: "bg"; \
             after: "enable_text"; \
          } \
@@ -949,16 +793,6 @@ CHECK_STYLE_DEFAULT("default/default_highlight", CHECK_STYLE_DEFAULT_DEFAULT_BG_
             script { \
                new st[31]; \
                new Float:vl; \
-               get_state(PART:"elm.text", st, 30, vl); \
-               if (!strcmp(st, "disabled_visible")) \
-                 set_state(PART:"elm.text", "visible", 0.0); \
-               else \
-                 set_state(PART:"elm.text", "default", 0.0); \
-               get_state(PART:"elm.swallow.content", st, 30, vl); \
-               if (!strcmp(st, "visible")) \
-                 set_state(PART:"elm.swallow.content", "visible", 0.0); \
-               else \
-                 set_state(PART:"elm.swallow.content", "default", 0.0); \
                get_state(PART:"check", st, 30, vl); \
                if (!strcmp(st, "active_disable")) \
                  { \
@@ -986,7 +820,6 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
          image: "00_check_activated_dim.png" COMP; \
          image: "00_check_bg.png" COMP; \
          image: "00_check_dim_bg.png" COMP; \
-         image: "00_check_focus.png" COMP; \
          image: "00_check_inactivated.png" COMP; \
          image: "00_check_inactivated_dim.png" COMP; \
       } \
@@ -994,15 +827,6 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
          public check_state = CHECK_STATE_DEFAULT; \
       } \
       parts { \
-         part { name: "back_bg"; \
-            type: RECT; \
-            scale: 1; \
-            description { state: "default" 0.0; \
-               min: min_width min_height; \
-               fixed: 0 0; \
-               color: 0 0 0 0; \
-            } \
-         } \
          part { name: "bg"; \
             mouse_events: 0; \
             scale: 1; \
@@ -1010,8 +834,6 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
                min: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
                max: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
                fixed: 1 1; \
-               rel1.to: "back_bg"; \
-               rel2.to: "back_bg"; \
                image.normal: "00_check_bg.png"; \
                fill.smooth : 0; \
             } \
@@ -1051,100 +873,6 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
                image.normal: "00_check_activated_dim.png"; \
             } \
          } \
-         part { name: "elm.swallow.content"; \
-            type: SWALLOW; \
-            clip_to: "disclip"; \
-            description { state: "default" 0.0; \
-               fixed: 1 0; \
-               visible: 0; \
-               align: 0.0 0.5; \
-               rel1 { \
-                  to_x: "bg"; \
-                  relative: 1.0 0.0; \
-               } \
-               rel2 { \
-                  to_x: "bg"; \
-                  relative: 1.0 1.0; \
-               } \
-            } \
-            description { state: "visible" 0.0; \
-               inherit: "default" 0.0; \
-               fixed: 1 1; \
-               visible: 1; \
-               aspect: 1.0 1.0; \
-               aspect_preference: VERTICAL; \
-            } \
-            description { state: "disabled" 0.0; \
-               inherit: "default" 0.0; \
-            } \
-            description { state: "disabled_visible" 0.0; \
-               inherit: "default" 0.0; \
-               fixed: 1 1; \
-               visible: 1; \
-               aspect: 1.0 1.0; \
-            } \
-         } \
-         part { name: "padding_before_text"; \
-            type: SPACER; \
-            scale: 1; \
-            description { state: "default" 0.0; \
-               align: 0.0 0.5; \
-               min: 0 0; \
-               fixed: 1 1; \
-               rel1 { \
-                  to_x: "elm.swallow.content"; \
-                  relative: 1.0 0.0; \
-               } \
-               rel2 { \
-                  to_x: "elm.swallow.content"; \
-                  relative: 1.0 1.0; \
-               } \
-            } \
-            description { state: "visible" 0.0; \
-               inherit: "default" 0.0; \
-               min: CHECK_STYLE_DEFAULT_PADDING_BEFORE_TEXT_INC; \
-               max: CHECK_STYLE_DEFAULT_PADDING_BEFORE_TEXT_INC; \
-               fixed: 1 1; \
-            } \
-         } \
-         part { name: "elm.text"; \
-            type: TEXTBLOCK; \
-            mouse_events: 0; \
-            clip_to: "disclip"; \
-            scale: 1; \
-            description { state: "default" 0.0; \
-               visible: 0; \
-               fixed: 1 1; \
-               rel1 { \
-                  relative: 1.0 0.5; \
-                  to_x: "padding_before_text"; \
-               } \
-               rel2 { \
-                  relative: 1.0 0.5; \
-               } \
-               align: 0.0 0.5; \
-               text { \
-                  style: "check_label_textblock_style"; \
-                  min: 0 0; \
-               } \
-            } \
-            description { state: "visible" 0.0; \
-               inherit: "default" 0.0; \
-               visible: 1; \
-               text.min: 1 1; \
-            } \
-            description { state: "disabled" 0.0; \
-               inherit: "default" 0.0; \
-            } \
-            description { state: "disabled_visible" 0.0; \
-               inherit: "default" 0.0; \
-               visible: 1; \
-               text { \
-                  style: "check_label_textblock_style_disable"; \
-                  min: 1 1; \
-               } \
-            } \
-         } \
          part { name: "events1"; \
             type: RECT; \
             ignore_flags: ON_HOLD; \
@@ -1157,17 +885,6 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
             repeat_events: 1; \
             description { state: "default" 0.0; \
                color: 0 0 0 0; \
-            } \
-         } \
-         part { name: "disclip"; \
-            type: RECT; \
-            mouse_events: 0; \
-            description { state: "default" 0.0; \
-               color: CHECK_DISCLIP_NORMAL_COLOR_INC; \
-            } \
-            description { state: "disabled" 0.0; \
-               inherit: "default" 0.0; \
-               color: CHECK_DISCLIP_DISABLED_COLOR_INC; \
             } \
          } \
          part { name: "disabler"; \
@@ -1211,38 +928,10 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
                  } \
             } \
          } \
-         program { name: "text_show"; \
-            signal: "elm,state,text,visible"; \
-            source: "elm"; \
-            action: STATE_SET "visible" 0.0; \
-            target: "padding_before_text"; \
-            target: "elm.text"; \
-         } \
-         program { name: "text_hide"; \
-            signal: "elm,state,text,hidden"; \
-            source: "elm"; \
-            action: STATE_SET "default" 0.0; \
-            target: "padding_before_text"; \
-            target: "elm.text"; \
-         } \
-         program { name: "icon_show"; \
-            signal: "elm,state,icon,visible"; \
-            source: "elm"; \
-            action: STATE_SET "visible" 0.0; \
-            target: "elm.swallow.content"; \
-         } \
-         program { name: "icon_hide"; \
-            signal: "elm,state,icon,hidden"; \
-            source: "elm"; \
-            action: STATE_SET "default" 0.0; \
-            target: "elm.swallow.content"; \
-         } \
          program { name: "disable"; \
             signal: "elm,state,disabled"; \
             source: "elm"; \
             action: STATE_SET "disabled" 0.0; \
-            target: "disabler"; \
-            target: "disclip"; \
             target: "bg"; \
             after: "disable_text"; \
          } \
@@ -1250,16 +939,6 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
             script { \
                new st[31]; \
                new Float:vl; \
-               get_state(PART:"elm.text", st, 30, vl); \
-               if (!strcmp(st, "visible")) \
-                 set_state(PART:"elm.text", "disabled_visible", 0.0); \
-               else \
-                 set_state(PART:"elm.text", "disabled", 0.0); \
-               get_state(PART:"elm.swallow.content", st, 30, vl); \
-               if (!strcmp(st, "visible")) \
-                 set_state(PART:"elm.swallow.content", "disabled_visible", 0.0); \
-               else \
-                 set_state(PART:"elm.swallow.content", "disabled", 0.0); \
                get_state(PART:"check", st, 30, vl); \
                if (!strcmp(st, "visible")) \
                  { \
@@ -1277,7 +956,6 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
             target: "disabler"; \
-            target: "disclip"; \
             target: "bg"; \
             after: "enable_text"; \
          } \
@@ -1285,16 +963,6 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
             script { \
                new st[31]; \
                new Float:vl; \
-               get_state(PART:"elm.text", st, 30, vl); \
-               if (!strcmp(st, "disabled_visible")) \
-                 set_state(PART:"elm.text", "visible", 0.0); \
-               else \
-                 set_state(PART:"elm.text", "default", 0.0); \
-               get_state(PART:"elm.swallow.content", st, 30, vl); \
-               if (!strcmp(st, "visible")) \
-                 set_state(PART:"elm.swallow.content", "visible", 0.0); \
-               else \
-                 set_state(PART:"elm.swallow.content", "default", 0.0); \
                get_state(PART:"check", st, 30, vl); \
                if (!strcmp(st, "active_disable")) \
                  { \
