@@ -389,8 +389,15 @@
          ) 
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
-            source: "reorder_bg";
-            action: PLAY_SAMPLE "touch_sound" 1.0;
+            source: "elm.swallow.icon";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.swallow.icon", st, 30, vl);
+               if (!strcmp(st, "selected") ||
+                   !strcmp(st, "pressed"))
+                  play_sample("touch_sound", 1.0);
+            }
          }
          program { name: "focus_in";
             signal: "elm,state,focused";
@@ -414,6 +421,7 @@
          part { name: "video_text_bg";
             type: RECT;
             scale: 1;
+            repeat_events: 1;
             description { state: "default" 0.0;
                min: 0 41;
                align: 0.5 1.0;
@@ -669,6 +677,38 @@
                min: GENGRID_GRID_TEXT2_ITEM_REAL_BG_RIGHT_PADDING_INC;
             }
          }
+         part { name: "text_left_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GENGRID_GRID_TEXT2_TEXT_LEFT_RIGHT_PADDING_INC;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to: "item_bg";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to: "item_bg";
+               }
+            }
+         }
+         part { name: "text_right_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GENGRID_GRID_TEXT2_TEXT_LEFT_RIGHT_PADDING_INC;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to: "item_bg";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to: "item_bg";
+               }
+            }
+         }
          part { name: "text_bottom_padding";
             type: SPACER;
             scale: 1;
@@ -693,12 +733,14 @@
                min: 0 26;
                align: 0.5 1.0;
                rel1 {
-                  relative: 0.0 0.0;
-                  to: "text_bottom_padding";
+                  relative: 1.0 0.0;
+                  to_x: "text_left_padding";
+                  to_y: "text_bottom_padding";
                }
                rel2 {
-                  relative: 1.0 0.0;
-                  to: "text_bottom_padding";
+                  relative: 0.0 0.0;
+                  to_x: "text_right_padding";
+                  to_y: "text_bottom_padding";
                }
                text {
                   style: "gengrid_textblock_style";
@@ -752,6 +794,7 @@
          part { name: "video_text_bg";
             type: RECT;
             scale: 1;
+            repeat_events: 1;
             description { state: "default" 0.0;
                min: 0 41;
                align: 0.5 1.0;
@@ -873,6 +916,42 @@
                min: GENGRID_GRID_TEXT_ITEM_REAL_BG_RIGHT_PADDING_INC;
             }
          }
+         part { name: "text_left_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GENGRID_GRID_TEXT_TEXT_LEFT_RIGHT_PADDING_INC;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "item_bg";
+                  to_y: "bg";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "item_bg";
+                  to_y: "bg";
+               }
+            }
+         }
+         part { name: "text_right_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GENGRID_GRID_TEXT_TEXT_LEFT_RIGHT_PADDING_INC;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "item_bg";
+                  to_y: "bg";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to_x: "item_bg";
+                  to_y: "bg";
+               }
+            }
+         }
          part { name: "elm.text";
             type: TEXTBLOCK;
             mouse_events: 0;
@@ -880,12 +959,12 @@
             description { state: "default" 0.0;
                rel1 {
                   relative: 1.0 0.0;
-                  to_x: "item_real_bg_left_top_padding";
+                  to_x: "text_left_padding";
                   to_y: "right_bottom_padding";
                }
                rel2 {
                   relative: 0.0 1.0;
-                  to_x: "item_real_bg_right_bottom_padding";
+                  to_x: "text_right_padding";
                   to_y: "right_bottom_padding";
                }
                text {
@@ -932,6 +1011,7 @@
          part { name: "video_text_bg";
             type: RECT;
             scale: 1;
+            repeat_events: 1;
             description { state: "default" 0.0;
                min: 0 41;
                align: 0.5 1.0;
