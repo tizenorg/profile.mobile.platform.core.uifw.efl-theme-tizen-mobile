@@ -373,6 +373,7 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
             public g_timer_id = 0;
             public g_anim_id = 0;
             public g_tb_w = 0;
+            public g_tb_h = LABEL_FONT_SIZE_INC;
             public org_text = 0;
             public message(Msg_Type:type, id, ...) {
                if (type == MSG_FLOAT_SET) {
@@ -381,7 +382,7 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                   if (id == 0)
                     set_float(g_duration, duration);
                   else
-                    set_float(g_duration, duration / LABEL_FONT_SIZE_INC * SLIDE_SPEED_WEIGHT);
+                    set_float(g_duration, duration / get_int(g_tb_h) * SLIDE_SPEED_WEIGHT);
                }
             }
             public get_tb_width() {
@@ -389,6 +390,7 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                set_state(PART:"elm.text", "no_ellipsis", 0.0);
                get_geometry(PART:"elm.text", x, y, w, h);
                set_int(g_tb_w, w);
+               set_int(g_tb_h, h);
                set_state(PART:"text_clip", "default", 0.0);
                get_geometry(PART:"text_clip", x, y, w, h);
                set_int(org_text, w);
@@ -412,7 +414,7 @@ base: "font=Tizen:style=Medium font_size="LABEL_FONT_SIZE_INC" color="LABEL_TEXT
                get_tb_width();
                if (!get_float(g_duration)) {
                   len = get_int(g_tb_w) + SLIDE_TEXT_GAP;
-                  set_float(g_duration, len / LABEL_FONT_SIZE_INC * SLIDE_SPEED_WEIGHT);
+                  set_float(g_duration, len / get_int(g_tb_h) * SLIDE_SPEED_WEIGHT);
                }
                if(get_int(g_tb_w) > get_int(org_text)) {
                   set_state(PART:"elm.text.slide", "slide_begin", 0.0);
