@@ -29,7 +29,7 @@
      script {
         public indicator_effect = 0;     //Indicator need effect
         public indicator_visible = 0;     //Indicator visible check
-        public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent
+        public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent, 3=bg_transparent
         public indicator_overlap = 0;     //check indicator overlap/nooverlap
         public clipboard_disable  = 0;     //check clipboard enable/disable
         public keypad_disable = 0;  //check virtualkeypad enable/disable
@@ -143,6 +143,11 @@
               inherit: "default" 0.0;
               visible: 0;
            }
+           description { state: "bg_transparent" 0.0;
+              inherit: "default" 0.0;
+              visible: 1;
+              color: 0 0 0 0;
+           }
         }
         part { name: "indicator_bg_image";
            type: IMAGE;
@@ -235,11 +240,13 @@
                    run_program(PROGRAM:"opaque_state");
                  if (get_int(indicator_opacity) == 1)
                    run_program(PROGRAM:"translucent_state");
-                 if (get_int(indicator_opacity) == 2) 
+                 if (get_int(indicator_opacity) == 2)
                    run_program(PROGRAM:"transparent_state");
+                 if (get_int(indicator_opacity) == 3)
+                   run_program(PROGRAM:"bg_transparent_state");
                }
                /////Landscape
-               else 
+               else
                  run_program(PROGRAM:"transparent_state");
             }
         }
@@ -313,6 +320,16 @@
             }
         }
         program {
+            name: "bg_transparent_state";
+            script {
+               set_state(PART:"indicator_bg", "bg_transparent", 0.0);
+               set_state(PART:"indicator_bg_image", "default", 0.0);
+               set_state(PART:"indicator_clipper", "default", 0.0);
+               set_state(PART:"indicator_overlap_base", "overlap", 0.0);
+            }
+        }
+
+        program {
             name: "opaque_indicator";
             signal: "elm,state,indicator,opaque";
             source: "elm";
@@ -340,6 +357,16 @@
                set_int(indicator_opacity, 2);
                if (get_int(indicator_visible) == 1)
                  run_program(PROGRAM:"transparent_state");
+            }
+        }
+        program {
+            name: "bg_transparent_indicator";
+            signal: "elm,state,indicator,bg_transparent";
+            source: "elm";
+            script {
+               set_int(indicator_opacity, 3);
+               if (get_int(indicator_visible) == 1)
+                 run_program(PROGRAM:"bg_transparent_state");
             }
         }
         program {
@@ -425,7 +452,9 @@
                if (get_int(landscape) == 1) {  //content start (0, indicator height)
                   set_int(landscape, 0);
                   if (get_int(indicator_visible) == 1) {
-                    if (get_int(indicator_opacity) == 2)
+                    if (get_int(indicator_opacity) == 3)
+                      run_program(PROGRAM:"bg_transparent_state");
+                    else if (get_int(indicator_opacity) == 2)
                       run_program(PROGRAM:"transparent_state");
                     else if (get_int(indicator_opacity) == 1)
                       run_program(PROGRAM:"translucent_state");
@@ -479,7 +508,7 @@
  group { name: "elm/conformant/base/indicator_overlap";
      script {
         public indicator_visible = 0;     //Indicator visible check
-        public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent
+        public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent, 3=bg_transparent
      }
      images {
         image: "00_indicator_translucent_bg.png" COMP;
@@ -536,6 +565,14 @@
               rel2.relative: 1.0 0.0;
               visible: 1;
               color: CONFORMANT_INDICATOR_BG_TRANSPARENT_COLOR_INC;
+           }
+           description { state: "bg_transparent" 0.0;
+              fixed: 0 1;
+              align: 0.5 0.0;
+              min: 0 LAYOUT_INDICATOR_HEIGHT_INC;
+              rel2.relative: 1.0 0.0;
+              visible: 1;
+              color: 0 0 0 0;
            }
             description { state: "hide" 0.0;
               inherit: "default" 0.0;
@@ -650,6 +687,11 @@
                    set_state(PART:"indicator_bg", "transparent", 0.0);
                    set_state(PART:"indicator_bg_image", "default", 0.0);
                  }
+               if (get_int(indicator_opacity) == 3)
+                 {
+                   set_state(PART:"indicator_bg", "bg_transparent", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
             }
         }
         program {
@@ -702,6 +744,19 @@
             }
         }
         program {
+            name: "bg_transparent_indicator";
+            signal: "elm,state,indicator,bg_transparent";
+            source: "elm";
+            script {
+               set_int(indicator_opacity, 3);
+               if (get_int(indicator_visible) == 1)
+                 {
+                   set_state(PART:"indicator_bg", "bg_transparent", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
+            }
+        }
+        program {
             name: "clipboard_on";
             signal: "elm,state,clipboard,on";
             source: "elm";
@@ -721,7 +776,7 @@
   group { name: "elm/conformant/base/nokeypad";
      script {
         public indicator_visible = 0;     //Indicator visible check
-        public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent
+        public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent, 3=bg_transparent
      }
      images {
         image: "00_indicator_translucent_bg.png" COMP;
@@ -776,6 +831,14 @@
               rel2.relative: 1.0 0.0;
               visible: 1;
               color: CONFORMANT_INDICATOR_BG_TRANSPARENT_COLOR_INC;
+           }
+           description { state: "bg_transparent" 0.0;
+              fixed: 0 1;
+              align: 0.5 0.0;
+              min: 0 LAYOUT_INDICATOR_HEIGHT_INC;
+              rel2.relative: 1.0 0.0;
+              visible: 1;
+              color: 0 0 0 0;
            }
             description { state: "hide" 0.0;
               inherit: "default" 0.0;
@@ -841,6 +904,11 @@
                    set_state(PART:"indicator_bg", "transparent", 0.0);
                    set_state(PART:"indicator_bg_image", "default", 0.0);
                  }
+               if (get_int(indicator_opacity) == 3)
+                 {
+                   set_state(PART:"indicator_bg", "bg_transparent", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
             }
         }
         program {
@@ -892,12 +960,25 @@
                  }
             }
         }
+        program {
+            name: "bg_transparent_indicator";
+            signal: "elm,state,indicator,bg_transparent";
+            source: "elm";
+            script {
+               set_int(indicator_opacity, 3);
+               if (get_int(indicator_visible) == 1)
+                 {
+                   set_state(PART:"indicator_bg", "bg_transparent", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
+            }
+        }
      }
   }
   group { name: "elm/conformant/base/without_resize";
      script {
         public indicator_visible = 0;     //Indicator visible check
-        public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent
+        public indicator_opacity = 0;     //0=opaque, 1=translucent, 2=transparent, 3=bg_transparent
      }
      images {
         image: "00_indicator_translucent_bg.png" COMP;
@@ -955,6 +1036,14 @@
               visible: 1;
               color: CONFORMANT_INDICATOR_BG_TRANSPARENT_COLOR_INC;
            }
+           description { state: "bg_transparent" 0.0;
+              fixed: 0 1;
+              align: 0.5 0.0;
+              min: 0 LAYOUT_INDICATOR_HEIGHT_INC;
+              rel2.relative: 1.0 0.0;
+              visible: 1;
+              color: 0 0 0 0;
+           }
             description { state: "hide" 0.0;
               inherit: "default" 0.0;
               visible: 0;
@@ -1019,6 +1108,11 @@
                    set_state(PART:"indicator_bg", "transparent", 0.0);
                    set_state(PART:"indicator_bg_image", "default", 0.0);
                  }
+               if (get_int(indicator_opacity) == 3)
+                 {
+                   set_state(PART:"indicator_bg", "bg_transparent", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
             }
         }
         program {
@@ -1066,6 +1160,19 @@
                if (get_int(indicator_visible) == 1)
                  {
                    set_state(PART:"indicator_bg", "transparent", 0.0);
+                   set_state(PART:"indicator_bg_image", "default", 0.0);
+                 }
+            }
+        }
+        program {
+            name: "bg_transparent_indicator";
+            signal: "elm,state,indicator,bg_transparent";
+            source: "elm";
+            script {
+               set_int(indicator_opacity, 2);
+               if (get_int(indicator_visible) == 1)
+                 {
+                   set_state(PART:"indicator_bg", "bg_transparent", 0.0);
                    set_state(PART:"indicator_bg_image", "default", 0.0);
                  }
             }
