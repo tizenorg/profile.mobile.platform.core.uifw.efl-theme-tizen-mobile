@@ -390,7 +390,8 @@
 
 #define GENLIST_PROLOG \
       data.item: "selectraise" "on"; \
-      data.item: "treesize" 0;
+      data.item: "treesize" 0; \
+      data.item: "focus_highlight" "on";
 
 #define GENLIST_PROLOG_NORMAL \
       GENLIST_PROLOG \
@@ -2008,13 +2009,13 @@
 
 #define GENLIST_PROGRAM_FOCUS \
       program { name: "focused"; \
-         signal: "elm,state,focused"; \
+         signal: "elm,action,focus_highlight,show"; \
          source: "elm"; \
          action: STATE_SET "focused" 0.0; \
          target: "focus_part"; \
       } \
       program { name: "unfocused"; \
-         signal: "elm,state,unfocused"; \
+         signal: "elm,action,focus_highlight,hide"; \
          source: "elm"; \
          action: STATE_SET "default" 0.0; \
          target: "focus_part"; \
@@ -2022,7 +2023,7 @@
 
 #define GENLIST_PROGRAM_FOCUS_NORMAL \
       program { name: "focused"; \
-         signal: "elm,state,focused"; \
+         signal: "elm,action,focus_highlight,show"; \
          source: "elm"; \
          script { \
             new st[31]; \
@@ -2035,7 +2036,7 @@
          } \
       } \
       program { name: "unfocused"; \
-         signal: "elm,state,unfocused"; \
+         signal: "elm,action,focus_highlight,hide"; \
          source: "elm"; \
          action: STATE_SET "default" 0.0; \
          target: "focus_part_reorder"; \
@@ -2044,7 +2045,7 @@
 
 #define GENLIST_PROGRAM_FOCUS_DIALOGUE \
       program { name: "focused"; \
-         signal: "elm,state,focused"; \
+         signal: "elm,action,focus_highlight,show"; \
          source: "elm"; \
          script { \
             new st[31]; \
@@ -2061,7 +2062,7 @@
          } \
       } \
       program { name: "unfocused"; \
-         signal: "elm,state,unfocused"; \
+         signal: "elm,action,focus_highlight,hide"; \
          source: "elm"; \
          action: STATE_SET "default" 0.0; \
          target: "focus_part_dialogue"; \
@@ -3669,18 +3670,20 @@
             GENLIST_DESCRIPTION_ENVELOP(NAME, \
                image { \
                   normal: "00_list_bubble_bg.png"; \
-                  border: 8 8 0 0; \
+                  border: GENLIST_LIST_BUBBLE_BORDER; \
                } \
                rel1.offset: -10 0; \
                rel2.offset: 8 -1; \
                min: 48 38; \
                max: -1 38; \
                fixed: 0 1; \
-               color: GENLIST_LIST_BUBBLE_COLOR; \
             ) \
             description { state: "selected" 0.0; \
                inherit: "default" 0.0; \
-               color: GENLIST_LIST_BUBBLE_PRESS_COLOR; \
+               image { \
+                  normal: "00_list_bubble_bg_press.png"; \
+                  border: GENLIST_LIST_BUBBLE_BORDER; \
+               } \
             } \
          ) \
          GENLIST_PART_TEXT(NAME, \
