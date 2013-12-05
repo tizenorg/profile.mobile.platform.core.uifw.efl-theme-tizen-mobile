@@ -105,6 +105,7 @@ group {
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.0;
+            min: 0 302;
          }
       }
       part { name: "palette";
@@ -656,14 +657,14 @@ group{
       }
    }
    programs {
-      program { name: "action_focus";
-         signal: "elm,action,focus_highlight,show";
+      program { name: "focused";
+         signal: "elm,state,focused";
          source: "elm";
          action: STATE_SET "focused" 0.0;
          target: "elm.arrow_image";
       }
-      program { name: "action_unfocus";
-         signal: "elm,action,focus_highlight,hide";
+      program { name: "unfocused";
+         signal: "elm,state,unfocused";
          source: "elm";
          action: STATE_SET "default" 0.0;
          target: "elm.arrow_image";
@@ -916,6 +917,22 @@ group {
             color: 0 0 0 0;
          }
       }
+      part { name: "highlight";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            image {
+                normal: "00_tab_focus.png";
+                border: TOOLBAR_ITEM_TAB_FOCUS_BORDER_INC;
+                border_scale: 1;
+            }
+         }
+         description { state: "highlighted" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
    }
    programs {
       program { name: "item_select";
@@ -959,6 +976,18 @@ group {
          signal: "mouse,clicked,1";
          source: "over1";
          action: PLAY_SAMPLE "touch_sound" 1.0;
+      }
+      program { name: "highlight_on";
+         signal: "elm,highlight,on";
+         source: "elm";
+         action: STATE_SET "highlighted" 0.0;
+         target: "highlight";
+      }
+      program { name: "highlight_off";
+         signal: "elm,highlight,off";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "highlight";
       }
    }
 }
@@ -1093,6 +1122,22 @@ group {
             visible: 1;
          }
       }
+      part { name: "highlight";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            image {
+                normal: "00_tab_focus.png";
+                border: TOOLBAR_ITEM_TAB_FOCUS_BORDER_INC;
+                border_scale: 1;
+            }
+         }
+         description { state: "highlighted" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
    }
    programs {
       program { name: "item_select";
@@ -1152,6 +1197,18 @@ group {
          action: STATE_SET "default" 0.0;
          target: "color_custom_image";
          target: "over2";
+      }
+      program { name: "highlight_on";
+         signal: "elm,highlight,on";
+         source: "elm";
+         action: STATE_SET "highlighted" 0.0;
+         target: "highlight";
+      }
+      program { name: "highlight_off";
+         signal: "elm,highlight,off";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "highlight";
       }
       program { name: "touch_snd";
          signal: "mouse,clicked,1";
