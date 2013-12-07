@@ -288,6 +288,33 @@
                GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
+         part { name: "video_text_bg";
+            type: SPACER;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to: "item_real_bg";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to: "item_real_bg";
+               }
+            }
+         }
+         part { name: "elm.video_text.padding.left";
+            scale: 1;
+            type: SPACER;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0 0;
+                  to: "video_text_bg";
+               }
+               rel2 {
+                  relative: 0 1;
+                  to: "video_text_bg";
+               }
+            }
+         }
          part { name: "elm.swallow.video";
             type: SWALLOW;
             description { state: "default" 0.0;
@@ -459,26 +486,6 @@
                GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
-         part { name: "focus_bg";
-            type: IMAGE;
-            description { state: "default" 0.0;
-               visible: 0;
-               rel1 {
-                  relative: 0.0 0.0;
-                  to: "elm.swallow.icon";
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  to: "elm.swallow.icon";
-               }
-               image.normal: "00_focus_01.png";
-               image.border: FOCUS_BORDER;
-            }
-            description { state: "enabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
       }
       programs {
          GENGRID_PROGRAM_ITEM_SELECT_VI_EFFECT(
@@ -600,16 +607,6 @@
                   to_y: "item_bg_bottom_1pxl_inner_padding";
                }
                GENGRID_ITEM_SELECT_VI_EFFECT
-            }
-         }
-         part { name: "focus_bg_left_top_padding";
-            description { state: "default" 0.0;
-               min: GENGRID_GALLERY_LEFT_TOP_FOCUS_PADDING_INC;
-            }
-         }
-         part { name: "focus_bg_right_bottom_padding";
-            description { state: "default" 0.0;
-               min: GENGRID_GALLERY_RIGHT_BOTTOM_FOCUS_PADDING_INC;
             }
          }
       }
@@ -752,16 +749,6 @@
                GENGRID_ITEM_SELECT_VI_EFFECT
             }
          }
-         part { name: "focus_bg_left_top_padding";
-            description { state: "default" 0.0;
-               min: GENGRID_GRID_TEXT2_LEFT_TOP_FOCUS_PADDING_INC;
-            }
-         }
-         part { name: "focus_bg_right_bottom_padding";
-            description { state: "default" 0.0;
-               min: GENGRID_GRID_TEXT2_RIGHT_BOTTOM_FOCUS_PADDING_INC;
-            }
-         }
       }
       programs {
          GENGRID_PROGRAM_ITEM_SELECT_VI_EFFECT(
@@ -850,26 +837,6 @@
                   to: "video_text_bg";
                }
                GENGRID_ITEM_SELECT_VI_EFFECT
-            }
-         }
-         part { name: "focus_bg";
-            type: IMAGE;
-            description { state: "default" 0.0;
-               visible: 0;
-               rel1 {
-                  relative: 0.0 0.0;
-                  to: "elm.swallow.icon";
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  to: "elm.swallow.icon";
-               }
-               image.normal: "00_focus_01.png";
-               image.border: FOCUS_BORDER;
-            }
-            description { state: "enabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
             }
          }
       }
@@ -996,16 +963,6 @@
                rel2.to : "elm.text";
             }
          }
-         part { name: "focus_bg_left_top_padding";
-            description { state: "default" 0.0;
-               min: GENGRID_GRID_TEXT_LEFT_TOP_FOCUS_PADDING_INC;
-            }
-         }
-         part { name: "focus_bg_right_bottom_padding";
-            description { state: "default" 0.0;
-               min: GENGRID_GRID_TEXT_RIGHT_BOTTOM_FOCUS_PADDING_INC;
-            }
-         }
       }
       programs {
          GENGRID_PROGRAM_ITEM_SELECT_VI_EFFECT(
@@ -1087,26 +1044,6 @@
                   to: "video_text_bg";
                }
                GENGRID_ITEM_SELECT_VI_EFFECT
-            }
-         }
-         part { name: "focus_bg";
-            type: IMAGE;
-            description { state: "default" 0.0;
-               visible: 0;
-               rel1 {
-                  relative: 0.0 0.0;
-                  to: "elm.swallow.icon";
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  to: "elm.swallow.icon";
-               }
-               image.normal: "00_focus_01.png";
-               image.border: FOCUS_BORDER;
-            }
-            description { state: "enabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
             }
          }
       }
@@ -1305,6 +1242,26 @@
                color: GENLIST_GROUPINDEX_LINE_FOCUS_COLOR;
             }
          }
+         part { name: "focus_bg";
+            type: IMAGE;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to: "bg_image";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to: "bg_image";
+               }
+               image.normal: "00_focus_01.png";
+               image.border: FOCUS_BORDER;
+            }
+            description { state: "enabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
       }
       programs {
          program { name: "enabled";
@@ -1339,6 +1296,18 @@
             target: "elm.text";
             target: "index_line";
             transition: LINEAR 0.1;
+         }
+         program { name: "action_focus";
+            signal: "elm,action,focus_highlight,show";
+            source: "elm";
+            action: STATE_SET "enabled" 0.0;
+            target: "focus_bg";
+         }
+         program { name: "action_unfocus";
+            signal: "elm,action,focus_highlight,hide";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "focus_bg";
          }
       }
    }
