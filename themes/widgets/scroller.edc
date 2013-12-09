@@ -27,6 +27,178 @@
 /*
  * vim:ts=3
 */
+
+#define OVERSCROLL_EFFECT_IMAGES\
+      image: "bouncing_top_00.png" COMP;\
+      image: "bouncing_top_01.png" COMP;\
+      image: "bouncing_top_02.png" COMP;\
+      image: "bouncing_top_03.png" COMP;\
+      image: "bouncing_top_04.png" COMP;\
+      image: "bouncing_top_05.png" COMP;\
+      image: "bouncing_top_06.png" COMP;\
+      image: "bouncing_top_07.png" COMP;\
+      image: "bouncing_top_08.png" COMP;\
+      image: "bouncing_top_09.png" COMP;\
+      image: "bouncing_top_10.png" COMP;\
+      image: "bouncing_top_11.png" COMP;\
+      image: "bouncing_top_12.png" COMP;\
+      image: "bouncing_top_13.png" COMP;\
+      image: "bouncing_top_14.png" COMP;\
+      image: "bouncing_top_15.png" COMP;\
+      image: "bouncing_top_16.png" COMP;\
+      image: "bouncing_top_17.png" COMP;\
+      image: "bouncing_bottom_00.png" COMP;\
+      image: "bouncing_bottom_01.png" COMP;\
+      image: "bouncing_bottom_02.png" COMP;\
+      image: "bouncing_bottom_03.png" COMP;\
+      image: "bouncing_bottom_04.png" COMP;\
+      image: "bouncing_bottom_05.png" COMP;\
+      image: "bouncing_bottom_06.png" COMP;\
+      image: "bouncing_bottom_07.png" COMP;\
+      image: "bouncing_bottom_08.png" COMP;\
+      image: "bouncing_bottom_09.png" COMP;\
+      image: "bouncing_bottom_10.png" COMP;\
+      image: "bouncing_bottom_11.png" COMP;\
+      image: "bouncing_bottom_12.png" COMP;\
+      image: "bouncing_bottom_13.png" COMP;\
+      image: "bouncing_bottom_14.png" COMP;\
+      image: "bouncing_bottom_15.png" COMP;\
+      image: "bouncing_bottom_16.png" COMP;\
+      image: "bouncing_bottom_17.png" COMP;\
+      image: "bouncing_left_00.png" COMP;\
+      image: "bouncing_left_01.png" COMP;\
+      image: "bouncing_left_02.png" COMP;\
+      image: "bouncing_left_03.png" COMP;\
+      image: "bouncing_left_04.png" COMP;\
+      image: "bouncing_left_05.png" COMP;\
+      image: "bouncing_left_06.png" COMP;\
+      image: "bouncing_left_07.png" COMP;\
+      image: "bouncing_left_08.png" COMP;\
+      image: "bouncing_left_09.png" COMP;\
+      image: "bouncing_left_10.png" COMP;\
+      image: "bouncing_left_11.png" COMP;\
+      image: "bouncing_left_12.png" COMP;\
+      image: "bouncing_left_13.png" COMP;\
+      image: "bouncing_left_14.png" COMP;\
+      image: "bouncing_left_15.png" COMP;\
+      image: "bouncing_left_16.png" COMP;\
+      image: "bouncing_left_17.png" COMP;\
+      image: "bouncing_right_00.png" COMP;\
+      image: "bouncing_right_01.png" COMP;\
+      image: "bouncing_right_02.png" COMP;\
+      image: "bouncing_right_03.png" COMP;\
+      image: "bouncing_right_04.png" COMP;\
+      image: "bouncing_right_05.png" COMP;\
+      image: "bouncing_right_06.png" COMP;\
+      image: "bouncing_right_07.png" COMP;\
+      image: "bouncing_right_08.png" COMP;\
+      image: "bouncing_right_09.png" COMP;\
+      image: "bouncing_right_10.png" COMP;\
+      image: "bouncing_right_11.png" COMP;\
+      image: "bouncing_right_12.png" COMP;\
+      image: "bouncing_right_13.png" COMP;\
+      image: "bouncing_right_14.png" COMP;\
+      image: "bouncing_right_15.png" COMP;\
+      image: "bouncing_right_16.png" COMP;\
+      image: "bouncing_right_17.png" COMP;\
+
+#define OVERSCROLL_EFFECT_DESCRIPTIONS(NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(00, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(01, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(02, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(03, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(04, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(05, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(06, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(07, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(08, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(09, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(10, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(11, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(12, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(13, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(14, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(15, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(16, NAME)\
+         OVERSCROLL_EFFECT_DESCRIPTION(17, NAME)
+
+#define OVERSCROLL_EFFECT_DESCRIPTION(NUMBER, NAME)\
+         description { state: "show_effect" "0."NUMBER"";\
+            inherit: "default" 0.0;\
+            visible: 1;\
+            image {\
+               normal: "bouncing_"NAME"_"NUMBER".png";\
+            }\
+         }
+
+#define OVERSCROLL_EFFECT_FUNCTION(NAME, SRC)\
+      program { name: "start_effect_"NAME;\
+          script {\
+              new st[31];\
+              new Float:state;\
+              get_state(PART:SRC, st, 30, state);\
+              if (state < 0.08)\
+              {\
+                state += 0.01;\
+                set_state(PART:SRC, "show_effect", state);\
+                run_program(PROGRAM:"delay_"NAME);\
+              }\
+              else if ((state < 0.17 && state >= 0.08) && !get_int(effect_hold))\
+              {\
+                state += 0.01;\
+                set_state(PART:SRC, "show_effect", state);\
+                run_program(PROGRAM:"delay_"NAME);\
+              }\
+              else if (state >= 0.17 && !get_int(effect_hold))\
+              {\
+                set_int(effect_on, 0);\
+                set_state(PART:SRC, "hidden", 0.0);\
+                run_program(PROGRAM:"end_action_"NAME);\
+              }\
+              else\
+              {\
+                run_program(PROGRAM:"delay_"NAME);\
+              }\
+          }\
+      }\
+      program { name: "content_move_"NAME;\
+         signal: "elm,action,scroll";\
+         source: "elm";\
+         script {\
+            new st[31];\
+            new Float:state;\
+            get_state(PART:SRC, st, 30, state);\
+            if (!strcmp(st, "show_effect"))\
+              {\
+                set_int(effect_on, 0);\
+                set_state(PART:SRC, "hidden", 0.0);\
+                run_program(PROGRAM:"end_action_"NAME);\
+              }\
+         }\
+      }\
+      program { name: "delay_"NAME;\
+          in: 0.033 0.0;\
+          after: "start_effect_"NAME;\
+      }\
+      program { name: "end_action_"NAME;\
+         action: ACTION_STOP;\
+         target: "start_effect_"NAME;\
+         target: "delay_"NAME;\
+      }\
+      program { name: "edge_"NAME;\
+         signal: "elm,edge,"NAME;\
+         source: "elm";\
+         script {\
+             if (!get_int(effect_on)) {\
+                 set_int(effect_on, 1);\
+                 if (get_int(mouse_down))\
+                   set_int(effect_hold, 1);\
+                 set_state(PART:SRC, "show_effect", 0.0);\
+                 run_program(PROGRAM:"start_effect_"NAME);\
+             }\
+         }\
+      }
+
 group { name: "elm/scroller/base/default";
    alias: "elm/carousel/base/default";
    alias: "elm/scroller/base/map_bubble";
@@ -39,7 +211,8 @@ group { name: "elm/scroller/base/default";
 
    script {
       public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
-      public sh_v, sh_h, edge_timer;
+      public sh_v, sh_h;
+      public effect_on, effect_hold, mouse_down;
       public timer0(val) {
          new v;
          v = get_int(sbvis_v);
@@ -59,12 +232,6 @@ group { name: "elm/scroller/base/default";
             }
          }
          set_int(sbvis_timer, 0);
-         return 0;
-      }
-      public timer2(val) {
-         emit("do-hide-vshadow", "");
-         emit("do-hide-hshadow", "");
-         set_int(edge_timer, 0);
          return 0;
       }
    }
@@ -562,7 +729,7 @@ group { name: "elm/scroller/base/handler";
    }
    script {
       public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
-      public edge_timer;
+      public effect_on, effect_hold, mouse_down;
       public timer0(val) {
          new v;
          v = get_int(sbvis_v);
@@ -582,12 +749,6 @@ group { name: "elm/scroller/base/handler";
             }
          }
          set_int(sbvis_timer, 0);
-         return 0;
-      }
-      public timer2(val) {
-         emit("do-hide-vshadow", "");
-         emit("do-hide-hshadow", "");
-         set_int(edge_timer, 0);
          return 0;
       }
    }
@@ -1122,133 +1283,108 @@ group { name: "elm/scroller/base/list_effect";
    inherit: "elm/scroller/base/default";
 
    images {
-      image: "00_overscrolling_top.png" COMP;
-      image: "00_overscrolling_bottom.png" COMP;
-      image: "00_overscrolling_left.png" COMP;
-      image: "00_overscrolling_right.png" COMP;
+      OVERSCROLL_EFFECT_IMAGES
    }
 
    parts {
-      part { name: "vshadow_clip";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-         }
-         description { state: "hidden" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-         }
-      }
-      part { name: "hshadow_clip";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-         }
-         description { state: "hidden" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-         }
-      }
       part { name: "shadow_top";
-         clip_to: "vshadow_clip";
          type: IMAGE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            min: 0 36;
+            min: 0 58;
             fixed: 1 1;
             align: 0.5 0.0;
-            color: 255 255 255 100;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 0.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            image.normal: "00_overscrolling_top.png";
-         }
-         description { state: "edge" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: 0 0;
+            rel2.offset: -1 -1;
             visible: 0;
+            image {
+               normal: "bouncing_top_00.png";
+            }
+         }
+         OVERSCROLL_EFFECT_DESCRIPTIONS("top")
+         description { state: "hidden" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
          }
       }
       part { name: "shadow_bottom";
-         clip_to: "vshadow_clip";
          type: IMAGE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            min: 0 36;
+            min: 0 58;
             fixed: 1 1;
             align: 0.5 1.0;
-            color: 255 255 255 100;
             rel1.relative: 0.0 1.0;
             rel2.relative: 1.0 1.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            image.normal: "00_overscrolling_bottom.png";
-         }
-         description { state: "edge" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: 0 0;
+            rel2.offset: -1 -2;
             visible: 0;
+            image {
+               normal: "bouncing_bottom_00.png";
+            }
+         }
+         OVERSCROLL_EFFECT_DESCRIPTIONS("bottom")
+         description { state: "hidden" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
          }
       }
       part { name: "shadow_left";
-         clip_to: "hshadow_clip";
          type: IMAGE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            min: 36 0;
+            min: 58 0;
             fixed: 1 1;
             align: 0.0 0.5;
-            color: 255 255 255 100;
             rel1.relative: 0.0 0.0;
             rel2.relative: 0.0 1.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            image.normal: "00_overscrolling_left.png";
-         }
-         description { state: "edge" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: 0 0;
+            rel2.offset: -1 -1;
             visible: 0;
+            image {
+               normal: "bouncing_left_00.png";
+            }
+         }
+         OVERSCROLL_EFFECT_DESCRIPTIONS("left")
+         description { state: "hidden" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
          }
       }
       part { name: "shadow_right";
-         clip_to: "hshadow_clip";
          type: IMAGE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            min: 36 0;
+            min: 58 0;
             fixed: 1 1;
             align: 1.0 0.5;
-            color: 255 255 255 100;
             rel1.relative: 1.0 0.0;
             rel2.relative: 1.0 1.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            image.normal: "00_overscrolling_right.png";
-         }
-         description { state: "edge" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: 0 0;
+            rel2.offset: -1 -1;
             visible: 0;
+            image {
+               normal: "bouncing_right_00.png";
+            }
+         }
+         OVERSCROLL_EFFECT_DESCRIPTIONS("right")
+         description { state: "hidden" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
          }
       }
       part { name: "padding_jump_to_top";
@@ -1311,51 +1447,32 @@ group { name: "elm/scroller/base/list_effect";
             align: 0.0 1.0;
          }
       }
+      part { name: "event";
+         type: RECT;
+         mouse_events: 1;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
    }
    programs {
       program { name: "load";
          script {
             set_state(PART:"sb_hbar_clip", "hidden", 0.0);
             set_state(PART:"sb_vbar_clip", "hidden", 0.0);
-            set_state(PART:"vshadow_clip", "hidden", 0.0);
-            set_state(PART:"hshadow_clip", "hidden", 0.0);
+            set_state(PART:"shadow_top", "hidden", 0.0);
+            set_state(PART:"shadow_bottom", "hidden", 0.0);
+            set_state(PART:"shadow_left", "hidden", 0.0);
+            set_state(PART:"shadow_right", "hidden", 0.0);
             set_int(sbvis_h, 0);
             set_int(sbvis_v, 0);
             set_int(sbalways_v, 0);
             set_int(sbalways_h, 0);
             set_int(sbvis_timer, 0);
             set_int(sh_v, 0);
-            set_int(edge_timer, 0);
             emit("reload", "elm");
          }
-      }
-      program { name: "vshadow_show";
-         signal: "do-show-vshadow";
-         source: "";
-         action:  STATE_SET "default" 0.0;
-         transition: LINEAR 0.5;
-         target: "vshadow_clip";
-      }
-      program { name: "vshadow_hide";
-         signal: "do-hide-vshadow";
-         source: "";
-         action:  STATE_SET "hidden" 0.0;
-         transition: LINEAR 0.2;
-         target: "vshadow_clip";
-      }
-      program { name: "hshadow_show";
-         signal: "do-show-hshadow";
-         source: "";
-         action:  STATE_SET "default" 0.0;
-         transition: LINEAR 0.5;
-         target: "hshadow_clip";
-      }
-      program { name: "hshadow_hide";
-         signal: "do-hide-hshadow";
-         source: "";
-         action:  STATE_SET "hidden" 0.0;
-         transition: LINEAR 0.2;
-         target: "hshadow_clip";
       }
       program { name: "scroll";
          signal: "elm,action,scroll";
@@ -1380,64 +1497,30 @@ group { name: "elm/scroller/base/list_effect";
             set_int(sbvis_timer, v);
          }
       }
-      program { name: "edge_top";
-         signal: "elm,edge,top";
-         source: "elm";
+      OVERSCROLL_EFFECT_FUNCTION("top", "shadow_top")
+      OVERSCROLL_EFFECT_FUNCTION("bottom", "shadow_bottom")
+      OVERSCROLL_EFFECT_FUNCTION("left", "shadow_left")
+      OVERSCROLL_EFFECT_FUNCTION("right", "shadow_right")
+      program { name: "content_move";
+         signal: "mouse,move";
+         source: "event";
          script {
-            set_state(PART:"shadow_top", "edge", 0.0);
-            set_state(PART:"shadow_bottom", "hidden", 0.0);
-         }
-         after: "edge_vertical";
-      }
-      program { name: "edge_bottom";
-         signal: "elm,edge,bottom";
-         source: "elm";
-         script {
-            set_state(PART:"shadow_top", "hidden", 0.0);
-            set_state(PART:"shadow_bottom", "edge", 0.0);
-         }
-         after: "edge_vertical";
-      }
-      program { name: "edge_left";
-         signal: "elm,edge,left";
-         source: "elm";
-         script {
-            set_state(PART:"shadow_left", "edge", 0.0);
-            set_state(PART:"shadow_right", "hidden", 0.0);
-         }
-         after: "edge_horizontal";
-      }
-      program { name: "edge_right";
-         signal: "elm,edge,right";
-         source: "elm";
-         script {
-            set_state(PART:"shadow_left", "hidden", 0.0);
-            set_state(PART:"shadow_right", "edge", 0.0);
-         }
-         after: "edge_horizontal";
-      }
-      program { name: "edge_vertical";
-         script {
-            new v;
-            v = get_int(edge_timer);
-            if (!v) {
-                emit("do-show-vshadow", "");
+              set_int(mouse_down, 1);
             }
-            if (v > 0) cancel_timer(v);
-            v = timer(0.1, "timer2", 0);
-            set_int(edge_timer, v);
-         }
       }
-      program { name: "edge_horizontal";
+      program { name: "content_press";
+         signal: "mouse,down,1";
+         source: "event";
          script {
-            new v;
-            v = get_int(edge_timer);
-            if (!v) {
-                emit("do-show-hshadow", "");
+              set_int(mouse_down, 1);
             }
-            if (v > 0) cancel_timer(v);
-            v = timer(0.1, "timer2", 0);
-            set_int(edge_timer, v);
+      }
+      program { name: "content_unpress";
+         signal: "mouse,up,1";
+         source: "event";
+         script {
+              set_int(mouse_down, 0);
+              set_int(effect_hold, 0);
          }
       }
    }
@@ -1451,133 +1534,144 @@ group { name: "elm/scroller/base/handler/list_effect";
    inherit: "elm/scroller/base/handler";
 
    images {
-      image: "00_overscrolling_top.png" COMP;
-      image: "00_overscrolling_bottom.png" COMP;
-      image: "00_overscrolling_left.png" COMP;
-      image: "00_overscrolling_right.png" COMP;
+      OVERSCROLL_EFFECT_IMAGES
    }
 
    parts {
-      part { name: "vshadow_clip";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-         }
-         description { state: "hidden" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-         }
-      }
-      part { name: "hshadow_clip";
-         type: RECT;
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-         }
-         description { state: "hidden" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-         }
-      }
       part { name: "shadow_top";
-         clip_to: "vshadow_clip";
          type: IMAGE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            min: 0 36;
+            min: 0 58;
             fixed: 1 1;
             align: 0.5 0.0;
-            color: 255 255 255 100;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 0.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            image.normal: "00_overscrolling_top.png";
-         }
-         description { state: "edge" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: 0 0;
+            rel2.offset: -1 -1;
             visible: 0;
+            image {
+               normal: "bouncing_top_00.png";
+            }
+         }
+         OVERSCROLL_EFFECT_DESCRIPTIONS("top")
+         description { state: "hidden" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
          }
       }
       part { name: "shadow_bottom";
-         clip_to: "vshadow_clip";
          type: IMAGE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            min: 0 36;
+            min: 0 58;
             fixed: 1 1;
             align: 0.5 1.0;
-            color: 255 255 255 100;
             rel1.relative: 0.0 1.0;
             rel2.relative: 1.0 1.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            image.normal: "00_overscrolling_bottom.png";
-         }
-         description { state: "edge" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: 0 0;
+            rel2.offset: -1 -2;
             visible: 0;
+            image {
+               normal: "bouncing_bottom_00.png";
+            }
+         }
+         OVERSCROLL_EFFECT_DESCRIPTIONS( "bottom")
+         description { state: "hidden" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
          }
       }
       part { name: "shadow_left";
-         clip_to: "hshadow_clip";
          type: IMAGE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            min: 36 0;
+            min: 58 0;
             fixed: 1 1;
             align: 0.0 0.5;
-            color: 255 255 255 100;
             rel1.relative: 0.0 0.0;
             rel2.relative: 0.0 1.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            image.normal: "00_overscrolling_left.png";
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: 0 0;
+            rel2.offset: -1 -1;
+            image {
+               normal: "bouncing_left_00.png";
+            }
          }
-         description { state: "edge" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
+         OVERSCROLL_EFFECT_DESCRIPTIONS("left")
          description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
             visible: 0;
+            color: 255 255 255 0;
          }
       }
       part { name: "shadow_right";
-         clip_to: "hshadow_clip";
          type: IMAGE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            min: 36 0;
+            min: 58 0;
             fixed: 1 1;
             align: 1.0 0.5;
-            color: 255 255 255 100;
             rel1.relative: 1.0 0.0;
             rel2.relative: 1.0 1.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            image.normal: "00_overscrolling_right.png";
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: 0 0;
+            rel2.offset: -1 -1;
+            image {
+               normal: "bouncing_right_00.png";
+            }
          }
-         description { state: "edge" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
+         OVERSCROLL_EFFECT_DESCRIPTIONS("right")
          description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
             visible: 0;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "padding_jump_to_top";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: BUTTON_JUMP_TOP_PADDING_TO_SCROLLER_MIN_MAX_INC;
+            max: BUTTON_JUMP_TOP_PADDING_TO_SCROLLER_MIN_MAX_INC;
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            fixed: 1 1;
+            align: 1.0 0.0;
+         }
+      }
+      part { name: "elm.swallow.jump_to_top";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "padding_jump_to_top";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to: "padding_jump_to_top";
+               relative: 0.0 1.0;
+            }
+            fixed: 1 1;
+            align: 1.0 0.0;
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         mouse_events: 1;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
          }
       }
    }
@@ -1588,14 +1682,15 @@ group { name: "elm/scroller/base/handler/list_effect";
          script {
             set_state(PART:"sb_hbar_clip", "hidden", 0.0);
             set_state(PART:"sb_vbar_clip", "hidden", 0.0);
-            set_state(PART:"vshadow_clip", "hidden", 0.0);
-            set_state(PART:"hshadow_clip", "hidden", 0.0);
+            set_state(PART:"shadow_top", "hidden", 0.0);
+            set_state(PART:"shadow_bottom", "hidden", 0.0);
+            set_state(PART:"shadow_left", "hidden", 0.0);
+            set_state(PART:"shadow_right", "hidden", 0.0);
             set_int(sbvis_h, 0);
             set_int(sbvis_v, 0);
             set_int(sbalways_v, 0);
             set_int(sbalways_h, 0);
             set_int(sbvis_timer, 0);
-            set_int(edge_timer, 0);
             emit("reload", "elm");
          }
       }
@@ -1663,34 +1758,6 @@ group { name: "elm/scroller/base/handler/list_effect";
             }
          }
       }
-      program { name: "vshadow_show";
-         signal: "do-show-vshadow";
-         source: "";
-         action:  STATE_SET "default" 0.0;
-         transition: LINEAR 0.5;
-         target: "vshadow_clip";
-      }
-      program { name: "vshadow_hide";
-         signal: "do-hide-vshadow";
-         source: "";
-         action:  STATE_SET "hidden" 0.0;
-         transition: LINEAR 0.2;
-         target: "vshadow_clip";
-      }
-      program { name: "hshadow_show";
-         signal: "do-show-hshadow";
-         source: "";
-         action:  STATE_SET "default" 0.0;
-         transition: LINEAR 0.5;
-         target: "hshadow_clip";
-      }
-      program { name: "hshadow_hide";
-         signal: "do-hide-hshadow";
-         source: "";
-         action:  STATE_SET "hidden" 0.0;
-         transition: LINEAR 0.2;
-         target: "hshadow_clip";
-      }
       program { name: "scroll";
          signal: "elm,action,scroll";
          source: "elm";
@@ -1714,64 +1781,30 @@ group { name: "elm/scroller/base/handler/list_effect";
             set_int(sbvis_timer, v);
          }
       }
-      program { name: "edge_top";
-         signal: "elm,edge,top";
-         source: "elm";
+      OVERSCROLL_EFFECT_FUNCTION("top", "shadow_top")
+      OVERSCROLL_EFFECT_FUNCTION("bottom", "shadow_bottom")
+      OVERSCROLL_EFFECT_FUNCTION("left", "shadow_left")
+      OVERSCROLL_EFFECT_FUNCTION("right", "shadow_right")
+      program { name: "content_move";
+         signal: "mouse,move";
+         source: "event";
          script {
-            set_state(PART:"shadow_top", "edge", 0.0);
-            set_state(PART:"shadow_bottom", "hidden", 0.0);
-         }
-         after: "edge_vertical";
-      }
-      program { name: "edge_bottom";
-         signal: "elm,edge,bottom";
-         source: "elm";
-         script {
-            set_state(PART:"shadow_top", "hidden", 0.0);
-            set_state(PART:"shadow_bottom", "edge", 0.0);
-         }
-         after: "edge_vertical";
-      }
-      program { name: "edge_left";
-         signal: "elm,edge,left";
-         source: "elm";
-         script {
-            set_state(PART:"shadow_left", "edge", 0.0);
-            set_state(PART:"shadow_right", "hidden", 0.0);
-         }
-         after: "edge_horizontal";
-      }
-      program { name: "edge_right";
-         signal: "elm,edge,right";
-         source: "elm";
-         script {
-            set_state(PART:"shadow_left", "hidden", 0.0);
-            set_state(PART:"shadow_right", "edge", 0.0);
-         }
-         after: "edge_horizontal";
-      }
-      program { name: "edge_vertical";
-         script {
-            new v;
-            v = get_int(edge_timer);
-            if (!v) {
-                emit("do-show-vshadow", "");
+              set_int(mouse_down, 1);
             }
-            if (v > 0) cancel_timer(v);
-            v = timer(0.1, "timer2", 0);
-            set_int(edge_timer, v);
-         }
       }
-      program { name: "edge_horizontal";
+      program { name: "content_press";
+         signal: "mouse,down,1";
+         source: "event";
          script {
-            new v;
-            v = get_int(edge_timer);
-            if (!v) {
-                emit("do-show-hshadow", "");
+            set_int(mouse_down, 1);
             }
-            if (v > 0) cancel_timer(v);
-            v = timer(0.1, "timer2", 0);
-            set_int(edge_timer, v);
+      }
+      program { name: "content_unpress";
+         signal: "mouse,up,1";
+         source: "event";
+         script {
+            set_int(mouse_down, 0);
+            set_int(effect_hold, 0);
          }
       }
    }
@@ -1835,50 +1868,7 @@ group { name: "elm/scroller/contents/default";
 group { name: "elm/gengrid/base/popup";
    inherit: "elm/scroller/base/list_effect";
 
-   images {
-      image: "00_overscrolling_top.png" COMP;
-      image: "00_popup_overscrolling_bottom.png" COMP;
-   }
    parts {
-      part { name: "shadow_top";
-         description { state: "default" 0.0;
-            min: 0 36;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 0.0;
-            align: 0.5 0.0;
-            rel1.to: "bg";
-            rel2.to: "bg";
-            image.normal: "00_overscrolling_top.png";
-         }
-         description { state: "edge" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
-         }
-      }
-      part { name: "shadow_bottom";
-         description { state: "default" 0.0;
-            min: 0 36;
-            rel1.relative: 0.0 1.0;
-            rel2.relative: 1.0 1.0;
-            align: 0.5 1.0;
-            rel1.to: "bg";
-            rel2.to: "bg";
-            image.normal: "00_popup_overscrolling_bottom.png";
-            image.border: 17 17 0 0;
-         }
-         description { state: "edge" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 255;
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
-         }
-      }
       part { name: "elm.swallow.content.LT_padding";
          type: SPACER;
          scale: 1;
