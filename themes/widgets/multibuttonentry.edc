@@ -182,10 +182,12 @@ group {
       image: "00_contacts_button.png" COMP;
       image: "00_contacts_button_press.png" COMP;
       image: "00_contacts_button_dim.png" COMP;
+      image: "00_contacts_button_focus.png" COMP;
    }
 
    data.item: "button_left_pad" MULTIBUTTONENTRY_BUTTON_PAD_INC;
    data.item: "button_right_pad" MULTIBUTTONENTRY_BUTTON_PAD_INC;
+   data.item: "focus_highlight" "on";
 
    parts {
       part {
@@ -222,7 +224,7 @@ group {
             state: "default" 0.0;
             min: 0 MULTIBUTTONENTRY_BUTTON_HEIGHT_INC;
             image {
-               normal: "00_contacts_button_press.png";
+               normal: "00_contacts_button_focus.png";
                border: MULTIBUTTONENTRY_BUTTON_NINEPATCH_INC;
                border_scale: 1;
             }
@@ -410,7 +412,7 @@ group {
               set_state(PART:"elm.btn.text", "default", 0.0);
             else
               set_state(PART:"elm.btn.text", "ellipsis", 0.0);
-            set_state(PART:"elm.btn.bg_focus", "focused", 0.0);
+            set_state(PART:"elm.btn.bg", "pressed", 0.0);
          }
          after: "selected";
       }
@@ -426,7 +428,6 @@ group {
               set_state(PART:"elm.btn.text", "default", 0.0);
             else
               set_state(PART:"elm.btn.text", "ellipsis", 0.0);
-            set_state(PART:"elm.btn.bg_focus", "default", 0.0);
             set_state(PART:"elm.btn.bg", "default", 0.0);
          }
       }
@@ -460,6 +461,20 @@ group {
       program {
          name: "selected";
          action: SIGNAL_EMIT "elm,action,selected" "";
+      }
+      program {
+         name: "action_focus";
+         signal: "elm,action,focus_highlight,show";
+         source: "elm";
+         action: STATE_SET "focused" 0.0;
+         target: "elm.btn.bg_focus";
+      }
+      program {
+         name: "action_unfocus";
+         signal: "elm,action,focus_highlight,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.btn.bg_focus";
       }
    }
 }
