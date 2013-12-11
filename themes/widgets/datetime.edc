@@ -209,13 +209,7 @@ group { name: "elm/datetime/base/pickerstyle";
    }
 }
 
-group { name: "elm/spinner/base/default";
-   alias: "elm/spinner/base/datetime_popup";
-   alias: "elm/spinner/base/datetime_popup/year";
-   alias: "elm/spinner/base/datetime_popup/month";
-   alias: "elm/spinner/base/datetime_popup/date";
-   alias: "elm/spinner/base/datetime_popup/hour";
-   alias: "elm/spinner/base/datetime_popup/minute";
+group { name: "elm/spinner/base/vertical";
    images {
       image: "00_picker_arrow_down.png" COMP;
       image: "00_picker_arrow_up.png" COMP;
@@ -606,6 +600,90 @@ group { name: "elm/spinner/base/default";
          signal: "mouse,clicked,1";
          source: "down.btn";
          action: PLAY_SAMPLE "touch_sound" 1.0;
+      }
+      program {
+         name:   "left_bt_pressed_anim";
+         signal: "elm,left,anim,activate";
+         source: "elm";
+         action: STATE_SET "pressed" 0.0;
+         target: "down.image";
+         target: "down.image.arrow.shadow.proxy";
+         target: "down.image.arrow.shadow.clipper";
+         target: "down.image.arrow.clipper";
+         after: "left_bt_unpressed_anim";
+      }
+      program {
+         name:   "left_bt_unpressed_anim";
+         action: STATE_SET "default" 0.0;
+         transition: DECELERATE 0.5;
+         target: "down.image";
+         target: "down.image.arrow.shadow.proxy";
+         target: "down.image.arrow.shadow.clipper";
+         target: "down.image.arrow.clipper";
+      }
+      program {
+         name:   "right_bt_pressed_anim";
+         signal: "elm,right,anim,activate";
+         source: "elm";
+         action: STATE_SET "pressed" 0.0;
+         target: "up.image";
+         target: "up.image.arrow.shadow.proxy";
+         target: "up.image.arrow.shadow.clipper";
+         target: "up.image.arrow.clipper";
+         after: "right_bt_unpressed_anim";
+      }
+      program {
+         name:   "right_bt_unpressed_anim";
+         action: STATE_SET "default" 0.0;
+         transition: DECELERATE 0.5;
+         target: "up.image";
+         target: "up.image.arrow.shadow.proxy";
+         target: "up.image.arrow.shadow.clipper";
+         target: "up.image.arrow.clipper";
+      }
+      program {
+         name:   "dec_bt_highlight";
+         signal: "elm,dec,highlight,on";
+         source: "elm";
+         action: STATE_SET "pressed" 0.0;
+         target: "down.image";
+         target: "down.image.arrow.shadow.proxy";
+         target: "down.image.arrow.shadow.clipper";
+         target: "down.image.arrow.clipper";
+         after: "dec_start_signal_emit";
+      }
+      program {
+         name:   "dec_bt_unhighlight";
+         signal: "elm,dec,highlight,off";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "down.image";
+         target: "down.image.arrow.shadow.proxy";
+         target: "down.image.arrow.shadow.clipper";
+         target: "down.image.arrow.clipper";
+         after: "dec_stop_signal_emit";
+      }
+      program {
+         name:   "up_bt_highlight";
+         signal: "elm,inc,highlight,on";
+         source: "elm";
+         action: STATE_SET "pressed" 0.0;
+         target: "up.image";
+         target: "up.image.arrow.shadow.proxy";
+         target: "up.image.arrow.shadow.clipper";
+         target: "up.image.arrow.clipper";
+         after: "inc_start_signal_emit";
+      }
+      program {
+         name:   "up_bt_unhighlight";
+         signal: "elm,inc,highlight,off";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "up.image";
+         target: "up.image.arrow.shadow.proxy";
+         target: "up.image.arrow.shadow.clipper";
+         target: "up.image.arrow.clipper";
+         after: "inc_stop_signal_emit";
       }
    }
 }
