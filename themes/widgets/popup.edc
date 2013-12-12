@@ -1574,8 +1574,8 @@ group { name: "elm/popup/item/default";
          }
          description { state: "visible" 0.0;
             fixed: 1 1;
-            min: 40 40;
-            max: 40 40;
+            min: 45 45;
+            max: 45 45;
             align: 0.0 0.5;
             rel1 {
                relative: 1.0 1.0;
@@ -1590,8 +1590,8 @@ group { name: "elm/popup/item/default";
             aspect_preference: VERTICAL;
          }
          description { state: "icononly" 0.0;
-            min: 40 40;
-            max: 40 40;
+            min: 45 45;
+            max: 45 45;
             fixed: 1 1;
             rel1 {
                relative: 1.0 1.0;
@@ -1722,9 +1722,21 @@ group { name: "elm/popup/item/default";
          target: "disclip";
          after: "enable_text";
       }
-      program { name: "item_click2";
-         signal: "mouse,down,1";
+      program { name: "mouse_up";
+         signal: "mouse,up,1";
          source: "over2";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strcmp(st, "clicked"))
+              set_state(PART:"elm.text", "visible", 0.0);
+            set_state(PART:"bg", "default", 0.0);
+         }
+      }
+      program { name: "item_click2";
+         signal: "elm,state,selected";
+         source: "elm";
          script {
             new st[31];
             new Float:vl;
@@ -1735,8 +1747,8 @@ group { name: "elm/popup/item/default";
          }
       }
       program { name: "item_unclick2";
-         signal: "mouse,up,1";
-         source: "over2";
+         signal: "elm,state,unselected";
+         source: "elm";
          script {
             new st[31];
             new Float:vl;
