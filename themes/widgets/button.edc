@@ -4113,16 +4113,26 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "button_pressed";
             signal: "elm,action,pressed";
             source: "elm";
-            action: STATE_SET "clicked" 0.0;
-            target: "button_image";
-            target: "elm.text";
+            script {
+               new st[31];
+               new Float:vl;
+               set_state(PART:"button_image", "clicked", 0.0);
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "visible"))
+                 set_state(PART:"elm.text", "clicked", 0.0);
+            }
          }
          program { name: "button_unpressed";
             signal: "elm,action,unpressed";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "button_image";
-            target: "elm.text";
+            script {
+               new st[31];
+               new Float:vl;
+               set_state(PART:"button_image", "default", 0.0);
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "clicked"))
+                 set_state(PART:"elm.text", "visible", 0.0);
+            }
          }
          program { name: "button_double_click";
             signal: "mouse,down,1,double";
@@ -5057,6 +5067,32 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                set_state(PART:"elm.text", "default", 0.0);
             }
          }
+         program { name: "button_pressed";
+            signal: "elm,action,pressed";
+            source: "elm";
+            script {
+               new st[31];
+               new Float:vl;
+               set_state(PART:"button_image", "clicked", 0.0);
+               set_state(PART:"pressed_text", "clicked", 0.0);
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "visible"))
+                 set_state(PART:"elm.text", "clicked", 0.0);
+            }
+         }
+         program { name: "button_unpressed";
+            signal: "elm,action,unpressed";
+            source: "elm";
+            script {
+               new st[31];
+               new Float:vl;
+               set_state(PART:"button_image", "default", 0.0);
+               set_state(PART:"pressed_text", "default", 0.0);
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "clicked"))
+                 set_state(PART:"elm.text", "visible", 0.0);
+            }
+         }
          program { name: "touch_snd";
             signal: "mouse,clicked,1";
             source: "over2";
@@ -5666,6 +5702,36 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                    }
                  run_program(PROGRAM:"button_unpress");
                }
+            }
+         }
+         program { name: "button_pressed";
+            signal: "elm,action,pressed";
+            source: "elm";
+            script {
+               new st[31];
+               new Float:vl;
+               set_state(PART:"button_image", "clicked", 0.0);
+               set_state(PART:"arrow_expand.shadow.proxy", "clicked", 0.0);
+               set_state(PART:"arrow_expand.shadow.clipper", "clicked", 0.0);
+               set_state(PART:"icon_clipper", "clicked", 0.0);
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "visible"))
+                 set_state(PART:"elm.text", "clicked", 0.0);
+            }
+         }
+         program { name: "button_unpressed";
+            signal: "elm,action,unpressed";
+            source: "elm";
+            script {
+               new st[31];
+               new Float:vl;
+               set_state(PART:"button_image", "default", 0.0);
+               set_state(PART:"arrow_expand.shadow.proxy", "default", 0.0);
+               set_state(PART:"arrow_expand.shadow.clipper", "default", 0.0);
+               set_state(PART:"icon_clipper", "default", 0.0);
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "clicked"))
+                 set_state(PART:"elm.text", "visible", 0.0);
             }
          }
          program { name: "touch_snd";
