@@ -363,6 +363,7 @@ group {
 
             set_state(PART:"elm.btn.bg", "pressed", 0.0);
          }
+         after: "selected";
       }
       program {
          name: "move";
@@ -399,10 +400,11 @@ group {
             set_state(PART:"elm.btn.bg", "default", 0.0);
             set_drag(PART:"drag", 0.0, 0.0);
          }
+         after: "unselected";
       }
       program {
-         name: "focused";
-         signal: "focused";
+         name: "selected_elm";
+         signal: "elm,action,btn,selected";
          source: "";
          script {
             new st[31];
@@ -412,13 +414,32 @@ group {
               set_state(PART:"elm.btn.text", "default", 0.0);
             else
               set_state(PART:"elm.btn.text", "ellipsis", 0.0);
+
             set_state(PART:"elm.btn.bg", "pressed", 0.0);
          }
          after: "selected";
       }
       program {
+         name: "unselected_elm";
+         signal: "elm,action,btn,unselected";
+         source: "";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.btn.text", st, 30, vl);
+            if (!strcmp(st, "disabled"))
+              set_state(PART:"elm.btn.text", "default", 0.0);
+            else
+              set_state(PART:"elm.btn.text", "ellipsis", 0.0);
+
+            set_state(PART:"elm.btn.bg", "default", 0.0);
+            set_drag(PART:"drag", 0.0, 0.0);
+         }
+         after: "unselected";
+      }
+      program {
          name: "default";
-         signal: "default";
+         signal: "elm,action,btn,default";
          source: "";
          script {
             new st[31];
@@ -461,6 +482,10 @@ group {
       program {
          name: "selected";
          action: SIGNAL_EMIT "elm,action,selected" "";
+      }
+      program {
+         name: "unselected";
+         action: SIGNAL_EMIT "elm,action,unselected" "";
       }
       program {
          name: "action_focus";
