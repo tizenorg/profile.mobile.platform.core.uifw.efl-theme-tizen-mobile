@@ -29,7 +29,7 @@
 //**************************************************************************//
 // if size is different for each theme, split it into each theme inc.
 
-#define GENLIST_HEIGHT_1LINE              104  // (114 - top/bottom padding)
+#define GENLIST_HEIGHT_1LINE              102 // (112 - top/bottom padding)
 #define GENLIST_HEIGHT_2LINE_MAIN         57
 #define GENLIST_HEIGHT_2LINE_SUB          45
 #define GENLIST_HEIGHT_MULTILINE_SUB      38
@@ -53,6 +53,9 @@
 #define DIALOGUE_PADDING_SIZE_RIGHT       16+20
 #define DIALOGUE_EDITFIELD_PADDING_SIZE_LEFT   16+10
 #define DIALOGUE_EDITFIELD_PADDING_SIZE_RIGHT  16+10
+
+#define GENLIST_POPUP_PADDING_SIZE_LEFT        65
+#define GENLIST_POPUP_PADDING_SIZE_RIGHT       65
 
 #define GENLIST_ICON_SMALL_SIZE           45
 #define GENLIST_ICON_STAR_SIZE            45
@@ -414,9 +417,6 @@
          image : "00_list_group_bg_center_press.png" COMP; \
          image : "00_list_group_bg_bottom.png" COMP; \
          image : "00_list_group_bg_bottom_press.png" COMP; \
-         image : "00_list_group_bg_top_focus.png" COMP; \
-         image : "00_list_group_bg_center_focus.png" COMP; \
-         image : "00_list_group_bg_bottom_focus.png" COMP; \
          image : "00_expandable_bg.png" COMP; \
          image : "00_expandable_bg_top.png" COMP; \
          image : "00_expandable_bg_center.png" COMP; \
@@ -1086,7 +1086,7 @@
             } \
          visible: 0; \
          image { \
-            normal: "00_focus_02.png"; \
+            normal: "00_focus_01.png"; \
             border: FOCUS_BORDER; \
             border_scale: 1; \
          } \
@@ -1108,7 +1108,7 @@
       GENLIST_DESCRIPTION_LR("bg_dialogue_left", "bg_dialogue_right", \
          visible: 0; \
          image { \
-            normal: "00_focus_02.png"; \
+            normal: "00_focus_01.png"; \
             border: FOCUS_BORDER; \
             border_scale: 1; \
          } \
@@ -1116,30 +1116,6 @@
       description { state: "focused" 0.0; \
          inherit: "default" 0.0; \
          visible: 1; \
-      } \
-      description { state: "top_focused" 0.0; \
-         inherit: "default" 0.0; \
-         visible: 1; \
-         image { \
-            normal: "00_list_group_bg_top_focus.png"; \
-            border: FOCUS_BORDER; \
-         } \
-      } \
-      description { state: "center_focused" 0.0; \
-         inherit: "default" 0.0; \
-         visible: 1; \
-         image { \
-            normal: "00_list_group_bg_center_focus.png"; \
-            border: FOCUS_BORDER; \
-         } \
-      } \
-      description { state: "bottom_focused" 0.0; \
-         inherit: "default" 0.0; \
-         visible: 1; \
-         image { \
-            normal: "00_list_group_bg_bottom_focus.png"; \
-            border: FOCUS_BORDER; \
-         } \
       } \
    ) \
 
@@ -2048,17 +2024,7 @@
          signal: "elm,action,focus_highlight,show"; \
          source: "elm"; \
          script { \
-            new st[31]; \
-            new Float:vl; \
-            get_state(PART:"bg_dialogue", st, 30, vl); \
-            if (!strcmp(st, "top") || !strcmp(st, "top_selected") || !strcmp(st, "2depth_top")) \
-               set_state(PART:"focus_part_dialogue", "top_focused", 0.0); \
-            else if (!strcmp(st, "center") || !strcmp(st, "center_selected") || !strcmp(st, "2depth_center")) \
-               set_state(PART:"focus_part_dialogue", "center_focused", 0.0); \
-            else if (!strcmp(st, "bottom") || !strcmp(st, "bottom_selected") || !strcmp(st, "2depth_bottom")) \
-               set_state(PART:"focus_part_dialogue", "bottom_focused", 0.0); \
-            else if (!strcmp(st, "default") || !strcmp(st, "selected") || !strcmp(st, "2depth")) \
-               set_state(PART:"focus_part_dialogue", "focused", 0.0); \
+            set_state(PART:"focus_part_dialogue", "focused", 0.0); \
          } \
       } \
       program { name: "unfocused"; \
@@ -3204,7 +3170,6 @@
    } \
    description { state: "selected" 0.0; \
       inherit: "default" 0.0; \
-      color: GENLIST_LIST_TEXT_FOCUS_COLOR; \
    }
 
 #define GENLIST_DESCRIPTION_LISTITEM_OTHERS_TB \
@@ -3222,7 +3187,6 @@
    } \
    description { state: "selected" 0.0; \
       inherit: "default" 0.0; \
-      text.style: "genlist_style_list_main_text_focus"; \
    }
 
 // list sub text
@@ -3233,7 +3197,6 @@
    } \
    description { state: "selected" 0.0; \
       inherit: "default" 0.0; \
-      color: GENLIST_LIST_TEXT_FOCUS_COLOR; \
    }
 
 #define GENLIST_DESCRIPTION_SUBITEM_DEFAULT_OTHERS_TB \
@@ -3243,7 +3206,6 @@
    } \
    description { state: "selected" 0.0; \
       inherit: "default" 0.0; \
-      text.style: "genlist_style_list_sub_text_focus"; \
    }
 
 #define GENLIST_DESCRIPTION_SUBITEM_DEFAULT_OTHERS_TB_WRAP \
@@ -3253,7 +3215,6 @@
    } \
    description { state: "selected" 0.0; \
       inherit: "default" 0.0; \
-      text.style: "genlist_style_list_sub_text_focus_wrap"; \
    }
 
 #define GENLIST_DESCRIPTION_SUBITEM_SETTINGS_OTHERS \
@@ -3263,7 +3224,6 @@
    } \
    description { state: "selected" 0.0; \
       inherit: "default" 0.0; \
-      color: GENLIST_LIST_TEXT_FOCUS_COLOR; \
    }
 
 #define GENLIST_DESCRIPTION_SUBITEM_SETTINGS_OTHERS_TB \
@@ -3273,7 +3233,6 @@
    } \
    description { state: "selected" 0.0; \
       inherit: "default" 0.0; \
-      text.style: "genlist_style_list_sub_text_focus"; \
    }
 
 // list main text multiline
@@ -3284,7 +3243,6 @@
    } \
    description { state: "selected" 0.0; \
       inherit: "default" 0.0; \
-      text.style: "genlist_style_list_main_text_focus_wrap"; \
    }
 
 // help text
@@ -3311,7 +3269,6 @@
    } \
    description { state: "selected" 0.0; \
       inherit: "default" 0.0; \
-      color: GENLIST_LIST_TEXT_FOCUS_COLOR; \
    }
 
 /*************************** Parts **********************************/
@@ -3715,38 +3672,12 @@
          image: "00_popup_list_press.png" COMP; \
       } \
       parts { \
-         GENLIST_PART_SPACER("bg_left_top_padding", \
-            description { state: "default" 0.0; \
-               min: POPUP_ITEM_BG_LEFT_TOP_PAD_MIN_INC; \
-               fixed: 1 1; \
-               align: 0 0; \
-               rel2.relative: 0 0; \
-            } \
-         ) \
-         GENLIST_PART_SPACER("bg_right_bottom_padding", \
-            description { state: "default" 0.0; \
-               min: POPUP_ITEM_BG_RIGHT_BOTTOM_PAD_MIN_INC; \
-               fixed: 1 1; \
-               align: 1 1; \
-               rel1.relative: 1 1; \
-            } \
-         ) \
          GENLIST_PART_IMAGE("bg", \
             description { state: "default" 0.0; \
                image { \
                   normal: "00_popup_list_press.png"; \
                   border: POPUP_ITEM_BG_PRESSED_BORDER_INC; \
                   border_scale: 1; \
-               } \
-               rel1 { \
-                  relative: 1 1; \
-                  to_x: "bg_left_top_padding"; \
-                  to_y: "bg_left_top_padding"; \
-               } \
-               rel2 { \
-                  relative: 0 0; \
-                  to_x: "bg_right_bottom_padding"; \
-                  to_y: "bg_right_bottom_padding"; \
                } \
                color: GENLIST_LIST_BG_POPUP_COLOR; \
             } \
@@ -3759,6 +3690,8 @@
                color: GENLIST_LIST_BG_POPUP_PRESS_COLOR; \
             } \
          ) \
+         GENLIST_PART_PADDING_LEFT_SIZE( GENLIST_POPUP_PADDING_SIZE_LEFT ) \
+         GENLIST_PART_PADDING_RIGHT_SIZE( GENLIST_POPUP_PADDING_SIZE_RIGHT ) \
          GENLIST_PART_RECT("bottom_line", \
             description { state: "default" 0.0; \
                color: GENLIST_LIST_LINE1_POPUP_COLOR; \
