@@ -31,6 +31,10 @@ all: light dark
 	 -id ./images/$(TARGET)/$(@:.edj=)/Naviframe\
 	 -id ./images/$(TARGET)/$(@:.edj=)/Naviframe/Icon\
 	 -id ./images/$(TARGET)/$(@:.edj=)/Overscrolling\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Overscrolling/top\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Overscrolling/bottom\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Overscrolling/left\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Overscrolling/right\
 	 -id ./images/$(TARGET)/$(@:.edj=)/Popup\
 	 -id ./images/$(TARGET)/$(@:.edj=)/Process\
 	 -id ./images/$(TARGET)/$(@:.edj=)/Screen_Reader\
