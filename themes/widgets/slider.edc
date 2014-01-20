@@ -515,19 +515,19 @@
       }
       styles{
          style { name: "indicator_default";
-            base: "font=Tizen:style=Bold font_size="SLIDER_INDICATOR_TEXT_SIZE_INC" align=center color="SLIDER_INDICATOR_TEXT_COLOR_INC" style=shadow,bottom shadow_color="SLIDER_INDICATOR_TEXT_SHADOW_TEXTBLOCK_NORMAL_COLOR_INC" ellipsis=1.0 wrap=none text_class=tizen";
+            base: "font=Tizen:style=Bold font_size="SLIDER_INDICATOR_TEXT_SIZE_INC" align=center color="SLIDER_INDICATOR_TEXT_COLOR_INC" ellipsis=1.0 wrap=none text_class=tizen";
             tag: "br" "\n";
             tag: "ps" "ps";
             tag: "tab" "\t";
          }
          style { name: "indicator_pressed";
-            base: "font=Tizen:style=Bold font_size="SLIDER_INDICATOR_TEXT_SIZE_INC" align=center color="SLIDER_INDICATOR_TEXT_PRESSED_COLOR_INC" style=shadow,top shadow_color="SLIDER_INDICATOR_TEXT_SHADOW_TEXTBLOCK_PRESSED_COLOR_INC" ellipsis=1.0 wrap=none text_class=tizen";
+            base: "font=Tizen:style=Bold font_size="SLIDER_INDICATOR_TEXT_SIZE_INC" align=center color="SLIDER_INDICATOR_TEXT_PRESSED_COLOR_INC" ellipsis=1.0 wrap=none text_class=tizen";
             tag: "br" "\n";
             tag: "ps" "ps";
             tag: "tab" "\t";
          }
          style { name: "indicator_dim";
-            base: "font=Tizen:style=Bold font_size="SLIDER_INDICATOR_TEXT_SIZE_INC" align=center color="SLIDER_INDICATOR_TEXT_DIM_COLOR_INC" style=shadow,bottom shadow_color="SLIDER_INDICATOR_TEXT_SHADOW_TEXTBLOCK_DIM_COLOR_INC" ellipsis=1.0 wrap=none text_class=tizen";
+            base: "font=Tizen:style=Bold font_size="SLIDER_INDICATOR_TEXT_SIZE_INC" align=center color="SLIDER_INDICATOR_TEXT_DIM_COLOR_INC" ellipsis=1.0 wrap=none text_class=tizen";
             tag: "br" "\n";
             tag: "ps" "ps";
             tag: "tab" "\t";
@@ -980,6 +980,7 @@
             }
             part { name: "elm.swallow.icon";
                type: SWALLOW;
+               clip_to: "icon_clipper";
                scale: 1;
                description { state: "default" 0.0;
                   visible: 0;
@@ -999,42 +1000,6 @@
                   aspect_preference: VERTICAL;
                }
             }
-#ifndef SLIDER_ICON_SHADOW_DISABLE
-            part { name: "elm.swallow.content.shadow.proxy";
-               type: PROXY;
-               scale: 1;
-               clip_to: "elm.swallow.content.shadow.clipper";
-               description { state: "default" 0.0;
-                  source: "elm.swallow.icon";
-                  proxy.source_clip: 0;
-                  rel1 {
-                     to: "elm.swallow.icon";
-                     offset: 0 1;
-                  }
-                  rel2 {
-                     to: "elm.swallow.icon";
-                     offset: -1 0;
-                  }
-               }
-            }
-            part { name: "elm.swallow.content.proxy";
-               type: PROXY;
-               scale: 1;
-               clip_to: "icon_clipper";
-               description { state: "default" 0.0;
-                  source: "elm.swallow.icon";
-                  proxy.source_clip: 0;
-                  rel1.to: "elm.swallow.icon";
-                  rel2.to: "elm.swallow.icon";
-               }
-            }
-            part { name: "elm.swallow.content.shadow.clipper";
-               scale: 1;
-               type: RECT;
-               description { state: "default" 0.0;
-                  color: SLIDER_ICON_SHADOW_CLIPPER_COLOR_INC;
-               }
-            }
             part { name: "icon_clipper";
                scale: 1;
                type: RECT;
@@ -1045,7 +1010,6 @@
                   color: SLIDER_ICON_DISABLED_COLOR_INC;
                }
             }
-#endif
             part { name: "elm.text";
                type: TEXT;
                mouse_events: 0;
@@ -1074,6 +1038,7 @@
             }
             part { name: "elm.swallow.end";
                type: SWALLOW;
+               clip_to: "icon_clipper_end";
                scale: 1;
                description { state: "default" 0.0;
                   visible: 0;
@@ -1094,42 +1059,6 @@
                   aspect_preference: VERTICAL;
                }
             }
-#ifndef SLIDER_ICON_SHADOW_DISABLE
-            part { name: "elm.swallow.content.shadow.proxy.end";
-               type: PROXY;
-               scale: 1;
-               clip_to: "elm.swallow.content.shadow.clipper.end";
-               description { state: "default" 0.0;
-                  source: "elm.swallow.end";
-                  proxy.source_clip: 0;
-                  rel1 {
-                     to: "elm.swallow.end";
-                     offset: 0 1;
-                  }
-                  rel2 {
-                     to: "elm.swallow.end";
-                     offset: -1 0;
-                  }
-               }
-            }
-            part { name: "elm.swallow.content.proxy.end";
-               type: PROXY;
-               scale: 1;
-               clip_to: "icon_clipper_end";
-               description { state: "default" 0.0;
-                  source: "elm.swallow.end";
-                  proxy.source_clip: 0;
-                  rel1.to: "elm.swallow.end";
-                  rel2.to: "elm.swallow.end";
-               }
-            }
-            part { name: "elm.swallow.content.shadow.clipper.end";
-               scale: 1;
-               type: RECT;
-               description { state: "default" 0.0;
-                  color: SLIDER_ICON_SHADOW_CLIPPER_COLOR_INC;
-               }
-            }
             part { name: "icon_clipper_end";
                scale: 1;
                type: RECT;
@@ -1140,7 +1069,6 @@
                   color: SLIDER_ICON_DISABLED_COLOR_INC;
                }
             }
-#endif
             part { name: "elm.units";
                type: TEXT;
                mouse_events: 0;
@@ -1331,10 +1259,8 @@
             source: "elm";
             action:  STATE_SET "disabled" 0.0;
             target: "disabler";
-#ifndef SLIDER_ICON_SHADOW_DISABLE
             target: "icon_clipper_end";
             target: "icon_clipper";
-#endif
             target: "clipper";
          }
          program { name: "slider_enable";
@@ -1342,10 +1268,8 @@
             source: "elm";
             action:  STATE_SET "default" 0.0;
             target: "disabler";
-#ifndef SLIDER_ICON_SHADOW_DISABLE
             target: "icon_clipper_end";
             target: "icon_clipper";
-#endif
             target: "clipper";
          }
          program { name: "center_point_enable";
@@ -1402,7 +1326,6 @@
 
           part { name: "elm.text";
                type: TEXT;
-               effect: SHADOW BOTTOM;
                mouse_events: 0;
                scale: 1;
                description { state: "default" 0.0;
@@ -1413,7 +1336,6 @@
                   rel1.relative: 1.0 0.0;
                   rel2.to_x: "elm.swallow.icon";
                   color: SLIDER_UNITS_TEXT_COLOR_INC;
-                  color3: SLIDER_UNITS_TEXT_SHADOW_NORMAL_COLOR_INC;
                   text {
                      font: "Tizen:style=Bold";
                      size: SLIDER_UNITS_TEXTSTYLE_SIZE_INC;
@@ -1435,12 +1357,10 @@
                      text_class: "tizen";
                   }
                   color: SLIDER_UNITS_TEXT_DIM_COLOR_INC;
-                  color3: SLIDER_UNITS_TEXT_SHADOW_DIM_COLOR_INC;
                }
             }
           part { name: "elm.text.end";
                type: TEXT;
-               effect: SHADOW BOTTOM;
                mouse_events: 0;
                scale: 1;
                description { state: "default" 0.0;
@@ -1448,7 +1368,6 @@
                   visible: 0;
                   align: 1.0 0.5;
                   color: SLIDER_UNITS_TEXT_COLOR_INC;
-                  color3: SLIDER_UNITS_TEXT_SHADOW_NORMAL_COLOR_INC;
                   text {
                      font: "Tizen:style=Bold";
                      size: SLIDER_UNITS_TEXTSTYLE_SIZE_INC;
@@ -1478,7 +1397,6 @@
                      text_class: "tizen";
                   }
                   color: SLIDER_UNITS_TEXT_DIM_COLOR_INC;
-                  color3: SLIDER_UNITS_TEXT_SHADOW_DIM_COLOR_INC;
                }
             }
             part { name: "elm.dragable.slider";
@@ -1532,7 +1450,6 @@
       parts {
           part { name: "elm.text";
                type: TEXT;
-               effect: SHADOW BOTTOM;
                mouse_events: 0;
                scale: 1;
                description { state: "default" 0.0;
@@ -1550,7 +1467,6 @@
                   rel1.relative: 1.0 0.0;
                   rel2.to_x: "elm.swallow.icon";
                   color: SLIDER_UNITS_TEXT_COLOR_INC;
-                  color3: SLIDER_UNITS_TEXT_SHADOW_NORMAL_COLOR_INC;
                }
                description { state: "visible" 0.0;
                   inherit: "default" 0.0;
@@ -1565,13 +1481,11 @@
                      text_class: "tizen";
                   }
                   color: SLIDER_UNITS_TEXT_DIM_COLOR_INC;
-                  color3: SLIDER_UNITS_TEXT_SHADOW_DIM_COLOR_INC;
                }
             }
 
           part { name: "elm.text.end";
                type: TEXT;
-               effect: SHADOW BOTTOM;
                scale: 1;
                description { state: "default" 0.0;
                   fixed: 1 1;
@@ -1585,7 +1499,6 @@
                   }
                   align: 1.0 0.5;
                   color: SLIDER_UNITS_TEXT_COLOR_INC;
-                  color3: SLIDER_UNITS_TEXT_SHADOW_NORMAL_COLOR_INC;
                   rel1 {
                      relative: 1.0 0.0;
                      to_y: "bar_right_padding";
@@ -1607,7 +1520,6 @@
                      text_class: "tizen";
                   }
                   color: SLIDER_UNITS_TEXT_DIM_COLOR_INC;
-                  color3: SLIDER_UNITS_TEXT_SHADOW_DIM_COLOR_INC;
                }
             }
             part { name: "elm.dragable.slider";
