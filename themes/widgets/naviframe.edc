@@ -47,6 +47,7 @@
          public subtitle = 0; //Subtitle on/off status
          public drawers_visible = 0; //Drawers on/off status //Used only for "drawers" style
          public icon_visible = 0; //Icon on/off status
+         public mirrored = 0; //Mirrored on/off status
 
          public title_duration = 0;
          public subtitle_duration = 0;
@@ -176,8 +177,14 @@
                      return;
                   }
 
-                  set_state(PART:"title_text_slide_effect_left", "visible", 0.0);
-                  set_state(PART:"title_text_slide_effect_right", "visible", 0.0);
+                  if (get_int(mirrored)) {
+                     set_state(PART:"title_text_slide_effect_left", "visible_mirrored", 0.0);
+                     set_state(PART:"title_text_slide_effect_right", "visible_mirrored", 0.0);
+                  }
+                  else {
+                     set_state(PART:"title_text_slide_effect_left", "visible", 0.0);
+                     set_state(PART:"title_text_slide_effect_right", "visible", 0.0);
+                  }
 
                   len = get_int(title_text_w) + NAVIFRAME_TITLE_SLIDE_TEXT_GAP;
                   set_float(title_duration, len / NAVIFRAME_TITLE_FONT_SIZE_INC * NAVIFRAME_TITLE_SLIDE_SPEED_WEIGHT);
@@ -217,8 +224,14 @@
                      return;
                   }
 
-                  set_state(PART:"subtitle_text_slide_effect_left", "visible", 0.0);
-                  set_state(PART:"subtitle_text_slide_effect_right", "visible", 0.0);
+                  if (get_int(mirrored)) {
+                     set_state(PART:"subtitle_text_slide_effect_left", "visible_mirrored", 0.0);
+                     set_state(PART:"subtitle_text_slide_effect_right", "visible_mirrored", 0.0);
+                  }
+                  else {
+                     set_state(PART:"subtitle_text_slide_effect_left", "visible", 0.0);
+                     set_state(PART:"subtitle_text_slide_effect_right", "visible", 0.0);
+                  }
 
                   len = get_int(subtitle_text_w) + NAVIFRAME_SUBTITLE_SLIDE_TEXT_GAP;
                   if (!get_int(landscape))
@@ -644,6 +657,11 @@
                inherit: "default" 0.0;
                visible: 1;
             }
+            description { state: "visible_mirrored" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               image.normal: "00_effect_title_text_dim_right.png";
+            }
          }
          part { name: "elm.text.full_title";
             type: TEXT;
@@ -786,6 +804,11 @@
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
                visible: 1;
+            }
+            description { state: "visible_mirrored" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               image.normal: "00_effect_title_text_dim_left.png";
             }
          }
          part { name: "subtitle_top_padding";
@@ -969,6 +992,11 @@
                inherit: "default" 0.0;
                visible: 1;
             }
+            description { state: "visible_mirrored" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               image.normal: "00_effect_title_text_dim_right.png";
+            }
          }
          part { name: "elm.text.full_subtitle";
             type: TEXT;
@@ -1080,6 +1108,11 @@
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
                visible: 1;
+            }
+            description { state: "visible_mirrored" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               image.normal: "00_effect_title_text_dim_left.png";
             }
          }
          part { name: "badge_left_padding";
@@ -1820,6 +1853,24 @@
             }
          }
          program {
+            name: "mirrored_on";
+            signal: "edje,state,rtl";
+            source: "edje";
+            script {
+               run_program(PROGRAM:"stop_title_slide");
+               set_int(mirrored, 1);
+            }
+         }
+         program {
+            name: "mirrored_off";
+            signal: "edje,state,ltr";
+            source: "edje";
+            script {
+               run_program(PROGRAM:"stop_title_slide");
+               set_int(mirrored, 0);
+            }
+         }
+         program {
             name: "change_to_landscape";
             script {
                if (!get_int(landscape)) {
@@ -2136,6 +2187,7 @@
       script {
          public tbar_close = 0; //Toolbar lastest Open/Close status
          public landscape = 0; //Landscape mode status
+         public mirrored = 0; //Mirrored on/off status
 
          public title_duration = 0;
          public title_slide_stop;
@@ -2206,8 +2258,14 @@
                   return;
                }
 
-               set_state(PART:"title_text_slide_effect_left", "visible", 0.0);
-               set_state(PART:"title_text_slide_effect_right", "visible", 0.0);
+               if (get_int(mirrored)) {
+                  set_state(PART:"title_text_slide_effect_left", "visible_mirrored", 0.0);
+                  set_state(PART:"title_text_slide_effect_right", "visible_mirrored", 0.0);
+               }
+               else {
+                  set_state(PART:"title_text_slide_effect_left", "visible", 0.0);
+                  set_state(PART:"title_text_slide_effect_right", "visible", 0.0);
+               }
 
                len = get_int(title_text_w) + NAVIFRAME_TITLE_SLIDE_TEXT_GAP;
 
@@ -2545,6 +2603,11 @@
                inherit: "default" 0.0;
                visible: 1;
             }
+            description { state: "visible_mirrored" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               image.normal: "00_effect_title_text_dim_right.png";
+            }
          }
          part { name: "elm.text.full_title";
             type: TEXT;
@@ -2654,6 +2717,11 @@
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
                visible: 1;
+            }
+            description { state: "visible_mirrored" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               image.normal: "00_effect_title_text_dim_left.png";
             }
          }
          part { name: "click_event_area";
@@ -3161,6 +3229,24 @@
             source: "click_event_area";
             script {
                emit("elm,action,title,clicked", "");
+            }
+         }
+         program {
+            name: "mirrored_on";
+            signal: "edje,state,rtl";
+            source: "edje";
+            script {
+               run_program(PROGRAM:"stop_title_slide");
+               set_int(mirrored, 1);
+            }
+         }
+         program {
+            name: "mirrored_off";
+            signal: "edje,state,ltr";
+            source: "edje";
+            script {
+               run_program(PROGRAM:"stop_title_slide");
+               set_int(mirrored, 0);
             }
          }
          program {
