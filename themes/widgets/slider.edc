@@ -1840,3 +1840,170 @@
          }
       }
    }
+
+group { name: "elm/slider/horizontal/pagecontrol";
+   inherit: "elm/slider/horizontal/default";
+   images {
+      image: "B08_fast_scroll_bg.png" COMP;
+   }
+   parts {
+      part { name: "base";
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: SLIDER_PAGECONTROL_BASE_MIN_WIDTH SLIDER_PAGECONTROL_BASE_HEIGHT;
+            max: -1 SLIDER_PAGECONTROL_BASE_HEIGHT;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            image.normal: "B08_fast_scroll_bg.png";
+         }
+      }
+      part { name: "level";
+         description { state: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "inverted" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+         }
+      }
+      part { name: "level2";
+         description { state: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "inverted" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+         }
+      }
+      part { name: "elm.dragable.slider";
+         type: GROUP;
+         source: "elm/slider/horizontal/indicator/pagecontrol";
+         mouse_events: 1;
+         scale: 1;
+         dragable {
+            x: 1 1 0;
+            y: 0 0 0;
+            confine: "drag_base";
+         }
+         description { state: "default" 0.0;
+            min: SLIDER_PAGECONTROL_INDICATOR_MIN_WIDTH SLIDER_PAGECONTROL_INDICATOR_HEIGHT;
+            fixed: 1 1;
+            align: 0.5 0.5;
+            rel1 {
+               relative: 0.0 0.0;
+               to_x: "drag_base";
+               to_y: "bg";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               to_x: "drag_base";
+               to_y: "bg";
+            }
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "elm.swallow.bar";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: SLIDER_PAGECONTROL_INDICATOR_MIN_WIDTH SLIDER_PAGECONTROL_INDICATOR_HEIGHT;
+            max: -1 SLIDER_PAGECONTROL_INDICATOR_HEIGHT;
+            align: 1.0 0.5;
+            rel1 {
+               to_x: "bar_left_padding";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to_x: "bar_right_padding";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "drag_set";
+         signal: "mouse,down,*";
+         source: "elm.swallow.bar";
+         script {
+            new xx, yy, x, y, w, h;
+            get_geometry(PART:"elm.swallow.bar", x, y, w, h);
+            get_mouse(xx, yy);
+            new Float:rxx = (1.0 * xx);
+            new Float:rx = (1.0 * x);
+            new Float:rw = (1.0 * w);
+            set_drag(PART:"elm.dragable.slider", (rxx - rx) / rw, 0.0);
+            emit("drag,mouse,down", "");
+         }
+      }
+   }
+}
+
+group { name: "elm/slider/horizontal/indicator/pagecontrol";
+   inherit:"elm/slider/horizontal/indicator/default";
+   images {
+      image: "B08_fast_scroll_bar.png" COMP;
+   }
+   parts {
+      part { name: "image_left_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 1 1;
+            max: 1 1;
+            rel1 {
+               to_x: "elm.indicator";
+               relative: -1.0 0.0;
+            }
+            rel2 {
+               to_x: "elm.indicator";
+               relative: 0.0 1.0;
+            }
+            align: 1.0 0.5;
+         }
+      }
+      part { name: "image_right_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 1 1;
+            max: 1 1;
+            rel1 {
+               to_x: "elm.indicator";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to_x: "elm.indicator";
+               relative: 2.0 1.0;
+            }
+            align: 0.0 0.5;
+         }
+      }
+      part { name: "button0";
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: SLIDER_PAGECONTROL_INDICATOR_MIN_WIDTH SLIDER_PAGECONTROL_INDICATOR_HEIGHT;
+            max: SLIDER_PAGECONTROL_INDICATOR_MIN_WIDTH SLIDER_PAGECONTROL_INDICATOR_HEIGHT;
+            rel1.to: "image_left_padding";
+            rel2.to: "image_right_padding";
+            image {
+               normal: "B08_fast_scroll_bar.png";
+            }
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+         }
+      }
+   }
+}
