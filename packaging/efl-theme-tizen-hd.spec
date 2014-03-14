@@ -40,6 +40,7 @@ cp %{_builddir}/%{buildsubdir}/COPYING %{buildroot}/usr/share/license/%{name}
 %{_datadir}/elementary/themes/tizen-HD-dark.edj
 %{_datadir}/elementary/themes/tizen-HD-light.edj
 %{_datadir}/elementary/themes/tables/color.cfg
+%{_datadir}/elementary/themes/tables/HsvColorTable.xml
 %manifest %{name}.manifest
 /usr/share/license/%{name}
 

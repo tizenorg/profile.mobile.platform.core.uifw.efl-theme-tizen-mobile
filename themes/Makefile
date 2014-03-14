@@ -57,6 +57,7 @@ install:
 	$(INSTALL) tizen*.edj $(THEME_DIR)
 	mkdir -p $(TABLE_DIR)
 	$(INSTALL) tables/*.cfg $(TABLE_DIR)
+	$(INSTALL) tables/*.xml $(TABLE_DIR)
 	mkdir -p $(EDC_DIR)
 	cp -r $(SRC).edc widgets $(EDC_DIR)
 
