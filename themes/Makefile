@@ -9,7 +9,7 @@ EDJE_FLAGS_VERBOSE_1 = -v
 SRC=tizen
 TARGET=HD
 
-all: light dark color
+all: light dark InputColors
 	echo  $(escaped_prefix)
 
 .SUFFIXES: .edc .edj
@@ -45,7 +45,7 @@ all: light dark color
 light: light.edj
 dark: dark.edj
 
-color:
+InputColors:
 	eet -e tables/$@.cfg config tables/$@.src 1
 
 clean:
