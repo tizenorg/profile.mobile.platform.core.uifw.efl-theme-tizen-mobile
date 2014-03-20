@@ -54,9 +54,13 @@
 #define RADIO_STYLE_DEFAULT(style_name, min_width, min_height) \
    group { name: "elm/radio/base/"style_name; \
       images { \
-         image: "controls_radio_bg.png" COMP; \
-         image: "controls_radio_circle.png" COMP; \
-         image: "controls_radio_outline.png" COMP; \
+         image: "00_button_radio_activated_dim.png" COMP; \
+         image: "00_button_radio_activated.png" COMP; \
+         image: "00_button_radio_activated_press.png" COMP; \
+         image: "00_button_radio_bg.png" COMP; \
+         image: "00_button_radio_dim_bg.png" COMP; \
+         image: "00_button_radio_press_bg.png" COMP; \
+         image: "00_button_radio_focus.png" COMP; \
       } \
       script { \
          public radio_state = RADIO_STATE_DEFAULT; \
@@ -83,37 +87,15 @@
                fixed: 1 1; \
                rel1.to: "back_bg"; \
                rel2.to: "back_bg"; \
-               image.normal: "controls_radio_bg.png"; \
-               color_class: "C102L1"; \
+               image.normal: "00_button_radio_bg.png"; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
-               color_class: "C102L1D"; \
+               image.normal: "00_button_radio_dim_bg.png"; \
             } \
             description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
-               color_class: "C102L1P"; \
-            } \
-         } \
-         part { name: "outline"; \
-            mouse_events: 0; \
-            scale: 1; \
-            description { state: "default" 0.0; \
-               min: RADIO_STYLE_DEFAULT_BG_MIN_MAX_INC; \
-               max: RADIO_STYLE_DEFAULT_BG_MIN_MAX_INC; \
-               fixed: 1 1; \
-               rel1.to: "back_bg"; \
-               rel2.to: "back_bg"; \
-               image.normal: "controls_radio_outline.png"; \
-               color_class: "C102L2"; \
-            } \
-            description { state: "disabled" 0.0; \
-               inherit: "default" 0.0; \
-               color_class: "C102L2D"; \
-            } \
-            description { state: "focus" 0.0; \
-               inherit: "default" 0.0; \
-               color_class: "C161"; \
+               image.normal: "00_button_radio_press_bg.png"; \
             } \
          } \
          part { name: "radio"; \
@@ -123,22 +105,25 @@
             description { state: "default" 0.0; \
                rel1.to: "bg"; \
                rel2.to: "bg"; \
-               max: RADIO_STYLE_DEFAULT_BG_MIN_MAX_INC; \
-               image.normal: "controls_radio_circle.png"; \
+               max: 0 0; \
+               image.normal: "00_button_radio_activated.png"; \
                visible: 0; \
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
                visible: 1; \
-               color_class: "C102L3"; \
+               max: RADIO_STYLE_DEFAULT_BG_MIN_MAX_INC; \
             } \
             description { state: "disabled" 0.0; \
-               inherit: "visible" 0.0; \
-               color_class: "C102L3D"; \
+               inherit: "default" 0.0; \
             } \
             description { state: "disabled_visible" 0.0; \
                inherit: "visible" 0.0; \
-               color_class: "C102L3D"; \
+               image.normal: "00_button_radio_activated_dim.png"; \
+            } \
+            description { state: "pressed" 0.0; \
+               inherit: "visible" 0.0; \
+               image.normal: "00_button_radio_activated_press.png"; \
             } \
          } \
          part { name: "opacity_clip"; \
@@ -311,13 +296,11 @@
             signal: "mouse,up,1"; \
             source: "over2"; \
             script { \
-               if (get_int(radio_state) == RADIO_STATE_VISIBLE) { \
+               if (get_int(radio_state) == RADIO_STATE_VISIBLE) \
                   set_state(PART:"radio", "visible", 0.0); \
-               } \
                else \
                   set_state(PART:"radio", "default", 0.0); \
                set_state(PART:"bg", "default", 0.0); \
-               set_state(PART:"outline", "default", 0.0); \
             } \
          } \
          program { name: "pressed"; \
@@ -325,11 +308,10 @@
             source: "over2"; \
             script { \
                if (get_int(radio_state) == RADIO_STATE_VISIBLE) \
-                  set_state(PART:"radio", "visible", 0.0); \
+                  set_state(PART:"radio", "pressed", 0.0); \
                else \
                   set_state(PART:"radio", "default", 0.0); \
                set_state(PART:"bg", "pressed", 0.0); \
-               set_state(PART:"outline", "default", 0.0); \
             } \
          } \
          program { name: "mouse,out"; \
@@ -341,7 +323,6 @@
                else \
                   set_state(PART:"radio", "default", 0.0); \
                set_state(PART:"bg", "default", 0.0); \
-               set_state(PART:"outline", "default", 0.0); \
             } \
          } \
          program { name: "radio_on"; \
@@ -419,7 +400,7 @@
             action: STATE_SET "disabled" 0.0; \
             target: "disclip"; \
             target: "bg"; \
-            target: "outline"; \
+            target: "disabler"; \
             after: "disable_text"; \
          } \
          program { name: "disable_text"; \
@@ -440,7 +421,7 @@
                if (!strcmp(st, "visible")) \
                  set_state(PART:"radio", "disabled_visible", 0.0); \
                else \
-                 set_state(PART:"radio", "default", 0.0); \
+                 set_state(PART:"radio", "disabled", 0.0); \
             } \
          } \
          program { name: "enable"; \
@@ -450,7 +431,6 @@
             target: "disabler"; \
             target: "disclip"; \
             target: "bg"; \
-            target: "outline"; \
             after: "enable_text"; \
          } \
          program { name: "enable_text"; \
