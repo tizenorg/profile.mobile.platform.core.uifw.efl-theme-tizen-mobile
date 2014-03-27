@@ -34,7 +34,7 @@
 
    styles {
       style { name: "check_label_textblock_style";
-         base: "font=Tizen:style=Regular font_size="CHECK_DEFAULT_TEXT_FONT_SIZE_INC" color="CHECK_DEFAULT_TEXT_NORMAL_COLOR_INC" wrap=mixed ellipsis=1.0 text_class=tizen";
+         base: "font=Tizen:style=Regular font_size="CHECK_DEFAULT_TEXT_FONT_SIZE_INC" color=#FFFFFF color_class=T123 wrap=mixed ellipsis=1.0 text_class=T123";
          tag: "br" "\n";
          tag: "ps" "ps";
          tag: "hilight" "+ font_weight=Bold";
@@ -43,7 +43,7 @@
          tag: "tab" "\t";
       }
       style { name: "check_label_textblock_style_disable";
-         base: "font=Tizen:style=Regular font_size="CHECK_DEFAULT_TEXT_FONT_SIZE_INC" color="CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC" wrap=mixed ellipsis=1.0 text_class=tizen";
+         base: "font=Tizen:style=Regular font_size="CHECK_DEFAULT_TEXT_FONT_SIZE_INC" color=#FFFFFF color_class=T123 wrap=mixed ellipsis=1.0 text_class=T123";
          tag: "br" "\n";
          tag: "ps" "ps";
          tag: "hilight" "+ font_weight=Bold";
@@ -52,7 +52,7 @@
          tag: "tab" "\t";
       }
       style { name: "check_label_textblock_mixed_wrap_style";
-         base: "font=Tizen:style=Regular font_size="CHECK_DEFAULT_TEXT_FONT_SIZE_INC" color="CHECK_DEFAULT_TEXT_NORMAL_COLOR_INC" wrap=mixed ellipsis=1.0 text_class=tizen";
+         base: "font=Tizen:style=Regular font_size="CHECK_DEFAULT_TEXT_FONT_SIZE_INC" color=#FFFFFF color_class=T123 wrap=mixed ellipsis=1.0 text_class=T123";
          tag: "br" "\n";
          tag: "ps" "ps";
          tag: "hilight" "+ font_weight=Bold";
@@ -61,7 +61,7 @@
          tag: "tab" "\t";
       }
       style { name: "check_label_textblock_mixed_wrap_style_disable";
-         base: "font=Tizen:style=Regular font_size="CHECK_DEFAULT_TEXT_FONT_SIZE_INC" color="CHECK_DEFAULT_TEXT_DISABLED_COLOR_INC" wrap=mixed ellipsis=1.0 text_class=tizen";
+         base: "font=Tizen:style=Regular font_size="CHECK_DEFAULT_TEXT_FONT_SIZE_INC" color=#FFFFFF color_class=T123 wrap=mixed ellipsis=1.0 text_class=T123";
          tag: "br" "\n";
          tag: "ps" "ps";
          tag: "hilight" "+ font_weight=Bold";
@@ -84,9 +84,6 @@
          image: "00_check_bg.png" COMP; \
          image: "00_check_dim_bg.png" COMP; \
          image: "00_check_focus.png" COMP; \
-         image: "00_check_inactivated.png" COMP; \
-         image: "00_check_inactivated_dim.png" COMP; \
-         image: "00_check_inactivated_press.png" COMP; \
          image: "00_check_press_bg.png" COMP; \
          image: "B16-8_TTS_focus.png" COMP; \
       } \
@@ -128,23 +125,6 @@
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "00_check_dim_bg.png"; \
-            } \
-         } \
-         part { name: "check_bg"; \
-            mouse_events: 0; \
-            scale: 1; \
-            description { state: "default" 0.0; \
-               rel1.to: "bg"; \
-               rel2.to: "bg"; \
-               image.normal: "00_check_inactivated.png"; \
-            } \
-            description { state: "inactive_disable" 0.0; \
-               inherit: "default" 0.0; \
-               image.normal: "00_check_inactivated_dim.png"; \
-            } \
-            description { state: "inactive_pressed" 0.0; \
-               inherit: "default" 0.0; \
-               image.normal: "00_check_inactivated_press.png"; \
             } \
          } \
          part { name: "check"; \
@@ -191,7 +171,6 @@
          } \
          part { name: "elm.swallow.content"; \
             type: SWALLOW; \
-            clip_to: "disclip"; \
             description { state: "default" 0.0; \
                fixed: 1 0; \
                visible: 0; \
@@ -248,7 +227,6 @@
          part { name: "elm.text"; \
             type: TEXTBLOCK; \
             mouse_events: 0; \
-            clip_to: "disclip"; \
             scale: 1; \
             description { state: "default" 0.0; \
                visible: 0; \
@@ -295,17 +273,6 @@
             repeat_events: 1; \
             description { state: "default" 0.0; \
                color: 0 0 0 0; \
-            } \
-         } \
-         part { name: "disclip"; \
-            type: RECT; \
-            mouse_events: 0; \
-            description { state: "default" 0.0; \
-               color: CHECK_DISCLIP_NORMAL_COLOR_INC; \
-            } \
-            description { state: "disabled" 0.0; \
-               inherit: "default" 0.0; \
-               color: CHECK_DISCLIP_DISABLED_COLOR_INC; \
             } \
          } \
          part { name: "disabler"; \
@@ -365,8 +332,6 @@
             script { \
                if (get_int(check_state) == CHECK_STATE_VISIBLE) \
                   set_state(PART:"check", "visible", 0.0); \
-               else \
-                  set_state(PART:"check_bg", "default", 0.0); \
                set_state(PART:"bg", "default", 0.0); \
             } \
          } \
@@ -376,8 +341,6 @@
             script { \
                if (get_int(check_state) == CHECK_STATE_VISIBLE) \
                   set_state(PART:"check", "active_pressed", 0.0); \
-               else \
-                  set_state(PART:"check_bg", "inactive_pressed", 0.0); \
                set_state(PART:"bg", "pressed", 0.0); \
             } \
          } \
@@ -389,10 +352,6 @@
                  { \
                     set_state(PART:"check", "visible", 0.0); \
                     set_state(PART:"sequence_clip", "visible", 0.0); \
-                 } \
-               else \
-                 { \
-                    set_state(PART:"check_bg", "default", 0.0); \
                  } \
                set_state(PART:"bg", "default", 0.0); \
             } \
@@ -472,7 +431,6 @@
             source: "elm"; \
             action: STATE_SET "disabled" 0.0; \
             target: "disabler"; \
-            target: "disclip"; \
             target: "bg"; \
             after: "disable_text"; \
          } \
@@ -496,10 +454,6 @@
                     set_state(PART:"check", "active_disable", 0.0); \
                     set_int(check_state, CHECK_STATE_DISABLED_VISIBLE); \
                  } \
-               else \
-                 { \
-                    set_state(PART:"check_bg", "inactive_disable", 0.0); \
-                 } \
             } \
          } \
          program { name: "enable"; \
@@ -507,7 +461,6 @@
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
             target: "disabler"; \
-            target: "disclip"; \
             target: "bg"; \
             after: "enable_text"; \
          } \
@@ -533,7 +486,6 @@
                  } \
                else \
                  { \
-                    set_state(PART:"check_bg", "default", 0.0); \
                     set_int(check_state, CHECK_STATE_DEFAULT); \
                  } \
             } \
@@ -566,9 +518,6 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
          image: "00_check_activated_press.png" COMP; \
          image: "00_check_bg.png" COMP; \
          image: "00_check_dim_bg.png" COMP; \
-         image: "00_check_inactivated.png" COMP; \
-         image: "00_check_inactivated_dim.png" COMP; \
-         image: "00_check_inactivated_press.png" COMP; \
          image: "00_check_press_bg.png" COMP; \
       } \
       script { \
@@ -597,23 +546,6 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "00_check_dim_bg.png"; \
-            } \
-         } \
-         part { name: "check_bg"; \
-            mouse_events: 0; \
-            scale: 1; \
-            description { state: "default" 0.0; \
-               rel1.to: "bg"; \
-               rel2.to: "bg"; \
-               image.normal: "00_check_inactivated.png"; \
-            } \
-            description { state: "inactive_disable" 0.0; \
-               inherit: "default" 0.0; \
-               image.normal: "00_check_inactivated_dim.png"; \
-            } \
-            description { state: "inactive_pressed" 0.0; \
-               inherit: "default" 0.0; \
-               image.normal: "00_check_inactivated_press.png"; \
             } \
          } \
          part { name: "check"; \
@@ -689,8 +621,6 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             script { \
                if (CHECK_STATE_VISIBLE == get_int(check_state)) \
                   set_state(PART:"check", "visible", 0.0); \
-               else \
-                  set_state(PART:"check_bg", "default", 0.0); \
                set_state(PART:"bg", "default", 0.0); \
             } \
          } \
@@ -700,8 +630,6 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             script { \
                if (CHECK_STATE_VISIBLE == get_int(check_state)) \
                   set_state(PART:"check", "active_pressed", 0.0); \
-               else \
-                  set_state(PART:"check_bg", "inactive_pressed", 0.0); \
                set_state(PART:"bg", "pressed", 0.0); \
             } \
          } \
@@ -713,10 +641,6 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                  { \
                     set_state(PART:"check", "visible", 0.0); \
                     set_state(PART:"sequence_clip", "visible", 0.0); \
-                 } \
-               else \
-                 { \
-                    set_state(PART:"check_bg", "default", 0.0); \
                  } \
             } \
          } \
@@ -781,10 +705,6 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                     set_state(PART:"check", "active_disable", 0.0); \
                     set_int(check_state, CHECK_STATE_DISABLED_VISIBLE); \
                  } \
-               else \
-                 { \
-                    set_state(PART:"check_bg", "inactive_disable", 0.0); \
-                 } \
             } \
          } \
          program { name: "enable"; \
@@ -807,7 +727,6 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                  } \
                else \
                  { \
-                    set_state(PART:"check_bg", "default", 0.0); \
                     set_int(check_state, CHECK_STATE_DEFAULT); \
                  } \
             } \
@@ -826,8 +745,6 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
          image: "00_check_activated_dim.png" COMP; \
          image: "00_check_bg.png" COMP; \
          image: "00_check_dim_bg.png" COMP; \
-         image: "00_check_inactivated.png" COMP; \
-         image: "00_check_inactivated_dim.png" COMP; \
       } \
       script { \
          public check_state = CHECK_STATE_DEFAULT; \
@@ -846,19 +763,6 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "00_check_dim_bg.png"; \
-            } \
-         } \
-         part { name: "check_bg"; \
-            mouse_events: 0; \
-            scale: 1; \
-            description { state: "default" 0.0; \
-               rel1.to: "bg"; \
-               rel2.to: "bg"; \
-               image.normal: "00_check_inactivated.png"; \
-            } \
-            description { state: "inactive_disable" 0.0; \
-               inherit: "default" 0.0; \
-               image.normal: "00_check_inactivated_dim.png"; \
             } \
          } \
          part { name: "check"; \
@@ -951,10 +855,6 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
                     set_state(PART:"check", "active_disable", 0.0); \
                     set_int(check_state, CHECK_STATE_DISABLED_VISIBLE); \
                  } \
-               else \
-                 { \
-                    set_state(PART:"check_bg", "inactive_disable", 0.0); \
-                 } \
             } \
          } \
          program { name: "enable"; \
@@ -977,7 +877,6 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
                  } \
                else \
                  { \
-                    set_state(PART:"check_bg", "default", 0.0); \
                     set_int(check_state, CHECK_STATE_DEFAULT); \
                  } \
             } \
@@ -998,7 +897,8 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
          image: "00_button_off_handler_dim.png" COMP;
          image: "00_button_on_off_bg.png" COMP;
          image: "00_button_on_off_bg_dim.png" COMP;
-         image: "00_button_handler_focus.png" COMP;
+         image: "00_button_handler_on_focus.png" COMP;
+         image: "00_button_handler_off_focus.png" COMP;
       }
       script {
          public is_rtl = 0;
@@ -1202,12 +1102,18 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                rel1.to : "button";
                rel2.to : "button";
                image {
-                  normal: "00_button_handler_focus.png";
+                  normal: "00_button_handler_on_focus.png";
                   border_scale: 1;
                }
+               color_class: "W161";
             }
-            description { state: "focused" 0.0;
+            description { state: "focused_on" 0.0;
                inherit: "default" 0.0;
+               visible: 1;
+            }
+            description { state: "focused_off" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "00_button_handler_off_focus.png";
                visible: 1;
             }
          }
@@ -1301,7 +1207,6 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
          }
          part { name: "elm.swallow.content";
             type: SWALLOW;
-            clip_to: "disclip";
             description { state: "default" 0.0;
                fixed: 1 0;
                visible: 0;
@@ -1336,7 +1241,6 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
             type: TEXTBLOCK;
             mouse_events: 0;
             scale: 1;
-            clip_to: "disclip";
             description { state: "default" 0.0;
                visible: 0;
                fixed: 0 1;
@@ -1370,17 +1274,6 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                   style: "check_label_textblock_style_disable";
                   min: 1 1;
                }
-            }
-         }
-         part { name: "disclip";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               color: CHECK_DISCLIP_NORMAL_COLOR_INC;
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               color: CHECK_DISCLIP_DISABLED_COLOR_INC;
             }
          }
          part { name: "disabler";
@@ -1629,8 +1522,15 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
          program { name: "action_focus";
             signal: "elm,action,focus_highlight,show";
             source: "elm";
-            action: STATE_SET "focused" 0.0;
-            target: "focus_image";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"button", st, 30, vl);
+               if (strcmp(st, "default"))
+                  set_state(PART:"focus_image", "focused_off", 0.0);
+               else
+                  set_state(PART:"focus_image", "focused_on", 0.0);
+            }
          }
          program { name: "action_unfocus";
             signal: "elm,action,focus_highlight,hide";
@@ -1692,16 +1592,16 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-#define CHECK_STYLE_FAVORITE(style_name, on_image, on_dim_image, off_image, off_dim_image, min_width, min_height, access_highlight) \
+#define CHECK_STYLE_FAVORITE(style_name, normal_image, min_width, min_height, access_highlight) \
    group { name: "elm/check/base/"style_name; \
       data { \
          item: "access_highlight" access_highlight; \
       } \
+      script { \
+         public check_state = CHECK_STATE_DEFAULT; \
+      } \
       images { \
-         image: on_image COMP; \
-         image: on_dim_image COMP; \
-         image: off_image COMP; \
-         image: off_dim_image COMP; \
+         image: normal_image COMP; \
       } \
       parts { \
          part { name: "back_bg"; \
@@ -1717,7 +1617,6 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
          } \
          part { name: "bg"; \
             type: RECT; \
-            clip_to: "disclip"; \
             scale: 1; \
             description { state: "default" 0.0; \
                visible: 0; \
@@ -1730,29 +1629,32 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
          } \
          part { name: "check"; \
             mouse_events: 0; \
-            clip_to: "disclip"; \
             scale: 1; \
             description { state: "default" 0.0; \
                rel1.to: "bg"; \
                rel2.to: "bg"; \
-               image.normal: off_image; \
+               image.normal: normal_image; \
+               color_class: "F022L1i"; \
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
-               image.normal: on_image; \
+               color_class: "F022L2i"; \
+            } \
+            description { state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               color_class: "F022P"; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
-               image.normal: off_dim_image; \
+               color_class: "F022L1iD"; \
             } \
             description { state: "disabled_visible" 0.0; \
                inherit: "default" 0.0; \
-               image.normal: on_dim_image; \
+               color_class: "F022L2iD"; \
             } \
          } \
          part { name: "elm.swallow.content"; \
             type: SWALLOW; \
-            clip_to: "disclip"; \
             description { state: "default" 0.0; \
                fixed: 1 0; \
                visible: 0; \
@@ -1787,7 +1689,6 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
          } \
          part { name: "elm.text"; \
             type: TEXTBLOCK; \
-            clip_to: "disclip"; \
             mouse_events: 0; \
             scale: 1; \
             description { state: "default" 0.0; \
@@ -1823,13 +1724,6 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                  style: "check_label_textblock_style_disable"; \
                  min: 1 1; \
                } \
-            } \
-         } \
-         part { name: "disclip"; \
-            type: RECT; \
-            mouse_events: 0; \
-            description { state: "default" 0.0; \
-               color: CHECK_DISCLIP_NORMAL_COLOR_INC; \
             } \
          } \
          part { name: "events"; \
@@ -1985,11 +1879,11 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
       } \
    }
 ////////////////////////////////////////////////////////////////////////////////
-CHECK_STYLE_FAVORITE("favorite", "00_icon_favorite_on_72x72.png", "00_icon_favorite_on_72x72_dim.png", "00_icon_favorite_off_72x72.png", "00_icon_favorite_off_72x72_dim.png", CHECK_STYLE_FAVORITE_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_FAVORITE_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC, "on")
+CHECK_STYLE_FAVORITE("favorite", "00_icon_favorite_bg_72x72.png", CHECK_STYLE_FAVORITE_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_FAVORITE_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC, "on")
 ////////////////////////////////////////////////////////////////////////////////
-CHECK_STYLE_FAVORITE("favorite_small", "00_icon_favorite_on_45x45.png", "00_icon_favorite_on_45x45_dim.png", "00_icon_favorite_off_45x45.png", "00_icon_favorite_off_45x45_dim.png", CHECK_STYLE_FAVORITE_SMALL_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_FAVORITE_SMALL_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC, "on")
+CHECK_STYLE_FAVORITE("favorite_small", "00_icon_favorite_bg_45x45.png", CHECK_STYLE_FAVORITE_SMALL_DEFAULT_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_FAVORITE_SMALL_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC, "on")
 ////////////////////////////////////////////////////////////////////////////////
-CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_icon_favorite_on_72x72_dim.png", "00_icon_favorite_off_72x72.png", "00_icon_favorite_off_72x72_dim.png", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE_MIN_HEIGHT_INC, "on")
+CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_bg_72x72.png", CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE_MIN_WIDTH_INC, CHECK_STYLE_FAVORITE_EXTENDED_BG_IMAGE_MIN_HEIGHT_INC, "on")
 ////////////////////////////////////////////////////////////////////////////////
 
    group { name: "elm/check/base/grid";
@@ -2000,9 +1894,6 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
          image: "00_check_bg.png" COMP;
          image: "00_check_dim_bg.png" COMP;
          image: "00_check_focus.png" COMP;
-         image: "00_check_inactivated.png" COMP;
-         image: "00_check_inactivated_dim.png" COMP;
-         image: "00_check_inactivated_press.png" COMP;
          image: "00_check_press_bg.png" COMP;
       }
       script {
@@ -2063,23 +1954,6 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
             description { state: "disabled" 0.0;
                inherit: "visible" 0.0;
                image.normal: "00_check_dim_bg.png";
-            }
-         }
-         part { name: "check_bg";
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               rel1.to: "bg2";
-               rel2.to: "bg2";
-               image.normal: "00_check_inactivated.png";
-            }
-            description { state: "inactive_disable" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "00_check_inactivated_dim.png";
-            }
-            description { state: "inactive_pressed" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "00_check_inactivated_press.png";
             }
          }
          part { name: "check";
@@ -2165,7 +2039,6 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
                if (CHECK_STATE_VISIBLE == get_int(check_state))
                   set_state(PART:"check", "visible", 0.0);
                set_state(PART:"bg2", "default", 0.0);
-               set_state(PART:"check_bg", "default", 0.0);
             }
          }
          program { name: "pressed";
@@ -2174,8 +2047,6 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
             script {
                if (CHECK_STATE_VISIBLE == get_int(check_state))
                   set_state(PART:"check", "active_pressed", 0.0);
-               else
-                  set_state(PART:"check_bg", "inactive_pressed", 0.0);
                set_state(PART:"bg2", "pressed", 0.0);
             }
          }
@@ -2190,7 +2061,6 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
                  }
                else
                  {
-                    set_state(PART:"check_bg", "default", 0.0);
                     set_state(PART:"sequence_clip", "default", 0.0);
                  }
             }
@@ -2257,10 +2127,6 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
                     set_state(PART:"check", "active_disable", 0.0);
                     set_int(check_state, CHECK_STATE_DISABLED_VISIBLE);
                  }
-               else
-                 {
-                    set_state(PART:"check_bg", "inactive_disable", 0.0);
-                 }
             }
          }
          program { name: "enable";
@@ -2284,7 +2150,6 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
                  }
                else
                  {
-                    set_state(PART:"check_bg", "default", 0.0);
                     set_int(check_state, CHECK_STATE_DEFAULT);
                  }
             }
@@ -2298,7 +2163,6 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_on_72x72.png", "00_i
          part { name: "elm.text";
             type: TEXTBLOCK;
             mouse_events: 0;
-            clip_to: "disclip";
             scale: 1;
             description { state: "default" 0.0;
                visible: 0;
