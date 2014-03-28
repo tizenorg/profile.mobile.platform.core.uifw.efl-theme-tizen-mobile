@@ -78,13 +78,12 @@
          item: "access_highlight" access_highlight; \
       } \
       images { \
-         image: "00_check_activated.png" COMP; \
-         image: "00_check_activated_dim.png" COMP; \
-         image: "00_check_activated_press.png" COMP; \
+         image: "00_check_activate.png" COMP; \
+         image: "00_check_activate_ef.png" COMP; \
          image: "00_check_bg.png" COMP; \
-         image: "00_check_dim_bg.png" COMP; \
+         image: "00_check_bg_ef.png" COMP; \
          image: "00_check_focus.png" COMP; \
-         image: "00_check_press_bg.png" COMP; \
+         image: "00_check_bg_line.png" COMP; \
          image: "B16-8_TTS_focus.png" COMP; \
       } \
       script { \
@@ -114,17 +113,56 @@
                rel2.to: "back_bg"; \
                image.normal: "00_check_bg.png"; \
                fill.smooth : 0; \
+               color_class: "W013L1"; \
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
             } \
             description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
-               image.normal: "00_check_press_bg.png"; \
+               color_class: "W013L1P"; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
-               image.normal: "00_check_dim_bg.png"; \
+               color_class: "W013L1D"; \
+            } \
+         } \
+         part { name: "bg_effect"; \
+            mouse_events: 0; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               min: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
+               max: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
+               fixed: 1 1; \
+               rel1.to: "back_bg"; \
+               rel2.to: "back_bg"; \
+               image.normal: "00_check_bg_ef.png"; \
+               fill.smooth : 0; \
+            } \
+         } \
+         part { name: "bg_line"; \
+            mouse_events: 0; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               min: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
+               max: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
+               fixed: 1 1; \
+               rel1.to: "back_bg"; \
+               rel2.to: "back_bg"; \
+               image.normal: "00_check_bg_line.png"; \
+               fill.smooth : 0; \
+               color_class: "W013L2"; \
+            } \
+            description { state: "visible" 0.0; \
+               inherit: "default" 0.0; \
+            } \
+            description { state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               color_class: "W013L2P"; \
+            } \
+            description { state: "disabled" 0.0; \
+               inherit: "default" 0.0; \
+               color_class: "W013L2D"; \
             } \
          } \
          part { name: "check"; \
@@ -135,7 +173,8 @@
                rel1.to: "bg"; \
                rel2.to: "bg"; \
                visible: 0; \
-               image.normal: "00_check_activated.png"; \
+               image.normal: "00_check_activate.png"; \
+               color_class: "W013L3"; \
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
@@ -143,11 +182,22 @@
             } \
             description { state: "active_disable" 0.0; \
                inherit: "visible" 0.0; \
-               image.normal: "00_check_activated_dim.png"; \
+               color_class: "W013L3D"; \
             } \
             description { state: "active_pressed" 0.0; \
                inherit: "visible" 0.0; \
-               image.normal: "00_check_activated_press.png"; \
+               color_class: "W013L3P"; \
+            } \
+         } \
+         part { name: "check_effect"; \
+            clip_to: "sequence_clip"; \
+            mouse_events: 0; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               rel1.to: "bg"; \
+               rel2.to: "bg"; \
+               visible: 0; \
+               image.normal: "00_check_activate_ef.png"; \
             } \
          } \
          part { name: "sequence_clip"; \
@@ -333,6 +383,7 @@
                if (get_int(check_state) == CHECK_STATE_VISIBLE) \
                   set_state(PART:"check", "visible", 0.0); \
                set_state(PART:"bg", "default", 0.0); \
+               set_state(PART:"bg_line", "default", 0.0); \
             } \
          } \
          program { name: "pressed"; \
@@ -342,6 +393,7 @@
                if (get_int(check_state) == CHECK_STATE_VISIBLE) \
                   set_state(PART:"check", "active_pressed", 0.0); \
                set_state(PART:"bg", "pressed", 0.0); \
+               set_state(PART:"bg_line", "pressed", 0.0); \
             } \
          } \
          program { name: "mouse,out"; \
@@ -354,6 +406,7 @@
                     set_state(PART:"sequence_clip", "visible", 0.0); \
                  } \
                set_state(PART:"bg", "default", 0.0); \
+               set_state(PART:"bg_line", "default", 0.0); \
             } \
          } \
          program { name: "check_on"; \
@@ -372,6 +425,7 @@
                     set_state(PART:"sequence_clip", "visible", 0.0); \
                  } \
                set_state(PART:"bg", "default", 0.0); \
+               set_state(PART:"bg_line", "default", 0.0); \
             } \
          } \
          program { name: "check_off"; \
@@ -432,6 +486,7 @@
             action: STATE_SET "disabled" 0.0; \
             target: "disabler"; \
             target: "bg"; \
+            target: "bg_line"; \
             after: "disable_text"; \
          } \
          program { name: "disable_text"; \
@@ -462,6 +517,7 @@
             action: STATE_SET "default" 0.0; \
             target: "disabler"; \
             target: "bg"; \
+            target: "bg_line"; \
             after: "enable_text"; \
          } \
          program { name: "enable_text"; \
@@ -513,12 +569,11 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
 #define CHECK_STYLE_DEFAULT_GENLIST(style_name, min_width, min_height) \
    group { name: "elm/check/base/"style_name; \
       images { \
-         image: "00_check_activated.png" COMP; \
-         image: "00_check_activated_dim.png" COMP; \
-         image: "00_check_activated_press.png" COMP; \
+         image: "00_check_activate.png" COMP; \
+         image: "00_check_activate_ef.png" COMP; \
          image: "00_check_bg.png" COMP; \
-         image: "00_check_dim_bg.png" COMP; \
-         image: "00_check_press_bg.png" COMP; \
+         image: "00_check_bg_ef.png" COMP; \
+         image: "00_check_bg_line.png" COMP; \
       } \
       script { \
          public check_state = CHECK_STATE_DEFAULT; \
@@ -535,17 +590,54 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                fixed: 1 1; \
                image.normal: "00_check_bg.png"; \
                fill.smooth : 0; \
+               color_class: "W013L1"; \
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
             } \
             description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
-               image.normal: "00_check_press_bg.png"; \
+               color_class: "W013L1P"; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
-               image.normal: "00_check_dim_bg.png"; \
+               color_class: "W013L1D"; \
+            } \
+         } \
+         part { name: "bg_effect"; \
+            mouse_events: 0; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               min: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
+               max: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
+               align: 0.0 0.5; \
+               fixed: 1 1; \
+               image.normal: "00_check_bg_ef.png"; \
+               fill.smooth : 0; \
+            } \
+         } \
+         part { name: "bg_line"; \
+            mouse_events: 0; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               min: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
+               max: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
+               align: 0.0 0.5; \
+               fixed: 1 1; \
+               image.normal: "00_check_bg_line.png"; \
+               fill.smooth : 0; \
+               color_class: "W013L2"; \
+            } \
+            description { state: "visible" 0.0; \
+               inherit: "default" 0.0; \
+            } \
+            description { state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               color_class: "W013L2P"; \
+            } \
+            description { state: "disabled" 0.0; \
+               inherit: "default" 0.0; \
+               color_class: "W013L2D"; \
             } \
          } \
          part { name: "check"; \
@@ -556,7 +648,8 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                rel1.to: "bg"; \
                rel2.to: "bg"; \
                visible: 0; \
-               image.normal: "00_check_activated.png"; \
+               image.normal: "00_check_activate.png"; \
+               color_class: "W013L3"; \
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
@@ -564,11 +657,22 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             } \
             description { state: "active_disable" 0.0; \
                inherit: "visible" 0.0; \
-               image.normal: "00_check_activated_dim.png"; \
+               color_class: "W013L3D"; \
             } \
             description { state: "active_pressed" 0.0; \
                inherit: "visible" 0.0; \
-               image.normal: "00_check_activated_press.png"; \
+               color_class: "W013L3P"; \
+            } \
+         } \
+         part { name: "check_effect"; \
+            clip_to: "sequence_clip"; \
+            mouse_events: 0; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               rel1.to: "bg"; \
+               rel2.to: "bg"; \
+               visible: 0; \
+               image.normal: "00_check_activate_ef.png"; \
             } \
          } \
          part { name: "sequence_clip"; \
@@ -622,6 +726,7 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                if (CHECK_STATE_VISIBLE == get_int(check_state)) \
                   set_state(PART:"check", "visible", 0.0); \
                set_state(PART:"bg", "default", 0.0); \
+               set_state(PART:"bg_line", "default", 0.0); \
             } \
          } \
          program { name: "pressed"; \
@@ -631,6 +736,7 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                if (CHECK_STATE_VISIBLE == get_int(check_state)) \
                   set_state(PART:"check", "active_pressed", 0.0); \
                set_state(PART:"bg", "pressed", 0.0); \
+               set_state(PART:"bg_line", "pressed", 0.0); \
             } \
          } \
          program { name: "mouse,out"; \
@@ -693,6 +799,7 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             action: STATE_SET "disabled" 0.0; \
             target: "disabler"; \
             target: "bg"; \
+            target: "bg_line"; \
             after: "disable_text"; \
          } \
          program { name: "disable_text"; \
@@ -713,6 +820,7 @@ CHECK_STYLE_DEFAULT("default/extended", CHECK_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             action: STATE_SET "default" 0.0; \
             target: "disabler"; \
             target: "bg"; \
+            target: "bg_line"; \
             after: "enable_text"; \
          } \
          program { name: "enable_text"; \
@@ -741,10 +849,11 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
 #define CHECK_STYLE_FOR_GENLIST(style_name, min_width, min_height) \
    group { name: "elm/check/base/"style_name; \
       images { \
-         image: "00_check_activated.png" COMP; \
-         image: "00_check_activated_dim.png" COMP; \
+         image: "00_check_activate.png" COMP; \
+         image: "00_check_activate_ef.png" COMP; \
          image: "00_check_bg.png" COMP; \
-         image: "00_check_dim_bg.png" COMP; \
+         image: "00_check_bg_ef.png" COMP; \
+         image: "00_check_bg_line.png" COMP; \
       } \
       script { \
          public check_state = CHECK_STATE_DEFAULT; \
@@ -759,10 +868,38 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
                fixed: 1 1; \
                image.normal: "00_check_bg.png"; \
                fill.smooth : 0; \
+               color_class: "W013L1"; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
-               image.normal: "00_check_dim_bg.png"; \
+               color_class: "W013L1D"; \
+            } \
+         } \
+         part { name: "bg_effect"; \
+            mouse_events: 0; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               min: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
+               max: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
+               fixed: 1 1; \
+               image.normal: "00_check_bg_ef.png"; \
+               fill.smooth : 0; \
+            } \
+         } \
+         part { name: "bg_line"; \
+            mouse_events: 0; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               min: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
+               max: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC; \
+               fixed: 1 1; \
+               image.normal: "00_check_bg_line.png"; \
+               fill.smooth : 0; \
+               color_class: "W013L2"; \
+            } \
+            description { state: "disabled" 0.0; \
+               inherit: "default" 0.0; \
+               color_class: "W013L2D"; \
             } \
          } \
          part { name: "check"; \
@@ -772,7 +909,8 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
                rel1.to: "bg"; \
                rel2.to: "bg"; \
                visible: 0; \
-               image.normal: "00_check_activated.png"; \
+               image.normal: "00_check_activate.png"; \
+               color_class: "W013L3"; \
             } \
             description { state: "visible" 0.0; \
                inherit: "default" 0.0; \
@@ -780,7 +918,17 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
             } \
             description { state: "active_disable" 0.0; \
                inherit: "visible" 0.0; \
-               image.normal: "00_check_activated_dim.png"; \
+               color_class: "W013L3D"; \
+            } \
+         } \
+         part { name: "check_effect"; \
+            mouse_events: 0; \
+            scale: 1; \
+            description { state: "default" 0.0; \
+               rel1.to: "bg"; \
+               rel2.to: "bg"; \
+               visible: 0; \
+               image.normal: "00_check_activate_ef.png"; \
             } \
          } \
          part { name: "events1"; \
@@ -843,6 +991,7 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
             source: "elm"; \
             action: STATE_SET "disabled" 0.0; \
             target: "bg"; \
+            target: "bg_line"; \
             after: "disable_text"; \
          } \
          program { name: "disable_text"; \
@@ -863,6 +1012,7 @@ CHECK_STYLE_DEFAULT_GENLIST("default/genlist", CHECK_STYLE_DEFAULT_DEFAULT_BG_IM
             action: STATE_SET "default" 0.0; \
             target: "disabler"; \
             target: "bg"; \
+            target: "bg_line"; \
             after: "enable_text"; \
          } \
          program { name: "enable_text"; \
@@ -1888,13 +2038,12 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_bg_72x72.png", CHECK
 
    group { name: "elm/check/base/grid";
       images {
-         image: "00_check_activated.png" COMP;
-         image: "00_check_activated_dim.png" COMP;
-         image: "00_check_activated_press.png" COMP;
+         image: "00_check_activate.png" COMP;
+         image: "00_check_activate_ef.png" COMP;
          image: "00_check_bg.png" COMP;
-         image: "00_check_dim_bg.png" COMP;
+         image: "00_check_bg_ef.png" COMP;
          image: "00_check_focus.png" COMP;
-         image: "00_check_press_bg.png" COMP;
+         image: "00_check_bg_line.png" COMP;
       }
       script {
          public check_state = CHECK_STATE_DEFAULT;
@@ -1943,17 +2092,66 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_bg_72x72.png", CHECK
                   to: "top_left_padding";
                }
                image.normal: "00_check_bg.png";
+               color_class: "W013L1";
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
             }
             description { state: "pressed" 0.0;
                inherit: "visible" 0.0;
-               image.normal: "00_check_press_bg.png";
+               color_class: "W013L1P";
             }
             description { state: "disabled" 0.0;
                inherit: "visible" 0.0;
-               image.normal: "00_check_dim_bg.png";
+               color_class: "W013L1D";
+            }
+         }
+         part { name: "bg2_effect";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GENGRID_EDIT_MODE_CHECK_SIZE_INC;
+               align: 0.0 0.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to: "top_left_padding";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to: "top_left_padding";
+               }
+               image.normal: "00_check_bg_ef.png";
+            }
+         }
+         part { name: "bg2_line";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GENGRID_EDIT_MODE_CHECK_SIZE_INC;
+               align: 0.0 0.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to: "top_left_padding";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to: "top_left_padding";
+               }
+               image.normal: "00_check_bg_line.png";
+               color_class: "W013L2";
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+            }
+            description { state: "pressed" 0.0;
+               inherit: "visible" 0.0;
+               color_class: "W013L2P";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "visible" 0.0;
+               color_class: "W013L2D";
             }
          }
          part { name: "check";
@@ -1964,7 +2162,8 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_bg_72x72.png", CHECK
                rel1.to: "bg2";
                rel2.to: "bg2";
                visible: 0;
-               image.normal: "00_check_activated.png";
+               image.normal: "00_check_activate.png";
+               color_class: "W013L3";
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
@@ -1972,11 +2171,22 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_bg_72x72.png", CHECK
             }
             description { state: "active_disable" 0.0;
                inherit: "visible" 0.0;
-               image.normal: "00_check_activated_dim.png";
+               color_class: "W013L3D";
             }
             description { state: "active_pressed" 0.0;
                inherit: "visible" 0.0;
-               image.normal: "00_check_activated_press.png";
+               color_class: "W013L3P";
+            }
+         }
+         part { name: "check_effect";
+            clip_to: "sequence_clip";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1.to: "bg2";
+               rel2.to: "bg2";
+               visible: 0;
+               image.normal: "00_check_activate_ef.png";
             }
          }
          part { name: "sequence_clip";
@@ -2039,6 +2249,7 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_bg_72x72.png", CHECK
                if (CHECK_STATE_VISIBLE == get_int(check_state))
                   set_state(PART:"check", "visible", 0.0);
                set_state(PART:"bg2", "default", 0.0);
+               set_state(PART:"bg2_line", "default", 0.0);
             }
          }
          program { name: "pressed";
@@ -2048,6 +2259,7 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_bg_72x72.png", CHECK
                if (CHECK_STATE_VISIBLE == get_int(check_state))
                   set_state(PART:"check", "active_pressed", 0.0);
                set_state(PART:"bg2", "pressed", 0.0);
+               set_state(PART:"bg2_line", "pressed", 0.0);
             }
          }
          program { name: "mouse,out";
@@ -2093,6 +2305,7 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_bg_72x72.png", CHECK
                     set_state(PART:"sequence_clip", "default", 0.0);
                  }
                set_state(PART:"bg2", "visible", 0.0);
+               set_state(PART:"bg2_line", "visible", 0.0);
             }
          }
          program { name: "check_show_effect";
@@ -2115,6 +2328,7 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_bg_72x72.png", CHECK
             action: STATE_SET "disabled" 0.0;
             target: "disabler";
             target: "bg2";
+            target: "bg2_line";
             after: "disable_check";
          }
          program { name: "disable_check";
@@ -2135,6 +2349,7 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_bg_72x72.png", CHECK
             action: STATE_SET "default" 0.0;
             target: "disabler";
             target: "bg2";
+            target: "bg2_line";
             after: "enable_check";
          }
          program { name: "enable_check";
