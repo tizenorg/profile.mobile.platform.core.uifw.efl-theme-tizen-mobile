@@ -3622,20 +3622,34 @@
 // 2.4.1.19
    group { GENLIST_NAME("dialogue/multiline/1text.1icon/default")
       alias: "elm/layout/dialogue/multiline/1text.1icon.flexible";
-      inherit: "elm/genlist/item/dialogue/1text.1icon.3.tb/default";
+
+      GENLIST_PROLOG_DIALOGUE
+      data.item: "texts" "elm.text";
+      data.item: "contents" "elm.icon";
 
       parts {
-         part { name: "elm.text";
-            description { state: "default" 0.0;
-               text.style: "genlist_style_list_main_text_wrap";
-            }
-            description { state: "pressed" 0.0;
-            }
-            description { state: "disabled" 0.0;
-               text.style: "genlist_style_list_main_text_dim_wrap";
-            }
-         }
+         GENLIST_PART_BG_DIALOGUE
+         GENLIST_PART_BASE
+         GENLIST_PART_PADDING_LEFT_SIZE( DIALOGUE_PADDING_SIZE_LEFT )
+         GENLIST_PART_PADDING_RIGHT_EDIT
+         GENLIST_PART_PADDING_TOP_SIZE(16)
+         GENLIST_PART_PADDING_BOTTOM_SIZE(16)
+
+         GENLIST_PART_ICON_CHECK_RADIO_L("elm.icon", "elm.padding.left")
+         GENLIST_PART_PADDING_L("elm.padding.icon.right", "elm.icon")
+         GENLIST_PART_TEXTBLOCK("elm.text",
+            GENLIST_DESCRIPTION("elm.padding.icon.right", "elm.padding.right",
+               "elm.padding.top", "elm.padding.bottom",
+               GENLIST_PARAM_LISTITEM_TB_WRAP
+               min: 0 GENLIST_HEIGHT_1LINE;
+            )
+            GENLIST_DESCRIPTION_LISTITEM_OTHERS_TB_WRAP
+         )
+         GENLIST_PART_FLIP
+         GENLIST_PART_FOCUS_DIALOGUE
       }
+      GENLIST_PROGRAMS_DIALOGUE( target: "elm.text"; target: "elm.icon"; )
+
    }
 
 // 2.4.1.20
@@ -3910,6 +3924,10 @@
                min: 0 42;
                GENLIST_PARAM_PASSWORD_TITLE
             )
+            description { state: "disabled";
+               inherit: "default" 0.0;
+               color_class: "T0213D"; \
+            }
          )
          GENLIST_PART_PADDING_T_SIZE("elm.padding.text.bottom", "elm.text", 18);
 
