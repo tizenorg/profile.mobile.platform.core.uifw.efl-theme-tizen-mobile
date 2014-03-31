@@ -1834,6 +1834,10 @@ group { name: "elm/entry/base-single/editfield/searchbar/default";
          tag:  "hilight" "+ font_weight=Bold";
       }
    }
+   script {
+      public guide_hidden;
+      public disabled;
+   }
    parts {
       ENTRY_TOP_BOTTOM_PADDING(ENTRY_TOP_BOTTOM_PADDING_HEIGHT)
       part { name: "elm.guide";
@@ -1905,28 +1909,44 @@ group { name: "elm/entry/base-single/editfield/searchbar/default";
       program { name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
-         action: STATE_SET "disabled" 0.0;
-         target: "elm.text";
-         target: "elm.guide";
+         script {
+            set_int(disabled, 1);
+            if (!get_int(guide_hidden)) {
+               set_state(PART:"elm.guide", "disabled", 0.0);
+            }
+            set_state(PART:"elm.text", "disabled", 0.0);
+         }
       }
       program { name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text";
-         target: "elm.guide";
+         script {
+            set_int(disabled, 0);
+            if (!get_int(guide_hidden)) {
+               set_state(PART:"elm.guide", "default", 0.0);
+            }
+            set_state(PART:"elm.text", "default", 0.0);
+         }
       }
       program { name: "gdisable";
          signal: "elm,guide,disabled";
          source: "elm";
-         action: STATE_SET "hidden" 0.0;
-         target: "elm.guide";
+         script {
+            set_int(guide_hidden, 1);
+            set_state(PART:"elm.guide", "hidden", 0.0);
+         }
       }
       program { name: "genable";
          signal: "elm,guide,enabled";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.guide";
+         script {
+            set_int(guide_hidden, 0);
+            if (get_int(disabled)) {
+               set_state(PART:"elm.guide", "disabled", 0.0);
+            } else {
+               set_state(PART:"elm.guide", "default", 0.0);
+            }
+         }
       }
       ENTRY_SOUND_PROGRAM
    }
@@ -2009,6 +2029,10 @@ group { name: "elm/entry/base-single/editfield/searchbar/fixed_size";
          tag:  "hilight" "+ font_weight=Bold";
       }
    }
+   script {
+      public guide_hidden;
+      public disabled;
+   }
    parts {
       ENTRY_TOP_BOTTOM_PADDING(ENTRY_TOP_BOTTOM_PADDING_HEIGHT)
       part { name: "elm.guide";
@@ -2080,28 +2104,44 @@ group { name: "elm/entry/base-single/editfield/searchbar/fixed_size";
       program { name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
-         action: STATE_SET "disabled" 0.0;
-         target: "elm.text";
-         target: "elm.guide";
+         script {
+            set_int(disabled, 1);
+            if (!get_int(guide_hidden)) {
+               set_state(PART:"elm.guide", "disabled", 0.0);
+            }
+            set_state(PART:"elm.text", "disabled", 0.0);
+         }
       }
       program { name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text";
-         target: "elm.guide";
+         script {
+            set_int(disabled, 0);
+            if (!get_int(guide_hidden)) {
+               set_state(PART:"elm.guide", "default", 0.0);
+            }
+            set_state(PART:"elm.text", "default", 0.0);
+         }
       }
       program { name: "gdisable";
          signal: "elm,guide,disabled";
          source: "elm";
-         action: STATE_SET "hidden" 0.0;
-         target: "elm.guide";
+         script {
+            set_int(guide_hidden, 1);
+            set_state(PART:"elm.guide", "hidden", 0.0);
+         }
       }
       program { name: "genable";
          signal: "elm,guide,enabled";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.guide";
+         script {
+            set_int(guide_hidden, 0);
+            if (get_int(disabled)) {
+               set_state(PART:"elm.guide", "disabled", 0.0);
+            } else {
+               set_state(PART:"elm.guide", "default", 0.0);
+            }
+         }
       }
       ENTRY_SOUND_PROGRAM
    }
