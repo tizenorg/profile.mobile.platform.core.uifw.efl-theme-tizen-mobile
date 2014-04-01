@@ -34,7 +34,7 @@
 
 
 #define GENLIST_PART_INDEX_BG \
-      GENLIST_PART_RECT("bg",  \
+      PART(RECT, "bg",  \
          description { state: "default" 0.0; \
             color_class: "B011"; \
          } \
@@ -69,8 +69,8 @@
    }
 
 #define GENLIST_PART_INDEX_LINE(BOTTOM) \
-      GENLIST_PART_RECT("index_line", \
-         GENLIST_DESCRIPTION_B(BOTTOM,\
+      PART(RECT, "index_line", \
+         DESC_B(BOTTOM,\
             color_class: "W021L2"; \
             min: 0 4; \
             max: -1 4; \
@@ -83,8 +83,8 @@
       )
 
 #define GENLIST_PART_INDEX_LINE_ICON(LEFT, BOTTOM) \
-      GENLIST_PART_RECT("index_line_icon", \
-         GENLIST_DESCRIPTION_LB(LEFT, BOTTOM, \
+      PART(RECT, "index_line_icon", \
+         DESC_LB(LEFT, BOTTOM, \
             color_class: "W021L2"; \
             min: 0 4; \
             max: -1 4; \
@@ -114,51 +114,6 @@
       style: "genlist_style_groupindex_text"; \
    }
 
-#define GENLIST_PART_PADDING_GROUPINDEX_LEFT \
-      GENLIST_PART_EXPANDED_PAD \
-         GENLIST_PART_RECT("elm.padding.left", \
-            GENLIST_DESCRIPTION_L("elm.swallow.pad",  \
-               color_class: "B011"; \
-               min: GROUPINDEX_PADDING_SIZE_LEFT 0; \
-               max: GROUPINDEX_PADDING_SIZE_LEFT -1; \
-               fixed: 1 0; \
-            ) \
-            description { state: "pressed" 0.0; \
-               inherit: "default" 0.0; \
-               color_class: "W021L1P"; \
-            } \
-            description { state: "disabled" 0.0; \
-               inherit: "default" 0.0; \
-            } \
-            GENLIST_DESCRIPTION_DECORATE_PADDING \
-            GENLIST_DESCRIPTION_REORDER_PADDING \
-            GENLIST_DESCRIPTION_DECORATE_REORDER_PADDING \
-         )
-
-#define GENLIST_PART_PADDING_GROUPINDEX_RIGHT \
-         GENLIST_PART_RECT("elm.padding.right", \
-            description { state: "default" 0.0; \
-               color_class: "B011"; \
-               min: GROUPINDEX_PADDING_SIZE_RIGHT 0; \
-               max: GROUPINDEX_PADDING_SIZE_RIGHT -1; \
-               fixed: 1 0; \
-               align: 1.0 0.5; \
-               rel1.to: "base"; \
-               rel2.to: "base"; \
-               rel1.relative: 1 0; \
-            } \
-            description { state: "pressed" 0.0; \
-               inherit: "default" 0.0; \
-               color_class: "W021L1P"; \
-            } \
-            description { state: "disabled" 0.0; \
-               inherit: "default" 0.0; \
-            } \
-            GENLIST_DESCRIPTION_DECORATE_PADDING \
-            GENLIST_DESCRIPTION_REORDER_PADDING \
-            GENLIST_DESCRIPTION_DECORATE_REORDER_PADDING \
-         )
-
 #define SLIDING_PER_FPS 1
 #define SLIDING_FPS     60.0
 // 2.1.1
@@ -171,7 +126,7 @@
       alias: "elm/genlist/tree_odd/grouptitle/default";
       alias: "elm/genlist/tree_compress/grouptitle/default";
       alias: "elm/genlist/tree_compress_odd/grouptitle/default";
-      GENLIST_PROLOG
+      PROLOG_LIST
 
       data.item: "texts" "elm.text";
 
@@ -221,10 +176,57 @@
       parts {
          GENLIST_PART_BASE
          GENLIST_PART_INDEX_BG
-         GENLIST_PART_PADDING_TOP_SIZE(18)
-         GENLIST_PART_PADDING_BOTTOM_SIZE(0)
-         GENLIST_PART_TEXTBLOCK("elm.text",
-            GENLIST_DESCRIPTION("elm.padding.left", "elm.padding.right", "elm.padding.top", "elm.padding.line.top",
+            PART(SWALLOW, "elm.swallow.pad",
+            mouse_events: 0;
+            DESC_FROM_L( ; )
+         )
+         PART(RECT, "elm.padding.left",
+            DESC_L("elm.swallow.pad",
+               min: GROUPINDEX_PADDING_SIZE_LEFT 0;
+               max: GROUPINDEX_PADDING_SIZE_LEFT -1;
+               color_class: "B011";
+            )
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W021L1P";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+            }
+            DESC_LIST_PADDINGS
+         )
+         PART(RECT, "elm.padding.right",
+            DESC_FROM_R(
+               min: GROUPINDEX_PADDING_SIZE_RIGHT 0;
+               max: GROUPINDEX_PADDING_SIZE_RIGHT -1;
+               color_class: "B011";
+            )
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W021L1P";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+            }
+            DESC_LIST_PADDINGS
+         )
+         PART(SPACER, "elm.padding.top",
+            DESC_FROM_T(
+               min: 0 0;
+               max: -1 0;
+            )
+            DESC_LIST_PADDINGS
+         )
+         PART(SPACER, "elm.padding.bottom",
+            DESC_FROM_B(
+               min: 0 0;
+               max: -1 0;
+            )
+            DESC_LIST_PADDINGS
+         )
+
+         PART(TEXTBLOCK, "elm.text",
+            DESC_LRTB("elm.padding.left", "elm.padding.right", "elm.padding.top", "elm.padding.line.top",
                GENLIST_PARAM_INDEX_LIST_TB
                min: 0 GROUPINDEX_TEXT_HEIGHT;
                fixed: 1 0;
@@ -236,8 +238,7 @@
             }
             GENLIST_DESCRIPTION_INDEX_LIST_TB
          )
-        GENLIST_PART_PADDING_GROUPINDEX_LEFT
-        GENLIST_PART_PADDING_GROUPINDEX_RIGHT
+
         GENLIST_PART_PADDING_B_SIZE("elm.padding.line.top", "elm.padding.bottom", 8);
         GENLIST_PART_INDEX_LINE("elm.padding.bottom")
         GENLIST_PART_FOCUS
@@ -314,7 +315,7 @@
       alias: "elm/genlist/tree_odd/grouptitle.icon/default";
       alias: "elm/genlist/tree_compress/grouptitle.icon/default";
       alias: "elm/genlist/tree_compress_odd/grouptitle.icon/default";
-      GENLIST_PROLOG
+      PROLOG_LIST
 
       data.item: "texts" "elm.text";
       data.item: "contents" "elm.icon";
@@ -322,12 +323,12 @@
       parts {
          GENLIST_PART_BASE
          GENLIST_PART_INDEX_BG
-         GENLIST_PART_PADDING_LEFT_SIZE(GROUPINDEX_PADDING_SIZE_LEFT)
-         GENLIST_PART_PADDING_RIGHT_SIZE(GROUPINDEX_PADDING_SIZE_RIGHT)
-         GENLIST_PART_PADDING_TOP_SIZE(18)
-         GENLIST_PART_PADDING_BOTTOM_SIZE(0)
+         PART_LIST_PADDINGS(
+            GROUPINDEX_PADDING_SIZE_LEFT, GROUPINDEX_PADDING_SIZE_RIGHT,
+            18, 0
+         )
          GENLIST_PART_ICON("elm.icon",
-            GENLIST_DESCRIPTION_LTB("elm.padding.left",
+            DESC_LTB("elm.padding.left",
                "elm.padding.top", "elm.padding.bottom",
                min: GROUPINDEX_ICON_SIZE GROUPINDEX_ICON_SIZE;
                max: GROUPINDEX_ICON_SIZE GROUPINDEX_ICON_SIZE;
@@ -335,8 +336,8 @@
             )
          )
          GENLIST_PART_PADDING_L_SIZE("elm.padding.icon.right", "elm.icon", 16)
-         GENLIST_PART_TEXT("elm.text",
-            GENLIST_DESCRIPTION("elm.padding.icon.right", "elm.padding.right", "elm.padding.top", "elm.padding.line.top",
+         PART(TEXT, "elm.text",
+            DESC_LRTB("elm.padding.icon.right", "elm.padding.right", "elm.padding.top", "elm.padding.line.top",
                GENLIST_PARAM_INDEX_LIST
                min: 0 GROUPINDEX_TEXT_HEIGHT;
             )
