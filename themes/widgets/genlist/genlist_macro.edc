@@ -1866,10 +1866,12 @@
                if (!strcmp(st, "default")) { \
                   set_state(PART:"arrow", "default_press", 0.0); \
                   set_state(PART:"arrow_clip", "default_press", 0.0); \
+                  set_state(PART:"arrow_ef", "default", 0.0); \
                } \
                else if (!strcmp(st, "expand_opened")) { \
                   set_state(PART:"arrow", "expand_opened_press", 0.0); \
                   set_state(PART:"arrow_clip", "expand_opened_press", 0.0); \
+                  set_state(PART:"arrow_ef", "expand_opened", 0.0); \
                } \
             } \
          } \
@@ -1883,41 +1885,47 @@
                if (!strcmp(st, "default_press")) { \
                   set_state(PART:"arrow", "default", 0.0); \
                   set_state(PART:"arrow_clip", "default", 0.0); \
+                  set_state(PART:"arrow_ef", "default", 0.0); \
                } \
                else if (!strcmp(st, "expand_opened_press")) { \
                   set_state(PART:"arrow", "expand_opened", 0.0); \
                   set_state(PART:"arrow_clip", "expand_opened", 0.0); \
+                  set_state(PART:"arrow_ef", "expand_opened", 0.0); \
                } \
             } \
-         } \
-         program { name: "selected_arrow_shadow"; \
-            signal: "elm,state,selected"; \
+         }
+
+#define GENLIST_PROGRAM_DISABLED_ARROW \
+         program { name: "enabled_arrow"; \
+            signal: "elm,state,enabled"; \
             source: "elm"; \
             script { \
                new st[31]; \
                new Float:vl; \
-               get_state(PART:"arrow_shadow_clip", st, 30, vl); \
+               get_state(PART:"arrow", st, 30, vl); \
                if (!strcmp(st, "default")) { \
-                  set_state(PART:"arrow_shadow_clip", "default_press", 0.0); \
+                  set_state(PART:"arrow_ef", "default", 0.0); \
                } \
                else if (!strcmp(st, "expand_opened")) { \
-                  set_state(PART:"arrow_shadow_clip", "expand_opened_press", 0.0); \
+                  set_state(PART:"arrow_ef", "expand_opened", 0.0); \
                } \
+               set_state(PART:"arrow_clip", "disabled", 0.0); \
             } \
          } \
-         program { name: "unselected_arrow_shadow"; \
-            signal: "elm,state,unselected"; \
+         program { name: "disabled_arrow"; \
+            signal: "elm,state,disabled"; \
             source: "elm"; \
             script { \
                new st[31]; \
                new Float:vl; \
-               get_state(PART:"arrow_shadow_clip", st, 30, vl); \
-               if (!strcmp(st, "default_press")) { \
-                  set_state(PART:"arrow_shadow_clip", "default", 0.0); \
+               get_state(PART:"arrow", st, 30, vl); \
+               if (!strcmp(st, "default")) { \
+                  set_state(PART:"arrow_ef", "default_dim", 0.0); \
                } \
-               else if (!strcmp(st, "expand_opened_press")) { \
-                  set_state(PART:"arrow_shadow_clip", "expand_opened", 0.0); \
+               else if (!strcmp(st, "expand_opened")) { \
+                  set_state(PART:"arrow_ef", "expand_opened_dim", 0.0); \
                } \
+               set_state(PART:"arrow_clip", "disabled", 0.0); \
             } \
          }
 
@@ -2469,7 +2477,11 @@
 #define GENLIST_IMAGES_EXPANDABLE_BTN \
          images { \
             image: "00_list_button_expand_closed.png" COMP; \
+            image: "00_list_button_expand_closed_ef.png" COMP; \
+            image: "00_list_button_expand_closed_dim_ef.png" COMP; \
             image: "00_list_button_expand_opened.png" COMP; \
+            image: "00_list_button_expand_opened_ef.png" COMP; \
+            image: "00_list_button_expand_opened_dim_ef.png" COMP; \
          }
 
 #define GENLIST_PART_EXPANDABLE_ARROW \
@@ -2491,35 +2503,7 @@
                color_class: "F032L1P"; \
             } \
          ) \
-         PART(RECT, "arrow_shadow_clip", \
-            DESC_TO("arrow_shadow", \
-               color: GENLIST_EXPANDABLE_ARROW_SHADOW_NORMAL_COLOR; \
-            ) \
-            description { state: "disabled" 0.0; \
-               color: GENLIST_EXPANDABLE_ARROW_SHADOW_DIM_COLOR; \
-            } \
-            description { state: "expand_opened_press" 0.0; \
-               color: GENLIST_EXPANDABLE_ARROW_SHADOW_PRESS_COLOR; \
-               visible: 0; \
-            } \
-            description { state: "default_press" 0.0; \
-               color: GENLIST_EXPANDABLE_ARROW_SHADOW_PRESS_COLOR; \
-               visible: 0; \
-            } \
-         ) \
-         GENLIST_PART_PROXY("arrow_shadow", \
-            clip_to: "arrow_shadow_clip"; \
-            ignore_flags: ON_HOLD; \
-            mouse_events: 0; \
-            description { state : "default" 0.0; \
-               source: "arrow"; \
-               rel1.to: "arrow"; \
-               rel1.offset: 0 2; \
-               rel2.to: "arrow"; \
-               rel2.offset: 0 2; \
-            } \
-         ) \
-         PART(IMAGE, "arrow", \
+         GENLIST_PART_IMAGE("arrow", \
             clip_to: "arrow_clip"; \
             ignore_flags: ON_HOLD; \
             mouse_events: 0; \
@@ -2538,6 +2522,29 @@
             } \
             description { state: "expand_opened_press" 0.0; \
                inherit: "expand_opened" 0.0; \
+            } \
+         ) \
+         GENLIST_PART_IMAGE("arrow_ef", \
+            clip_to: "arrow_clip"; \
+            ignore_flags: "ON_HOLD"; \
+            mouse_events: 0; \
+            description { state: "default" 0.0; \
+               fixed: 1 1; \
+               rel1.to: "arrow"; \
+               rel2.to: "arrow"; \
+               image.normal: "00_list_button_expand_closed_ef.png"; \
+            } \
+            description { state: "default_dim" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "00_list_button_expand_closed_dim_ef.png"; \
+            } \
+            description { state: "expand_opened" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "00_list_button_expand_opened_ef.png"; \
+            } \
+            description { state: "expand_opened_dim" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "00_list_button_expand_opened_dim_ef.png"; \
             } \
          )
 
