@@ -1107,13 +1107,7 @@
             normal: "00_list_group_bg_bottom_ef.#.png"; \
          } \
       } \
-   ) \
-   PART(RECT, "sound",  \
-      repeat_events: 1;  /*for play_sound to check pressed state*/ \
-      description { state: "default" 0.0; \
-         color: 0 0 0 0; \
-      } \
-   ) \
+   )
 
 //****************************************************************************//
 // ****************************** BASE  ********************************//
@@ -1761,21 +1755,14 @@
          target: "focus_part_dialogue"; \
       }
 
-#define GENLIST_PROGRAM_SOUND( SRC ) \
-      program { name: "play_sound"SRC; \
-         signal: "mouse,clicked,1"; \
-         source: SRC; \
-         script { \
-            new st[31]; \
-            new Float:vl; \
-            get_state(PART:SRC, st, 30, vl); \
-            if (!strcmp(st, "pressed") || \
-                !strcmp(st, "top_pressed") || \
-                !strcmp(st, "center_pressed") || \
-                !strcmp(st, "bottom_pressed")) \
-               play_sample("touch_sound", 1.0); \
-         } \
-      }
+#define PROGRAM_LIST_SOUND \
+   program { name: "play_sound"; \
+      signal: "elm,state,clicked"; \
+      source: "elm"; \
+      script { \
+         play_sample("touch_sound", 1.0); \
+      } \
+   }
 
 #define GENLIST_PROGRAM_SELECT( TARGET ) \
          program { name: "pressed"; \
@@ -2136,9 +2123,7 @@
          target: "bg_reorder"; \
          target: "bg_reorder_ef"; \
       ) \
-      GENLIST_PROGRAM_SOUND("bg") \
-      GENLIST_PROGRAM_SOUND("bg_reorder") \
-      GENLIST_PROGRAM_SOUND("bg_reorder_ef") \
+      PROGRAM_LIST_SOUND \
       GENLIST_PROGRAM_DECORATE_REORDER("normal", TARGET \
          target: "bg_clip"; \
          target: "bg_reorder_clip"; \
@@ -2172,8 +2157,7 @@
          target: "bg_dialogue_clip"; \
          target: "bg_dialogue_ef_clip"; \
       } \
-      GENLIST_PROGRAM_SOUND("bg_dialogue") \
-      GENLIST_PROGRAM_SOUND("bg_dialogue_ef") \
+      PROGRAM_LIST_SOUND \
       GENLIST_PROGRAM_DECORATE_REORDER( "normal", TARGET \
          target: "elm.padding.left"; \
          target: "elm.padding.right"; \
@@ -3292,12 +3276,6 @@
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
                visible: 0; \
-            } \
-         ) \
-         PART(RECT, "sound",  \
-            repeat_events: 1;  /*for play_sound to check pressed state*/ \
-            description { state: "default" 0.0; \
-               color: 0 0 0 0; \
             } \
          ) \
       } \
