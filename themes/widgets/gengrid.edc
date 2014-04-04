@@ -44,7 +44,7 @@
    }
    styles {
       style { name: "gengrid_applicaton_name_style";
-         base: "font=Tizen:style=Regular font_size="GENGRID_FONT_STYLE_APPLICATION_INC" color="GENGRID_PART_APPLICATION_NAME_COLOR_INC" align=center wrap=mixed ellipsis=1.0 text_class=tizen linegap=-3";
+         base: "font=Tizen:style=Regular font_size="GENGRID_FONT_STYLE_APPLICATION_INC" color=#ffffff color_class=T0601 text_class=T0601 align=center wrap=mixed ellipsis=1.0 linegap=-3";
          tag: "br" "\n";
          tag: "ps" "ps";
          tag: "tab" "\t";
@@ -53,7 +53,7 @@
    }
    styles {
       style { name: "gengrid_applicaton_name_focus_style";
-         base: "font=Tizen:style=Regular font_size="GENGRID_FONT_STYLE_APPLICATION_INC" color="GENGRID_PART_APPLICATION_NAME_FOCUS_COLOR_INC" align=center wrap=mixed ellipsis=1.0 text_class=tizen linegap=-3";
+         base: "font=Tizen:style=Regular font_size="GENGRID_FONT_STYLE_APPLICATION_INC" color=#ffffff color_class=T0601 text_class=T0601 align=center wrap=mixed ellipsis=1.0 linegap=-3";
          tag: "br" "\n";
          tag: "ps" "ps";
          tag: "tab" "\t";
@@ -1283,7 +1283,7 @@
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color_class: "T027S";
+               color_class: "T027P";
             }
          }
          part { name: "index_line";
@@ -1300,12 +1300,13 @@
                   to_x: "base";
                   to_y: "elm.padding.bottom";
                }
-               color_class: "B0223";
+               color_class: "W021L2";
                min: 0 4;
                max: -1 4;
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
+               color_class: "W021L2P";
             }
          }
          part { name: "focus_bg";
@@ -1388,7 +1389,6 @@
       data.item: "contents" "elm.swallow.icon elm.swallow.block elm.swallow.end";
       data.item: "focus_highlight" "on";
       images {
-         image : "00_grid_selected_bg.png" COMP;
          image : "00_focus_01.#.png" COMP;
       }
       parts {
@@ -1411,11 +1411,10 @@
             }
          }
          part { name: "selected_bg";
-            type: IMAGE;
+            type: RECT;
             description { state: "default" 0.0;
                visible: 0;
-               image.normal: "00_grid_selected_bg.png";
-               image.border: GENGRID_POPUP_SELECT_BG_BORDER;
+               color_class: "B0411";
             }
             description { state: "enabled" 0.0;
                inherit: "default" 0.0;
@@ -1549,8 +1548,26 @@
                rel2.to: "selected_bg";
             }
          }
+         part { name: "outline_bg";
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to: "bg";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to: "bg";
+               }
+               image.normal: "00_focus_01.#.png";
+               color_class: "W161";
+            }
+            description { state: "enabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
          part { name: "focus_bg";
-            type: IMAGE;
             description { state: "default" 0.0;
                visible: 0;
                rel1 {
@@ -1582,6 +1599,7 @@
             source: "elm";
             script {
                set_state(PART:"selected_bg", "default",  0.0);
+               set_state(PART:"outline_bg", "default", 0.0);
                set_state(PART:"elm.text", "default",  0.0);
                set_state(PART:"select_clip", "selected",  0.0);
             }
@@ -1597,6 +1615,7 @@
             source: "";
             action: STATE_SET "enabled" 0.0;
             target: "selected_bg";
+            target: "outline_bg";
             target: "elm.text";
          }
          program { name: "select_disabled";
@@ -1604,6 +1623,7 @@
             source: "";
             action: STATE_SET "default" 0.0;
             target: "selected_bg";
+            target: "outline_bg";
             target: "elm.text";
          }
          program { name: "action_focus";
@@ -1620,6 +1640,7 @@
          }
          GENGRID_PROGRAM_DEFAULT(
             target: "selected_bg";
+            target: "outline_bg";
             target: "elm.text";
             target: "select_clip";
          )
