@@ -81,7 +81,7 @@
                }
                color_class: "W011";
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                color_class: "B042";
             }
@@ -100,7 +100,7 @@
                   normal: "00_button_01_bg_ef.#.png";
                }
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
             }
             description { state: "disabled" 0.0;
@@ -272,7 +272,7 @@
             description { state: "default" 0.0;
                color_class: "F031L1";
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                color_class: "F031L1P";
             }
             description { state: "disabled" 0.0;
@@ -303,7 +303,7 @@
                inherit: "default" 0.0;
                visible: 1;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "visible" 0.0;
                text {
                   style: "btn_base_style1_pressed";
@@ -353,52 +353,49 @@
          }
       }
       programs {
-         program { name: "button_click";
+         program { name: "button_press";
             signal: "mouse,down,1";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click1");
+                     run_program(PROGRAM:"button_press2");
                  }
             }
          }
-         program { name: "button_click1";
+         program { name: "button_press2";
             action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_click_anim";
-            action: STATE_SET "clicked" 0.0;
+         program { name: "button_press_anim";
+            action: STATE_SET "pressed" 0.0;
             target: "button_image";
             target: "button_effect_image";
             target: "icon_clipper";
-            after: "text_clicked";
+            after: "text_press";
          }
-         program { name: "text_clicked";
+         program { name: "text_press";
             script {
                new st[31];
                new Float:vl;
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.text", "clicked", 0.0);
+                 set_state(PART:"elm.text", "pressed", 0.0);
             }
          }
-         program { name: "button_double_click";
+         program { name: "button_double_press";
             signal: "mouse,down,1,double";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click_anim");
+                     run_program(PROGRAM:"button_press_anim");
                  }
             }
          }
          program { name: "button_unpress";
-            action: SIGNAL_EMIT "elm,action,unpress" "";
-         }
-         program { name: "button_mouseout_clicked";
             signal: "mouse,up,1";
             source: "over3";
             script {
@@ -423,20 +420,23 @@
                  }
             }
          }
-         program { name: "touch_snd";
+         program { name: "button_unpress2";
+            action: SIGNAL_EMIT "elm,action,unpress" "";
+         }
+         program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over2";
             script {
                if (get_int(multi_down) == 0) {
                  run_program(PROGRAM:"play_sound");
-                 run_program(PROGRAM:"button_unclick3");
+                 run_program(PROGRAM:"button_click2");
                }
             }
          }
          program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
-         program { name: "button_unclick3";
+         program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "text_show";
@@ -552,21 +552,21 @@
                set_int(button_state, BUTTON_STATE_ENABLED);
             }
          }
-         program { name: "button_pressed";
+         program { name: "key_press";
             signal: "elm,action,pressed";
             source: "elm";
             script {
                new st[31];
                new Float:vl;
-               set_state(PART:"button_image", "clicked", 0.0);
-               set_state(PART:"button_effect_image", "clicked", 0.0);
-               set_state(PART:"icon_clipper", "clicked", 0.0);
+               set_state(PART:"button_image", "pressed", 0.0);
+               set_state(PART:"button_effect_image", "pressed", 0.0);
+               set_state(PART:"icon_clipper", "pressed", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.text", "clicked", 0.0);
+                 set_state(PART:"elm.text", "pressed", 0.0);
             }
          }
-         program { name: "button_unpressed";
+         program { name: "key_unpress";
             signal: "elm,action,unpressed";
             source: "elm";
             script {
@@ -576,7 +576,7 @@
                set_state(PART:"button_effect_image", "default", 0.0);
                set_state(PART:"icon_clipper", "default", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "clicked"))
+               if (!strcmp(st, "pressed"))
                  set_state(PART:"elm.text", "visible", 0.0);
             }
          }
@@ -641,7 +641,7 @@
                inherit: "default" 0.0;
                visible: 1;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "visible" 0.0;
                text {
                   style: "btn_base_style1_pressed";
@@ -707,7 +707,7 @@
                min: BUTTON_DATETIME_AMPM_BG_MIN_INC;
                max: BUTTON_DATETIME_AMPM_BG_MIN_INC;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                color: 0 0 0 0;
             }
@@ -729,7 +729,7 @@
                max: BUTTON_DATETIME_AMPM_BG_MIN_INC;
                visible: 0;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
             }
             description { state: "disabled" 0.0;
@@ -785,7 +785,7 @@
                inherit: "default" 0.0;
                visible: 1;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "visible" 0.0;
                text {
                   style: "btn_base_ampm_pressed";
@@ -864,7 +864,7 @@
                inherit: "default" 0.0;
                visible: 1;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "visible" 0.0;
                text {
                   style: "btn_base_sweep_pressed";
@@ -943,7 +943,7 @@
                inherit: "default" 0.0;
                visible: 1;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "visible" 0.0;
                text {
                   style: "btn_base_style1_delete_pressed";
@@ -1022,7 +1022,7 @@
                inherit: "default" 0.0;
                visible: 1;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "visible" 0.0;
                text {
                   style: "btn_base_sweep_delete_pressed";
@@ -1098,7 +1098,7 @@
                }
                visible: 0;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                color_class: "B0215P";
                visible: 1;
@@ -1299,7 +1299,7 @@
             description { state: "default" 0.0;
                color_class: "F043i";
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                color_class: "F043iP";
             }
             description { state: "disabled" 0.0;
@@ -1332,7 +1332,7 @@
                inherit: "default" 0.0;
                visible: 1;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "visible" 0.0;
                text {
                   style: "btn_base_search_pressed";
@@ -1382,51 +1382,48 @@
          }
       }
       programs {
-         program { name: "button_click";
+         program { name: "button_press";
             signal: "mouse,down,1";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click1");
+                     run_program(PROGRAM:"button_press2");
                  }
             }
          }
-         program { name: "button_click1";
+         program { name: "button_press2";
             action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_click_anim";
-            action: STATE_SET "clicked" 0.0;
+         program { name: "button_press_anim";
+            action: STATE_SET "pressed" 0.0;
             target: "button_image";
             target: "icon_clipper";
-            after: "text_clicked";
+            after: "text_press";
          }
-         program { name: "text_clicked";
+         program { name: "text_press";
             script {
                new st[31];
                new Float:vl;
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.text", "clicked", 0.0);
+                 set_state(PART:"elm.text", "pressed", 0.0);
             }
          }
-         program { name: "button_double_click";
+         program { name: "button_double_press";
             signal: "mouse,down,1,double";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click_anim");
+                     run_program(PROGRAM:"button_press_anim");
                  }
             }
          }
          program { name: "button_unpress";
-            action: SIGNAL_EMIT "elm,action,unpress" "";
-         }
-         program { name: "button_mouseout_clicked";
             signal: "mouse,up,1";
             source: "over3";
             script {
@@ -1446,24 +1443,27 @@
                          set_state(PART:"button_image", "default", 0.0);
                       }
                     set_state(PART:"icon_clipper", "default", 0.0);
-                    run_program(PROGRAM:"button_unpress");
+                    run_program(PROGRAM:"button_unpress2");
                  }
             }
          }
-         program { name: "touch_snd";
+         program { name: "button_unpress2";
+            action: SIGNAL_EMIT "elm,action,unpress" "";
+         }
+         program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over2";
             script {
                if (get_int(multi_down) == 0) {
                  run_program(PROGRAM:"play_sound");
-                 run_program(PROGRAM:"button_unclick3");
+                 run_program(PROGRAM:"button_click2");
                }
             }
          }
          program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
-         program { name: "button_unclick3";
+         program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "text_show";
@@ -1577,20 +1577,20 @@
                set_int(button_state, BUTTON_STATE_ENABLED);
             }
          }
-         program { name: "button_pressed";
+         program { name: "key_press";
             signal: "elm,action,pressed";
             source: "elm";
             script {
                new st[31];
                new Float:vl;
-               set_state(PART:"button_image", "clicked", 0.0);
-               set_state(PART:"icon_clipper", "clicked", 0.0);
+               set_state(PART:"button_image", "pressed", 0.0);
+               set_state(PART:"icon_clipper", "pressed", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.text", "clicked", 0.0);
+                 set_state(PART:"elm.text", "pressed", 0.0);
             }
          }
-         program { name: "button_unpressed";
+         program { name: "key_unpress";
             signal: "elm,action,unpressed";
             source: "elm";
             script {
@@ -1599,7 +1599,7 @@
                set_state(PART:"button_image", "default", 0.0);
                set_state(PART:"icon_clipper", "default", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "clicked"))
+               if (!strcmp(st, "pressed"))
                  set_state(PART:"elm.text", "visible", 0.0);
             }
          }
@@ -1685,7 +1685,7 @@
                   normal: "00_popup_button.#.png";
                }
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                color_class: "B065L4P";
             }
@@ -1790,7 +1790,7 @@
             description { state: "default" 0.0;
                color_class: "F031L1";
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                color_class: "F031L1P";
             }
             description { state: "disabled" 0.0;
@@ -1822,7 +1822,7 @@
                inherit: "default" 0.0;
                visible: 1;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "visible" 0.0;
                text {
                   style: "btn_base_popup_button_pressed";
@@ -1875,51 +1875,48 @@
          }
       }
       programs {
-         program { name: "button_click";
+         program { name: "button_press";
             signal: "mouse,down,1";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click1");
+                     run_program(PROGRAM:"button_press2");
                  }
             }
          }
-         program { name: "button_click1";
+         program { name: "button_press2";
             action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_click_anim";
-            action: STATE_SET "clicked" 0.0;
+         program { name: "button_press_anim";
+            action: STATE_SET "pressed" 0.0;
             target: "button_image";
             target: "icon_clipper";
-            after: "text_clicked";
+            after: "text_press";
          }
-         program { name: "text_clicked";
+         program { name: "text_press";
             script {
                new st[31];
                new Float:vl;
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.text", "clicked", 0.0);
+                 set_state(PART:"elm.text", "pressed", 0.0);
             }
          }
-         program { name: "button_double_click";
+         program { name: "button_double_press";
             signal: "mouse,down,1,double";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click_anim");
+                     run_program(PROGRAM:"button_press_anim");
                  }
             }
          }
          program { name: "button_unpress";
-            action: SIGNAL_EMIT "elm,action,unpress" "";
-         }
-         program { name: "button_mouseout_clicked";
             signal: "mouse,up,1";
             source: "over3";
             script {
@@ -1936,24 +1933,27 @@
                  if (get_int(button_state) != BUTTON_STATE_DISABLED)
                    set_state(PART:"button_image", "default", 0.0);
                  set_state(PART:"icon_clipper", "default", 0.0);
-                 run_program(PROGRAM:"button_unpress");
+                 run_program(PROGRAM:"button_unpress2");
                }
             }
          }
-         program { name: "button_pressed";
+         program { name: "button_unpress2";
+            action: SIGNAL_EMIT "elm,action,unpress" "";
+         }
+         program { name: "key_press";
             signal: "elm,action,pressed";
             source: "elm";
             script {
                new st[31];
                new Float:vl;
-               set_state(PART:"button_image", "clicked", 0.0);
-               set_state(PART:"icon_clipper", "clicked", 0.0);
+               set_state(PART:"button_image", "pressed", 0.0);
+               set_state(PART:"icon_clipper", "pressed", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.text", "clicked", 0.0);
+                 set_state(PART:"elm.text", "pressed", 0.0);
             }
          }
-         program { name: "button_unpressed";
+         program { name: "key_unpress";
             signal: "elm,action,unpressed";
             source: "elm";
             script {
@@ -1962,24 +1962,24 @@
                set_state(PART:"button_image", "default", 0.0);
                set_state(PART:"icon_clipper", "default", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "clicked"))
+               if (!strcmp(st, "pressed"))
                  set_state(PART:"elm.text", "visible", 0.0);
             }
          }
-         program { name: "touch_snd";
+         program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over2";
             script {
                if (get_int(multi_down) == 0) {
                  run_program(PROGRAM:"play_sound");
-                 run_program(PROGRAM:"button_unclick3");
+                 run_program(PROGRAM:"button_click2");
                }
             }
          }
          program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
-         program { name: "button_unclick3";
+         program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "text_show";
@@ -2151,7 +2151,7 @@
                rel2.to: "button_image"; \
                visible: 0 ; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                visible: 1 ; \
                color_class: "B042"; \
@@ -2200,7 +2200,7 @@
                } \
                color_class: "F032L1"; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                color_class: "F031L1P"; \
             } \
@@ -2216,7 +2216,7 @@
                 rel2.to: "button_center_part"; \
                 image.normal: image_effect; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                 inherit: "default" 0.0; \
                 visible: 0; \
             } \
@@ -2273,68 +2273,68 @@
          } \
       } \
       programs { \
-         program { name: "button_click"; \
+         program { name: "button_press"; \
             signal: "mouse,down,1"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click1"); \
+                     run_program(PROGRAM:"button_press2"); \
                  } \
             } \
          } \
-         program { name: "button_click1"; \
+         program { name: "button_press2"; \
             action: SIGNAL_EMIT "elm,action,press" ""; \
-            after: "button_click_anim"; \
+            after: "button_press_anim"; \
          } \
-         program { name: "button_click_anim"; \
-            action: STATE_SET "clicked" 0.0; \
+         program { name: "button_press_anim"; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_bg" ; \
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "button_double_click"; \
+         program { name: "button_double_press"; \
             signal: "mouse,down,1,double"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click_anim"); \
+                     run_program(PROGRAM:"button_press_anim"); \
                  } \
             } \
          } \
-         program { name: "button_unclick"; \
+         program { name: "button_unpress"; \
             signal: "mouse,up,1"; \
             source: "over2"; \
             script { \
                if (get_int(mouse_down) == 1) \
                  { \
                     set_int(mouse_down, 0); \
-                    run_program(PROGRAM:"button_unpress"); \
-                    run_program(PROGRAM:"button_unclick_anim"); \
+                    run_program(PROGRAM:"button_unpress2"); \
+                    run_program(PROGRAM:"button_unpress_anim"); \
                  } \
             } \
          } \
-         program { name: "button_unpress"; \
+         program { name: "button_unpress2"; \
             action: SIGNAL_EMIT "elm,action,unpress" ""; \
          } \
-         program { name: "button_unclick_anim"; \
+         program { name: "button_unpress_anim"; \
             action: STATE_SET "default" 0.0; \
             target: "button_bg" ; \
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "button_pressed"; \
+         program { name: "key_press"; \
             signal: "elm,action,pressed"; \
             source: "elm"; \
-            action: STATE_SET "clicked" 0.0; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_bg" ; \
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "button_unpressed"; \
+         program { name: "key_unpress"; \
             signal: "elm,action,unpressed"; \
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
@@ -2342,20 +2342,20 @@
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "touch_snd"; \
+         program { name: "button_click"; \
             signal: "mouse,clicked,1"; \
             source: "over1"; \
             script { \
                if (get_int(multi_down) == 0) { \
                  run_program(PROGRAM:"play_sound"); \
-                 run_program(PROGRAM:"button_unclick3"); \
+                 run_program(PROGRAM:"button_click2"); \
                } \
             } \
          } \
          program { name: "play_sound"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
          } \
-         program { name: "button_unclick3"; \
+         program { name: "button_click2"; \
             action: SIGNAL_EMIT "elm,action,click" ""; \
          } \
          program { name: "disable"; \
@@ -2443,7 +2443,7 @@
                rel2.to: "button_image"; \
                color_class: "W011"; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                color_class: "B042"; \
             } \
@@ -2513,7 +2513,7 @@
                } \
                color_class: "F031L1"; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                color_class: "F031L1P"; \
             } \
@@ -2529,7 +2529,7 @@
                 rel2.to: "button_center_part"; \
                 image.normal: image_effect; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                 inherit: "default" 0.0; \
                 visible: 0; \
             } \
@@ -2586,68 +2586,68 @@
          } \
       } \
       programs { \
-         program { name: "button_click"; \
+         program { name: "button_press"; \
             signal: "mouse,down,1"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click1"); \
+                     run_program(PROGRAM:"button_press2"); \
                  } \
             } \
          } \
-         program { name: "button_click1"; \
+         program { name: "button_press2"; \
             action: SIGNAL_EMIT "elm,action,press" ""; \
-            after: "button_click_anim"; \
+            after: "button_press_anim"; \
          } \
-         program { name: "button_click_anim"; \
-            action: STATE_SET "clicked" 0.0; \
+         program { name: "button_press_anim"; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_bg"; \
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "button_double_click"; \
+         program { name: "button_double_press"; \
             signal: "mouse,down,1,double"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click_anim"); \
+                     run_program(PROGRAM:"button_press_anim"); \
                  } \
             } \
          } \
-         program { name: "button_unclick"; \
+         program { name: "button_unpress"; \
             signal: "mouse,up,1"; \
             source: "over2"; \
             script { \
                if (get_int(mouse_down) == 1) \
                  { \
                     set_int(mouse_down, 0); \
-                    run_program(PROGRAM:"button_unpress"); \
-                    run_program(PROGRAM:"button_unclick_anim"); \
+                    run_program(PROGRAM:"button_unpress2"); \
+                    run_program(PROGRAM:"button_unpress_anim"); \
                  } \
             } \
          } \
-         program { name: "button_unpress"; \
+         program { name: "button_unpress2"; \
             action: SIGNAL_EMIT "elm,action,unpress" ""; \
          } \
-         program { name: "button_unclick_anim"; \
+         program { name: "button_unpress_anim"; \
             action: STATE_SET "default" 0.0; \
             target: "button_bg"; \
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "button_pressed"; \
+         program { name: "key_press"; \
             signal: "elm,action,pressed"; \
             source: "elm"; \
-            action: STATE_SET "clicked" 0.0; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_bg"; \
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "button_unpressed"; \
+         program { name: "key_unpress"; \
             signal: "elm,action,unpressed"; \
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
@@ -2655,20 +2655,20 @@
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "touch_snd"; \
+         program { name: "button_click"; \
             signal: "mouse,clicked,1"; \
             source: "over1"; \
             script { \
                if (get_int(multi_down) == 0) { \
                  run_program(PROGRAM:"play_sound"); \
-                 run_program(PROGRAM:"button_unclick3"); \
+                 run_program(PROGRAM:"button_click2"); \
                } \
             } \
          } \
          program { name: "play_sound"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
          } \
-         program { name: "button_unclick3"; \
+         program { name: "button_click2"; \
             action: SIGNAL_EMIT "elm,action,click" ""; \
          } \
          program { name: "disable"; \
@@ -2807,7 +2807,7 @@
                rel2.to: "button_image"; \
                visible: 0 ; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                visible: 1 ; \
                color_class: "B042"; \
@@ -2856,7 +2856,7 @@
                } \
                color_class: "F032L2"; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                color_class: "F032L2P"; \
             } \
@@ -2872,7 +2872,7 @@
                 rel2.to: "button_center_part"; \
                 image.normal: image_effect; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                 inherit: "default" 0.0; \
                 visible: 0; \
             } \
@@ -2929,68 +2929,68 @@
          } \
       } \
       programs { \
-         program { name: "button_click"; \
+         program { name: "button_press"; \
             signal: "mouse,down,1"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click1"); \
+                     run_program(PROGRAM:"button_press2"); \
                  } \
             } \
          } \
-         program { name: "button_click1"; \
+         program { name: "button_press2"; \
             action: SIGNAL_EMIT "elm,action,press" ""; \
-            after: "button_click_anim"; \
+            after: "button_press_anim"; \
          } \
-         program { name: "button_click_anim"; \
-            action: STATE_SET "clicked" 0.0; \
+         program { name: "button_press_anim"; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_bg"; \
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "button_double_click"; \
+         program { name: "button_double_press"; \
             signal: "mouse,down,1,double"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click_anim"); \
+                     run_program(PROGRAM:"button_press_anim"); \
                  } \
             } \
          } \
-         program { name: "button_unclick"; \
+         program { name: "button_unpress"; \
             signal: "mouse,up,1"; \
             source: "over2"; \
             script { \
                if (get_int(mouse_down) == 1) \
                  { \
                     set_int(mouse_down, 0); \
-                    run_program(PROGRAM:"button_unpress"); \
-                    run_program(PROGRAM:"button_unclick_anim"); \
+                    run_program(PROGRAM:"button_unpress2"); \
+                    run_program(PROGRAM:"button_unpress_anim"); \
                  } \
             } \
          } \
-         program { name: "button_unpress"; \
+         program { name: "button_unpress2"; \
             action: SIGNAL_EMIT "elm,action,unpress" ""; \
          } \
-         program { name: "button_unclick_anim"; \
+         program { name: "button_unpress_anim"; \
             action: STATE_SET "default" 0.0; \
             target: "button_bg"; \
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "button_pressed"; \
+         program { name: "key_press"; \
             signal: "elm,action,pressed"; \
             source: "elm"; \
-            action: STATE_SET "clicked" 0.0; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_bg"; \
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "button_unpressed"; \
+         program { name: "key_unpress"; \
             signal: "elm,action,unpressed"; \
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
@@ -2998,20 +2998,20 @@
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "touch_snd"; \
+         program { name: "button_click"; \
             signal: "mouse,clicked,1"; \
             source: "over1"; \
             script { \
                if (get_int(multi_down) == 0) { \
                  run_program(PROGRAM:"play_sound"); \
-                 run_program(PROGRAM:"button_unclick3"); \
+                 run_program(PROGRAM:"button_click2"); \
                } \
             } \
          } \
          program { name: "play_sound"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
          } \
-         program { name: "button_unclick3"; \
+         program { name: "button_click2"; \
             action: SIGNAL_EMIT "elm,action,click" ""; \
          } \
          program { name: "disable"; \
@@ -3105,7 +3105,7 @@
                rel2.to: "button_image"; \
                visible: 0 ; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                visible: 1 ; \
                color_class: "B042"; \
@@ -3154,7 +3154,7 @@
                } \
                color_class: "F032L21"; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                color_class: "F032L21P"; \
             } \
@@ -3170,7 +3170,7 @@
                 rel2.to: "button_center_part"; \
                 image.normal: image_effect; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                 inherit: "default" 0.0; \
                 visible: 0; \
             } \
@@ -3227,68 +3227,68 @@
          } \
       } \
       programs { \
-         program { name: "button_click"; \
+         program { name: "button_press"; \
             signal: "mouse,down,1"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click1"); \
+                     run_program(PROGRAM:"button_press2"); \
                  } \
             } \
          } \
-         program { name: "button_click1"; \
+         program { name: "button_press2"; \
             action: SIGNAL_EMIT "elm,action,press" ""; \
-            after: "button_click_anim"; \
+            after: "button_press_anim"; \
          } \
-         program { name: "button_click_anim"; \
-            action: STATE_SET "clicked" 0.0; \
+         program { name: "button_press_anim"; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_bg"; \
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "button_double_click"; \
+         program { name: "button_double_press"; \
             signal: "mouse,down,1,double"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click_anim"); \
+                     run_program(PROGRAM:"button_press_anim"); \
                  } \
             } \
          } \
-         program { name: "button_unclick"; \
+         program { name: "button_unpress"; \
             signal: "mouse,up,1"; \
             source: "over2"; \
             script { \
                if (get_int(mouse_down) == 1) \
                  { \
                     set_int(mouse_down, 0); \
-                    run_program(PROGRAM:"button_unpress"); \
-                    run_program(PROGRAM:"button_unclick_anim"); \
+                    run_program(PROGRAM:"button_unpress2"); \
+                    run_program(PROGRAM:"button_unpress_anim"); \
                  } \
             } \
          } \
-         program { name: "button_unpress"; \
+         program { name: "button_unpress2"; \
             action: SIGNAL_EMIT "elm,action,unpress" ""; \
          } \
-         program { name: "button_unclick_anim"; \
+         program { name: "button_unpress_anim"; \
             action: STATE_SET "default" 0.0; \
             target: "button_bg"; \
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "button_pressed"; \
+         program { name: "key_press"; \
             signal: "elm,action,pressed"; \
             source: "elm"; \
-            action: STATE_SET "clicked" 0.0; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_bg"; \
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "button_unpressed"; \
+         program { name: "key_unpress"; \
             signal: "elm,action,unpressed"; \
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
@@ -3296,20 +3296,20 @@
             target: "button_center_part"; \
             target: "button_center_part_effect"; \
          } \
-         program { name: "touch_snd"; \
+         program { name: "button_click"; \
             signal: "mouse,clicked,1"; \
             source: "over1"; \
             script { \
                if (get_int(multi_down) == 0) { \
                  run_program(PROGRAM:"play_sound"); \
-                 run_program(PROGRAM:"button_unclick3"); \
+                 run_program(PROGRAM:"button_click2"); \
                } \
             } \
          } \
          program { name: "play_sound"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
          } \
-         program { name: "button_unclick3"; \
+         program { name: "button_click2"; \
             action: SIGNAL_EMIT "elm,action,click" ""; \
          } \
          program { name: "disable"; \
@@ -3413,7 +3413,7 @@
                rel2.to: "button_image";
                visible: 0 ;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                visible: 1 ;
                color_class: "B042";
@@ -3470,7 +3470,7 @@
             description { state: "default" 0.0;
                color_class: "F032L1";
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                color_class: "F032L1P";
             }
             description { state: "disabled" 0.0;
@@ -3524,83 +3524,83 @@
          }
       }
       programs {
-         program { name: "button_click";
+         program { name: "button_press";
             signal: "mouse,down,1";
             source: "over1";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click1");
+                     run_program(PROGRAM:"button_press2");
                  }
             }
          }
-         program { name: "button_click1";
+         program { name: "button_press2";
             action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_click_anim";
-            action: STATE_SET "clicked" 0.0;
+         program { name: "button_press_anim";
+            action: STATE_SET "pressed" 0.0;
             target: "button_bg";
             target: "icon_clipper";
          }
-         program { name: "button_pressed";
+         program { name: "key_press";
             signal: "elm,action,pressed";
             source: "elm";
-            action: STATE_SET "clicked" 0.0;
+            action: STATE_SET "pressed" 0.0;
             target: "button_bg";
             target: "icon_clipper";
          }
-         program { name: "button_unpressed";
+         program { name: "key_unpress";
             signal: "elm,action,unpressed";
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "button_bg";
             target: "icon_clipper";
          }
-         program { name: "button_double_click";
+         program { name: "button_double_press";
             signal: "mouse,down,1,double";
             source: "over1";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click_anim");
+                     run_program(PROGRAM:"button_press_anim");
                  }
             }
          }
-         program { name: "touch_snd";
+         program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over1";
             script {
                if (get_int(multi_down) == 0) {
                  run_program(PROGRAM:"play_sound");
-                 run_program(PROGRAM:"button_unclick2");
+                 run_program(PROGRAM:"button_click2");
                }
             }
          }
          program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
-         program { name: "button_unclick2";
+         program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
-         program { name: "button_unclick";
+         program { name: "button_unpress";
             signal: "mouse,up,1";
             source: "over2";
             script {
                if (get_int(mouse_down) == 1)
                  {
                     set_int(mouse_down, 0);
-                    run_program(PROGRAM:"button_unpress");
-                    run_program(PROGRAM:"button_unclick_anim");
+                    run_program(PROGRAM:"button_unpress2");
+                    run_program(PROGRAM:"button_unpress_anim");
                  }
             }
          }
-         program { name: "button_unpress";
+         program { name: "button_unpress2";
             action: SIGNAL_EMIT "elm,action,unpress" "";
          }
-         program { name: "button_unclick_anim";
+         program { name: "button_unpress_anim";
             action: STATE_SET "default" 0.0;
             target: "button_bg";
             target: "icon_clipper";
@@ -3684,7 +3684,7 @@
                image.normal: image_normal; \
                color_class: "F032L1"; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                color_class: "F032L1P"; \
             } \
@@ -3749,81 +3749,81 @@
          } \
       } \
       programs { \
-         program { name: "button_click"; \
+         program { name: "button_press"; \
             signal: "mouse,down,1"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click1"); \
+                     run_program(PROGRAM:"button_press2"); \
                  } \
             } \
          } \
-         program { name: "button_click1"; \
+         program { name: "button_press2"; \
             action: SIGNAL_EMIT "elm,action,press" ""; \
-            after: "button_click_anim"; \
+            after: "button_press_anim"; \
          } \
-         program { name: "button_click_anim"; \
-            action: STATE_SET "clicked" 0.0; \
+         program { name: "button_press_anim"; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_center_part"; \
          } \
-         program { name: "button_pressed"; \
+         program { name: "key_press"; \
             signal: "elm,action,pressed"; \
             source: "elm"; \
-            action: STATE_SET "clicked" 0.0; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_center_part"; \
          } \
-         program { name: "button_unpressed"; \
+         program { name: "key_unpress"; \
             signal: "elm,action,unpressed"; \
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
             target: "button_center_part"; \
          } \
-         program { name: "button_double_click"; \
+         program { name: "button_double_press"; \
             signal: "mouse,down,1,double"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click_anim"); \
+                     run_program(PROGRAM:"button_press_anim"); \
                  } \
             } \
          } \
          program { name: "button_unpress"; \
-            action: SIGNAL_EMIT "elm,action,unpress" ""; \
-         } \
-         program { name: "button_unclick"; \
             signal: "mouse,up,1"; \
             source: "over2"; \
             script { \
                if (get_int(mouse_down) == 1) \
                  { \
                     set_int(mouse_down, 0); \
-                    run_program(PROGRAM:"button_unpress"); \
-                    run_program(PROGRAM:"button_unclick_anim"); \
+                    run_program(PROGRAM:"button_unpress2"); \
+                    run_program(PROGRAM:"button_unpress_anim"); \
                  } \
             } \
          } \
-         program { name: "button_unclick_anim"; \
+         program { name: "button_unpress2"; \
+            action: SIGNAL_EMIT "elm,action,unpress" ""; \
+         } \
+         program { name: "button_unpress_anim"; \
             action: STATE_SET "default" 0.0; \
             target: "button_center_part"; \
          } \
-         program { name: "touch_snd"; \
+         program { name: "button_click"; \
             signal: "mouse,clicked,1"; \
             source: "over1"; \
             script { \
                if (get_int(multi_down) == 0) { \
                  run_program(PROGRAM:"play_sound"); \
-                 run_program(PROGRAM:"button_unclick3"); \
+                 run_program(PROGRAM:"button_click2"); \
                } \
             } \
          } \
          program { name: "play_sound"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
          } \
-         program { name: "button_unclick3"; \
+         program { name: "button_click2"; \
             action: SIGNAL_EMIT "elm,action,click" ""; \
          } \
          program { name: "disable"; \
@@ -3909,7 +3909,7 @@
                image.normal: image_normal; \
                color_class: "F032L21"; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                color_class: "F031L1P"; \
             } \
@@ -3992,7 +3992,7 @@
                image.normal: image_normal; \
                color_class: "F032L2"; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                color_class: "F031L1P"; \
             } \
@@ -4074,7 +4074,7 @@
                } \
                color_class: "W011"; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                color_class: "B042"; \
             } \
@@ -4092,7 +4092,7 @@
                   normal: "00_button_01_bg_ef.#.png"; \
                } \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
             } \
             description { state: "disabled" 0.0; \
@@ -4156,7 +4156,7 @@
                aspect_preference: VERTICAL; \
                color_class: "F032L1"; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                color_class: "F032L1P"; \
             } \
@@ -4182,7 +4182,7 @@
                aspect: 1.0 1.0; \
                aspect_preference: VERTICAL; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
             } \
             description { state: "disabled" 0.0; \
@@ -4208,38 +4208,38 @@
          } \
       } \
       programs { \
-         program { name: "button_click"; \
+         program { name: "button_press"; \
             signal: "mouse,down,1"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click1"); \
+                     run_program(PROGRAM:"button_press2"); \
                  } \
             } \
          } \
-         program { name: "button_click1"; \
+         program { name: "button_press2"; \
             action: SIGNAL_EMIT "elm,action,press" ""; \
-            after: "button_click_anim"; \
+            after: "button_press_anim"; \
          } \
-         program { name: "button_click_anim"; \
-            action: STATE_SET "clicked" 0.0; \
+         program { name: "button_press_anim"; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_image"; \
             target: "button_effect_image"; \
             target: "jump_image"; \
             target: "jump_effect_image"; \
          } \
-         program { name: "button_pressed"; \
+         program { name: "key_press"; \
             signal: "elm,action,pressed"; \
             source: "elm"; \
-            action: STATE_SET "clicked" 0.0; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_image"; \
             target: "button_effect_image"; \
             target: "jump_image"; \
             target: "jump_effect_image"; \
          } \
-         program { name: "button_unpressed"; \
+         program { name: "key_unpress"; \
             signal: "elm,action,unpressed"; \
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
@@ -4248,33 +4248,33 @@
             target: "jump_image"; \
             target: "jump_effect_image"; \
          } \
-         program { name: "button_double_click"; \
+         program { name: "button_double_press"; \
             signal: "mouse,down,1,double"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click_anim"); \
+                     run_program(PROGRAM:"button_press_anim"); \
                  } \
             } \
          } \
-         program { name: "button_unclick"; \
+         program { name: "button_unpress"; \
             signal: "mouse,up,1"; \
             source: "over2"; \
             script { \
                if (get_int(mouse_down) == 1) \
                  { \
                      set_int(mouse_down, 0); \
-                     run_program(PROGRAM:"button_unpress"); \
-                     run_program(PROGRAM:"button_unclick_anim"); \
+                     run_program(PROGRAM:"button_unpress2"); \
+                     run_program(PROGRAM:"button_unpress_anim"); \
                   } \
             } \
          } \
-         program { name: "button_unpress"; \
+         program { name: "button_unpress2"; \
             action: SIGNAL_EMIT "elm,action,unpress" ""; \
          } \
-         program { name: "button_unclick_anim"; \
+         program { name: "button_unpress_anim"; \
             action: STATE_SET "default" 0.0; \
             target: "button_image"; \
             target: "button_image"; \
@@ -4282,20 +4282,20 @@
             target: "jump_image"; \
             target: "jump_effect_image"; \
          } \
-         program { name: "touch_snd"; \
+         program { name: "button_click"; \
             signal: "mouse,clicked,1"; \
             source: "over1"; \
             script { \
                if (get_int(multi_down) == 0) { \
                  run_program(PROGRAM:"play_sound"); \
-                 run_program(PROGRAM:"button_unclick3"); \
+                 run_program(PROGRAM:"button_click2"); \
                } \
             } \
          } \
          program { name: "play_sound"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
          } \
-         program { name: "button_unclick3"; \
+         program { name: "button_click2"; \
             action: SIGNAL_EMIT "elm,action,click" ""; \
          } \
          program { name: "disable"; \
@@ -4384,7 +4384,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                color_class: "W011"; \
             } \
             description { \
-               state: "clicked" 0.0; \
+               state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                color_class: "B042"; \
             } \
@@ -4408,7 +4408,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                } \
             } \
             description { \
-               state: "clicked" 0.0; \
+               state: "pressed" 0.0; \
                inherit: "default" 0.0; \
             } \
             description { \
@@ -4445,7 +4445,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                image.normal: image_normal; \
                color_class: "F032L1"; \
             } \
-            description { state: "clicked" 0.0; \
+            description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
                color_class: "F032L1P"; \
             } \
@@ -4490,85 +4490,85 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          } \
       } \
       programs { \
-         program { name: "button_click"; \
+         program { name: "button_press"; \
             signal: "mouse,down,1"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click1"); \
+                     run_program(PROGRAM:"button_press2"); \
                  } \
             } \
          } \
-         program { name: "button_click1"; \
+         program { name: "button_press2"; \
             action: SIGNAL_EMIT "elm,action,press" ""; \
-            after: "button_click_anim"; \
+            after: "button_press_anim"; \
          } \
-         program { name: "button_click_anim"; \
-            action: STATE_SET "clicked" 0.0; \
+         program { name: "button_press_anim"; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_image"; \
             target: "button_center_part"; \
          } \
-         program { name: "button_pressed"; \
+         program { name: "key_press"; \
             signal: "elm,action,pressed"; \
             source: "elm"; \
-            action: STATE_SET "clicked" 0.0; \
+            action: STATE_SET "pressed" 0.0; \
             target: "button_image"; \
             target: "button_center_part"; \
          } \
-         program { name: "button_unpressed"; \
+         program { name: "key_unpress"; \
             signal: "elm,action,unpressed"; \
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
             target: "button_image"; \
             target: "button_center_part"; \
          } \
-         program { name: "button_double_click"; \
+         program { name: "button_double_press"; \
             signal: "mouse,down,1,double"; \
             source: "over1"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_click_anim"); \
+                     run_program(PROGRAM:"button_press_anim"); \
                  } \
             } \
          } \
-         program { name: "button_unclick"; \
+         program { name: "button_unpress"; \
             signal: "mouse,up,1"; \
             source: "over2"; \
             script { \
                if (get_int(mouse_down) == 1) \
                  { \
                      set_int(mouse_down, 0); \
-                     run_program(PROGRAM:"button_unpress"); \
-                     run_program(PROGRAM:"button_unclick_anim"); \
+                     run_program(PROGRAM:"button_unpress2"); \
+                     run_program(PROGRAM:"button_unpress_anim"); \
                   } \
             } \
          } \
-         program { name: "button_unpress"; \
+         program { name: "button_unpress2"; \
             action: SIGNAL_EMIT "elm,action,unpress" ""; \
          } \
-         program { name: "button_unclick_anim"; \
+         program { name: "button_unpress_anim"; \
             action: STATE_SET "default" 0.0; \
             target: "button_image"; \
             target: "button_center_part"; \
          } \
-         program { name: "touch_snd"; \
+         program { name: "button_click"; \
             signal: "mouse,clicked,1"; \
             source: "over1"; \
             script { \
                if (get_int(multi_down) == 0) { \
                  run_program(PROGRAM:"play_sound"); \
-                 run_program(PROGRAM:"button_unclick3"); \
+                 run_program(PROGRAM:"button_click2"); \
                } \
             } \
          } \
          program { name: "play_sound"; \
             action: PLAY_SAMPLE "touch_sound" 1.0; \
          } \
-         program { name: "button_unclick3"; \
+         program { name: "button_click2"; \
             action: SIGNAL_EMIT "elm,action,click" ""; \
          } \
          program { name: "disable"; \
@@ -4681,7 +4681,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                }
                color_class: "W0711";
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                color_class: "W0711P";
             }
@@ -4770,7 +4770,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                visible: 1;
                min: 1 1;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "visible" 0.0;
                text {
                   style: "btn_base_multibuttonentry_pressed";
@@ -4836,39 +4836,39 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          }
       }
       programs {
-         program { name: "button_click";
+         program { name: "button_press";
             signal: "mouse,down,1";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click1");
+                     run_program(PROGRAM:"button_press2");
                  }
             }
          }
-         program { name: "button_click1";
+         program { name: "button_press2";
             action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_click_anim";
-            action: STATE_SET "clicked" 0.0;
+         program { name: "button_press_anim";
+            action: STATE_SET "pressed" 0.0;
             target: "button_image";
             target: "elm.text";
          }
-         program { name: "button_pressed";
+         program { name: "key_press";
             signal: "elm,action,pressed";
             source: "elm";
             script {
                new st[31];
                new Float:vl;
-               set_state(PART:"button_image", "clicked", 0.0);
+               set_state(PART:"button_image", "pressed", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.text", "clicked", 0.0);
+                 set_state(PART:"elm.text", "pressed", 0.0);
             }
          }
-         program { name: "button_unpressed";
+         program { name: "key_unpress";
             signal: "elm,action,unpressed";
             source: "elm";
             script {
@@ -4876,25 +4876,22 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                new Float:vl;
                set_state(PART:"button_image", "default", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "clicked"))
+               if (!strcmp(st, "pressed"))
                  set_state(PART:"elm.text", "visible", 0.0);
             }
          }
-         program { name: "button_double_click";
+         program { name: "button_double_press";
             signal: "mouse,down,1,double";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click_anim");
+                     run_program(PROGRAM:"button_press_anim");
                  }
             }
          }
          program { name: "button_unpress";
-            action: SIGNAL_EMIT "elm,action,unpress" "";
-         }
-         program { name: "button_mouseout_clicked";
             signal: "mouse,up,1";
             source: "over3";
             script {
@@ -4903,31 +4900,34 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                if (get_int(mouse_down) == 1) {
                  set_int(mouse_down, 0);
                  get_state(PART:"elm.text", st, 30, vl);
-                 if (!strcmp(st, "clicked") || !strcmp(st, "focused"))
+                 if (!strcmp(st, "pressed") || !strcmp(st, "focused"))
                    {
                       emit("elm,action,default,text,set", "");
                       set_state(PART:"elm.text", "visible", 0.0);
                    }
                  if (get_int(button_state) != BUTTON_STATE_DISABLED)
                    set_state(PART:"button_image", "default", 0.0);
-                 run_program(PROGRAM:"button_unpress");
+                 run_program(PROGRAM:"button_unpress2");
                }
             }
          }
-         program { name: "touch_snd";
+         program { name: "button_unpress2";
+            action: SIGNAL_EMIT "elm,action,unpress" "";
+         }
+         program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over2";
             script {
                if (get_int(multi_down) == 0) {
                  run_program(PROGRAM:"play_sound");
-                 run_program(PROGRAM:"button_unclick3");
+                 run_program(PROGRAM:"button_click2");
                }
             }
          }
          program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
-         program { name: "button_unclick3";
+         program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "text_show";
@@ -5080,7 +5080,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             description { state: "default" 0.0;
                color: BUTTON_NAVIFRAME_TITLE_ICON_CLIPPER_DEFAULT_COLOR_INC;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                color: BUTTON_NAVIFRAME_TITLE_ICON_CLIPPER_PRESSED_COLOR_INC;
             }
             description { state: "disabled" 0.0;
@@ -5114,52 +5114,52 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          }
       }
       programs {
-         program { name: "button_click";
+         program { name: "button_press";
             signal: "mouse,down,1";
             source: "over2";
             action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_click_anim";
+         program { name: "button_press_anim";
             script {
-               set_state(PART:"back_button.clipper", "clicked", 0.0);
+               set_state(PART:"back_button.clipper", "pressed", 0.0);
             }
          }
-         program { name: "button_pressed";
+         program { name: "key_press";
             signal: "elm,action,pressed";
             source: "elm";
-            action: STATE_SET "clicked" 0.0;
+            action: STATE_SET "pressed" 0.0;
             target: "back_button.clipper";
          }
-         program { name: "button_unpressed";
+         program { name: "key_unpress";
             signal: "elm,action,unpressed";
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "back_button.clipper";
          }
-         program { name: "button_double_click";
+         program { name: "button_double_press";
             signal: "mouse,down,1,double";
             source: "over2";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_unclick";
+         program { name: "button_unpress";
             signal: "mouse,up,1";
             source: "over3";
             action: SIGNAL_EMIT "elm,action,unpress" "";
-            after: "button_unclick_anim";
+            after: "button_unpress_anim";
          }
-         program { name: "button_unclick_anim";
+         program { name: "button_unpress_anim";
             script {
                set_state(PART:"back_button.clipper", "default", 0.0);
             }
          }
-         program { name: "touch_snd";
+         program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over2";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: button_unclick3;
+            after: "button_click2";
          }
-         program { name: "button_unclick3";
+         program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "disable";
@@ -5261,7 +5261,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                rel1 { to: "button_bg"; }
                rel2 { to: "button_bg"; }
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                visible: 1;
                color_class: "B0511P";
@@ -5311,7 +5311,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                rel2.to: "elm.swallow.content";
                color_class: "B052L1";
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                color_class: "B052L1P";
             }
@@ -5347,56 +5347,53 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          }
       }
       programs {
-         program { name: "button_click";
+         program { name: "button_press";
             signal: "mouse,down,1";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click1");
+                     run_program(PROGRAM:"button_press2");
                  }
             }
          }
-         program { name: "button_click1";
+         program { name: "button_press2";
             action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_click_anim";
+         program { name: "button_press_anim";
             script {
-               set_state(PART:"button_image", "clicked", 0.0);
-               set_state(PART:"elm.swallow.content_clip", "clicked", 0.0);
+               set_state(PART:"button_image", "pressed", 0.0);
+               set_state(PART:"elm.swallow.content_clip", "pressed", 0.0);
             }
          }
-         program { name: "button_double_click";
+         program { name: "button_double_press";
             signal: "mouse,down,1,double";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click_anim");
+                     run_program(PROGRAM:"button_press_anim");
                  }
             }
          }
-         program { name: "button_unpress";
-            action: SIGNAL_EMIT "elm,action,unpress" "";
-         }
-         program { name: "button_pressed";
+         program { name: "key_press";
             signal: "elm,action,pressed";
             source: "elm";
-            action: STATE_SET "clicked" 0.0;
+            action: STATE_SET "pressed" 0.0;
             target: "button_image";
             target: "elm.swallow.content_clip";
          }
-         program { name: "button_unpressed";
+         program { name: "key_unpress";
             signal: "elm,action,unpressed";
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "button_image";
             target: "elm.swallow.content_clip";
          }
-         program { name: "button_mouseout_clicked";
+         program { name: "button_unpress";
             signal: "mouse,up,1";
             source: "over3";
             script {
@@ -5405,24 +5402,27 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                     set_int(mouse_down, 0);
                     set_state(PART:"button_image", "default", 0.0);
                     set_state(PART:"elm.swallow.content_clip", "default", 0.0);
-                    run_program(PROGRAM:"button_unpress");
+                    run_program(PROGRAM:"button_unpress2");
                  }
             }
          }
-         program { name: "touch_snd";
+         program { name: "button_unpress2";
+            action: SIGNAL_EMIT "elm,action,unpress" "";
+         }
+         program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over2";
             script {
                if (get_int(multi_down) == 0) {
                  run_program(PROGRAM:"play_sound");
-                 run_program(PROGRAM:"button_unclick3");
+                 run_program(PROGRAM:"button_click2");
                }
             }
          }
          program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
-         program { name: "button_unclick3";
+         program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "icon_show";
@@ -5517,7 +5517,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                rel1 { to: "button_bg"; }
                rel2 { to: "button_bg"; }
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                visible: 1;
                color_class: "B0511P";
@@ -5555,7 +5555,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                color_class: "B052L1";
                image.normal: "00_icon_drawers.png";
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                color_class: "B052L1P";
             }
@@ -5591,56 +5591,53 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          }
       }
       programs {
-         program { name: "button_click";
+         program { name: "button_press";
             signal: "mouse,down,1";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click1");
+                     run_program(PROGRAM:"button_press2");
                  }
             }
          }
-         program { name: "button_click1";
+         program { name: "button_press2";
             action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_click_anim";
+         program { name: "button_press_anim";
             script {
-               set_state(PART:"button_image", "clicked", 0.0);
-               set_state(PART:"drawer_image", "clicked", 0.0);
+               set_state(PART:"button_image", "pressed", 0.0);
+               set_state(PART:"drawer_image", "pressed", 0.0);
             }
          }
-         program { name: "button_double_click";
+         program { name: "button_double_press";
             signal: "mouse,down,1,double";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click_anim");
+                     run_program(PROGRAM:"button_press_anim");
                  }
             }
          }
-         program { name: "button_unpress";
-            action: SIGNAL_EMIT "elm,action,unpress" "";
-         }
-         program { name: "button_pressed";
+         program { name: "key_press";
             signal: "elm,action,pressed";
             source: "elm";
-            action: STATE_SET "clicked" 0.0;
+            action: STATE_SET "pressed" 0.0;
             target: "button_image";
             target: "drawer_image";
          }
-         program { name: "button_unpressed";
+         program { name: "key_unpress";
             signal: "elm,action,unpressed";
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "button_image";
             target: "drawer_image";
          }
-         program { name: "button_mouseout_clicked";
+         program { name: "button_unpress";
             signal: "mouse,up,1";
             source: "over3";
             script {
@@ -5649,24 +5646,27 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                     set_int(mouse_down, 0);
                     set_state(PART:"button_image", "default", 0.0);
                     set_state(PART:"drawer_image", "default", 0.0);
-                    run_program(PROGRAM:"button_unpress");
+                    run_program(PROGRAM:"button_unpress2");
                  }
             }
          }
-         program { name: "touch_snd";
+         program { name: "button_unpress2";
+            action: SIGNAL_EMIT "elm,action,unpress" "";
+         }
+         program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over2";
             script {
                if (get_int(multi_down) == 0) {
                  run_program(PROGRAM:"play_sound");
-                 run_program(PROGRAM:"button_unclick3");
+                 run_program(PROGRAM:"button_click2");
                }
             }
          }
          program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
-         program { name: "button_unclick3";
+         program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "disable";
@@ -5748,7 +5748,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                rel1 { to: "button_bg"; }
                rel2 { to: "button_bg"; }
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                visible: 1;
                color_class: "B0511P";
@@ -5881,76 +5881,76 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                set_text(PART:"pressed_text", buf);
             }
          }
-         program { name: "button_click";
+         program { name: "button_press";
             signal: "mouse,down,1";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click1");
+                     run_program(PROGRAM:"button_press2");
                  }
             }
          }
-         program { name: "button_click1";
+         program { name: "button_press2";
             action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_click_anim";
+         program { name: "button_press_anim";
             script {
-               set_state(PART:"button_image", "clicked", 0.0);
+               set_state(PART:"button_image", "pressed", 0.0);
                run_program(PROGRAM:"set_pressed_text");
                set_state(PART:"pressed_text", "visible", 0.0);
                set_state(PART:"elm.text", "hide", 0.0);
             }
          }
-         program { name: "button_double_click";
+         program { name: "button_double_press";
             signal: "mouse,down,1,double";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click_anim");
+                     run_program(PROGRAM:"button_press_anim");
                  }
             }
          }
          program { name: "button_unpress";
-            action: SIGNAL_EMIT "elm,action,unpress" "";
-         }
-         program { name: "button_unclick";
             signal: "mouse,up,1";
             source: "over3";
             script {
                if (get_int(mouse_down) == 1)
                  {
                     set_int(mouse_down, 0);
-                    run_program(PROGRAM:"button_unpress");
-                    run_program(PROGRAM:"button_unclick_anim");
+                    run_program(PROGRAM:"button_unpress2");
+                    run_program(PROGRAM:"button_unpress_anim");
                  }
             }
          }
-         program { name: "button_unclick_anim";
+         program { name: "button_unpress2";
+            action: SIGNAL_EMIT "elm,action,unpress" "";
+         }
+         program { name: "button_unpress_anim";
             script {
                set_state(PART:"button_image", "default", 0.0);
                set_state(PART:"pressed_text", "default", 0.0);
                set_state(PART:"elm.text", "default", 0.0);
             }
          }
-         program { name: "button_pressed";
+         program { name: "key_press";
             signal: "elm,action,pressed";
             source: "elm";
             script {
                new st[31];
                new Float:vl;
-               set_state(PART:"button_image", "clicked", 0.0);
-               set_state(PART:"pressed_text", "clicked", 0.0);
+               set_state(PART:"button_image", "pressed", 0.0);
+               set_state(PART:"pressed_text", "pressed", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.text", "clicked", 0.0);
+                 set_state(PART:"elm.text", "pressed", 0.0);
             }
          }
-         program { name: "button_unpressed";
+         program { name: "key_unpress";
             signal: "elm,action,unpressed";
             source: "elm";
             script {
@@ -5959,24 +5959,24 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                set_state(PART:"button_image", "default", 0.0);
                set_state(PART:"pressed_text", "default", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "clicked"))
+               if (!strcmp(st, "pressed"))
                  set_state(PART:"elm.text", "visible", 0.0);
             }
          }
-         program { name: "touch_snd";
+         program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over2";
             script {
                if (get_int(multi_down) == 0) {
                  run_program(PROGRAM:"play_sound");
-                 run_program(PROGRAM:"button_unclick3");
+                 run_program(PROGRAM:"button_click2");
                }
             }
          }
          program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
-         program { name: "button_unclick3";
+         program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "disable";
@@ -6088,7 +6088,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             description { state: "default" 0.0;
                color: BUTTON_NAVIFRAME_TITLE_ICON_CLIPPER_DEFAULT_COLOR_INC;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                color: BUTTON_NAVIFRAME_TITLE_ICON_CLIPPER_PRESSED_COLOR_INC;
             }
             description { state: "disabled" 0.0;
@@ -6122,40 +6122,40 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          }
       }
       programs {
-         program { name: "button_click";
+         program { name: "button_press";
             signal: "mouse,down,1";
             source: "over2";
             action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_click_anim";
+         program { name: "button_press_anim";
             script {
-               set_state(PART:"more_image.clipper", "clicked", 0.0);
+               set_state(PART:"more_image.clipper", "pressed", 0.0);
             }
          }
-         program { name: "button_double_click";
+         program { name: "button_double_press";
             signal: "mouse,down,1,double";
             source: "over2";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_unclick";
+         program { name: "button_unpress";
             signal: "mouse,up,1";
             source: "over3";
             action: SIGNAL_EMIT "elm,action,unpress" "";
-            after: "button_unclick_anim";
+            after: "button_unpress_anim";
          }
-         program { name: "button_unclick_anim";
+         program { name: "button_unpress_anim";
             script {
                set_state(PART:"more_image.clipper", "default", 0.0);
             }
          }
-         program { name: "touch_snd";
+         program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over2";
             action: PLAY_SAMPLE "touch_sound" 1.0;
-            after: button_unclick3;
+            after: "button_click2";
          }
-         program { name: "button_unclick3";
+         program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "disable";
@@ -6271,7 +6271,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                }
                color_class: "W011";
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                color_class: "B042";
             }
@@ -6292,7 +6292,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                   normal: "00_button_01_bg_ef.#.png";
                }
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
             }
             description { state: "disabled" 0.0;
@@ -6372,7 +6372,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                image.normal:"00_arrow_expand.png";
                color_class: "F031L1";
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                color_class: "F031L1P";
             }
@@ -6409,7 +6409,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                text {
                   style: "btn_base_exapandable_number_pressed";
@@ -6462,52 +6462,49 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          }
       }
       programs {
-         program { name: "button_click";
+         program { name: "button_press";
             signal: "mouse,down,1";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click1");
+                     run_program(PROGRAM:"button_press2");
                  }
             }
          }
-         program { name: "button_click1";
+         program { name: "button_press2";
             action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_click_anim";
-            action: STATE_SET "clicked" 0.0;
+         program { name: "button_press_anim";
+            action: STATE_SET "pressed" 0.0;
             target: "button_image";
             target: "button_effect_image";
             target: "arrow_expand";
-            after: "text_clicked";
+            after: "text_press";
          }
-         program { name: "text_clicked";
+         program { name: "text_press";
             script {
                new st[31];
                new Float:vl;
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.text", "clicked", 0.0);
+                 set_state(PART:"elm.text", "pressed", 0.0);
             }
          }
-         program { name: "button_double_click";
+         program { name: "button_double_press";
             signal: "mouse,down,1,double";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click_anim");
+                     run_program(PROGRAM:"button_press_anim");
                  }
             }
          }
          program { name: "button_unpress";
-            action: SIGNAL_EMIT "elm,action,unpress" "";
-         }
-         program { name: "button_mouseout_clicked";
             signal: "mouse,up,1";
             source: "over3";
             script {
@@ -6520,25 +6517,28 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                       set_state(PART:"arrow_expand", "default", 0.0);
                       set_state(PART:"elm.text", "visible", 0.0);
                    }
-                 run_program(PROGRAM:"button_unpress");
+                 run_program(PROGRAM:"button_unpress2");
                }
             }
          }
-         program { name: "button_pressed";
+         program { name: "button_unpress2";
+            action: SIGNAL_EMIT "elm,action,unpress" "";
+         }
+         program { name: "key_press";
             signal: "elm,action,pressed";
             source: "elm";
             script {
                new st[31];
                new Float:vl;
-               set_state(PART:"button_image", "clicked", 0.0);
-               set_state(PART:"button_effect_image", "clicked", 0.0);
-               set_state(PART:"arrow_expand", "clicked", 0.0);
+               set_state(PART:"button_image", "pressed", 0.0);
+               set_state(PART:"button_effect_image", "pressed", 0.0);
+               set_state(PART:"arrow_expand", "pressed", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.text", "clicked", 0.0);
+                 set_state(PART:"elm.text", "pressed", 0.0);
             }
          }
-         program { name: "button_unpressed";
+         program { name: "key_unpress";
             signal: "elm,action,unpressed";
             source: "elm";
             script {
@@ -6548,24 +6548,24 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                set_state(PART:"button_effect_image", "default", 0.0);
                set_state(PART:"arrow_expand", "default", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "clicked"))
+               if (!strcmp(st, "pressed"))
                  set_state(PART:"elm.text", "visible", 0.0);
             }
          }
-         program { name: "touch_snd";
+         program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over2";
             script {
                if (get_int(multi_down) == 0) {
                  run_program(PROGRAM:"play_sound");
-                 run_program(PROGRAM:"button_unclick3");
+                 run_program(PROGRAM:"button_click2");
                }
             }
          }
          program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
-         program { name: "button_unclick3";
+         program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "text_show";
@@ -6684,7 +6684,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             description { state: "default" 0.0;
                visible: 0;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
             }
             description { state: "disabled" 0.0;
@@ -6710,7 +6710,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             description { state: "default" 0.0;
                color: BUTTON_EDITFIELD_CLEAR_BUTTON_CLIPPER_DEFAULT_COLOR_INC;
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                color: BUTTON_EDITFIELD_CLEAR_BUTTON_CLIPPER_PRESSED_COLOR_INC;
             }
             description { state: "disabled" 0.0;
@@ -6744,71 +6744,71 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          }
       }
       programs {
-         program { name: "button_click";
+         program { name: "button_press";
             signal: "mouse,down,1";
             source: "over2";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click1");
+                     run_program(PROGRAM:"button_press2");
                  }
             }
          }
-         program { name: "button_click1";
+         program { name: "button_press2";
             action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_click_anim";
+            after: "button_press_anim";
          }
-         program { name: "button_click_anim";
-            action: STATE_SET "clicked" 0.0;
+         program { name: "button_press_anim";
+            action: STATE_SET "pressed" 0.0;
             target: "button_image";
             target: "clear_button.clipper";
          }
-         program { name: "button_double_click";
+         program { name: "button_double_press";
             signal: "mouse,down,1,double";
             source: "over1";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
                  {
                      set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_click_anim");
+                     run_program(PROGRAM:"button_press_anim");
                  }
             }
          }
-         program { name: "button_unclick";
+         program { name: "button_unpress";
             signal: "mouse,up,1";
             source: "over3";
             script {
                if (get_int(mouse_down) == 1)
                  {
                      set_int(mouse_down, 0);
-                     run_program(PROGRAM:"button_unpress");
-                     run_program(PROGRAM:"button_unclick_anim");
+                     run_program(PROGRAM:"button_unpress2");
+                     run_program(PROGRAM:"button_unpress_anim");
                   }
             }
          }
-         program { name: "button_unpress";
+         program { name: "button_unpress2";
             action: SIGNAL_EMIT "elm,action,unpress" "";
          }
-         program { name: "button_unclick_anim";
+         program { name: "button_unpress_anim";
             action: STATE_SET "default" 0.0;
             target: "button_image";
             target: "clear_button.clipper";
          }
-         program { name: "touch_snd";
+         program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over2";
             script {
                if (get_int(multi_down) == 0) {
                  run_program(PROGRAM:"play_sound");
-                 run_program(PROGRAM:"button_unclick3");
+                 run_program(PROGRAM:"button_click2");
                }
             }
          }
          program { name: "play_sound";
             action: PLAY_SAMPLE "touch_sound" 1.0;
          }
-         program { name: "button_unclick3";
+         program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "disable";
@@ -6899,7 +6899,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          } \
       } \
       programs { \
-         program { name: "button_click"; \
+         program { name: "button_press"; \
             signal: "mouse,down,1"; \
             source: "over2"; \
             script { \
@@ -6910,7 +6910,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                  } \
             } \
          } \
-         program { name: "button_unclick"; \
+         program { name: "button_unpress"; \
             signal: "mouse,up,1"; \
             source: "over3"; \
             script { \
@@ -6921,7 +6921,7 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                   } \
             } \
          } \
-         program { name: "button_click3"; \
+         program { name: "button_click"; \
             signal: "mouse,clicked,1"; \
             source: "over2"; \
             script { \
@@ -6999,7 +6999,7 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus_bottom", "00_focus_01.#.png")
          }
       }
       programs {
-         program { name: "button_click";
+         program { name: "button_press";
             signal: "mouse,down,1";
             source: "over2";
             script {
@@ -7010,7 +7010,7 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus_bottom", "00_focus_01.#.png")
                  }
             }
          }
-         program { name: "button_unclick";
+         program { name: "button_unpress";
             signal: "mouse,up,1";
             source: "over3";
             script {
@@ -7021,7 +7021,7 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus_bottom", "00_focus_01.#.png")
                   }
             }
          }
-         program { name: "button_click3";
+         program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over2";
             script {
@@ -7081,7 +7081,7 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus_bottom", "00_focus_01.#.png")
             description { state: "default" 0.0;
                color_class: "F042i";
             }
-            description { state: "clicked" 0.0;
+            description { state: "pressed" 0.0;
                color_class: "F042iP";
             }
             description { state: "disabled" 0.0;
