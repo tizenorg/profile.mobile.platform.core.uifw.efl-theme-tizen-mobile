@@ -2,14 +2,13 @@ PREFIX ?= /usr
 INSTALL=install -c
 EDC_DIR=$(DESTDIR)/opt/var/efl-theme-tizen-edc
 THEME_DIR=$(DESTDIR)$(PREFIX)/share/elementary/themes
-TABLE_DIR=$(DESTDIR)$(PREFIX)/share/elementary/themes/tables
 EDJE_FLAGS_VERBOSE_ =
 EDJE_FLAGS_VERBOSE_0 =
 EDJE_FLAGS_VERBOSE_1 = -v
 SRC=tizen
 TARGET=HD
 
-all: light dark InputColors
+all: light dark
 	echo  $(escaped_prefix)
 
 .SUFFIXES: .edc .edj
@@ -45,9 +44,6 @@ all: light dark InputColors
 light: light.edj
 dark: dark.edj
 
-InputColors:
-	eet -e tables/$@.cfg config tables/$@.src 1
-
 clean:
 	rm -f *.edj
 	rm -f table/*.cfg
@@ -55,9 +51,6 @@ clean:
 install:
 	mkdir -p $(THEME_DIR)
 	$(INSTALL) tizen*.edj $(THEME_DIR)
-	mkdir -p $(TABLE_DIR)
-	$(INSTALL) tables/*.cfg $(TABLE_DIR)
-	$(INSTALL) tables/*.xml $(TABLE_DIR)
 	mkdir -p $(EDC_DIR)
 	cp -r $(SRC).edc widgets $(EDC_DIR)
 
