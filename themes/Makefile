@@ -7,42 +7,43 @@ EDJE_FLAGS_VERBOSE_ =
 EDJE_FLAGS_VERBOSE_0 =
 EDJE_FLAGS_VERBOSE_1 = -v
 SRC=tizen
-TARGET=tizen.edj
+TARGET=HD
 
-all: $(SRC) InputColors
+all: light dark InputColors
 	echo  $(escaped_prefix)
 
 .SUFFIXES: .edc .edj
 .edc.edj:
-	perl -pi -e 's/TIZEN_TMP_INC/".\/inc\/$(SRC)-inc.edc"/g' $(SRC).edc
+	perl -pi -e 's/TIZEN_TMP_INC/".\/inc\/$(SRC)-$*-inc.edc"/g' $*.edc
 	edje_cc $(EDJE_FLAGS_$(V))\
-	 -id ./images/\
-	 -id ./images/Content_views\
-	 -id ./images/Content_views/Gengrid\
-	 -id ./images/Controls\
-	 -id ./images/Controls/00_Progress_circle_bg\
-	 -id ./images/Controls/Button\
-	 -id ./images/Controls/Check_box\
-	 -id ./images/Controls/Radio_button\
-	 -id ./images/Copy_Paste\
-	 -id ./images/Focus\
-	 -id ./images/GUI_Style_Guide\
-	 -id ./images/Indicator\
-	 -id ./images/Map\
-	 -id ./images/Naviframe\
-	 -id ./images/Naviframe/Icon\
-	 -id ./images/Overscrolling\
-	 -id ./images/Overscrolling/Top\
-	 -id ./images/Overscrolling/Bottom\
-	 -id ./images/Overscrolling/Left\
-	 -id ./images/Overscrolling/Right\
-	 -id ./images/Popup\
-	 -id ./images/Process\
-	 -id ./images/Screen_Reader\
+	 -id ./images/$(TARGET)/$(@:.edj=)\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Content_views\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Content_views/Gengrid\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Controls\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Controls/00_Progress_circle_bg\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Controls/Button\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Controls/Check_box\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Controls/Radio_button\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Copy_Paste\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Focus\
+	 -id ./images/$(TARGET)/$(@:.edj=)/GUI_Style_Guide\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Indicator\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Map\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Naviframe\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Naviframe/Icon\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Overscrolling\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Overscrolling/Top\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Overscrolling/Bottom\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Overscrolling/Left\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Overscrolling/Right\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Popup\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Process\
+	 -id ./images/$(TARGET)/$(@:.edj=)/Screen_Reader\
 	 -sd ./sounds -fd ../objects \
-	 $(SRC).edc $@
+	 $*.edc $(SRC)-$(TARGET)-$@
 
-$(SRC): tizen.edj
+light: light.edj
+dark: dark.edj
 
 InputColors:
 	eet -e tables/$@.cfg config tables/$@.src 1
@@ -53,7 +54,7 @@ clean:
 
 install:
 	mkdir -p $(THEME_DIR)
-	$(INSTALL) $(TARGET) $(THEME_DIR)
+	$(INSTALL) tizen*.edj $(THEME_DIR)
 	mkdir -p $(TABLE_DIR)
 	$(INSTALL) tables/*.cfg $(TABLE_DIR)
 	$(INSTALL) tables/*.xml $(TABLE_DIR)

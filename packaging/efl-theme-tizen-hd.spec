@@ -37,7 +37,8 @@ cp %{_builddir}/%{buildsubdir}/COPYING %{buildroot}/usr/share/license/%{name}
 
 %files
 %defattr(-,root,root,-)
-%{_datadir}/elementary/themes/tizen.edj
+%{_datadir}/elementary/themes/tizen-HD-dark.edj
+%{_datadir}/elementary/themes/tizen-HD-light.edj
 %{_datadir}/elementary/themes/tables/InputColors.cfg
 %{_datadir}/elementary/themes/tables/ChangeableColorTable.xml
 %{_datadir}/elementary/themes/tables/FontInfoTable.xml
