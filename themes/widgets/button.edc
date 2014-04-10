@@ -5557,7 +5557,6 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          image: "00_focus_01.#.png" COMP;
       }
       script {
-         public disabled = 0;
          public mouse_down = 0;
          public multi_down = 0;
       }
@@ -5642,6 +5641,14 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                }
                color_class: "T0205";
             }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               text { text_class: "T0205P";
+                  min: 1 0;
+                  max: 0 1;
+               }
+               color_class: "T0205P";
+            }
             description { state: "disabled" 0.0;
                inherit: "default" 0.0;
                text { text_class: "T0205D";
@@ -5649,31 +5656,6 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
                   max: 0 1;
                }
                color_class: "T0205D";
-            }
-            description { state: "hide" 0.0;
-               inherit: "default" 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "pressed_text";
-            type: TEXT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: BUTTON_NAVIFRAME_TITLE_TEXT_TEXTBLOCK_MIN_W_INC 0;
-               max: BUTTON_NAVIFRAME_TITLE_TEXT_TEXTBLOCK_MAX_W_INC -1;
-               rel1 { relative: 1.0 0.0; to: "left_padding"; }
-               rel2 { relative: 0.0 1.0; to: "right_padding"; }
-               text { text_class: "T0205P";
-                  min: 1 0;
-                  max: 0 1;
-               }
-               color_class: "T0205P";
-               visible: 0;
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
             }
          }
          part { name: "over2";
@@ -5703,13 +5685,6 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          }
       }
       programs {
-         program { name: "set_pressed_text";
-            script {
-               new buf[1024];
-               get_text(PART:"elm.text", buf, 1024);
-               set_text(PART:"pressed_text", buf);
-            }
-         }
          program { name: "button_press";
             signal: "mouse,down,1*";
             source: "over2";
@@ -5726,12 +5701,9 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             after: "button_press_anim";
          }
          program { name: "button_press_anim";
-            script {
-               set_state(PART:"button_image", "pressed", 0.0);
-               run_program(PROGRAM:"set_pressed_text");
-               set_state(PART:"pressed_text", "visible", 0.0);
-               set_state(PART:"elm.text", "hide", 0.0);
-            }
+            action: STATE_SET "pressed" 0.0;
+            target: "button_image";
+            target: "elm.text";
          }
          program { name: "button_unpress";
             signal: "mouse,up,1*";
@@ -5749,37 +5721,23 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
             action: SIGNAL_EMIT "elm,action,unpress" "";
          }
          program { name: "button_unpress_anim";
-            script {
-               set_state(PART:"button_image", "default", 0.0);
-               set_state(PART:"pressed_text", "default", 0.0);
-               set_state(PART:"elm.text", "default", 0.0);
-            }
+            action: STATE_SET "default" 0.0;
+            target: "button_image";
+            target: "elm.text";
          }
          program { name: "key_press";
             signal: "elm,action,pressed";
             source: "elm";
-            script {
-               new st[31];
-               new Float:vl;
-               set_state(PART:"button_image", "pressed", 0.0);
-               set_state(PART:"pressed_text", "pressed", 0.0);
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.text", "pressed", 0.0);
-            }
+            action: STATE_SET "pressed" 0.0;
+            target: "button_image";
+            target: "elm.text";
          }
          program { name: "key_unpress";
             signal: "elm,action,unpressed";
             source: "elm";
-            script {
-               new st[31];
-               new Float:vl;
-               set_state(PART:"button_image", "default", 0.0);
-               set_state(PART:"pressed_text", "default", 0.0);
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "pressed"))
-                 set_state(PART:"elm.text", "visible", 0.0);
-            }
+            action: STATE_SET "default" 0.0;
+            target: "button_image";
+            target: "elm.text";
          }
          program { name: "button_click";
             signal: "mouse,clicked,1";
@@ -5800,24 +5758,18 @@ BUTTON_SCROLL_JUMPTO("jumpto_left", "00_icon_jump_left.png")
          program { name: "disable";
             signal: "elm,state,disabled";
             source: "elm";
-            script {
-               set_int(disabled, 1);
-               set_state(PART:"disabler", "disabled", 0.0);
-               set_state(PART:"button_image", "disabled", 0.0);
-               set_state(PART:"pressed_text", "default", 0.0);
-               set_state(PART:"elm.text", "disabled", 0.0);
-            }
+            action: STATE_SET "disabled" 0.0;
+            target: "disabler";
+            target: "button_image";
+            target: "elm.text";
          }
          program { name: "enable";
             signal: "elm,state,enabled";
             source: "elm";
-            script {
-               set_int(disabled, 0);
-               set_state(PART:"disabler", "default", 0.0);
-               set_state(PART:"button_image", "default", 0.0);
-               set_state(PART:"pressed_text", "default", 0.0);
-               set_state(PART:"elm.text", "default", 0.0);
-            }
+            action: STATE_SET "default" 0.0;
+            target: "disabler";
+            target: "button_image";
+            target: "elm.text";
          }
          program { name: "action_focus";
             signal: "elm,action,focus_highlight,show";

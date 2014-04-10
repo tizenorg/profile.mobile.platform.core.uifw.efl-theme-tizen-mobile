@@ -40,13 +40,15 @@
          image: "00_effect_title_text_dim_right.#.png" COMP;
       }
       script {
-         public tbar_close = 0; //Toolbar lastest Open/Close status
-         public title_badge_visible = 0; //Title badge visible/hidden status
-         public landscape = 0; //Landscape mode status
-         public subtitle = 0; //Subtitle on/off status
-         public drawers_visible = 0; //Drawers on/off status //Used only for "drawers" style
-         public icon_visible = 0; //Icon on/off status
-         public mirrored = 0; //Mirrored on/off status
+         public tbar_close = 0;              //Toolbar lastest Open/Close status
+         public title_badge_visible = 0;     //Title badge visible/hidden status
+         public landscape = 0;               //Landscape mode status
+         public subtitle = 0;                //Subtitle on/off status
+         public drawers_visible = 0;         //Drawers on/off status //Used only for "drawers" style
+         public icon_visible = 0;            //Icon on/off status
+         public title_left_btn_visible = 0;  //Title left button on/off status
+         public title_right_btn_visible = 0; //Title right button on/off status
+         public mirrored = 0;                //Mirrored on/off status
 
          public title_duration = 0;
          public subtitle_duration = 0;
@@ -1496,17 +1498,16 @@
             signal: "elm,state,title,show";
             source: "elm";
             script {
-               if (!get_int(landscape)) {
-                  set_state(PART:"title_bg", "default", 0.0);
-                  set_state(PART:"title_right_btn", "default", 0.0);
-                  set_state(PART:"title_left_btn", "default", 0.0);
-               }
-               else {
-                  set_state(PART:"title_bg", "landscape", 0.0);
-                  set_state(PART:"title_right_btn", "landscape", 0.0);
-                  set_state(PART:"title_left_btn", "landscape", 0.0);
-               }
-               set_state(PART:"elm.swallow.icon", "default", 0.0);
+               if (get_int(landscape))
+                 set_state(PART:"title_bg", "landscape", 0.0);
+               else
+                 set_state(PART:"title_bg", "default", 0.0);
+               if (get_int(icon_visible))
+                 run_program(PROGRAM:"icon_visible");
+               if (get_int(title_left_btn_visible))
+                 run_program(PROGRAM:"title_left_btn_visible");
+               if (get_int(title_right_btn_visible))
+                 run_program(PROGRAM:"title_right_btn_visible");
                run_program(PROGRAM:"start_title_slide");
             }
          }
@@ -1516,27 +1517,28 @@
             script {
                run_program(PROGRAM:"stop_title_slide");
                set_state(PART:"title_bg", "hide", 0.0);
-               set_state(PART:"title_right_btn", "hide", 0.0);
-               set_state(PART:"title_left_btn", "hide", 0.0);
-               set_state(PART:"elm.swallow.icon", "hide", 0.0);
+               run_program(PROGRAM:"icon_invisible");
+               run_program(PROGRAM:"title_left_btn_invisible");
+               run_program(PROGRAM:"title_right_btn_invisible");
             }
          }
          program { name: "title_show_anim";
             signal: "elm,action,title,show";
             source: "elm";
             script {
-               set_state(PART:"elm.swallow.icon", "default", 0.0);
-               if (!get_int(landscape)) {
-                  set_state(PART:"title_bg", "hide_trans", 0.0);
-                  set_state(PART:"title_right_btn", "default", 0.0);
-                  set_state(PART:"title_left_btn", "default", 0.0);
-                  run_program(PROGRAM:"title_show_anim_start_default");
+               if (get_int(icon_visible))
+                 run_program(PROGRAM:"icon_visible");
+               if (get_int(title_left_btn_visible))
+                 run_program(PROGRAM:"title_left_btn_visible");
+               if (get_int(title_right_btn_visible))
+                 run_program(PROGRAM:"title_right_btn_visible");
+               if (get_int(landscape)) {
+                  set_state(PART:"title_bg", "hide_trans_landscape", 0.0);
+                  run_program(PROGRAM:"title_show_anim_start_landscape");
                }
                else {
-                  set_state(PART:"title_bg", "hide_trans_landscape", 0.0);
-                  set_state(PART:"title_right_btn", "landscape", 0.0);
-                  set_state(PART:"title_left_btn", "landscape", 0.0);
-                  run_program(PROGRAM:"title_show_anim_start_landscape");
+                  set_state(PART:"title_bg", "hide_trans", 0.0);
+                  run_program(PROGRAM:"title_show_anim_start_default");
                }
             }
          }
@@ -1589,9 +1591,9 @@
          program { name: "title_hide_trans_finished";
             script {
                set_state(PART:"title_bg", "hide", 0.0);
-               set_state(PART:"title_right_btn", "hide", 0.0);
-               set_state(PART:"title_left_btn", "hide", 0.0);
-               set_state(PART:"elm.swallow.icon", "hide", 0.0);
+               run_program(PROGRAM:"icon_invisible");
+               run_program(PROGRAM:"title_left_btn_invisible");
+               run_program(PROGRAM:"title_right_btn_invisible");
                emit("elm,action,title,transition,finished", "");
             }
          }
@@ -1644,6 +1646,12 @@
             signal: "elm,state,icon,show";
             source: "elm";
             script {
+               run_program(PROGRAM:"icon_visible");
+               set_int(icon_visible, 1);
+            }
+         }
+         program { name: "icon_visible";
+            script {
                set_state(PART:"elm.swallow.icon", "default", 0.0);
                set_state(PART:"title_left_padding", "icon", 0.0);
             }
@@ -1651,6 +1659,12 @@
          program { name: "icon_hide";
             signal: "elm,state,icon,hide";
             source: "elm";
+            script {
+               run_program(PROGRAM:"icon_invisible");
+               set_int(icon_visible, 0);
+            }
+         }
+         program { name: "icon_invisible";
             script {
                set_state(PART:"elm.swallow.icon", "hide", 0.0);
                set_state(PART:"title_left_padding", "default", 0.0);
@@ -1660,29 +1674,65 @@
             signal: "elm,state,title_left_btn,show";
             source: "elm";
             script {
+               run_program(PROGRAM:"title_left_btn_visible");
+               set_int(title_left_btn_visible, 1);
+            }
+         }
+         program { name: "title_left_btn_visible";
+            script {
                set_state(PART:"divider1", "visible", 0.0);
                set_state(PART:"title_right_padding", "title_left_btn_set", 0.0);
+               if (get_int(landscape))
+                 set_state(PART:"title_left_btn", "landscape", 0.0);
+               else
+                 set_state(PART:"title_left_btn", "default", 0.0);
             }
          }
          program { name: "title_left_btn_hide";
             signal: "elm,state,title_left_btn,hide";
             source: "elm";
             script {
+               run_program(PROGRAM:"title_left_btn_invisible");
+               set_int(title_left_btn_visible, 0);
+            }
+         }
+         program { name: "title_left_btn_invisible";
+            script {
                set_state(PART:"divider1", "default", 0.0);
                set_state(PART:"title_right_padding", "default", 0.0);
+               set_state(PART:"title_left_btn", "hide", 0.0);
             }
          }
          program { name: "title_right_btn_show";
             signal: "elm,state,title_right_btn,show";
             source: "elm";
-            action: STATE_SET "visible" 0.0;
-            target: "divider2";
+            script {
+               run_program(PROGRAM:"title_right_btn_visible");
+               set_int(title_right_btn_visible, 1);
+            }
+         }
+         program { name: "title_right_btn_visible";
+            script {
+               set_state(PART:"divider2", "visible", 0.0);
+               if (get_int(landscape))
+                 set_state(PART:"title_right_btn", "landscape", 0.0);
+               else
+                 set_state(PART:"title_right_btn", "default", 0.0);
+            }
          }
          program { name: "title_right_btn_hide";
             signal: "elm,state,title_right_btn,hide";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "divider2";
+            script {
+               run_program(PROGRAM:"title_right_btn_invisible");
+               set_int(title_right_btn_visible, 0);
+            }
+         }
+         program { name: "title_right_btn_invisible";
+            script {
+               set_state(PART:"divider2", "default", 0.0);
+               set_state(PART:"title_right_btn", "hide", 0.0);
+            }
          }
          program { name: "toolbar_show";
             signal: "elm,state,toolbar,show";
@@ -1831,8 +1881,10 @@
                if (!get_int(landscape)) {
                   set_state(PART:"title_text_bg", "landscape", 0.0);
                   set_state(PART:"elm.text.subtitle", "landscape", 0.0);
-                  set_state(PART:"title_right_btn", "landscape", 0.0);
-                  set_state(PART:"title_left_btn", "landscape", 0.0);
+                  if (get_int(title_left_btn_visible))
+                    set_state(PART:"title_left_btn", "landscape", 0.0);
+                  if (get_int(title_right_btn_visible))
+                    set_state(PART:"title_right_btn", "landscape", 0.0);
                   set_state(PART:"toolbar_more_btn", "landscape", 0.0);
                   set_state(PART:"elm.swallow.prev_btn", "landscape", 0.0);
 
@@ -1869,8 +1921,10 @@
                if (get_int(landscape)) {
                   set_state(PART:"title_text_bg", "default", 0.0);
                   set_state(PART:"elm.text.subtitle", "default", 0.0);
-                  set_state(PART:"title_right_btn", "default", 0.0);
-                  set_state(PART:"title_left_btn", "default", 0.0);
+                  if (get_int(title_left_btn_visible))
+                    set_state(PART:"title_left_btn", "default", 0.0);
+                  if (get_int(title_right_btn_visible))
+                    set_state(PART:"title_right_btn", "default", 0.0);
                   set_state(PART:"toolbar_more_btn", "default", 0.0);
                   set_state(PART:"elm.swallow.prev_btn", "default", 0.0);
 
@@ -2002,19 +2056,18 @@
             signal: "elm,state,title,show";
             source: "elm";
             script {
-               if (!get_int(landscape)) {
-                  set_state(PART:"title_bg", "default", 0.0);
-                  set_state(PART:"drawers", "default", 0.0);
-                  set_state(PART:"title_right_btn", "default", 0.0);
-                  set_state(PART:"title_left_btn", "default", 0.0);
-               }
-               else {
-                  set_state(PART:"title_bg", "landscape", 0.0);
-                  set_state(PART:"drawers", "landscape", 0.0);
-                  set_state(PART:"title_right_btn", "landscape", 0.0);
-                  set_state(PART:"title_left_btn", "landscape", 0.0);
-               }
-               set_state(PART:"elm.swallow.icon", "default", 0.0);
+               if (get_int(landscape))
+                 set_state(PART:"title_bg", "landscape", 0.0);
+               else
+                 set_state(PART:"title_bg", "default", 0.0);
+               if (get_int(drawers_visible))
+                 run_program(PROGRAM:"drawers_visible");
+               if (get_int(icon_visible))
+                 run_program(PROGRAM:"icon_visible");
+               if (get_int(title_left_btn_visible))
+                 run_program(PROGRAM:"title_left_btn_visible");
+               if (get_int(title_right_btn_visible))
+                 run_program(PROGRAM:"title_right_btn_visible");
                run_program(PROGRAM:"start_title_slide");
             }
          }
@@ -2024,40 +2077,41 @@
             script {
                run_program(PROGRAM:"stop_title_slide");
                set_state(PART:"title_bg", "hide", 0.0);
-               set_state(PART:"title_right_btn", "hide", 0.0);
-               set_state(PART:"title_left_btn", "hide", 0.0);
-               set_state(PART:"drawers", "hide", 0.0);
-               set_state(PART:"elm.swallow.icon", "hide", 0.0);
+               run_program(PROGRAM:"drawers_invisible");
+               run_program(PROGRAM:"icon_invisible");
+               run_program(PROGRAM:"title_left_btn_invisible");
+               run_program(PROGRAM:"title_right_btn_invisible");
             }
          }
          program { name: "title_show_anim";
             signal: "elm,action,title,show";
             source: "elm";
             script {
-               set_state(PART:"elm.swallow.icon", "default", 0.0);
-               if (!get_int(landscape)) {
-                  set_state(PART:"title_bg", "hide_trans", 0.0);
-                  set_state(PART:"drawers", "default", 0.0);
-                  set_state(PART:"title_right_btn", "default", 0.0);
-                  set_state(PART:"title_left_btn", "default", 0.0);
-                  run_program(PROGRAM:"title_show_anim_start_default");
+               if (get_int(drawers_visible))
+                 run_program(PROGRAM:"drawers_visible");
+               if (get_int(icon_visible))
+                 run_program(PROGRAM:"icon_visible");
+               if (get_int(title_left_btn_visible))
+                 run_program(PROGRAM:"title_left_btn_visible");
+               if (get_int(title_right_btn_visible))
+                 run_program(PROGRAM:"title_right_btn_visible");
+               if (get_int(landscape)) {
+                  set_state(PART:"title_bg", "hide_trans_landscape", 0.0);
+                  run_program(PROGRAM:"title_show_anim_start_landscape");
                }
                else {
-                  set_state(PART:"title_bg", "hide_trans_landscape", 0.0);
-                  set_state(PART:"drawers", "landscape", 0.0);
-                  set_state(PART:"title_right_btn", "landscape", 0.0);
-                  set_state(PART:"title_left_btn", "landscape", 0.0);
-                  run_program(PROGRAM:"title_show_anim_start_landscape");
+                  set_state(PART:"title_bg", "hide_trans", 0.0);
+                  run_program(PROGRAM:"title_show_anim_start_default");
                }
             }
          }
          program { name: "title_hide_trans_finished";
             script {
                set_state(PART:"title_bg", "hide", 0.0);
-               set_state(PART:"title_right_btn", "hide", 0.0);
-               set_state(PART:"title_left_btn", "hide", 0.0);
-               set_state(PART:"drawers", "hide", 0.0);
-               set_state(PART:"elm.swallow.icon", "hide", 0.0);
+               run_program(PROGRAM:"drawers_invisible");
+               run_program(PROGRAM:"icon_invisible");
+               run_program(PROGRAM:"title_left_btn_invisible");
+               run_program(PROGRAM:"title_right_btn_invisible");
                emit("elm,action,title,transition,finished", "");
             }
          }
@@ -2065,11 +2119,16 @@
             signal: "elm,state,drawers,show";
             source: "elm";
             script {
+               run_program(PROGRAM:"drawers_visible");
                set_int(drawers_visible, 1);
-               if (!get_int(landscape))
-                 set_state(PART:"drawers", "default", 0.0);
-               else
+            }
+         }
+         program { name: "drawers_visible";
+            script {
+               if (get_int(landscape))
                  set_state(PART:"drawers", "landscape", 0.0);
+               else
+                 set_state(PART:"drawers", "default", 0.0);
 
                if (get_int(icon_visible)) {
                   set_state(PART:"icon_left_padding", "drawers_with_icon", 0.0);
@@ -2085,7 +2144,12 @@
             signal: "elm,state,drawers,hide";
             source: "elm";
             script {
+               run_program(PROGRAM:"drawers_invisible");
                set_int(drawers_visible, 0);
+            }
+         }
+         program { name: "drawers_invisible";
+            script {
                set_state(PART:"drawers", "hide", 0.0);
                if (get_int(icon_visible)) {
                   set_state(PART:"icon_left_padding", "title_icon", 0.0);
@@ -2101,7 +2165,12 @@
             signal: "elm,state,icon,show";
             source: "elm";
             script {
+               run_program(PROGRAM:"icon_visible");
                set_int(icon_visible, 1);
+            }
+         }
+         program { name: "icon_visible";
+            script {
                set_state(PART:"elm.swallow.icon", "default", 0.0);
                if (get_int(drawers_visible)) {
                   set_state(PART:"icon_left_padding", "drawers_with_icon", 0.0);
@@ -2117,7 +2186,12 @@
             signal: "elm,state,icon,hide";
             source: "elm";
             script {
+               run_program(PROGRAM:"icon_invisible");
                set_int(icon_visible, 0);
+            }
+         }
+         program { name: "icon_invisible";
+            script {
                set_state(PART:"elm.swallow.icon", "hide", 0.0);
                if (get_int(drawers_visible)) {
                   set_state(PART:"icon_left_padding", "drawers", 0.0);
@@ -2129,6 +2203,91 @@
                }
             }
          }
+         program {
+            name: "change_to_landscape";
+            script {
+               if (!get_int(landscape)) {
+                  set_state(PART:"title_text_bg", "landscape", 0.0);
+                  set_state(PART:"elm.text.subtitle", "landscape", 0.0);
+                  if (get_int(drawers_visible))
+                    set_state(PART:"drawers", "landscape", 0.0);
+                  if (get_int(title_left_btn_visible))
+                    set_state(PART:"title_left_btn", "landscape", 0.0);
+                  if (get_int(title_right_btn_visible))
+                    set_state(PART:"title_right_btn", "landscape", 0.0);
+                  set_state(PART:"toolbar_more_btn", "landscape", 0.0);
+                  set_state(PART:"elm.swallow.prev_btn", "landscape", 0.0);
+
+                  new st[31];
+                  new Float:vl;
+                  get_state(PART:"title_bg", st, 30, vl);
+                  if (!strcmp(st, "default"))
+                    set_state(PART:"title_bg", "landscape", 0.0);
+
+                  get_state(PART:"elm.text.title", st, 30, vl);
+                  if (!strcmp(st, "subtitle_is_set"))
+                    set_state(PART:"elm.text.title", "subtitle_is_set_landscape", 0.0);
+
+                  get_state(PART:"subtitle_top_padding", st, 30, vl);
+                  if (!strcmp(st, "visible"))
+                    set_state(PART:"subtitle_top_padding", "visible_landscape", 0.0);
+
+                  get_state(PART:"subtitle_text_bg", st, 30, vl);
+                  if (!strcmp(st, "visible"))
+                    set_state(PART:"subtitle_text_bg", "visible_landscape", 0.0);
+
+                  get_state(PART:"toolbar", st, 30, vl);
+                  if (!strcmp(st, "visible"))
+                    set_state(PART:"toolbar", "visible_landscape", 0.0);
+
+                  set_int(landscape, 1);
+                  run_program(PROGRAM:"start_title_slide");
+               }
+            }
+         }
+         program {
+            name: "change_to_portrait";
+            script {
+               if (get_int(landscape)) {
+                  set_state(PART:"title_text_bg", "default", 0.0);
+                  set_state(PART:"elm.text.subtitle", "default", 0.0);
+                  if (get_int(drawers_visible))
+                    set_state(PART:"drawers", "default", 0.0);
+                  if (get_int(title_left_btn_visible))
+                    set_state(PART:"title_left_btn", "default", 0.0);
+                  if (get_int(title_right_btn_visible))
+                    set_state(PART:"title_right_btn", "default", 0.0);
+                  set_state(PART:"toolbar_more_btn", "default", 0.0);
+                  set_state(PART:"elm.swallow.prev_btn", "default", 0.0);
+
+                  new st[31];
+                  new Float:vl;
+                  get_state(PART:"title_bg", st, 30, vl);
+                  if (!strcmp(st, "landscape"))
+                    set_state(PART:"title_bg", "default", 0.0);
+
+                  get_state(PART:"elm.text.title", st, 30, vl);
+                  if (!strcmp(st, "subtitle_is_set_landscape"))
+                    set_state(PART:"elm.text.title", "subtitle_is_set", 0.0);
+
+                  get_state(PART:"subtitle_top_padding", st, 30, vl);
+                  if (!strcmp(st, "visible_landscape"))
+                    set_state(PART:"subtitle_top_padding", "visible", 0.0);
+
+                  get_state(PART:"subtitle_text_bg", st, 30, vl);
+                  if (!strcmp(st, "visible_landscape"))
+                    set_state(PART:"subtitle_text_bg", "visible", 0.0);
+
+                  get_state(PART:"toolbar", st, 30, vl);
+                  if (!strcmp(st, "visible_landscape"))
+                    set_state(PART:"toolbar", "visible", 0.0);
+
+                  set_int(landscape, 0);
+                  run_program(PROGRAM:"start_title_slide");
+               }
+            }
+         }
+
       }
    }
 
@@ -2139,9 +2298,11 @@
          image: "00_effect_title_text_dim_right.#.png" COMP;
       }
       script {
-         public tbar_close = 0; //Toolbar lastest Open/Close status
-         public landscape = 0; //Landscape mode status
-         public mirrored = 0; //Mirrored on/off status
+         public tbar_close = 0;              //Toolbar lastest Open/Close status
+         public landscape = 0;               //Landscape mode status
+         public title_left_btn_visible = 0;  //Title left button on/off status
+         public title_right_btn_visible = 0; //Title right button on/off status
+         public mirrored = 0;                //Mirrored on/off status
 
          public title_duration = 0;
          public title_slide_stop;
@@ -3059,29 +3220,65 @@
             signal: "elm,state,title_left_btn,show";
             source: "elm";
             script {
+               run_program(PROGRAM:"title_left_btn_visible");
+               set_int(title_left_btn_visible, 1);
+            }
+         }
+         program { name: "title_left_btn_visible";
+            script {
                set_state(PART:"divider1", "visible", 0.0);
                set_state(PART:"title_right_padding", "title_left_btn_set", 0.0);
+               if (get_int(landscape))
+                 set_state(PART:"title_left_btn", "landscape", 0.0);
+               else
+                 set_state(PART:"title_left_btn", "default", 0.0);
             }
          }
          program { name: "title_left_btn_hide";
             signal: "elm,state,title_left_btn,hide";
             source: "elm";
             script {
+               run_program(PROGRAM:"title_left_btn_invisible");
+               set_int(title_left_btn_visible, 0);
+            }
+         }
+         program { name: "title_left_btn_invisible";
+            script {
                set_state(PART:"divider1", "default", 0.0);
                set_state(PART:"title_right_padding", "default", 0.0);
+               set_state(PART:"title_left_btn", "hide", 0.0);
             }
          }
          program { name: "title_right_btn_show";
             signal: "elm,state,title_right_btn,show";
             source: "elm";
-            action: STATE_SET "visible" 0.0;
-            target: "divider2";
+            script {
+               run_program(PROGRAM:"title_right_btn_visible");
+               set_int(title_right_btn_visible, 1);
+            }
+         }
+         program { name: "title_right_btn_visible";
+            script {
+               set_state(PART:"divider2", "visible", 0.0);
+               if (get_int(landscape))
+                 set_state(PART:"title_right_btn", "landscape", 0.0);
+               else
+                 set_state(PART:"title_right_btn", "default", 0.0);
+            }
          }
          program { name: "title_right_btn_hide";
             signal: "elm,state,title_right_btn,hide";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "divider2";
+            script {
+               run_program(PROGRAM:"title_right_btn_invisible");
+               set_int(title_right_btn_visible, 0);
+            }
+         }
+         program { name: "title_right_btn_invisible";
+            script {
+               set_state(PART:"divider2", "default", 0.0);
+               set_state(PART:"title_right_btn", "hide", 0.0);
+            }
          }
          program { name: "toolbar_show";
             signal: "elm,state,toolbar,show";
@@ -3199,8 +3396,10 @@
             script {
                if (!get_int(landscape)) {
                   set_state(PART:"title_text_bg", "landscape", 0.0);
-                  set_state(PART:"title_right_btn", "landscape", 0.0);
-                  set_state(PART:"title_left_btn", "landscape", 0.0);
+                  if (get_int(title_left_btn_visible))
+                    set_state(PART:"title_left_btn", "landscape", 0.0);
+                  if (get_int(title_right_btn_visible))
+                    set_state(PART:"title_right_btn", "landscape", 0.0);
                   set_state(PART:"elm.text.title", "landscape", 0.0);
                   set_state(PART:"toolbar_more_btn", "landscape", 0.0);
                   set_state(PART:"elm.swallow.prev_btn", "landscape", 0.0);
@@ -3225,8 +3424,10 @@
             script {
                if (get_int(landscape)) {
                   set_state(PART:"title_text_bg", "default", 0.0);
-                  set_state(PART:"title_right_btn", "default", 0.0);
-                  set_state(PART:"title_left_btn", "default", 0.0);
+                  if (get_int(title_left_btn_visible))
+                    set_state(PART:"title_left_btn", "default", 0.0);
+                  if (get_int(title_right_btn_visible))
+                    set_state(PART:"title_right_btn", "default", 0.0);
                   set_state(PART:"elm.text.title", "default", 0.0);
                   set_state(PART:"toolbar_more_btn", "default", 0.0);
                   set_state(PART:"elm.swallow.prev_btn", "default", 0.0);
