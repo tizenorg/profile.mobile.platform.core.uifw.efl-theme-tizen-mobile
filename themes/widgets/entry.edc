@@ -148,15 +148,19 @@
          image.normal: "00_edit_field_bg.#.png"; \
          rel1.relative: 0.0 0.0; \
          rel2.relative: 1.0 1.0; \
+         color_class: "F054"; \
+      } \
+      description { state: "focused" 0.0; \
+         inherit: "default" 0.0; \
          color_class: "F056"; \
+      } \
+      description { state: "disabled" 0.0; \
+         inherit: "default" 0.0; \
+         color_class: "F058"; \
       } \
       description { state: "hidden" 0.0; \
          inherit: "default" 0.0; \
          visible: 0; \
-      } \
-      description { state: "disabled" 0.0; \
-         inherit: "default" 0.0; \
-         color_class: "F056"; \
       } \
    } \
    part { name: "focus_left_padding"; \
@@ -209,7 +213,7 @@
       scale: 1; \
       mouse_events: 0; \
       description { state: "default" 0.0; \
-         visible: 0; \
+         visible: 1; \
          image.normal: "00_edit_field_outline.#.png"; \
          rel1 { \
             to: "focus_bg"; \
@@ -219,11 +223,19 @@
             to: "focus_bg"; \
             relative: 1.0 1.0; \
          } \
+         color_class: "F055"; \
       } \
       description { state: "focused" 0.0; \
          inherit: "default" 0.0; \
-         visible: 1; \
          color_class: "F057"; \
+      } \
+      description { state: "disabled" 0.0; \
+         inherit: "default" 0.0; \
+         color_class: "F059"; \
+      } \
+      description { state: "hidden" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 0; \
       } \
    }
 
@@ -270,6 +282,7 @@
       script { \
          set_int(scroll_enabled, 1); \
          set_state(PART:"focus_bg", "hidden", 0.0); \
+         set_state(PART:"focus_image", "hidden", 0.0); \
          set_state(PART:"focus_left_padding", "hidden", 0.0); \
          set_state(PART:"focus_right_padding", "hidden", 0.0); \
       } \
@@ -280,6 +293,7 @@
       script { \
          set_int(scroll_enabled, 0); \
          set_state(PART:"focus_bg", "default", 0.0); \
+         set_state(PART:"focus_image", "default", 0.0); \
          set_state(PART:"focus_left_padding", "default", 0.0); \
          set_state(PART:"focus_right_padding", "default", 0.0); \
       } \
@@ -317,6 +331,7 @@
          new v; \
          v = get_int(scroll_enabled); \
          if (!v) { \
+            set_state(PART:"focus_bg", "focused", 0.0); \
             set_state(PART:"focus_image", "focused", 0.0); \
          } \
          set_state(PART:"elm.text", "focused", 0.0); \
@@ -329,6 +344,7 @@
          new v; \
          v = get_int(scroll_enabled); \
          if (!v) { \
+            set_state(PART:"focus_bg", "default", 0.0); \
             set_state(PART:"focus_image", "default", 0.0); \
          } \
          set_state(PART:"elm.text", "default", 0.0); \
@@ -342,6 +358,7 @@
          v = get_int(scroll_enabled); \
          if (!v) { \
             set_state(PART:"focus_bg", "default", 0.0); \
+            set_state(PART:"focus_image", "default", 0.0); \
          } \
       } \
    } \
@@ -353,6 +370,7 @@
          v = get_int(scroll_enabled); \
          if (!v) { \
             set_state(PART:"focus_bg", "disabled", 0.0); \
+            set_state(PART:"focus_image", "disabled", 0.0); \
          } \
       } \
    }
@@ -2010,7 +2028,7 @@ group { name: "elm/entry/base-single/editfield/searchbar/default";
    }
    styles {
       style { name: "editfield_searchbar_single_textblock_style";
-         base: "font=Tizen:style=Regular font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color=#FFFFFF color_class=T106P wrap=none left_margin=1 right_margin=3 text_class=T106P";
+         base: "font=Tizen:style=Regular font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color=#FFFFFF color_class=T106P wrap=none left_margin=1 right_margin=3 text_class=T106";
          tag:  "br" "";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -2042,7 +2060,7 @@ group { name: "elm/entry/base-single/editfield/searchbar/default";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "editfield_searchbar_single_textblock_disabled_style";
-         base: "font=Tizen:style=Regular font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color=#FFFFFF color_class=T023D wrap=none left_margin=1 right_margin=3 text_class=T023D";
+         base: "font=Tizen:style=Regular font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color=#FFFFFF color_class=T023D wrap=none left_margin=1 right_margin=3 text_class=T106D";
          tag:  "br" "";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -2058,7 +2076,7 @@ group { name: "elm/entry/base-single/editfield/searchbar/default";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "editfield_searchbar_single_textblock_guide_style";
-         base: "font=Tizen:style=Regular font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color=#FFFFFF color_class=T106D wrap=none left_margin=1 right_margin=3 text_class=T106 ellipsis=1.0";
+         base: "font=Tizen:style=Regular font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color=#FFFFFF color_class=T106D wrap=none left_margin=1 right_margin=3 text_class=T106S ellipsis=1.0";
          tag:  "br" "";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -2227,7 +2245,7 @@ group { name: "elm/entry/base-single/editfield/searchbar/fixed_size";
    }
    styles {
       style { name: "editfield_searchbar_single_textblock_fixed_size_style";
-         base: "font=Tizen:style=Regular font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color=#FFFFFF color_class=T106P wrap=none left_margin=1 right_margin=3 text_class=T106P";
+         base: "font=Tizen:style=Regular font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color=#FFFFFF color_class=T106P wrap=none left_margin=1 right_margin=3 text_class=T106";
          tag:  "br" "";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -2259,7 +2277,7 @@ group { name: "elm/entry/base-single/editfield/searchbar/fixed_size";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "editfield_searchbar_single_textblock_fixed_size_disabled_style";
-         base: "font=Tizen:style=Regular font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color=#FFFFFF color_class=T023D wrap=none left_margin=1 right_margin=3 text_class=T023D";
+         base: "font=Tizen:style=Regular font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color=#FFFFFF color_class=T023D wrap=none left_margin=1 right_margin=3 text_class=T106D";
          tag:  "br" "";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -2275,7 +2293,7 @@ group { name: "elm/entry/base-single/editfield/searchbar/fixed_size";
          tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR_INC" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR_INC;
       }
       style { name: "editfield_searchbar_single_textblock_fixed_size_guide_style";
-         base: "font=Tizen:style=Regular font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color=#FFFFFF color_class=T106 wrap=none left_margin=1 right_margin=3 text_class=T106 ellipsis=1.0";
+         base: "font=Tizen:style=Regular font_size="ENTRY_EDITFIELD_SEARCHBAR_TEXT_SIZE_INC" color=#FFFFFF color_class=T106 wrap=none left_margin=1 right_margin=3 text_class=T106S ellipsis=1.0";
          tag:  "br" "";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -8043,9 +8061,13 @@ group { name: "elm/scroller/entry/editfield";
                image.normal: "00_edit_field_bg.#.png";
                color_class: "F054";
             }
-            description { state: "disabled" 0.0;
+            description { state: "focused" 0.0;
                inherit: "default" 0.0;
                color_class: "F056";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "F058";
             }
          }
          part { name: "focus_left_padding";
@@ -8090,7 +8112,7 @@ group { name: "elm/scroller/entry/editfield";
             mouse_events: 0;
             repeat_events: 1;
             description { state: "default" 0.0;
-               visible: 0;
+               visible: 1;
                image.normal: "00_edit_field_outline.#.png";
                rel1 {
                   to: "focus_bg";
@@ -8100,11 +8122,15 @@ group { name: "elm/scroller/entry/editfield";
                   to: "focus_bg";
                   relative: 1.0 1.0;
                }
+               color_class: "F055";
             }
             description { state: "focused" 0.0;
                inherit: "default" 0.0;
-               visible: 1;
                color_class: "F057";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "F059";
             }
          }
          part { name: "bg";
@@ -8150,12 +8176,14 @@ group { name: "elm/scroller/entry/editfield";
             signal: "elm,state,focus,on";
             source: "*";
             action: STATE_SET "focused" 0.0;
+            target: "focus_bg";
             target: "focus_image";
          }
          program { name: "action_unfocus";
             signal: "elm,state,focus,off";
             source: "*";
             action: STATE_SET "default" 0.0;
+            target: "focus_bg";
             target: "focus_image";
          }
          program { name: "disable";
@@ -8163,12 +8191,14 @@ group { name: "elm/scroller/entry/editfield";
             source: "elm";
             action: STATE_SET "disabled" 0.0;
             target: "focus_bg";
+            target: "focus_image";
          }
          program { name: "enabled";
             signal: "elm,state,enabled";
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "focus_bg";
+            target: "focus_image";
          }
       }
 }
@@ -8297,7 +8327,6 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
                fixed: 1 1;
                align: 0.0 0.5;
                image.normal: "00_search_icon.png";
-               color_class: "F041i";
                rel1 {
                   to_x: "search_icon_left_padding";
                   relative: 1.0 0.0;
@@ -8340,13 +8369,13 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
          part { name: "search_icon.clipper";
             type: RECT;
             description { state: "default" 0.0;
-               color: ENTRY_SEARCH_ICON_CLIPPER_DEFAULT_COLOR_INC;
+               color_class: "F041i";
             }
             description { state: "focused" 0.0;
-               color: ENTRY_SEARCH_ICON_CLIPPER_FOCUSED_COLOR_INC;
+               color_class: "F041iP";
             }
             description { state: "disabled" 0.0;
-               color: ENTRY_SEARCH_ICON_CLIPPER_DISABLED_COLOR_INC;
+               color_class: "F041iD";
             }
          }
          part { name: "search_icon_over";
