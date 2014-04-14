@@ -1,6 +1,6 @@
 Name:          efl-theme-tizen-hd
 Summary:       Tizen theme files
-Version:       1.0.334
+Version:       1.0.335
 Release:       1
 Group:         TO_BE/FILLED_IN
 License:       TO_BE/FILLED_IN
@@ -37,8 +37,7 @@ cp %{_builddir}/%{buildsubdir}/COPYING %{buildroot}/usr/share/license/%{name}
 
 %files
 %defattr(-,root,root,-)
-%{_datadir}/elementary/themes/tizen-HD-dark.edj
-%{_datadir}/elementary/themes/tizen-HD-light.edj
+%{_datadir}/elementary/themes/tizen.edj
 %manifest %{name}.manifest
 /usr/share/license/%{name}
 
