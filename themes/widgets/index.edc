@@ -211,7 +211,7 @@
                   to: "elm.swallow.index.0";
                }
             }
-         }
+          }
           part { name: "index1.top.padding";
             type: RECT;
             clip_to: "clip2";
@@ -350,18 +350,17 @@
             scale: 1;
             clip_to: "clip2";
             description { state: "default" 0.0;
-               fixed: 0 1;
-               align:0.5 0.5;
+               fixed: 1 1;
                min: INDEX_SCROLL_POPUP_SIZE;
-               max: INDEX_SCROLL_POPUP_SIZE;
                color_class: "B0731L1";
                image.normal: "00_fast_scroll_popup_bg.#.png";
+               rel1.to: "text.left.padding";
+               rel2.to: "text.right.padding";
             }
             description {
                state: "active" 0.0;
                inherit: "default" 0.0;
                min: INDEX_SCROLL_POPUP_ACTIVE_SIZE;
-               max: INDEX_SCROLL_POPUP_ACTIVE_SIZE;
             }
          }
          part { name: "popup_bg_effect";
@@ -383,42 +382,17 @@
                image.normal: "00_fast_scroll_popup_bg_line.#.png";
             }
          }
-         part { name: "text.left.padding";
-            type: SPACER;
+         part {
+            name: "align_prop";
+            type: "SPACER";
+            mouse_events: 0;
             scale: 1;
             clip_to: "clip2";
             description {
                state: "default" 0.0;
-               align: 0.0 0.0;
-               min: INDEX_TEXT_RIGHT_PADDING_SIZE_INC 0;
+               min: 1 0;
+               max: 1 -1;
                fixed: 1 0;
-               rel1 {
-                  to: "popup_bg";
-                  relative: 0.0 0.0;
-               }
-               rel2 {
-                  to: "popup_bg";
-                  relative: 0.0 1.0;
-               }
-            }
-         }
-         part { name: "text.right.padding";
-            type: SPACER;
-            scale: 1;
-            clip_to: "clip2";
-            description {
-               state: "default" 0.0;
-               align: 1.0 0.0;
-               min: INDEX_TEXT_RIGHT_PADDING_SIZE_INC 0;
-               fixed: 1 0;
-               rel1 {
-                  to: "popup_bg";
-                  relative: 1.0 0.0;
-               }
-               rel2 {
-                  to: "popup_bg";
-                  relative: 1.0 1.0;
-               }
             }
          }
          part {
@@ -430,25 +404,23 @@
             description {
                state: "default" 0.0;
                min: INDEX_SCROLL_TEXT1_DEFAULT_SIZE;
-               align: 1.0 0.5;
                fixed: 1 1;
                text.style: "Index_scroll_1depth_popup";
                text.min: 1 1;
-               rel1 {
-                  to: "text.right.padding";
-                  relative: 0.0 0.5;
-               }
-               rel2 {
-                  to: "text.right.padding";
-                  relative: 0.0 0.5;
-               }
+               text.max: 1 1;
             }
             description {
                state: "active" 0.0;
                inherit: "default" 0.0;
                min: INDEX_SCROLL_TEXT1_ACTIVE_SIZE;
                text.style: "Index_scroll_1depth_popup_left_align";
+               rel1 {
+                   to: "align_prop";
+                   relative: 1.0 0.0;
+               }
+               rel2.to: "align_prop";
                text.min: 1 1;
+               align: 0.0 0.5;
             }
          }
          part {
@@ -462,24 +434,59 @@
                fixed: 1 1;
                text.style: "Index_scroll_bar_2depth_popup";
                text.min: 1 1;
+               text.max: 1 1;
                visible: 0;
-               align: 0.0 0.5;
-               rel1 {
-                  to: "text.left.padding";
-                  relative: 1.0 0.5;
-               }
-               rel2 {
-                  to_y: "popup_bg";
-                  to_x: "elm.text.1";
-                  relative: 0.0 0.5;
-               }
             }
             description {
                state: "active" 0.0;
                inherit: "default" 0.0;
                visible: 1;
                min: INDEX_SCROLL_TEXT1_ACTIVE_SIZE;
-               max: INDEX_SCROLL_TEXT1_ACTIVE_SIZE;
+               rel1.to: "align_prop";
+               rel2 {
+                   to: "align_prop";
+                   relative: 0.0 1.0;
+               }
+               align: 1.0 0.5;
+            }
+         }
+         part { name: "text.left.padding";
+            type: SPACER;
+            scale: 1;
+            clip_to: "clip2";
+            description {
+               state: "default" 0.0;
+               min: INDEX_TEXT_LEFT_PADDING_SIZE_INC 0;
+               fixed: 1 0;
+               rel1.to: "elm.text.1";
+               rel2 {
+                  to: "elm.text.1";
+                  relative: 0.0 1.0;
+               }
+            }
+             description {
+               state: "active" 0.0;
+               inherit: "default" 0.0;
+               rel1.to: "elm.text";
+               rel2 {
+                  to: "elm.text";
+                  relative: 0.0 1.0;
+               }
+            }
+         }
+         part { name: "text.right.padding";
+            type: SPACER;
+            scale: 1;
+            clip_to: "clip2";
+            description {
+               state: "default" 0.0;
+               min: INDEX_TEXT_RIGHT_PADDING_SIZE_INC 0;
+               fixed: 1 0;
+               rel1 {
+                  to: "elm.text.1";
+                  relative: 1.0 0.0;
+               }
+               rel2.to: "elm.text.1";
             }
          }
          part { name: "elm.swallow.event.0";
@@ -578,6 +585,7 @@
             target: "index1.top.padding";
             target: "index1.bottom.padding";
             target: "popup_bg";
+            target: "text.left.padding";
          }
          program { name: "index1.active";
             signal: "elm,state,level,1";
@@ -604,6 +612,7 @@
                set_state(PART:"index1.top.padding", "active", 0.0);
                set_state(PART:"index1.bottom.padding", "active", 0.0);
                set_state(PART:"popup_bg", "active", 0.0);
+               set_state(PART:"text.left.padding", "active", 0.0);
             }
          }
          program { name: "index1.text";
@@ -612,6 +621,7 @@
             action: STATE_SET "active" 0.0;
             target: "elm.text.1";
             target: "elm.text";
+            target: "text.left.padding";
          }
          program { name: "index0.hide";
             action: STATE_SET "default" 0.0;
