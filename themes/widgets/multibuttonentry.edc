@@ -442,9 +442,24 @@ group {
          after: "unselected";
       }
       program {
-         name: "disabled";
-         signal: "disabled";
-         source: "";
+         name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.btn.text", st, 30, vl);
+            if (!strcmp(st, "disabled"))
+              set_state(PART:"elm.btn.text", "default", 0.0);
+            else
+              set_state(PART:"elm.btn.text", "ellipsis", 0.0);
+            set_state(PART:"elm.btn.bg", "default", 0.0);
+         }
+      }
+      program {
+         name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
          script {
             new st[31];
             new Float:vl;
@@ -453,7 +468,6 @@ group {
               set_state(PART:"elm.btn.text", "disabled", 0.0);
             else
               set_state(PART:"elm.btn.text", "ellipsis_disabled", 0.0);
-
             set_state(PART:"elm.btn.bg", "disabled", 0.0);
          }
       }
