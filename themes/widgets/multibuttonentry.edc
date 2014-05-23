@@ -542,6 +542,16 @@ group {
 group {
    name: "elm/multibuttonentry/number/default";
 
+   styles {
+      style {
+         name: "multibuttonentry_number_text_style";
+         base: "font=Tizen:style=Regular font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#FFFFFF color_class=T059 text_class=T059";
+      }
+      style {
+         name: "multibuttonentry_number_text_ellipsis_style";
+         base: "font=Tizen:style=Regular font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#FFFFFF color_class=T059 ellipsis=1 text_class=T059";
+      }
+   }
    parts {
       part {
          name: "left.pad";
@@ -557,15 +567,14 @@ group {
       }
       part {
          name: "elm.text";
-         type: TEXT;
+         type: TEXTBLOCK;
          mouse_events: 0;
          scale: 1;
          description {
             state: "default" 0.0;
             min: 0 MULTIBUTTONENTRY_LABEL_HEIGHT_INC;
-            color_class: T059;
             text {
-               text_class: T059;
+               style: "multibuttonentry_number_text_style";
                min: 1 0;
             }
             rel1 {
@@ -573,6 +582,28 @@ group {
                to: "left.pad";
             }
          }
+         description {
+            state: "ellipsis" 0.0;
+            inherit: "default" 0.0;
+            text.style: "multibuttonentry_number_text_ellipsis_style";
+            text.min: 0 0;
+         }
+      }
+   }
+   programs {
+      program {
+         name: "text,default";
+         signal: "elm,state,number,default";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+      program {
+         name: "text,ellipsis";
+         signal: "elm,state,number,ellipsis";
+         source: "";
+         action: STATE_SET "ellipsis" 0.0;
+         target: "elm.text";
       }
    }
 }
