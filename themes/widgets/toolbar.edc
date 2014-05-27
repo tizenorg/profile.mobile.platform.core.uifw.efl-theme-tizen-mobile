@@ -510,7 +510,6 @@ group { name: "elm/toolbar/item/default";
       part { name: "event";
          type: RECT;
          mouse_events: 1;
-         ignore_flags: ON_HOLD;
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
@@ -2051,55 +2050,6 @@ group { name: "elm/toolbar/item/tabbar";
                 set_state(PART:"elm.icon.clipper", "pressed", 0.0);
                 set_int(pressed, 1);
               }
-         }
-      }
-      program {
-         name: "drag";
-         signal: "drag";
-         source: "event2";
-         script {
-            if (get_int(item_state) != ITEM_STATE_DISABLED)
-              {
-                new st[31];
-                new Float:vl;
-                new Float:dx, Float:dy;
-                get_state(PART:"bg_cover", st, 30, vl);
-                if (strcmp(st, "moving"))
-                  {
-                    get_drag(PART:"event2", dx, dy);
-                    if ((abs(dx)*abs(dx))+(abs(dy)*abs(dy)) > 400)
-                      {
-                        set_drag(PART:"event2", 0.0, 0.0);
-                        set_state(PART:"bg_cover", "default", 0.0);
-                        set_int(pressed, 0);
-                        if (get_int(selected))
-                          {
-                            if (!get_int(sliding))
-                                set_state(PART:"elm.text", "selected", 0.0);
-                            else if (get_int(sliding) == TOOLBAR_SLIDING_END)
-                              {
-                                set_state_val(PART:"elm.text", STATE_TEXT_STYLE, "tabbar_selected_text_style_30");
-                                set_state(PART:"elm.text", "custom", 0.0);
-                                set_state_val(PART:"elm.text_new", STATE_TEXT_STYLE, "tabbar_selected_text_style_30");
-                                set_state(PART:"elm.text_new", "custom", 0.0);
-                                set_state(PART:"elm.text.dim.right", "show", 0.0);
-                              }
-                            else
-                              {
-                                set_state(PART:"elm.text.dim.left", "show", 0.0);
-                                set_state(PART:"elm.text.dim.right", "show", 0.0);
-                              }
-                            set_state(PART:"elm.icon.clipper", "selected", 0.0);
-                          }
-                        else
-                          {
-                            set_state(PART:"elm.text", "visible", 0.0);
-                            set_state(PART:"elm.icon.clipper", "default", 0.0);
-                          }
-                      }
-                    set_drag(PART:"event2", 0.0, 0.0);
-                  }
-             }
          }
       }
       program { name: "key,unpressed";
