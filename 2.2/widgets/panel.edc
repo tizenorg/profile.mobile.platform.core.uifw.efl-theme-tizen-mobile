@@ -1,0 +1,464 @@
+/*
+ * Copyright (c) 2010 Samsung Electronics Co., Ltd All Rights Reserved
+ *
+ * BSD 2-Clause License (http://www.opensource.org/licenses/bsd-license.php)
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *   1. Redistributions of source code must retain the above copyright notice, this
+ *      list of conditions and the following disclaimer.
+ *   2. Redistributions in binary form must reproduce the above copyright notice,
+ *      this list of conditions and the following disclaimer in the documentation
+ *      and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+group { name: "elm/panel/left/default";
+   alias: "elm/panel/top/default";
+   script {
+      public timer_id;
+      public signal_emit_timer(val) {
+         run_program(PROGRAM:"signal,emit");
+      }
+   }
+   parts {
+      part { name: "clipper";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            rel1.to: "clipper";
+            rel2.to: "clipper";
+         }
+      }
+      part { name: "access.outline";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "elm.rect.event";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            rel2.relative: 0.0 1.0;
+            min: PANEL_HANDLER_MIN_INC;
+            align: 0.0 0.5;
+            color: 0 0 0 0;
+            fixed: 1 0;
+         }
+         description { state: "inactive" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "handler";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: PANEL_PORTRAIT_HANDLER_SIZE_INC 0;
+            max: PANEL_PORTRAIT_HANDLER_SIZE_INC -1;
+         }
+         description { state: "landscape" 0.0;
+            inherit: "default" 0.0;
+            min: PANEL_LANDSCAPE_HANDLER_SIZE_INC 0;
+            max: PANEL_LANDSCAPE_HANDLER_SIZE_INC -1;
+         }
+      }
+   }
+   programs {
+      program { name: "mouse,down";
+         signal: "mouse,down,1";
+         source: "elm.rect.event";
+         action: SIGNAL_EMIT "elm,state,event,active" "elm";
+      }
+      program { name: "mouse,down,timer,set";
+         signal: "mouse,down,1";
+         source: "elm.rect.event";
+         script {
+            new v;
+            v = get_int(timer_id);
+            if (v > 0) cancel_timer(v);
+            v = timer(0.5, "signal_emit_timer", 0);
+            set_int(timer_id, v);
+         }
+      }
+      program { name: "signal,emit";
+         action: SIGNAL_EMIT "elm,state,handler,open" "elm";
+      }
+      program { name: "mouse,down,double";
+         signal: "mouse,down,1,double";
+         source: "elm.rect.event";
+         script {
+            emit("mouse,down,1", "elm.rect.event");
+         }
+      }
+      program { name: "mouse,up";
+         signal: "mouse,up,1";
+         source: "elm.rect.event";
+         script {
+            new v;
+            v = get_int(timer_id);
+            if (v > 0) cancel_timer(v);
+            set_int(timer_id, 0);
+         }
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "inactive" 0.0;
+         target: "elm.rect.event";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.rect.event";
+      }
+      program { name: "landscape_mode";
+         signal: "elm,state,orient,90";
+         source: "elm";
+         action: STATE_SET "landscape" 0.0;
+         target: "handler";
+      }
+       program { name: "landscape_mode2";
+         signal: "elm,state,orient,270";
+         source: "elm";
+         action: STATE_SET "landscape" 0.0;
+         target: "handler";
+      }
+      program { name: "portrait_mode";
+         signal: "elm,state,orient,0";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "handler";
+      }
+      program { name: "portrait_mode2";
+         signal: "elm,state,orient,180";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "handler";
+      }
+  }
+}
+
+group { name: "elm/panel/left/internal/default";
+   alias: "elm/panel/top/internal/default";
+   data {
+      item: "content_width" "580";
+      item: "content_height" "-1";
+   }
+   parts {
+      part { name: "elm.swallow.spacer";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            rel1.relative: 0 0;
+            rel2.relative: 0 0;
+            align: 0 0;
+            fixed: 0 1;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+      part { name: "elm.bg.content";
+         type: RECT;
+         scale: 1;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            color_class: "B0731L6";
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel2.relative: 0.0 1.0;
+            rel1.to: "elm.swallow.spacer";
+            rel2.to: "elm.swallow.spacer";
+            align: 0.0 0.5;
+            min: PANEL_CONTENT_MIN_INC;
+            fixed: 1 1;
+            visible: 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+      part { name: "access.outline";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      program { name: "active";
+         signal: "elm,state,content,visible";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         target: "elm.swallow.spacer";
+         target: "elm.bg.content";
+         target: "elm.swallow.content";
+         transition: LINEAR 0.25;
+      }
+      program { name: "inactive";
+         signal: "elm,state,content,hidden";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.spacer";
+         target: "elm.bg.content";
+         target: "elm.swallow.content";
+         transition: LINEAR 0.25;
+      }
+   }
+}
+
+group { name: "elm/panel/right/default";
+   alias: "elm/panel/right/default";
+   script {
+      public timer_id;
+      public signal_emit_timer(val) {
+         run_program(PROGRAM:"signal,emit");
+      }
+   }
+   parts {
+      part { name: "clipper";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            rel1.to: "clipper";
+            rel2.to: "clipper";
+         }
+      }
+      part { name: "access.outline";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "elm.rect.event";
+         type: RECT;
+         repeat_events: 0;
+         description { state: "default" 0.0;
+            rel1.relative: 1.0 0.0;
+            min: PANEL_HANDLER_MIN_INC;
+            align: 1.0 0.5;
+            color: 0 0 0 0;
+            fixed: 1 0;
+         }
+         description { state: "inactive" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "handler";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: PANEL_PORTRAIT_HANDLER_SIZE_INC 0;
+            max: PANEL_PORTRAIT_HANDLER_SIZE_INC -1;
+         }
+         description { state: "landscape" 0.0;
+            inherit: "default" 0.0;
+            min: PANEL_LANDSCAPE_HANDLER_SIZE_INC 0;
+            max: PANEL_LANDSCAPE_HANDLER_SIZE_INC -1;
+         }
+      }
+   }
+   programs {
+      program { name: "mouse,down";
+         signal: "mouse,down,1";
+         source: "elm.rect.event";
+         action: SIGNAL_EMIT "elm,state,event,active" "elm";
+      }
+      program { name: "mouse,down,timer,set";
+         signal: "mouse,down,1";
+         source: "elm.rect.event";
+         script {
+            new v;
+            v = get_int(timer_id);
+            if (v > 0) cancel_timer(v);
+            v = timer(0.5, "signal_emit_timer", 0);
+            set_int(timer_id, v);
+         }
+      }
+      program { name: "signal,emit";
+         action: SIGNAL_EMIT "elm,state,handler,open" "elm";
+      }
+      program { name: "mouse,down,double";
+         signal: "mouse,down,1,double";
+         source: "elm.rect.event";
+         script {
+            emit("mouse,down,1", "elm.rect.event");
+         }
+      }
+      program { name: "mouse,up";
+         signal: "mouse,up,1";
+         source: "elm.rect.event";
+         script {
+            new v;
+            v = get_int(timer_id);
+            if (v > 0) cancel_timer(v);
+            set_int(timer_id, 0);
+         }
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "inactive" 0.0;
+         target: "elm.rect.event";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.rect.event";
+      }
+      program { name: "landscape_mode";
+         signal: "elm,state,orient,90";
+         source: "elm";
+         action: STATE_SET "landscape" 0.0;
+         target: "handler";
+      }
+       program { name: "landscape_mode2";
+         signal: "elm,state,orient,270";
+         source: "elm";
+         action: STATE_SET "landscape" 0.0;
+         target: "handler";
+      }
+      program { name: "portrait_mode";
+         signal: "elm,state,orient,0";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "handler";
+      }
+      program { name: "portrait_mode2";
+         signal: "elm,state,orient,180";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "handler";
+      }
+   }
+}
+
+group { name: "elm/panel/right/internal/default";
+   alias: "elm/panel/right/internal/default";
+   data {
+      item: "content_width" "580";
+      item: "content_height" "-1";
+   }
+   parts {
+      part { name: "elm.swallow.spacer";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            rel1.relative: 0 0;
+            rel2.relative: 0 0;
+            align: 0 0;
+            fixed: 0 1;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+      part { name: "elm.bg.content";
+         type: RECT;
+         scale: 1;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            color_class: "B0731L6";
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.relative: 1.0 0.0;
+            rel1.to: "elm.swallow.spacer";
+            rel2.to: "elm.swallow.spacer";
+            align: 1.0 0.5;
+            min: PANEL_CONTENT_MIN_INC;
+            fixed: 1 0;
+            visible: 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+      part { name: "access.outline";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      program { name: "active";
+         signal: "elm,state,content,visible";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         target: "elm.swallow.spacer";
+         target: "elm.bg.content";
+         target: "elm.swallow.content";
+         transition: LINEAR 0.25;
+      }
+      program { name: "inactive";
+         signal: "elm,state,content,hidden";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.spacer";
+         target: "elm.bg.content";
+         target: "elm.swallow.content";
+         transition: LINEAR 0.25;
+      }
+   }
+}

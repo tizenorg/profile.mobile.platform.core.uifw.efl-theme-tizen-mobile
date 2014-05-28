@@ -1,6 +1,6 @@
 Name:          efl-theme-tizen-hd
 Summary:       Tizen theme files
-Version:       1.0.350
+Version:       1.0.351
 Release:       1
 Group:         TO_BE/FILLED_IN
 License:       TO_BE/FILLED_IN
@@ -11,25 +11,29 @@ BuildRequires: perl, edje, edje-bin, embryo, embryo-bin
 %description
 Tizen HD theme for EFL
 
-
-%package -n efl-theme-tizen-devel
-Summary: Development package
-
-%description -n efl-theme-tizen-devel
-Development package
-
 %prep
 %setup -q 
 
 
 %build
+%if 0%{?sec_product_feature_cbhm_lite}
+	export TARGET=2.3
+%else
+	export TARGET=2.2
+%endif
+
 export CFLAGS+=" --fPIC"
 export LDFLAGS+=" -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=/usr/lib"
-
 make %{?jobs:-j%jobs}
 
 
 %install
+%if 0%{?sec_product_feature_cbhm_lite}
+	export TARGET=2.3
+%else
+	export TARGET=2.2
+%endif
+
 rm -rf %{buildroot}
 %make_install
 mkdir -p %{buildroot}/usr/share/license
@@ -37,10 +41,6 @@ cp %{_builddir}/%{buildsubdir}/COPYING %{buildroot}/usr/share/license/%{name}
 
 %files
 %defattr(-,root,root,-)
-%{_datadir}/elementary/themes/tizen.edj
+%{_datadir}/elementary/themes/*.edj
 %manifest %{name}.manifest
 /usr/share/license/%{name}
-
-%files -n efl-theme-tizen-devel
-%defattr(-,root,root,-)
-/opt/var/efl-theme-tizen-edc/*

@@ -1,15 +1,30 @@
 PREFIX ?= /usr
+#TARGET will be got from spec
+#2.2 is redwood
+#2.3 is redwood lite
+#TARGET = 2.2 2.3
 
 all:
-	cd themes && make
+	for t in $(TARGET); do \
+		cd $$t && make $@ TARGET=$$t && cd -; \
+	done
 
-install: 
-	cd themes && make $@
+install:
+	for t in $(TARGET); do \
+		cd $$t && make $@ TARGET=$$t && cd -; \
+	done
 
 uninstall:
-	cd themes && make $@
+	for t in $(TARGET); do \
+		cd $$t && make $@ TARGET=$$t && cd -; \
+	done
 
 clean:
-	cd themes && make $@
+	for t in $(TARGET); do \
+		cd $$t && make $@ TARGET=$$t && cd -; \
+	done
 
 distclean: clean
+
+.PHONY:
+	$(TARGET)
