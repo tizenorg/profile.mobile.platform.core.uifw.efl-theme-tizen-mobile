@@ -17,7 +17,7 @@ Tizen HD theme for EFL
 
 %build
 %if 0%{?sec_product_feature_profile_lite}
-	export TARGET=2.3
+	export TARGET=2.2
 %else
 	export TARGET=2.2
 %endif
@@ -29,7 +29,7 @@ make %{?jobs:-j%jobs}
 
 %install
 %if 0%{?sec_product_feature_profile_lite}
-	export TARGET=2.3
+	export TARGET=2.2
 %else
 	export TARGET=2.2
 %endif
