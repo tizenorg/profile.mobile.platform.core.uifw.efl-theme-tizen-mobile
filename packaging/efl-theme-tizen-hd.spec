@@ -1,6 +1,6 @@
 Name:          efl-theme-tizen-hd
 Summary:       Tizen theme files
-Version:       1.0.353
+Version:       1.0.354
 Release:       1
 Group:         TO_BE/FILLED_IN
 License:       TO_BE/FILLED_IN
@@ -16,8 +16,9 @@ Tizen HD theme for EFL
 
 
 %build
-%if 0%{?sec_product_feature_profile_lite}
-	export TARGET=2.2
+#%if 0%{?sec_product_feature_profile_lite}
+%if 0%{?lite}
+	export TARGET=2.3
 %else
 	export TARGET=2.2
 %endif
@@ -28,8 +29,9 @@ make %{?jobs:-j%jobs}
 
 
 %install
-%if 0%{?sec_product_feature_profile_lite}
-	export TARGET=2.2
+#%if 0%{?sec_product_feature_profile_lite}
+%if 0%{?lite}
+	export TARGET=2.3
 %else
 	export TARGET=2.2
 %endif
