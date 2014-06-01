@@ -26,6 +26,10 @@
 
 #include "genlist_macro.edc"
 
+// elm_list default style
+// ------------------------------------------------
+// | elm.swallow.icon | elm.text | elm.swallow.end |
+// ------------------------------------------------
 group { name: "elm/genlist/item/default/default";
    alias: "elm/list/item/default";
    alias: "elm/list/item_odd/default";
@@ -37,27 +41,46 @@ group { name: "elm/genlist/item/default/default";
 
    parts {
       LIST_PART_BG
-      LIST_PART_PADDINGS(
-         LIST_PADDING_LEFT_SIZE, LIST_PADDING_RIGHT_SIZE,
-         LIST_PADDING_TOP_SIZE, LIST_PADDING_BOTTOM_SIZE
-      )
-
-      PART(SWALLOW, "elm.swallow.icon",
-         DSC_L("default" 0.0,
-            "elm.padding.left",
+      PART(SPACER, "elm.padding.top",
+         DSC_FROM_T("default" 0.0,
+            min: 0 LIST_PADDING_TOP_SIZE;
+            max: -1 LIST_PADDING_TOP_SIZE;
          )
+      )
+      PART(SPACER, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_PADDING_BOTTOM_SIZE;
+            max: -1 LIST_PADDING_BOTTOM_SIZE;
+         )
+      )
+      PART(SWALLOW, "elm.swallow.icon",
+         DSC_FROM_L("default" 0.0, )
       )
       PART(SWALLOW, "elm.swallow.end",
-         DSC_R("default" 0.0,
-            "elm.padding.right",
+         DSC_FROM_R("default" 0.0, )
+      )
+      PART(SPACER, "elm.padding.center.left",
+         DSC_L("default" 0.0,
+            "elm.swallow.icon",
+            min: LIST_PADDING_CENTER_LEFT_SIZE -0;
+            max: LIST_PADDING_CENTER_LEFT_SIZE -1;
          )
       )
+      PART(SPACER, "elm.padding.center.right",
+         DSC_R("default" 0.0,
+            "elm.swallow.end",
+            min: LIST_PADDING_CENTER_RIGHT_SIZE 0;
+            max: LIST_PADDING_CENTER_RIGHT_SIZE -1;
+         )
+      )
+
       PART(TEXTBLOCK, "elm.text",
          DSC_LRTB("default" 0.0,
-            "elm.swallow.icon", "elm.swallow.end",
+            "elm.padding.center.left", "elm.padding.center.right",
             "elm.padding.top", "elm.padding.bottom",
-            min: 0 LIST_1LINE_HEIGHT;
-            PARAM_TEXT("list_text_main")
+            min: 0 LIST_TEXT_MAIN_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_main";
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
@@ -89,9 +112,35 @@ group { name: "elm/genlist/item/groupindex/default";
             color_class: "W021L1";
          }
       )
-      LIST_PART_PADDINGS(
-         LIST_INDEX_PADDING_LEFT_SIZE, LIST_INDEX_PADDING_RIGHT_SIZE,
-         LIST_INDEX_PADDING_TOP_SIZE, LIST_INDEX_PADDING_BOTTOM_SIZE
+      PART(SPACER, "elm.padding.top",
+         DSC_FROM_T("default" 0.0,
+            min: 0 LIST_INDEX_PADDING_TOP_SIZE;
+            max: -1 LIST_INDEX_PADDING_TOP_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_INDEX_PADDING_BOTTOM_SIZE;
+            max: -1 LIST_INDEX_PADDING_BOTTOM_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: LIST_INDEX_PADDING_LEFT_SIZE 0;
+            max: LIST_INDEX_PADDING_LEFT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: LIST_INDEX_PADDING_RIGHT_SIZE 0;
+            max: LIST_INDEX_PADDING_RIGHT_SIZE -1;
+         )
+      )
+
+      PART(SWALLOW, "elm.icon",
+         DSC_RTB("default" 0.0,
+            "elm.padding.right", "elm.padding.top", "elm.padding.bottom",
+         )
       )
 
       PART(TEXTBLOCK, "elm.text.main",
@@ -99,7 +148,8 @@ group { name: "elm/genlist/item/groupindex/default";
             "elm.padding.left", "elm.text.sub",
             "elm.padding.top", "elm.padding.bottom",
             min: 0 LIST_INDEX_HEIGHT;
-            PARAM_TEXT("list_text_index_main")
+            text.min: 0 1;
+            text.style: "list_text_index_main";
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
@@ -114,12 +164,14 @@ group { name: "elm/genlist/item/groupindex/default";
       PART(TEXTBLOCK, "elm.text.sub",
          DSC_RTB("default" 0.0,
             "elm.icon", "elm.padding.top", "elm.padding.bottom",
-            rel1.to_x: "bg";
-            rel1.offset: -LIST_TEXT_SUB_WIDTH_MAX 0;  /* This limits text growing. */
-            text.max: 1 0;                            /* This limits text growing. */
-            align: 1.0 0.5;
             min: 0 LIST_INDEX_HEIGHT;
-            PARAM_TEXT("list_text_index_main")
+            text.min: 0 1;
+            text.style: "list_text_index_main";
+            /** This limits text growing. **/
+            rel1.offset: -LIST_TEXT_SUB_WIDTH_MAX 0;
+            text.max: 1 0;
+            align: 1.0 0.5;
+            /*******************************/
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
@@ -130,25 +182,27 @@ group { name: "elm/genlist/item/groupindex/default";
             text.style: "list_text_index_sub_dim";
          }
       )
-      PART(SWALLOW, "elm.icon",
-         DSC_RTB("default" 0.0,
-            "elm.padding.right", "elm.padding.top", "elm.padding.bottom",
-         )
-      )
-      PART(RECT, "test",
-         DSC_TO("default" 0.0, "elm.text.sub",
-            color: 128 0 0 128;))
    }
    LIST_PROGRAMS( target: "elm.text.main"; target: "elm.text.sub"; )
 }
 
+// 2.2.1.A4
+// 2.2.1.A5
+// 2.2.1.A6
+// 2.2.1.A8
+// 2.2.1.A13
+// FIXME: Aboves will be removed
+
+
 // 2.2.1.A2
 // 2.2.1.A3
 // 2.2.1.A17
+// 2.2.1.A18
+// 2.2.1.A19
 //  ---------------------------------------
-// | elm.icon.1 | center area | elm.icon.2 |
+// | elm.icon.1 | CENTER AREA | elm.icon.2 |
 //  ---------------------------------------
-// *************************  center area *********************************** //
+// *************************  CENTER AREA *********************************** //
 // --------------------------------------------------------------------------------------
 // | elm.icon.left | elm.text.main(sub).left | elm.text.sub(main).right | elm.icon.right |
 // --------------------------------------------------------------------------------------
@@ -158,37 +212,57 @@ group { name: "elm/genlist/item/1line/default";
 
    parts {
       LIST_PART_BG
-      LIST_PART_PADDINGS(
-         LIST_PADDING_LEFT_SIZE, LIST_PADDING_RIGHT_SIZE,
-         LIST_PADDING_TOP_SIZE, LIST_PADDING_BOTTOM_SIZE
+
+      PART(SPACER, "elm.padding.top",
+         DSC_FROM_T("default" 0.0,
+            min: 0 LIST_PADDING_TOP_SIZE;
+            max: -1 LIST_PADDING_TOP_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_PADDING_BOTTOM_SIZE;
+            max: -1 LIST_PADDING_BOTTOM_SIZE;
+         )
       )
       PART(SWALLOW, "elm.icon.1",
-         DSC_L("default" 0.0,
-            "elm.padding.left",
-         )
+         DSC_FROM_L("default" 0.0, )
       )
       PART(SWALLOW, "elm.icon.2",
-         DSC_RTB("default" 0.0,
-            "elm.padding.right", "elm.padding.top", "elm.padding.bottom",
+         DSC_FROM_R("default" 0.0, )
+      )
+      PART(SPACER, "elm.padding.center.left",
+         DSC_L("default" 0.0,
+            "elm.icon.1",
+            min: LIST_PADDING_CENTER_LEFT_SIZE 0;
+            max: LIST_PADDING_CENTER_LEFT_SIZE -1;
          )
       )
-
+      PART(SPACER, "elm.padding.center.right",
+         DSC_R("default" 0.0,
+            "elm.icon.2",
+            min: LIST_PADDING_CENTER_RIGHT_SIZE 0;
+            max: LIST_PADDING_CENTER_RIGHT_SIZE -1;
+         )
+      )
       PART(SWALLOW, "elm.icon.left",
          DSC_LTB("default" 0.0,
-            "elm.icon.1", "elm.padding.top", "elm.padding.bottom",
+            "elm.padding.center.left", "elm.padding.top", "elm.padding.bottom",
          )
       )
       PART(SWALLOW, "elm.icon.right",
          DSC_RTB("default" 0.0,
-            "elm.icon.2", "elm.padding.top", "elm.padding.bottom",
+            "elm.padding.center.right", "elm.padding.top", "elm.padding.bottom",
          )
       )
+
       PART(TEXTBLOCK, "elm.text.main.left",
          DSC_LRTB("default" 0.0,
             "elm.icon.left", "elm.text.sub.right",
             "elm.padding.top", "elm.padding.bottom",
-            min: 0 LIST_1LINE_HEIGHT;
-            PARAM_TEXT("list_text_main")
+            min: 0 LIST_TEXT_MAIN_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_main";
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
@@ -202,28 +276,31 @@ group { name: "elm/genlist/item/1line/default";
       PART(TEXTBLOCK, "elm.text.sub.right",
          DSC_RTB("default" 0.0,
             "elm.icon.right", "elm.padding.top", "elm.padding.bottom",
-            rel1.to_x: "bg";
-            rel1.offset: -LIST_TEXT_SUB_WIDTH_MAX 0;  /* This limits text growing. */
-            text.max: 1 0;                            /* This limits text growing. */
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_sub_02";
+            /* This limits text growing. */
+            rel1.offset: -LIST_TEXT_SUB_WIDTH_MAX 0;
+            text.max: 1 0;
             align: 1.0 0.5;
-            min: 0 LIST_1LINE_HEIGHT;
-            PARAM_TEXT("list_text_sub_01")
+            /*******************************/
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_press";
+            text.style: "list_text_sub_02_press";
          }
          description { state: "dim" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_dim";
+            text.style: "list_text_sub_02_dim";
          }
       )
       PART(TEXTBLOCK, "elm.text.main.right",
          DSC_LRTB("default" 0.0,
             "elm.text.sub.left", "elm.icon.right",
             "elm.padding.top", "elm.padding.bottom",
-            min: 0 LIST_1LINE_HEIGHT;
-            PARAM_TEXT("list_text_main")
+            min: 0 LIST_TEXT_MAIN_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_main";
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
@@ -237,20 +314,22 @@ group { name: "elm/genlist/item/1line/default";
       PART(TEXTBLOCK, "elm.text.sub.left",
          DSC_LTB("default" 0.0,
             "elm.icon.left", "elm.padding.top", "elm.padding.bottom",
-            rel2.to_x: "bg";
-            rel2.offset: LIST_TEXT_SUB_WIDTH_MAX 0;   /* This limits text growing. */
-            text.max: 1 0;                            /* This limits text growing. */
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_sub_02";
+            /* This limits text growing. */
+            rel2.offset: LIST_TEXT_SUB_WIDTH_MAX 0;
+            text.max: 1 0;
             align: 0.0 0.5;
-            min: 0 LIST_1LINE_HEIGHT;
-            PARAM_TEXT("list_text_sub_01")
+            /*******************************/
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_press";
+            text.style: "list_text_sub_02_press";
          }
          description { state: "dim" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_dim";
+            text.style: "list_text_sub_02_dim";
          }
       )
    }
@@ -259,55 +338,103 @@ group { name: "elm/genlist/item/1line/default";
    )
 }
 
+// 2.2.1.A7
+// 2.2.1.A9
+// 2.2.1.A10
+// 2.2.1.A11
+// 2.2.1.A20
+// 2.2.1.A26
+// 2.2.1.A23
+// 2.2.1.A21
+// 2.2.1.A27
+// 2.2.1.A24
+// 2.2.1.A29
+// 2.2.1.A22
+// 2.2.1.A28
+// 2.2.1.A25
 //  ---------------------------------------
-// | elm.icon.1 | center area | elm.icon.2 |
+// | elm.icon.1 | CENTER AREA | elm.icon.2 |
 //  ---------------------------------------
-// *************************  center area *********************************** //
-// ------------------------------------------------------------------------------------------------------------------------------------
-// |              | elm.icon.left.top    | elm.text.main(sub).left | elm.text.sub(main).right | elm.icon.right.top    |                |
-// |elm.icon.left | -------------------- | ----------------------- | ------------------------ | --------------------- | elm.icon.right |
-// |              | elm.icon.left.bottom | elm.text.sub.left       | elm.text.sub.right       | elm.icon.right.bottom |                |
-// ------------------------------------------------------------------------------------------------------------------------------------
-group { name: "elm/genlist/item/2line.1/default";
+// *************************  CENTER AREA *********************************** //
+// ---------------------------------------------------------------------------------------------------------------------------------------------
+// |              | elm.icon.left.top    | elm.text.main(sub).left.top | elm.text.sub(main).right.top | elm.icon.right.top    |                |
+// |elm.icon.left | -------------------- | ----------------------- --- | ---------------------------- | --------------------- | elm.icon.right |
+// |              | elm.icon.left.bottom | elm.text.sub.left.bottom    | elm.text.sub.right.bottom    | elm.icon.right.bottom |                |
+// --------------------------------------------------------------------------------------------------------------------------------------------
 
+group { name: "elm/genlist/item/2line.top/default";
    data.item: "texts" "elm.text.main.left.top elm.text.sub.right.top elm.text.main.right.top elm.text.sub.left.top elm.text.sub.left.bottom elm.text.sub.right.bottom";
    data.item: "contents" "elm.icon.1 elm.icon.2 elm.icon.left elm.icon.right elm.icon.left.top elm.icon.right.top elm.icon.left.bottom elm.icon.right.bottom";
    parts {
       LIST_PART_BG
-      LIST_PART_PADDINGS(
-         LIST_PADDING_LEFT_SIZE, LIST_PADDING_RIGHT_SIZE,
-         LIST_PADDING_TOP_SIZE, LIST_PADDING_BOTTOM_SIZE
-      )
 
+      PART(SPACER, "elm.padding.top",
+         DSC_FROM_T("default" 0.0,
+            min: 0 LIST_PADDING_TOP_SIZE;
+            max: -1 LIST_PADDING_TOP_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_PADDING_BOTTOM_SIZE;
+            max: -1 LIST_PADDING_BOTTOM_SIZE;
+         )
+      )
+      PART(SWALLOW, "elm.icon.1",
+         DSC_FROM_L("default" 0.0, )
+      )
+      PART(SWALLOW, "elm.icon.2",
+         DSC_FROM_R("default" 0.0, )
+      )
+      PART(SPACER, "elm.padding.center.left",
+         DSC_L("default" 0.0,
+            "elm.icon.1",
+            min: LIST_PADDING_CENTER_LEFT_SIZE 0;
+            max: LIST_PADDING_CENTER_LEFT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.center.right",
+         DSC_R("default" 0.0,
+            "elm.icon.2",
+            min: LIST_PADDING_CENTER_RIGHT_SIZE 0;
+            max: LIST_PADDING_CENTER_RIGHT_SIZE -1;
+         )
+      )
       PART(SWALLOW, "elm.icon.left",
-         DSC_LTB("default" 0.0, "elm.padding.left", "elm.padding.top", "elm.padding.bottom",
-         )
-      )
-      PART(SWALLOW, "elm.icon.left.top",
-         DSC_LT("default" 0.0, "elm.icon.left", "elm.padding.top",
-         )
-      )
-      PART(SWALLOW, "elm.icon.left.bottom",
-         DSC_LB("default" 0.0, "elm.icon.left", "elm.padding.bottom",
+         DSC_LTB("default" 0.0,
+            "elm.padding.center.left", "elm.padding.top", "elm.padding.bottom",
          )
       )
       PART(SWALLOW, "elm.icon.right",
-         DSC_RTB("default" 0.0, "elm.padding.right", "elm.padding.top", "elm.padding.bottom",
+         DSC_RTB("default" 0.0,
+            "elm.padding.center.right", "elm.padding.top", "elm.padding.bottom",
+         )
+      )
+
+      PART(SWALLOW, "elm.icon.left.top",
+         DSC_LTB("default" 0.0, "elm.icon.left", "elm.padding.top", "elm.text.sub.left.bottom",
+         )
+      )
+      PART(SWALLOW, "elm.icon.left.bottom",
+         DSC_LTB("default" 0.0, "elm.icon.left", "elm.text.sub.left.bottom", "elm.padding.bottom",
+            rel1.relative: 1 0; // to make same height with "elm.text.sub.left.bottom"
          )
       )
       PART(SWALLOW, "elm.icon.right.top",
-         DSC_RT("default" 0.0, "elm.icon.right", "elm.padding.top",
+         DSC_RTB("default" 0.0, "elm.icon.right", "elm.padding.top", "elm.text.sub.left.bottom",
          )
       )
       PART(SWALLOW, "elm.icon.right.bottom",
-         DSC_RB("default" 0.0, "elm.icon.right", "elm.padding.bottom",
+         DSC_RTB("default" 0.0, "elm.icon.right", "elm.text.sub.left.bottom", "elm.padding.bottom",
+            rel1.relative: 0 0; // to make same height with "elm.text.sub.left.bottom"
          )
       )
-      /* Left Main */
       PART(TEXTBLOCK, "elm.text.main.left.top",
-         DSC_LRTB("default" 0.0, "elm.icon.left.top", "elm.text.sub.right.top", "elm.padding.top","elm.text.sub.left.bottom",
-            min: 0 LIST_2LINE_MAIN_HEIGHT;
-            PARAM_TEXT("list_text_main")
+         DSC_LRTB("default" 0.0,
+            "elm.icon.left.top", "elm.text.sub.right.top", "elm.padding.top","elm.text.sub.left.bottom",
+            min: 0 LIST_TEXT_MAIN_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_main";
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
@@ -319,27 +446,32 @@ group { name: "elm/genlist/item/2line.1/default";
          }
       )
       PART(TEXTBLOCK, "elm.text.sub.right.top",
-         DSC_RTB("default" 0.0, "elm.icon.right.top", "elm.padding.top", "elm.text.sub.right.bottom",
-            rel1.offset: -LIST_TEXT_SUB_WIDTH_MAX 0;  /* This limits text growing. */
-            text.max: 1 0;        /* This limits text growing. */
+         DSC_RTB("default" 0.0,
+            "elm.icon.right.top", "elm.padding.top", "elm.text.sub.right.bottom",
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_sub_02";
+            /* This limits text growing. */
+            rel1.offset: -LIST_TEXT_SUB_WIDTH_MAX 0;
+            text.max: 1 0;
             align: 1.0 0.5;
-            min: 0 LIST_2LINE_SUB_HEIGHT;
-            PARAM_TEXT("list_text_sub_01")
+            /*******************************/
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_press";
+            text.style: "list_text_sub_02_press";
          }
          description { state: "dim" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_dim";
+            text.style: "list_text_sub_02_dim";
          }
       )
-     /* Right Main */
       PART(TEXTBLOCK, "elm.text.main.right.top",
-         DSC_LRTB("default" 0.0, "elm.text.sub.left.top", "elm.icon.right.top", "elm.padding.top","elm.text.sub.right.bottom",
-            min: 0 LIST_2LINE_MAIN_HEIGHT;
-            PARAM_TEXT("list_text_main")
+         DSC_LRTB("default" 0.0,
+            "elm.text.sub.left.top", "elm.icon.right.top", "elm.padding.top","elm.text.sub.right.bottom",
+            min: 0 LIST_TEXT_MAIN_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_main";
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
@@ -351,26 +483,32 @@ group { name: "elm/genlist/item/2line.1/default";
          }
       )
       PART(TEXTBLOCK, "elm.text.sub.left.top",
-         DSC_LTB("default" 0.0, "elm.icon.left.top", "elm.padding.top", "elm.text.sub.left.bottom",
-            rel2.offset: LIST_TEXT_SUB_WIDTH_MAX 0;   /* This limits text growing. */
-            text.max: 1 0;        /* This limits text growing. */
+         DSC_LTB("default" 0.0,
+            "elm.icon.left.top", "elm.padding.top", "elm.text.sub.left.bottom",
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_sub_02";
+            /* This limits text growing. */
+            rel2.offset: LIST_TEXT_SUB_WIDTH_MAX 0;
+            text.max: 1 0;
             align: 0.0 0.5;
-            min: 0 LIST_2LINE_SUB_HEIGHT;
-            PARAM_TEXT("list_text_sub_01")
+            /*******************************/
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_press";
+            text.style: "list_text_sub_02_press";
          }
          description { state: "dim" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_dim";
+            text.style: "list_text_sub_02_dim";
          }
       )
       PART(TEXTBLOCK, "elm.text.sub.left.bottom",
-         DSC_LRB("default" 0.0, "elm.icon.left.bottom", "elm.text.sub.right.bottom", "elm.padding.bottom",
-            min: 0 LIST_2LINE_SUB_HEIGHT;
-            PARAM_TEXT("list_text_sub_01")
+         DSC_LRB("default" 0.0,
+            "elm.icon.left.bottom", "elm.text.sub.right.bottom", "elm.padding.bottom",
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_sub_01";
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
@@ -382,77 +520,129 @@ group { name: "elm/genlist/item/2line.1/default";
          }
       )
       PART(TEXTBLOCK, "elm.text.sub.right.bottom",
-         DSC_RB("default" 0.0, "elm.icon.right.bottom", "elm.padding.bottom",
-            rel1.offset: -LIST_TEXT_SUB_WIDTH_MAX 0;  /* This limits text growing. */
-            text.max: 1 0;        /* This limits text growing. */
+         DSC_RB("default" 0.0,
+            "elm.icon.right.bottom", "elm.padding.bottom",
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_sub_02";
+            /* This limits text growing. */
+            rel1.offset: -LIST_TEXT_SUB_WIDTH_MAX 0;
+            text.max: 1 0;
             align: 1.0 1.0;
-            min: 0 LIST_2LINE_SUB_HEIGHT;
-            PARAM_TEXT("list_text_sub_01")
+            /*******************************/
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_press";
+            text.style: "list_text_sub_02_press";
          }
          description { state: "dim" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_dim";
+            text.style: "list_text_sub_02_dim";
          }
       )
    }
-   LIST_PROGRAMS( target: "elm.text.main.left.top"; target: "elm.text.sub.right.top"; target: "elm.text.main.right.top"; target: "elm.text.sub.left.top"; target: "elm.text.sub.left.bottom"; target: "elm.text.sub.right.bottom"; )
+   LIST_PROGRAMS( target: "elm.text.main.left.top"; target: "elm.text.sub.right.top";
+      target: "elm.text.main.right.top"; target: "elm.text.sub.left.top";
+      target: "elm.text.sub.left.bottom"; target: "elm.text.sub.right.bottom"; )
 }
 
-
+// 2.2.1.A12
+// 2.2.1.A14
+// 2.2.1.A15
+// 2.2.1.A16
+// 2.2.1.A30
+// 2.2.1.A36
+// 2.2.1.A33
+// 2.2.1.A31
+// 2.2.1.A37
+// 2.2.1.A34
+// 2.2.1.A39
+// 2.2.1.A32
+// 2.2.1.A38
+// 2.2.1.A35
 //  ---------------------------------------
 // | elm.icon.1 | center area | elm.icon.2 |
 //  ---------------------------------------
 // *************************  center area *********************************** //
-// ------------------------------------------------------------------------------------------------------------------------------------
-// |              | elm.icon.left.top    | elm.text.sub.left       | elm.text.sub.right       | elm.icon.right.top    |                |
-// |elm.icon.left | -------------------- | ----------------------- | ------------------------ | --------------------- | elm.icon.right |
-// |              | elm.icon.left.bottom | elm.text.main(sub).left | elm.text.sub(main).right | elm.icon.right.bottom |                |
-// ------------------------------------------------------------------------------------------------------------------------------------
-group { name: "elm/genlist/item/2line.2/default";
-
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// |              | elm.icon.left.top    | elm.text.sub.left.top          | elm.text.sub.right.top          | elm.icon.right.top    |                |
+// |elm.icon.left | -------------------- | ------------------------------ | ------------------------------- | --------------------- | elm.icon.right |
+// |              | elm.icon.left.bottom | elm.text.main(sub).left.bottom | elm.text.sub(main).right.bottom | elm.icon.right.bottom |                |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+group { name: "elm/genlist/item/2line.bottom/default";
    data.item: "texts" "elm.text.main.left.bottom elm.text.sub.right.bottom elm.text.main.right.bottom elm.text.sub.left.bottom elm.text.sub.left.top elm.text.sub.right.top";
-   data.item: "contents" "elm.icon.left elm.icon.right elm.icon.left.top elm.icon.right.top elm.icon.left.bottom elm.icon.right.bottom";
+   data.item: "contents" "elm.icon.1 elm.icon.2 elm.icon.left elm.icon.right elm.icon.left.top elm.icon.right.top elm.icon.left.bottom elm.icon.right.bottom";
 
    parts {
       LIST_PART_BG
-      LIST_PART_PADDINGS(
-         LIST_PADDING_LEFT_SIZE, LIST_PADDING_RIGHT_SIZE,
-         LIST_PADDING_TOP_SIZE, LIST_PADDING_BOTTOM_SIZE
-      )
 
+      PART(SPACER, "elm.padding.top",
+         DSC_FROM_T("default" 0.0,
+            min: 0 LIST_PADDING_TOP_SIZE;
+            max: -1 LIST_PADDING_TOP_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_PADDING_BOTTOM_SIZE;
+            max: -1 LIST_PADDING_BOTTOM_SIZE;
+         )
+      )
+      PART(SWALLOW, "elm.icon.1",
+         DSC_FROM_L("default" 0.0, )
+      )
+      PART(SWALLOW, "elm.icon.2",
+         DSC_FROM_R("default" 0.0, )
+      )
+      PART(SPACER, "elm.padding.center.left",
+         DSC_L("default" 0.0,
+            "elm.icon.1",
+            min: LIST_PADDING_CENTER_LEFT_SIZE 0;
+            max: LIST_PADDING_CENTER_LEFT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.center.right",
+         DSC_R("default" 0.0,
+            "elm.icon.2",
+            min: LIST_PADDING_CENTER_RIGHT_SIZE 0;
+            max: LIST_PADDING_CENTER_RIGHT_SIZE -1;
+         )
+      )
       PART(SWALLOW, "elm.icon.left",
-         DSC_LTB("default" 0.0, "elm.padding.left", "elm.padding.top", "elm.padding.bottom",
-         )
-      )
-      PART(SWALLOW, "elm.icon.left.top",
-         DSC_LT("default" 0.0, "elm.icon.left", "elm.padding.top",
-         )
-      )
-      PART(SWALLOW, "elm.icon.left.bottom",
-         DSC_LB("default" 0.0, "elm.icon.left", "elm.padding.bottom",
+         DSC_LTB("default" 0.0,
+            "elm.padding.center.left", "elm.padding.top", "elm.padding.bottom",
          )
       )
       PART(SWALLOW, "elm.icon.right",
-         DSC_RTB("default" 0.0, "elm.padding.right", "elm.padding.top", "elm.padding.bottom",
+         DSC_RTB("default" 0.0,
+            "elm.padding.center.right", "elm.padding.top", "elm.padding.bottom",
+         )
+      )
+
+      PART(SWALLOW, "elm.icon.left.top",
+         DSC_LTB("default" 0.0, "elm.icon.left", "elm.padding.top", "elm.text.sub.left.top",
+            rel2.relative: 1 1; // to make same height with "elm.text.sub.left.top"
+         )
+      )
+      PART(SWALLOW, "elm.icon.left.bottom",
+         DSC_LTB("default" 0.0, "elm.icon.left", "elm.text.sub.left.top", "elm.padding.bottom",
          )
       )
       PART(SWALLOW, "elm.icon.right.top",
-         DSC_RT("default" 0.0, "elm.icon.right", "elm.padding.top",
+         DSC_RTB("default" 0.0, "elm.icon.right", "elm.padding.top", "elm.text.sub.left.top",
+            rel2.relative: 0 1; // to make same height with "elm.text.sub.left.top"
          )
       )
       PART(SWALLOW, "elm.icon.right.bottom",
-         DSC_RB("default" 0.0, "elm.icon.right", "elm.padding.bottom",
+         DSC_RTB("default" 0.0, "elm.icon.right", "elm.text.sub.left.top", "elm.padding.bottom",
          )
       )
-      /* Left Main */
       PART(TEXTBLOCK, "elm.text.main.left.bottom",
-         DSC_LRTB("default" 0.0, "elm.icon.left.bottom", "elm.text.sub.right.bottom", "elm.text.sub.left.top", "elm.padding.bottom",
-            min: 0 LIST_2LINE_MAIN_HEIGHT;
-            PARAM_TEXT("list_text_main")
+         DSC_LRTB("default" 0.0,
+            "elm.icon.left.bottom", "elm.text.sub.right.bottom", "elm.text.sub.left.top", "elm.padding.bottom",
+            min: 0 LIST_TEXT_MAIN_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_main";
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
@@ -464,27 +654,33 @@ group { name: "elm/genlist/item/2line.2/default";
          }
       )
       PART(TEXTBLOCK, "elm.text.sub.right.bottom",
-         DSC_RTB("default" 0.0, "elm.icon.right.bottom", "elm.text.sub.right.top", "elm.padding.bottom",
-            rel1.offset: -LIST_TEXT_SUB_WIDTH_MAX 0;  /* This limits text growing. */
-            text.max: 1 0;        /* This limits text growing. */
+         DSC_RTB("default" 0.0,
+            "elm.icon.right.bottom", "elm.text.sub.right.top", "elm.padding.bottom",
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_sub_02";
+            /* This limits text growing. */
+            rel1.offset: -LIST_TEXT_SUB_WIDTH_MAX 0;
+            text.max: 1 0;
             align: 1.0 0.5;
-            min: 0 LIST_2LINE_SUB_HEIGHT;
-            PARAM_TEXT("list_text_sub_01")
+            /*******************************/
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_press";
+            text.style: "list_text_sub_02_press";
          }
          description { state: "dim" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_dim";
+            text.style: "list_text_sub_02_dim";
          }
       )
      /* Right Main */
       PART(TEXTBLOCK, "elm.text.main.right.bottom",
-         DSC_LRTB("default" 0.0, "elm.text.sub.left.bottom", "elm.icon.right.bottom", "elm.text.sub.right.top", "elm.padding.bottom",
-            min: 0 LIST_2LINE_MAIN_HEIGHT;
-            PARAM_TEXT("list_text_main")
+         DSC_LRTB("default" 0.0,
+            "elm.text.sub.left.bottom", "elm.icon.right.bottom", "elm.text.sub.right.top", "elm.padding.bottom",
+            min: 0 LIST_TEXT_MAIN_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_main";
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
@@ -496,26 +692,32 @@ group { name: "elm/genlist/item/2line.2/default";
          }
       )
       PART(TEXTBLOCK, "elm.text.sub.left.bottom",
-         DSC_LTB("default" 0.0, "elm.icon.left.bottom", "elm.text.sub.left.top", "elm.padding.bottom",
-            rel2.offset: LIST_TEXT_SUB_WIDTH_MAX 0;   /* This limits text growing. */
-            text.max: 1 0;        /* This limits text growing. */
+         DSC_LTB("default" 0.0,
+            "elm.icon.left.bottom", "elm.text.sub.left.top", "elm.padding.bottom",
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_sub_02";
+            /** This limits text growing. **/
+            rel2.offset: LIST_TEXT_SUB_WIDTH_MAX 0;
+            text.max: 1 0;
             align: 0.0 0.5;
-            min: 0 LIST_2LINE_SUB_HEIGHT;
-            PARAM_TEXT("list_text_sub_01")
+            /*******************************/
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_press";
+            text.style: "list_text_sub_02_press";
          }
          description { state: "dim" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_dim";
+            text.style: "list_text_sub_02_dim";
          }
       )
       PART(TEXTBLOCK, "elm.text.sub.left.top",
-         DSC_LRT("default" 0.0, "elm.icon.left.top", "elm.text.sub.right.top", "elm.padding.top",
-            min: 0 LIST_2LINE_SUB_HEIGHT;
-            PARAM_TEXT("list_text_sub_01")
+         DSC_LRT("default" 0.0,
+            "elm.icon.left.top", "elm.text.sub.right.top", "elm.padding.top",
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_sub_01";
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
@@ -527,33 +729,576 @@ group { name: "elm/genlist/item/2line.2/default";
          }
       )
       PART(TEXTBLOCK, "elm.text.sub.right.top",
-         DSC_RT("default" 0.0, "elm.icon.right.top", "elm.padding.top",
-            rel1.offset: -LIST_TEXT_SUB_WIDTH_MAX 0;  /* This limits text growing. */
-            text.max: 1 0;        /* This limits text growing. */
+         DSC_RT("default" 0.0,
+            "elm.icon.right.top", "elm.padding.top",
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_sub_02";
+            /** This limits text growing. **/
+            rel1.offset: -LIST_TEXT_SUB_WIDTH_MAX 0;
+            text.max: 1 0;
             align: 1.0 0.0;
-            min: 0 LIST_2LINE_SUB_HEIGHT;
-            PARAM_TEXT("list_text_sub_01")
+            /*******************************/
          )
          description { state: "press" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_press";
+            text.style: "list_text_sub_02_press";
          }
          description { state: "dim" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_sub_01_dim";
+            text.style: "list_text_sub_02_dim";
          }
       )
    }
    LIST_PROGRAMS( target: "elm.text.main.left.bottom"; target: "elm.text.sub.right.top"; target: "elm.text.main.right.bottom"; target: "elm.text.sub.left.top"; target: "elm.text.sub.left.bottom"; target: "elm.text.sub.right.bottom"; )
 }
 
-// 2.2.1.A7
-// 2.2.1.A12
+// 2.2.1.A40
+group { name: "elm/genlist/item/wrap/default";
+   data.item: "texts" "elm.text.wrap";
 
-// 2.2.1.A3
-// 2.2.1.A4
-// 2.2.1.A5
-// 2.2.1.A6
+   parts {
+      LIST_PART_BG
+
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: LIST_WRAP_PADDING_LEFT_SIZE 0;
+            max: LIST_WRAP_PADDING_LEFT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: LIST_WRAP_PADDING_RIGHT_SIZE 0;
+            max: LIST_WRAP_PADDING_RIGHT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.top",
+         DSC_FROM_T("default" 0.0,
+            min: 0 LIST_WRAP_PADDING_TOP_SIZE;
+            max: -1 LIST_WRAP_PADDING_TOP_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_WRAP_PADDING_BOTTOM_SIZE;
+            max: -1 LIST_WRAP_PADDING_BOTTOM_SIZE;
+         )
+      )
+
+      PART(TEXTBLOCK, "elm.text.wrap",
+         DSC_LRTB("default" 0.0,
+            "elm.padding.left", "elm.padding.right", "elm.padding.top", "elm.padding.bottom",
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_wrap";
+         )
+         description { state: "press" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_wrap_press";
+         }
+         description { state: "dim" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_wrap_dim";
+         }
+      )
+   }
+   LIST_PROGRAMS( target: "elm.text.wrap"; )
+}
+
+// 2.2.1.A41
+group { name: "elm/genlist/item/wrap.main/default";
+
+   data.item: "texts" "elm.text.main elm.text.wrap";
+
+   parts {
+      LIST_PART_BG
+
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: LIST_WRAP_PADDING_LEFT_SIZE 0;
+            max: LIST_WRAP_PADDING_LEFT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: LIST_WRAP_PADDING_RIGHT_SIZE 0;
+            max: LIST_WRAP_PADDING_RIGHT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.top",
+         DSC_FROM_T("default" 0.0,
+            min: 0 LIST_WRAP_PADDING_TOP_SIZE;
+            max: -1 LIST_WRAP_PADDING_TOP_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_WRAP_PADDING_BOTTOM_SIZE;
+            max: -1 LIST_WRAP_PADDING_BOTTOM_SIZE;
+         )
+      )
+
+      PART(TEXTBLOCK, "elm.text.main",
+         DSC_LRTB("default" 0.0,
+            "elm.padding.left", "elm.padding.right", "elm.padding.top", "elm.text.wrap",
+            min: 0 LIST_TEXT_MAIN_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_main";
+         )
+         description { state: "press" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_main_press";
+         }
+         description { state: "dim" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_main_dim";
+         }
+      )
+      PART(TEXTBLOCK, "elm.text.wrap",
+         DSC_LRB("default" 0.0,
+            "elm.padding.left", "elm.padding.right", "elm.padding.bottom",
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_wrap";
+         )
+         description { state: "press" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_wrap_press";
+         }
+         description { state: "dim" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_wrap_dim";
+         }
+      )
+   }
+   LIST_PROGRAMS( target: "elm.text.main"; target: "elm.text.wrap"; )
+}
+
+// 2.2.1.A42
+group { name: "elm/genlist/item/wrap.main.sub/default";
+
+   data.item: "texts" "elm.text.main elm.text.sub elm.text.wrap";
+
+   parts {
+      LIST_PART_BG
+
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: LIST_WRAP_PADDING_LEFT_SIZE 0;
+            max: LIST_WRAP_PADDING_LEFT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: LIST_WRAP_PADDING_RIGHT_SIZE 0;
+            max: LIST_WRAP_PADDING_RIGHT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.top",
+         DSC_FROM_T("default" 0.0,
+            min: 0 LIST_WRAP_PADDING_TOP_SIZE;
+            max: -1 LIST_WRAP_PADDING_TOP_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_WRAP_PADDING_BOTTOM_SIZE;
+            max: -1 LIST_WRAP_PADDING_BOTTOM_SIZE;
+         )
+      )
+
+      PART(TEXTBLOCK, "elm.text.main",
+         DSC_LRTB("default" 0.0,
+            "elm.padding.left", "elm.padding.right", "elm.padding.top", "elm.text.sub",
+            min: 0 LIST_TEXT_MAIN_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_main";
+         )
+         description { state: "press" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_main_press";
+         }
+         description { state: "dim" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_main_dim";
+         }
+      )
+      PART(TEXTBLOCK, "elm.text.sub",
+         DSC_LRB("default" 0.0,
+            "elm.padding.left", "elm.padding.right", "elm.text.wrap",
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_sub_01";
+         )
+         description { state: "press" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_sub_01_press";
+         }
+         description { state: "dim" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_sub_01_dim";
+         }
+      )
+      PART(TEXTBLOCK, "elm.text.wrap",
+         DSC_LRB("default" 0.0,
+            "elm.padding.left", "elm.padding.right", "elm.padding.bottom",
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_wrap";
+         )
+         description { state: "press" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_wrap_press";
+         }
+         description { state: "dim" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_wrap_dim";
+         }
+      )
+   }
+   LIST_PROGRAMS( target: "elm.text.main"; target: "elm.text.sub";
+      target: "elm.text.sub";
+   )
+}
+
+// Entry style
+// 2.2.1.A43
+group { name: "elm/genlist/item/entry/default";
+   alias: "elm/layout/entry/default";
+
+   data.item: "contents" "elm.icon.entry";
+
+   parts {
+      PART(RECT, "bg",
+         description { state: "default" 0.0;
+            color_class: "B041";
+         }
+      )
+
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: LIST_ENTRY_PADDING_LEFT_SIZE 0;
+            max: LIST_ENTRY_PADDING_LEFT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: LIST_ENTRY_PADDING_RIGHT_SIZE 0;
+            max: LIST_ENTRY_PADDING_RIGHT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.top",
+         DSC_FROM_T("default" 0.0,
+            min: 0 LIST_ENTRY_PADDING_TOP_SIZE;
+            max: -1 LIST_ENTRY_PADDING_TOP_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_ENTRY_PADDING_TOP_SIZE;
+            max: -1 LIST_ENTRY_PADDING_TOP_SIZE;
+         )
+      )
+
+      PART(SWALLOW, "elm.icon.entry",
+         DSC_LRTB("default" 0.0,
+            "elm.padding.left", "elm.padding.right",
+            "elm.padding.top", "elm.padding.bottom",
+            min: 0 LIST_ENTRY_ENTRY_HEIGHT;
+         )
+      )
+   }
+}
+
+// 2.2.1.A44
+group { name: "elm/genlist/item/entry.sub/default";
+   alias: "elm/layout/entry.sub/default";
+
+   data.item: "texts" "elm.text.sub";
+   data.item: "contents" "elm.icon.entry";
+
+   parts {
+      PART(RECT, "bg",
+         description { state: "default" 0.0;
+            color_class: "B041";
+         }
+      )
+
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: LIST_ENTRY_PADDING_LEFT_SIZE 0;
+            max: LIST_ENTRY_PADDING_LEFT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: LIST_ENTRY_PADDING_RIGHT_SIZE 0;
+            max: LIST_ENTRY_PADDING_RIGHT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.top",
+         DSC_FROM_T("default" 0.0,
+            min: 0 LIST_ENTRY_PADDING_TOP_SIZE;
+            max: -1 LIST_ENTRY_PADDING_TOP_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_ENTRY_PADDING_TOP_SIZE;
+            max: -1 LIST_ENTRY_PADDING_TOP_SIZE;
+         )
+      )
+
+      PART(TEXTBLOCK, "elm.text.sub",
+         DSC_LTB("default" 0.0,
+            "elm.padding.left", "elm.padding.top", "elm.padding.bottom",
+            min: 0 LIST_TEXT_SUB_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_sub_02";
+            /* This limits text growing. */
+            rel2.offset: LIST_ENTRY_TEXT_SUB_WIDTH_MAX 0;
+            text.max: 1 0;
+            align: 0.0 0.5;
+            /*******************************/
+         )
+      )
+      PART(SPACER, "elm.padding.entry.left",
+         DSC_L("default" 0.0,
+            "elm.text.sub",
+            min: LIST_PADDING_DEFAULT_SIZE 0;
+            max: LIST_PADDING_DEFAULT_SIZE -1;
+         )
+      )
+      PART(SWALLOW, "elm.icon.entry",
+         DSC_LRTB("default" 0.0,
+            "elm.padding.entry.left", "elm.padding.right",
+            "elm.padding.top", "elm.padding.bottom",
+            min: 0 LIST_ENTRY_ENTRY_HEIGHT;
+         )
+      )
+   }
+}
+
+// 2.2.1.A45
+group { name: "elm/genlist/item/entry.icon/default";
+   alias: "elm/layout/entry.icon/default";
+
+   data.item: "contents" "elm.icon.entry elm.icon";
+
+   parts {
+      PART(RECT, "bg",
+         description { state: "default" 0.0;
+            color_class: "B041";
+         }
+      )
+
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: LIST_ENTRY_PADDING_LEFT_SIZE 0;
+            max: LIST_ENTRY_PADDING_LEFT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: LIST_ENTRY_PADDING_RIGHT_SIZE 0;
+            max: LIST_ENTRY_PADDING_RIGHT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.top",
+         DSC_FROM_T("default" 0.0,
+            min: 0 LIST_ENTRY_PADDING_TOP_SIZE;
+            max: -1 LIST_ENTRY_PADDING_TOP_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_ENTRY_PADDING_TOP_SIZE;
+            max: -1 LIST_ENTRY_PADDING_TOP_SIZE;
+         )
+      )
+
+      PART(SWALLOW, "elm.icon",
+         DSC_R("default" 0.0,
+            "elm.padding.right",
+         )
+      )
+      PART(SPACER, "elm.padding.entry.right",
+         DSC_R("default" 0.0,
+            "elm.icon",
+            min: LIST_PADDING_DEFAULT_SIZE 0;
+            max: LIST_PADDING_DEFAULT_SIZE -1;
+         )
+      )
+      PART(SWALLOW, "elm.icon.entry",
+         DSC_LRTB("default" 0.0,
+            "elm.padding.left", "elm.padding.entry.right",
+            "elm.padding.top", "elm.padding.bottom",
+            min: 0 LIST_ENTRY_ENTRY_HEIGHT;
+         )
+      )
+   }
+}
+
+// 2.2.1.A45
+group { name: "elm/genlist/item/entry.main/default";
+   alias: "elm/layout/entry.main/default";
+
+   data.item: "texts" "elm.text.main";
+   data.item: "contents" "elm.icon.entry";
+
+   parts {
+      PART(RECT, "bg",
+         description { state: "default" 0.0;
+            color_class: "B041";
+         }
+      )
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: LIST_ENTRY_PADDING_LEFT_SIZE 0;
+            max: LIST_ENTRY_PADDING_LEFT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: LIST_ENTRY_PADDING_RIGHT_SIZE 0;
+            max: LIST_ENTRY_PADDING_RIGHT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.top",
+         DSC_FROM_T("default" 0.0,
+            min: 0 LIST_ENTRY_PADDING_TOP_SIZE;
+            max: -1 LIST_ENTRY_PADDING_TOP_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_ENTRY_PADDING_TOP_SIZE;
+            max: -1 LIST_ENTRY_PADDING_TOP_SIZE;
+         )
+      )
+
+      PART(TEXTBLOCK, "elm.text.main",
+         DSC_LRT("default" 0.0,
+            "elm.padding.left", "elm.padding.right", "elm.padding.top",
+            min: 0 LIST_TEXT_MAIN_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_main";
+         )
+      )
+      PART(SPACER, "elm.padding.entry.top",
+         DSC_T("default" 0.0,
+            "elm.text.main",
+            min: 0 LIST_ENTRY_PADDING_ENTRY_TOP_SIZE;
+            max: -1 LIST_ENTRY_PADDING_ENTRY_TOP_SIZE;
+         )
+      )
+      PART(SWALLOW, "elm.icon.entry",
+         DSC_LRTB("default" 0.0,
+            "elm.padding.left", "elm.padding.right",
+            "elm.padding.entry.top", "elm.padding.bottom",
+         )
+      )
+   }
+}
+
+group { name: "elm/layout/list/left.1/default";
+   parts {
+       PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: 10 0;
+            max: 10 -1;
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: 6 0;
+            max: 6 -1;
+         )
+      )
+
+      PART(SWALLOW, "elm.thumbnail",
+         DSC_LR("default" 0.0,
+            "elm.padding.left", "elm.padding.right",
+            min: 48 48;
+            max: 48 48;
+         )
+      )
+      PART(SWALLOW, "elm.image",
+         description { state: "default" 0.0;
+            min: 64 64;
+            max: 64 64;
+         }
+      )
+   }
+}
+
+group { name: "elm/layout/list/left.2/default";
+   parts {
+      PART(SPACER, "bg",
+         description { state: "default" 0.0;
+            min: 40 64;
+            max: 40 64;
+         }
+      )
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: 10 0;
+            max: 10 -1;
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: 3 0;
+            max: 3 -1;
+         )
+      )
+      PART(SWALLOW, "elm.image",
+         DSC_TO("default" 0.0,
+            "bg",
+            align: 1.0 0.5;
+            min: 30 30;
+            max: 30 30;
+         )
+      )
+      PART(SWALLOW, "elm.icon",
+         DSC_LR("default" 0.0,
+            "elm.padding.left", "elm.padding.right",
+            min: 24 24;
+            max: 24 24;
+         )
+      )
+   }
+}
 
 
-// 2.2.1.A8
+group { name: "elm/layout/list/right/default";
+   parts {
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: 10 0;
+            max: 10 -1;
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: 10 0;
+            max: 10 -1;
+         )
+      )
+      PART(SWALLOW, "elm.image",
+         DSC_LR("default" 0.0,
+            "elm.padding.left", "elm.padding.right",
+            min: 30 30;
+            max: 30 30;
+         )
+      )
+      PART(SWALLOW, "elm.icon",
+         DSC_R("default" 0.0,
+            "elm.padding.right",
+            min: 24 24;
+            max: 24 24;
+            fixed: 1 0;
+         )
+      )
+   }
+}
