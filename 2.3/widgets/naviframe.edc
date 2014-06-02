@@ -42,6 +42,8 @@
       script {
          public title_left_btn_visible = 0;  //Title left button visible status
          public title_right_btn_visible = 0; //Title right button visible status
+         public subtitle_visible = 0;        //Subtitle visible status
+         public tabbar_visible = 0;          //Tabbar visible status (This value is used for tabbar group)
       }
       parts {
          part { name: "base";
@@ -90,6 +92,10 @@
                rel1.to_y: "title_bg";
                rel2.to_y: "title_bg";
             }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
          }
          part { name: "elm.text.title";
             type: TEXT;
@@ -102,9 +108,21 @@
                   max: 1 0;
                   align: 0.5 0.5;
                }
+               fixed: 1 1;
                rel1 { to_x: "title_left_btn"; to_y: "title_bg"; relative: 1.0 0.0; }
                rel2 { to_x: "title_right_btn"; to_y: "title_bg"; relative: 0.0 1.0; }
                color_class: "T020";
+            }
+            description { state: "subtitle_visible" 0.0;
+               text { text_class: "T0201";
+                  min: 0 0;
+                  max: 1 0;
+                  align: 0.0 0.5;
+               }
+               fixed: 1 1;
+               rel1 { to_x: "title_left_btn"; to_y: "title_bg"; relative: 1.0 0.0; }
+               rel2 { to_x: "title_right_btn"; to_y: "elm.text.subtitle"; relative: 0.0 0.0; }
+               color_class: "T0201";
             }
          }
          part { name: "title_text_clipper";
@@ -114,6 +132,46 @@
             description { state: "default" 0.0;
                rel1.to: "elm.text.title";
                rel2.to: "elm.text.title";
+            }
+         }
+         part { name: "elm.text.subtitle";
+            type: TEXT;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "subtitle_text_clipper";
+            description { state: "default" 0.0;
+               text { text_class: "T0202";
+                  min: 0 0;
+                  max: 1 0;
+                  align: 0.5 0.5;
+               }
+               min: 0 NAVIFRAME_SUBTITLE_HEIGHT_INC;
+               max: -1 NAVIFRAME_SUBTITLE_HEIGHT_INC;
+               fixed: 0 1;
+               align: 0.5 1.0;
+               rel1 { to_x: "title_left_btn"; to_y: "subtitle_bottom_line"; relative: 1.0 0.0; }
+               rel2 { to_x: "title_right_btn"; to_y: "subtitle_bottom_line"; relative: 0.0 0.0; }
+               color_class: "T020";
+            }
+         }
+         part { name: "subtitle_text_clipper";
+            type: RECT;
+            mouse_events: 0;
+            clip_to: "title_clipper";
+            description { state: "default" 0.0;
+               rel1.to: "elm.text.subtitle";
+               rel2.to: "elm.text.subtitle";
+            }
+         }
+         part { name: "subtitle_bottom_line";
+            type: SPACER;
+            description { state: "default" 0.0;
+               min: 0 NAVIFRAME_SUBTITLE_BOTTOM_LINE_HEIGHT_INC;
+               max: -1 NAVIFRAME_SUBTITLE_BOTTOM_LINE_HEIGHT_INC;
+               fixed: 0 1;
+               align: 0.5 1.0;
+               rel1 { to: "title_bg"; relative: 0.0 1.0; }
+               rel2 { to: "title_bg"; relative: 1.0 1.0; }
             }
          }
          part { name: "click_event_area";
@@ -153,16 +211,18 @@
             clip_to: "title_clipper";
             description { state: "default" 0.0;
                min: NAVIFRAME_TITLE_LEFT_PADDING_WIDTH_INC 0;
-               max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
+               max: NAVIFRAME_TITLE_LEFT_PADDING_WIDTH_INC -1;
                fixed: 1 1;
                align: 0.0 0.5;
                rel1 { to: "title_bg"; relative: 0.0 0.0; }
                rel2 { to: "title_bg"; relative: 0.0 1.0; }
-            }
-            description { state: "hidden" 0.0;
-               inherit: "default" 0.0;
-               max: 10 -1;
                visible: 0;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
+               max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
+               visible: 1;
             }
          }
          part { name: "title_right_btn";
@@ -171,16 +231,18 @@
             clip_to: "title_clipper";
             description { state: "default" 0.0;
                min: NAVIFRAME_TITLE_LEFT_PADDING_WIDTH_INC 0;
-               max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
+               max: NAVIFRAME_TITLE_LEFT_PADDING_WIDTH_INC -1;
                fixed: 1 1;
                align: 1.0 0.5;
                rel1 { to: "title_bg"; relative: 1.0 0.0; }
                rel2 { to: "title_bg"; relative: 1.0 1.0; }
-            }
-            description { state: "hidden" 0.0;
-               inherit: "default" 0.0;
-               max: 10 -1;
                visible: 0;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
+               max: NAVIFRAME_TITLE_FUNC_BTN_SIZE_INC;
+               visible: 1;
             }
          }
          part { name: "elm.swallow.content";
@@ -285,10 +347,11 @@
             source: "elm";
             script {
                set_state(PART:"title_bg", "default", 0.0);
+               set_state(PART:"title_clipper", "default", 0.0);
                if (get_int(title_left_btn_visible))
-                 set_state(PART:"title_left_btn", "default", 0.0);
+                 set_state(PART:"title_left_btn", "visible", 0.0);
                if (get_int(title_right_btn_visible))
-                 set_state(PART:"title_right_btn", "default", 0.0);
+                 set_state(PART:"title_right_btn", "visible", 0.0);
             }
          }
          program { name: "title_hide";
@@ -296,15 +359,32 @@
             source: "elm";
             script {
                set_state(PART:"title_bg", "hidden", 0.0);
-               set_state(PART:"title_left_btn", "hidden", 0.0);
-               set_state(PART:"title_right_btn", "hidden", 0.0);
+               set_state(PART:"title_clipper", "hidden", 0.0);
+               set_state(PART:"title_left_btn", "default", 0.0);
+               set_state(PART:"title_right_btn", "default", 0.0);
+            }
+         }
+         program { name: "subtitle_show";
+            signal: "elm,state,subtitle,show";
+            source: "elm";
+            script {
+               set_state(PART:"elm.text.title", "subtitle_visible", 0.0);
+               set_int(subtitle_visible, 1);
+            }
+         }
+         program { name: "subtitle_hide";
+            signal: "elm,state,subtitle,hide";
+            source: "elm";
+            script {
+               set_state(PART:"elm.text.title", "default", 0.0);
+               set_int(subtitle_visible, 0);
             }
          }
          program { name: "title_left_btn_show";
             signal: "elm,state,title_left_btn,show";
             source: "elm";
             script {
-               set_state(PART:"title_left_btn", "default", 0.0);
+               set_state(PART:"title_left_btn", "visible", 0.0);
                set_int(title_left_btn_visible, 1);
             }
          }
@@ -312,7 +392,7 @@
             signal: "elm,state,title_left_btn,hide";
             source: "elm";
             script {
-               set_state(PART:"title_left_btn", "hidden", 0.0);
+               set_state(PART:"title_left_btn", "default", 0.0);
                set_int(title_left_btn_visible, 0);
             }
          }
@@ -320,7 +400,7 @@
             signal: "elm,state,title_right_btn,show";
             source: "elm";
             script {
-               set_state(PART:"title_right_btn", "default", 0.0);
+               set_state(PART:"title_right_btn", "visible", 0.0);
                set_int(title_right_btn_visible, 1);
             }
          }
@@ -328,7 +408,7 @@
             signal: "elm,state,title_right_btn,hide";
             source: "elm";
             script {
-               set_state(PART:"title_right_btn", "hidden", 0.0);
+               set_state(PART:"title_right_btn", "default", 0.0);
                set_int(title_right_btn_visible, 0);
             }
          }
@@ -343,6 +423,172 @@
    }
 
    group { name: "elm/naviframe/item/tabbar/default";
+      inherit: "elm/naviframe/item/basic/default";
+      parts {
+         part { name: "title_bg";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "title_clipper";
+            description { state: "default" 0.0;
+               min: 0 NAVIFRAME_TITLE_HEIGHT_INC;
+               max: -1 NAVIFRAME_TITLE_HEIGHT_INC;
+               align: 0.0 0.0;
+               fixed: 0 1;
+               rel1 { to: "base"; relative: 0.0 0.0; }
+               rel2 { to: "base"; relative: 1.0 0.0; }
+               color_class: "B011";
+            }
+            description { state: "tabbar_visible" 0.0;
+               inherit: "default" 0.0;
+               min: 0 NAVIFRAME_TITLE_WITH_TABBAR_HEIGHT_INC;
+               max: -1 NAVIFRAME_TITLE_WITH_TABBAR_HEIGHT_INC;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               min: 0 0;
+               max: -1 0;
+            }
+         }
+         part { name: "elm.text.title";
+            type: TEXT;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "title_text_clipper";
+            description { state: "default" 0.0;
+               text { text_class: "T020";
+                  min: 0 0;
+                  max: 1 0;
+                  align: 0.5 0.5;
+               }
+               fixed: 1 1;
+               rel1 { to_x: "title_left_btn"; to_y: "title_bg"; relative: 1.0 0.0; }
+               rel2 { to_x: "title_right_btn"; to_y: "tabbar"; relative: 0.0 0.0; }
+               color_class: "T020";
+            }
+            description { state: "subtitle_visible" 0.0;
+               text { text_class: "T0201";
+                  min: 0 0;
+                  max: 1 0;
+                  align: 0.0 0.5;
+               }
+               fixed: 1 1;
+               rel1 { to_x: "title_left_btn"; to_y: "title_bg"; relative: 1.0 0.0; }
+               rel2 { to_x: "title_right_btn"; to_y: "elm.text.subtitle"; relative: 0.0 0.0; }
+               color_class: "T0201";
+            }
+         }
+         part { name: "subtitle_bottom_line";
+            type: SPACER;
+            description { state: "default" 0.0;
+               min: 0 NAVIFRAME_SUBTITLE_BOTTOM_LINE_HEIGHT_INC;
+               max: -1 NAVIFRAME_SUBTITLE_BOTTOM_LINE_HEIGHT_INC;
+               fixed: 0 1;
+               align: 0.5 1.0;
+               rel1 { to: "tabbar"; relative: 0.0 0.0; }
+               rel2 { to: "tabbar"; relative: 1.0 0.0; }
+            }
+         }
+         part { name: "tabbar";
+            type: SWALLOW;
+            scale: 1;
+            clip_to: "tabbar_clipper";
+            description { state: "default" 0.0;
+               min: 0 0;
+               max: -1 0;
+               align: 0.5 1.0;
+               fixed: 0 1;
+               rel1 { to: "title_bg"; relative: 0.0 1.0; }
+               rel2 { to: "title_bg"; relative: 1.0 1.0; }
+               visible: 0;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: 0 NAVIFRAME_TABBAR_HEIGHT_INC;
+               max: -1 NAVIFRAME_TABBAR_HEIGHT_INC;
+               visible: 1;
+            }
+         }
+         part { name: "tabbar_clipper";
+            type: RECT;
+            mouse_events: 0;
+            clip_to: "clipper";
+            description { state: "default" 0.0;
+               rel1.to_y: "tabbar";
+               rel2.to_y: "tabbar";
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            scale: 1;
+            repeat_events: 0;
+            clip_to: "content_clipper";
+            description { state: "default" 0.0;
+               align: 0.0 0.0;
+               rel1 { to_x: "base"; to_y: "tabbar"; relative: 0.0 1.0; }
+               rel2.to: "base";
+            }
+         }
+      }
+      programs {
+         program { name: "title_show";
+            signal: "elm,state,title,show";
+            source: "elm";
+            script {
+               if (get_int(tabbar_visible)) {
+                  set_state(PART:"title_bg", "tabbar_visible", 0.0);
+                  set_state(PART:"tabbar", "visible", 0.0);
+               }
+               else
+                 set_state(PART:"title_bg", "default", 0.0);
+               set_state(PART:"title_clipper", "default", 0.0);
+               if (get_int(title_left_btn_visible))
+                 set_state(PART:"title_left_btn", "visible", 0.0);
+               if (get_int(title_right_btn_visible))
+                 set_state(PART:"title_right_btn", "visible", 0.0);
+            }
+         }
+         program { name: "title_hide";
+            signal: "elm,state,title,hide";
+            source: "elm";
+            script {
+               set_state(PART:"title_bg", "hidden", 0.0);
+               set_state(PART:"title_clipper", "hidden", 0.0);
+               set_state(PART:"title_left_btn", "default", 0.0);
+               set_state(PART:"title_right_btn", "default", 0.0);
+               set_state(PART:"tabbar", "default", 0.0);
+            }
+         }
+         program { name: "tabbar_show";
+            signal: "elm,state,tabbar,show";
+            source: "elm";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"title_bg", st, 30, vl);
+               if (strcmp(st, "hidden"))
+                 set_state(PART:"title_bg", "tabbar_visible", 0.0);
+               set_state(PART:"tabbar", "visible", 0.0);
+               set_int(tabbar_visible, 1);
+            }
+         }
+         program { name: "tabbar_hide";
+            signal: "elm,state,tabbar,hide";
+            source: "elm";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"title_bg", st, 30, vl);
+               if (strcmp(st, "hidden"))
+                 set_state(PART:"title_bg", "default", 0.0);
+               set_state(PART:"tabbar", "default", 0.0);
+               set_int(tabbar_visible, 0);
+            }
+         }
+      }
+   }
+
+   group { name: "elm/naviframe/item/tabbar/notitle/default";
       parts {
          part { name: "base";
             type: RECT;
@@ -367,17 +613,19 @@
             scale: 1;
             clip_to: "tabbar_clipper";
             description { state: "default" 0.0;
-               min: 0 NAVIFRAME_TABBAR_HEIGHT_INC;
-               max: -1 NAVIFRAME_TABBAR_HEIGHT_INC;
+               min: 0 0;
+               max: -1 0;
                align: 0.5 0.0;
                fixed: 0 1;
                rel1 { to: "base"; relative: 0.0 0.0; }
                rel2 { to: "base"; relative: 1.0 0.0; }
-            }
-            description { state: "hidden" 0.0;
-               inherit: "default" 0.0;
-               max: -1 0;
                visible: 0;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: 0 NAVIFRAME_TABBAR_HEIGHT_INC;
+               max: -1 NAVIFRAME_TABBAR_HEIGHT_INC;
+               visible: 1;
             }
          }
          part { name: "tabbar_clipper";
@@ -490,14 +738,14 @@
             signal: "elm,state,title,show";
             source: "elm";
             script {
-               set_state(PART:"tabbar", "default", 0.0);
+               set_state(PART:"tabbar", "visible", 0.0);
             }
          }
          program { name: "title_hide";
             signal: "elm,state,title,hide";
             source: "elm";
             script {
-               set_state(PART:"tabbar", "hidden", 0.0);
+               set_state(PART:"tabbar", "default", 0.0);
             }
          }
          program { name: "title_clicked";
@@ -510,25 +758,27 @@
       }
    }
 
-   group { name: "elm/naviframe/item/tabbar/icon_text/default";
-      inherit: "elm/naviframe/item/tabbar/default";
+   group { name: "elm/naviframe/item/tabbar/notitle/icon_text/default";
+      inherit: "elm/naviframe/item/tabbar/notitle/default";
       parts {
          part { name: "tabbar";
             type: SWALLOW;
             scale: 1;
             clip_to: "tabbar_clipper";
             description { state: "default" 0.0;
-               min: 0 NAVIFRAME_TABBAR2_HEIGHT_INC;
-               max: -1 NAVIFRAME_TABBAR2_HEIGHT_INC;
+               min: 0 0;
+               max: -1 0;
                align: 0.5 0.0;
                fixed: 0 1;
                rel1 { to: "base"; relative: 0.0 0.0; }
                rel2 { to: "base"; relative: 1.0 0.0; }
+               visible: 0;
             }
             description { state: "hidden" 0.0;
                inherit: "default" 0.0;
-               max: -1 0;
-               visible: 0;
+               min: 0 NAVIFRAME_TABBAR2_HEIGHT_INC;
+               max: -1 NAVIFRAME_TABBAR2_HEIGHT_INC;
+               visible: 1;
             }
          }
       }
@@ -559,15 +809,19 @@
             scale: 1;
             clip_to: "title_clipper";
             description { state: "default" 0.0;
+               min: 0 0;
+               max: -1 0;
                align: 0.5 0.0;
                fixed: 0 1;
                rel1 { relative: 0.0 0.0; to: "base"; }
                rel2 { relative: 1.0 0.0; to: "base"; }
-            }
-            description { state: "hidden" 0.0;
-               inherit: "default" 0.0;
-               max: -1 0;
                visible: 0;
+            }
+            description { state: "visible" 0.0;
+               align: 0.5 0.0;
+               fixed: 0 1;
+               rel1 { relative: 0.0 0.0; to: "base"; }
+               rel2 { relative: 1.0 0.0; to: "base"; }
             }
          }
          part { name: "title_clipper";
@@ -680,14 +934,14 @@
             signal: "elm,state,title,show";
             source: "elm";
             script {
-               set_state(PART:"title", "default", 0.0);
+               set_state(PART:"title", "visible", 0.0);
             }
          }
          program { name: "title_hide";
             signal: "elm,state,title,hide";
             source: "elm";
             script {
-               set_state(PART:"title", "hidden", 0.0);
+               set_state(PART:"title", "default", 0.0);
             }
          }
          program { name: "title_clicked";
