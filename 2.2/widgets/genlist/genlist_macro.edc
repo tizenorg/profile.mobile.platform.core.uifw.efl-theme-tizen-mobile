@@ -1621,6 +1621,14 @@
             TARGET \
          } \
 
+#define GENLIST_PROGRAM_DEFAULT_ARROW( TARGET ) \
+         program { name: "default_arrow"; \
+            signal: "elm,state,default"; \
+            source: "elm"; \
+            action: STATE_SET "default" 0.0; \
+            TARGET \
+         } \
+
 #define GENLIST_PROGRAM_DISABLED( TARGET ) \
          program { name: "enabled"; \
             signal: "elm,state,enabled"; \
@@ -1807,13 +1815,11 @@
                get_state(PART:"arrow", st, 30, vl); \
                if (!strcmp(st, "default")) { \
                   set_state(PART:"arrow", "default_press", 0.0); \
-                  set_state(PART:"arrow_clip", "default_press", 0.0); \
-                  set_state(PART:"arrow_ef", "default", 0.0); \
+                  set_state(PART:"arrow_ef", "default_press", 0.0); \
                } \
                else if (!strcmp(st, "expand_opened")) { \
                   set_state(PART:"arrow", "expand_opened_press", 0.0); \
-                  set_state(PART:"arrow_clip", "expand_opened_press", 0.0); \
-                  set_state(PART:"arrow_ef", "expand_opened", 0.0); \
+                  set_state(PART:"arrow_ef", "expand_opened_press", 0.0); \
                } \
             } \
          } \
@@ -1826,12 +1832,10 @@
                get_state(PART:"arrow", st, 30, vl); \
                if (!strcmp(st, "default_press")) { \
                   set_state(PART:"arrow", "default", 0.0); \
-                  set_state(PART:"arrow_clip", "default", 0.0); \
                   set_state(PART:"arrow_ef", "default", 0.0); \
                } \
                else if (!strcmp(st, "expand_opened_press")) { \
                   set_state(PART:"arrow", "expand_opened", 0.0); \
-                  set_state(PART:"arrow_clip", "expand_opened", 0.0); \
                   set_state(PART:"arrow_ef", "expand_opened", 0.0); \
                } \
             } \
@@ -1845,13 +1849,14 @@
                new st[31]; \
                new Float:vl; \
                get_state(PART:"arrow", st, 30, vl); \
-               if (!strcmp(st, "default")) { \
+               if (strstr(st, "default")) { \
+                  set_state(PART:"arrow", "default", 0.0); \
                   set_state(PART:"arrow_ef", "default", 0.0); \
                } \
-               else if (!strcmp(st, "expand_opened")) { \
+               else if (strstr(st, "expand_opened")) { \
+                  set_state(PART:"arrow", "expand_opened", 0.0); \
                   set_state(PART:"arrow_ef", "expand_opened", 0.0); \
                } \
-               set_state(PART:"arrow_clip", "enabled", 0.0); \
             } \
          } \
          program { name: "disabled_arrow"; \
@@ -1862,12 +1867,13 @@
                new Float:vl; \
                get_state(PART:"arrow", st, 30, vl); \
                if (!strcmp(st, "default")) { \
+                  set_state(PART:"arrow", "default_dim", 0.0); \
                   set_state(PART:"arrow_ef", "default_dim", 0.0); \
                } \
                else if (!strcmp(st, "expand_opened")) { \
+                  set_state(PART:"arrow", "expand_opened_dim", 0.0); \
                   set_state(PART:"arrow_ef", "expand_opened_dim", 0.0); \
                } \
-               set_state(PART:"arrow_clip", "disabled", 0.0); \
             } \
          }
 
@@ -2427,22 +2433,7 @@
             ignore_flags: ON_HOLD; \
             DESC_TO("arrow", ) \
          ) \
-         PART(RECT, "arrow_clip", \
-            DESC_TO("arrow", \
-               color_class: "F032L1"; \
-            ) \
-            description { state: "disabled" 0.0; \
-               color_class: "F032L1D"; \
-            } \
-            description { state: "expand_opened_press" 0.0; \
-               color_class: "F032LP"; \
-            } \
-            description { state: "default_press" 0.0; \
-               color_class: "F032L1P"; \
-            } \
-         ) \
          PART(IMAGE ,"arrow", \
-            clip_to: "arrow_clip"; \
             ignore_flags: ON_HOLD; \
             mouse_events: 0; \
             DESC_R("elm.padding.right", \
@@ -2450,9 +2441,15 @@
                min: GENLIST_BTN_02_SIZE GENLIST_BTN_02_SIZE; \
                max: GENLIST_BTN_02_SIZE GENLIST_BTN_02_SIZE; \
                image.normal: "00_list_button_expand_closed.png"; \
+               color_class: "F032L1"; \
             ) \
             description { state: "default_press" 0.0; \
                inherit: "default" 0.0; \
+               color_class: "F032L1P"; \
+            } \
+            description { state: "default_dim" 0.0; \
+               inherit: "default" 0.0; \
+               color_class: "F032L1D"; \
             } \
             description { state: "expand_opened" 0.0; \
                inherit: "default" 0.0; \
@@ -2460,10 +2457,14 @@
             } \
             description { state: "expand_opened_press" 0.0; \
                inherit: "expand_opened" 0.0; \
+               color_class: "F032L1P"; \
+            } \
+            description { state: "expand_opened_dim" 0.0; \
+               inherit: "expand_opened" 0.0; \
+               color_class: "F032L1D"; \
             } \
          ) \
          PART(IMAGE, "arrow_ef", \
-            clip_to: "arrow_clip"; \
             ignore_flags: "ON_HOLD"; \
             mouse_events: 0; \
             description { state: "default" 0.0; \
@@ -2471,18 +2472,29 @@
                rel1.to: "arrow"; \
                rel2.to: "arrow"; \
                image.normal: "00_list_button_expand_closed_ef.png"; \
+               color_class: "F032L3"; \
+            } \
+            description { state: "default_press" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 0; \
             } \
             description { state: "default_dim" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "00_list_button_expand_closed_dim_ef.png"; \
+               color_class: "F032L4"; \
             } \
             description { state: "expand_opened" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "00_list_button_expand_opened_ef.png"; \
             } \
+            description { state: "expand_opened_press" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 0; \
+            } \
             description { state: "expand_opened_dim" 0.0; \
                inherit: "default" 0.0; \
                image.normal: "00_list_button_expand_opened_dim_ef.png"; \
+               color_class: "F032L4"; \
             } \
          )
 
@@ -2703,8 +2715,6 @@
       text.style: "genlist_style_list_main_text_press_wrap"; \
    }
 
-
-
 // help text
 #define GENLIST_DESCRIPTION_HELP_TEXT_DIM \
    description { state: "disabled" 0.0; \
@@ -2716,24 +2726,15 @@
       text.style: "genlist_style_dialogue_group_help_text_press"; \
    }
 
-
 // progress main text
 #define GENLIST_DESCRIPTION_PROGRESS_MAIN_OTHERS \
    description { state: "disabled" 0.0; \
       inherit: "default" 0.0; \
-      color_class: "T028D"; \
-   } \
-   description { state: "read" 0.0; \
-      inherit: "default" 0.0; \
-      color_class: "T028R"; \
-   } \
-   description { state: "read,disabled" 0.0; \
-      inherit: "default" 0.0; \
-      color_class: "T028RD"; \
+      color_class: "T0212D"; \
    } \
    description { state: "pressed" 0.0; \
       inherit: "default" 0.0; \
-      color_class: "T028D"; \
+      color_class: "T0212P"; \
    }
 
 /*************************** Parts **********************************/
@@ -3040,6 +3041,94 @@
          fixed: 1 0; \
       ) \
       GENLIST_DESCRIPTION_SUBITEM_DEFAULT_OTHERS_TB \
+   )
+
+#define GENLIST_PART_SUBITEM_RTB2_LIMIT(NAME, HEIGHT, RIGHT, TOP, BOTTOM, LIMIT) \
+   PART(TEXT, NAME, \
+      DESC_RTB(RIGHT, TOP, BOTTOM, \
+         min: 0 HEIGHT; \
+         GENLIST_PARAM_TEXT_LIMIT_RT_(LIMIT) \
+         color_class: "T02411"; \
+         text { \
+            align: 0 0.5; \
+            min: 0 1; \
+            text_class: "T02411"; \
+         } \
+         fixed: 1 0; \
+      ) \
+      description { state: "disabled" 0.0; \
+         inherit: "default" 0.0; \
+         color_class: "T02411D"; \
+      } \
+      description { state: "pressed" 0.0; \
+         inherit: "default" 0.0; \
+         color_class: "T02411P"; \
+      } \
+   )
+
+#define GENLIST_PART_SUBITEM_RTB2_LIMIT_TB(NAME, HEIGHT, RIGHT, TOP, BOTTOM, LIMIT) \
+   PART(TEXTBLOCK, NAME, \
+      DESC_RTB(RIGHT, TOP, BOTTOM, \
+         min: 0 HEIGHT; \
+         GENLIST_PARAM_TEXT_LIMIT_RT_(LIMIT) \
+         text { \
+            min: 0 1; \
+            style: "genlist_style_list_sub_text2"; \
+         } \
+         fixed: 1 0; \
+      ) \
+      description { state: "disabled" 0.0; \
+         inherit: "default" 0.0; \
+         text.style: "genlist_style_list_sub_text2_dim"; \
+      } \
+      description { state: "pressed" 0.0; \
+         inherit: "default" 0.0; \
+         text.style: "genlist_style_list_sub_text2_press"; \
+      } \
+   )
+
+#define GENLIST_PART_SUBITEM_RTB2(NAME, HEIGHT, RIGHT, TOP, BOTTOM) \
+   PART(TEXT, NAME, \
+      DESC_RTB(RIGHT, TOP, BOTTOM, \
+         min: 0 HEIGHT; \
+         GENLIST_PARAM_TEXT_LIMIT_RT \
+         color_class: "T02411"; \
+         text { \
+            align: 0 0.5; \
+            min: 0 1; \
+            text_class: "T02411"; \
+         } \
+         fixed: 1 0; \
+      ) \
+      description { state: "disabled" 0.0; \
+         inherit: "default" 0.0; \
+         color_class: "T02411D"; \
+      } \
+      description { state: "pressed" 0.0; \
+         inherit: "default" 0.0; \
+         color_class: "T02411P"; \
+      } \
+   )
+
+#define GENLIST_PART_SUBITEM_RTB2_TB(NAME, HEIGHT, RIGHT, TOP, BOTTOM) \
+   PART(TEXTBLOCK, NAME, \
+      DESC_RTB(RIGHT, TOP, BOTTOM, \
+         min: 0 HEIGHT; \
+         GENLIST_PARAM_TEXT_LIMIT_RT \
+         text { \
+            min: 0 1; \
+            style: "genlist_style_list_sub_text2"; \
+         } \
+         fixed: 1 0; \
+      ) \
+      description { state: "disabled" 0.0; \
+         inherit: "default" 0.0; \
+         text.style: "genlist_style_list_sub_text2_dim"; \
+      } \
+      description { state: "pressed" 0.0; \
+         inherit: "default" 0.0; \
+         text.style: "genlist_style_list_sub_text2_press"; \
+      } \
    )
 
 #define GENLIST_PART_SUBITEM_02_RTB(NAME, HEIGHT, RIGHT, TOP, BOTTOM) \

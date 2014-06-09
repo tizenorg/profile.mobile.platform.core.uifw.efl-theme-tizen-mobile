@@ -1,6 +1,6 @@
 Name:          efl-theme-tizen-hd
 Summary:       Tizen theme files
-Version:       1.0.355
+Version:       1.0.356
 Release:       1
 Group:         TO_BE/FILLED_IN
 License:       TO_BE/FILLED_IN
@@ -16,8 +16,7 @@ Tizen HD theme for EFL
 
 
 %build
-#%if 0%{?sec_product_feature_profile_lite}
-%if 0%{?lite}
+%if 0%{?sec_product_feature_profile_lite}
 	export TARGET=2.3
 %else
 	export TARGET=2.2
@@ -27,10 +26,15 @@ export CFLAGS+=" --fPIC"
 export LDFLAGS+=" -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=/usr/lib"
 make %{?jobs:-j%jobs}
 
+# install redwood theme for fallback temporarily
+%if 0%{?sec_product_feature_profile_lite}
+	export TARGET=2.2
+	make %{?jobs:-j%jobs}
+%endif
+
 
 %install
-#%if 0%{?sec_product_feature_profile_lite}
-%if 0%{?lite}
+%if 0%{?sec_product_feature_profile_lite}
 	export TARGET=2.3
 %else
 	export TARGET=2.2
@@ -40,6 +44,13 @@ rm -rf %{buildroot}
 %make_install
 mkdir -p %{buildroot}/usr/share/license
 cp %{_builddir}/%{buildsubdir}/COPYING %{buildroot}/usr/share/license/%{name}
+
+# install redwood theme for fallback temporarily
+%if 0%{?sec_product_feature_profile_lite}
+	export TARGET=2.2
+	%make_install
+	mv %{buildroot}/usr/share/elementary/themes/tizen-2.2-HD.edj %{buildroot}/usr/share/elementary/themes/default.edj
+%endif
 
 %files
 %defattr(-,root,root,-)
