@@ -107,6 +107,7 @@ group { name: "elm/slider/horizontal/default";
          image: "core_progress_bg.#.png" COMP;
          image: "core_progress_bar.#.png" COMP;
          image: "core_progress_dot.png" COMP;
+         image: "core_slider_center_point_bg.png" COMP;
       }
       script {
          public invert_on = 0;
@@ -170,12 +171,12 @@ group { name: "elm/slider/horizontal/default";
                   visible: 0;
                   align: 0.0 0.5;
                   rel1 {
-                     relative: 1.0  0.0;
+                     relative: 1.0 0.0;
                      to_x: "bar_image_left_padding";
                      to_y: "bg";
                   }
                   rel2 {
-                     relative: 1.0  1.0;
+                     relative: 1.0 1.0;
                      to_x: "bar_image_left_padding";
                      to_y: "bg";
                   }
@@ -239,6 +240,15 @@ group { name: "elm/slider/horizontal/default";
                   }
                   rel2.to: "bg";
                   fixed: 1 1;
+               }
+               description { state: "visible" 0.0;
+                  inherit: "default" 0.0;
+                  rel1 {
+                     to_x: "bar_icon_right_padding";
+                     to_y: "bg";
+                     relative: 0.5 0.0;
+                  }
+                  rel2.to: "bg";
                }
             }
             part { name: "level";
@@ -306,6 +316,23 @@ group { name: "elm/slider/horizontal/default";
                   }
                }
             }
+            part { name:"center_point";
+               scale: 1;
+               description { state: "default" 0.0;
+                  min: SLIDER_CENTER_POINT_SIZE_INC;
+                  max: SLIDER_CENTER_POINT_SIZE_INC;
+                  visible: 0;
+                  image.normal: "core_slider_center_point_bg.png";
+                  rel1.to: "bg";
+                  rel2.to: "bg";
+                  fixed: 0 1;
+                  color_class: "W062";
+               }
+               description { state: "visible" 0.0;
+                  inherit: "default" 0.0;
+                  visible: 1;
+               }
+            }
             part { name: "elm.dragable.slider";
                type: GROUP;
                source: "elm/slider/horizontal/indicator/default";
@@ -368,6 +395,19 @@ group { name: "elm/slider/horizontal/default";
             action:  STATE_SET "visible" 0.0;
             target: "elm.swallow.icon";
             target: "bar_icon_right_padding";
+            target: "drag_base";
+         }
+         program { name: "center_point_enable";
+            signal: "slider,center,point,show";
+            source: "elm";
+            action:  STATE_SET "visible" 0.0;
+            target: "center_point";
+         }
+         program { name: "center_point_disable";
+            signal: "slider,center,point,hide";
+            source: "elm";
+            action:  STATE_SET "default" 0.0;
+            target: "center_point";
          }
       }
    }
