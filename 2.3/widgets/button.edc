@@ -670,9 +670,7 @@ group { name: "elm/button/base/default";
 ///////////////////////////////////////////////////////////////////////////////////////
    BUTTON_ICON_STYLES("icon_expand_closed", "core_button_expand_closed.png", "F060L1" ,"F060L1D" ,  BUTTON_ICON_WIDTH , BUTTON_ICON_HEIGHT)
 ///////////////////////////////////////////////////////////////////////////////////////
-   BUTTON_ICON_STYLES("icon_expand_left", "core_button_left.png", "F060L1" ,"F060L1D" ,  BUTTON_ICON_WIDTH , BUTTON_ICON_HEIGHT)
-///////////////////////////////////////////////////////////////////////////////////////
-   BUTTON_ICON_STYLES("icon_expand_right", "core_button_right.png", "F060L1" ,"F060L1D",  BUTTON_ICON_WIDTH , BUTTON_ICON_HEIGHT)
+   BUTTON_ICON_STYLES("icon_reorder", "core_button_reorder.png", "F060L1" ,"F060L1D" ,  BUTTON_ICON_WIDTH , BUTTON_ICON_HEIGHT)
 ///////////////////////////////////////////////////////////////////////////////////////
    BUTTON_ICON_STYLES("icon_expand_add", "core_button_add.png", "F060L2" ,"F060L2D",  BUTTON_ICON_WIDTH , BUTTON_ICON_HEIGHT)
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -741,7 +739,7 @@ group { name: "elm/button/base/bottom";
             description { state: "default" 0.0;
                align: 0.0 0.0;
                rel2.relative: 0.0 0.0;
-               min: BUTTON_PADDING_LEFT_RIGHT 0;
+               min: BUTTON_BOTTOM_PADDING_LEFT_RIGHT 0;
                fixed: 1 1;
             }
          }
@@ -751,7 +749,7 @@ group { name: "elm/button/base/bottom";
             description { state: "default" 0.0;
                align: 1.0 1.0;
                rel1.relative: 1.0 1.0;
-               min: BUTTON_PADDING_LEFT_RIGHT 0;
+               min: BUTTON_BOTTOM_PADDING_LEFT_RIGHT 0;
                fixed: 1 1;
             }
          }
@@ -1266,200 +1264,6 @@ group { name: "elm/button/base/popup";
    }
 
 group { name: "elm/button/base/circle";
-      script {
-         public mouse_down = 0;
-         public multi_down = 0;
-      }
-      images {
-         image: "core_icon_container.png" COMP;
-         image: "core_button_effect_normal.#.png" COMP;
-         image: "core_button_effect_pressed.#.png" COMP;
-      }
-      parts {
-         part { name: "base";
-            scale: 1;
-            description { state: "default" 0.0;
-               min: BUTTON_CIRCLE_SIZE;
-               max: BUTTON_CIRCLE_SIZE;
-               image.normal: "core_icon_container.png";
-               color_class: "W015L6E1";
-            }
-            description { state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               visible: 0 ;
-            }
-         }
-         part { name: "bg";
-            scale: 1;
-            description { state: "default" 0.0;
-               rel1.to: "base";
-               rel2.to: "base";
-               image.normal: "core_icon_container.png";
-               color_class: "W015L6";
-            }
-            description { state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               color_class: "W015L6P";
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               color_class: "W015L6D";
-            }
-         }
-         part { name: "bg_effect";
-            scale: 1;
-            description { state: "default" 0.0;
-               rel1.to: "bg";
-               rel2.to: "bg";
-               image.normal: "core_button_effect_normal.#.png";
-            }
-            description { state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "core_button_effect_pressed.#.png";
-            }
-             description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "elm.swallow.content";
-            type: SWALLOW;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: BUTTON_CIRCLE_ICON_SIZE ;
-               max: BUTTON_CIRCLE_ICON_SIZE ;
-               rel1.to: "bg";
-               rel2.to: "bg";
-               color_class: "F032L3";
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               color_class: "F032L3P";
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               color_class: "F032L3D";
-            }
-         }
-         part { name: "event";
-            scale: 1;
-            type: RECT;
-            description { state: "default" 0.0;
-              color: 0 0 0 0;
-            }
-         }
-      }
-      programs {
-         program { name: "pressed";
-            signal: "mouse,down,1*";
-            source: "event";
-            script {
-               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
-                 {
-                     set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_press1");
-                 }
-            }
-         }
-         program { name: "button_press1";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"bg", st, 30, vl);
-               if (strcmp(st, "disabled")) {
-                  set_state(PART:"base", "pressed", 0.0);
-                  set_state(PART:"bg", "pressed", 0.0);
-                  set_state(PART:"bg_effect", "pressed", 0.0);
-                  set_state(PART:"elm.swallow.content", "pressed", 0.0);
-                  emit("elm,action,press", "");
-               }
-            }
-         }
-         program { name: "unpressed";
-            signal: "mouse,up,1";
-            source: "event";
-            script {
-               if (get_int(mouse_down) == 1) {
-                 set_int(mouse_down, 0);
-                 run_program(PROGRAM:"button_unpress1");
-               }
-            }
-         }
-         program { name: "button_unpress1";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"bg", st, 30, vl);
-               if (strcmp(st, "disabled")) {
-                  set_state(PART:"base", "default", 0.0);
-                  set_state(PART:"bg", "default", 0.0);
-                  set_state(PART:"bg_effect", "default", 0.0);
-                  set_state(PART:"elm.swallow.content", "default", 0.0);
-                  emit("elm,action,unpress", "");
-               }
-            }
-         }
-         program { name: "touch_snd";
-            signal: "mouse,clicked,1";
-            source: "event";
-            script {
-               new st[31];
-               new Float:vl;
-               if (get_int(multi_down) == 0) {
-                  get_state(PART:"bg", st, 30, vl);
-                  if (strcmp(st, "disabled")) {
-//                     play_sample("touch_sound", 1.0);
-                     emit("elm,action,click", "");
-                  }
-               }
-            }
-         }
-         program { name: "icon_show";
-            signal: "elm,state,icon,visible";
-            source: "elm";
-            action: STATE_SET "visible" 0.0;
-            target: "elm.swallow.content";
-         }
-         program { name: "icon_hide";
-            signal: "elm,state,icon,hidden";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "elm.swallow.content";
-         }
-         program { name: "disable";
-            signal: "elm,state,disabled";
-            source: "elm";
-            action: STATE_SET "disabled" 0.0;
-            target: "bg";
-            target: "bg_effect";
-            target: "elm.swallow.content";
-         }
-         program { name: "enable";
-            signal: "elm,state,enabled";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "bg";
-            target: "bg_effect";
-            target: "elm.swallow.content";
-         }
-         program { name: "multi_down";
-            signal: "elm,action,multi,down";
-            source: "elm";
-            script {
-               set_int(multi_down, 1);
-            }
-         }
-         program { name: "multi_up";
-            signal: "elm,action,multi,up";
-            source: "elm";
-            script {
-               set_int(multi_down, 0);
-            }
-         }
-      }
-   }
-
-group { name: "elm/button/base/circle_text";
       script {
          public mouse_down = 0;
          public multi_down = 0;

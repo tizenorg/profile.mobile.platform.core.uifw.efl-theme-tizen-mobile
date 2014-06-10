@@ -37,31 +37,39 @@ group { name: "elm/check/base/default";
       part { name: "bg";
          scale: 1;
          description { state: "default" 0.0;
-            min: CHECK_BG_SIZE ;
-            max: CHECK_BG_SIZE ;
+            min: CHECK_BG_SIZE;
+            max: CHECK_BG_SIZE;
             align: 0.0 0.5;
             fixed: 1 1;
             image.normal: "core_check_bg.png";
-            color_class: "W013L1D";
+            color_class: "W013L1E1";
          }
          description { state: "on" 0.0;
             inherit: "default" 0.0;
             color_class: "W013L1";
          }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W013L1D";
+         }
       }
       part { name: "check";
          scale: 1;
          description { state: "default" 0.0;
-            min: CHECK_SIZE ;
-            max: CHECK_SIZE ;
+            min: CHECK_SIZE;
+            max: CHECK_SIZE;
             rel1.to: "bg";
             rel2.to: "bg";
             image.normal: "core_check_icon.png";
-            color_class:"W013L1iD";
+            color_class:"W013L1iE1";
          }
          description { state: "on" 0.0;
             inherit: "default" 0.0;
             color_class:"W013L1i";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class:"W013L1iD";
          }
       }
       part { name: "event";
@@ -148,6 +156,8 @@ group { name: "elm/check/base/default";
          source: "elm";
          script {
             set_int(check_disabled, 1);
+            set_state(PART:"bg", "disabled", 0.0);
+            set_state(PART:"check", "disabled", 0.0);
          }
       }
       program { name: "enable";
@@ -155,6 +165,14 @@ group { name: "elm/check/base/default";
          source: "elm";
          script {
             set_int(check_disabled, 0);
+            if (get_int(check_state) == 1) {
+              set_state(PART:"check", "on", 0.0);
+              set_state(PART:"bg", "on", 0.0);
+            }
+            else {
+              set_state(PART:"check", "default", 0.0);
+              set_state(PART:"bg", "default", 0.0);
+            }
          }
       }
    }

@@ -41,11 +41,15 @@ group { name: "elm/radio/base/default";
                max: RADIO_BG_SIZE;
                fixed: 1 1;
                image.normal: "core_radio_bg.png";
-               color_class: "W014L1D";
+               color_class: "W014L1E1";
             }
             description { state: "on" 0.0;
                inherit: "default" 0.0;
                color_class: "W014L1";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W014L1D";
             }
          }
          part { name: "radio";
@@ -57,11 +61,15 @@ group { name: "elm/radio/base/default";
                rel2.to: "bg";
                fixed: 1 1;
                image.normal: "core_radio_icon.png";
-               color_class: "W014LiD";
+               color_class: "W014LiE1";
             }
             description { state: "on" 0.0;
                inherit: "default" 0.0;
                color_class: "W014Li";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W014LiD";
             }
          }
          part { name: "event";
@@ -135,6 +143,8 @@ group { name: "elm/radio/base/default";
             source: "elm";
             script {
               set_int(radio_disabled, 1);
+              set_state(PART:"bg", "disabled", 0.0);
+              set_state(PART:"radio", "disabled", 0.0);
             }
          }
          program { name: "enable";
@@ -142,6 +152,14 @@ group { name: "elm/radio/base/default";
             source: "elm";
             script {
               set_int(radio_disabled, 0);
+              if (get_int(radio_state) == 1) {
+                set_state(PART:"radio", "on", 0.0);
+                set_state(PART:"bg", "on", 0.0);
+              }
+              else {
+                set_state(PART:"radio", "default", 0.0);
+                set_state(PART:"bg", "default", 0.0);
+              }
             }
          }
       }
