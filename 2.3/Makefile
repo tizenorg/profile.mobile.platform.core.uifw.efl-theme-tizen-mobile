@@ -13,10 +13,10 @@ all:
 		perl -pi -e "s/TIZEN_TMP_INC/\"$$s-inc.edc\"/g" $(SRC)-$(TARGET)-$$s.edc; \
 		edje_cc $(EDJE_FLAGS_$(V))\
 		-id ./$$s/images/\
+		-id ./$$s/images/Content_views\
 		-id ./$$s/images/Controls\
-		-id ./$$s/images/Controls/Button\
-		-id ./$$s/images/Navigation\ elements\
-		-id ./$$s/images/Navigation\ elements/icon\
+		-id ./$$s/images/Navigation_elements\
+		-id ./$$s/images/Popups\
 		-sd ./$$s/sounds -fd ../objects \
 		$(SRC)-$(TARGET)-$$s.edc $(SRC)-$(TARGET)-$$s.edj; \
 	done

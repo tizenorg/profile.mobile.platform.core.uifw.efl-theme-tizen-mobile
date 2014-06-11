@@ -733,7 +733,7 @@ group { name: "elm/ctxpopup/icon_text_style_item/default"; }
 group {
    name: "elm/ctxpopup/layout/dropdown/list";
    alias: "elm/ctxpopup/layout/dropdown/label";
-   max: CTXPOPUP_WIDTH (CTXPOPUP_ITEM_HEIGHT_MIN*5);
+   max: CTXPOPUP_DROPDOWN_WIDTH (CTXPOPUP_DROPDOWN_ITEM_HEIGHT_MIN*5+CTXPOPUP_DROPDOWN_SEPARATOR_HEIGHT*4);
    parts {
       part {
          name:"bottom_padding";
@@ -880,7 +880,7 @@ group {
    name: "elm/ctxpopup/layout/landscape/dropdown/list";
    inherit: "elm/ctxpopup/layout/dropdown/list";
    alias: "elm/ctxpopup/layout/landscape/dropdown/label";
-   max: CTXPOPUP_WIDTH CTXPOPUP_ITEM_HEIGHT_MIN*5;
+   max: CTXPOPUP_DROPDOWN_WIDTH (CTXPOPUP_DROPDOWN_ITEM_HEIGHT_MIN*5+CTXPOPUP_DROPDOWN_SEPARATOR_HEIGHT*4);
 }
 ///////////////////////////////////////////////////////////////////////////////
 group {
@@ -888,18 +888,17 @@ group {
    alias: "elm/ctxpopup/base/dropdown/label";
    images {
       image: "core_dropdown_label_bg.#.png" COMP;
-      image: "core_dropdown_label_bg_ef.#.png" COMP;
    }
    parts {
       part {
          name: "frame_bg";
+         type: RECT;
          scale: 1;
          mouse_events: 0;
          description {
             state: "default" 0.0;
             min: 100 0;
-            image.normal: "core_dropdown_label_bg.#.png";
-            color_class: "B041";
+            color_class: "B0733";
          }
       }
       part {
@@ -909,7 +908,36 @@ group {
             state: "default" 0.0;
             rel1.to: "frame_bg";
             rel2.to: "frame_bg";
-            image.normal: "core_dropdown_label_bg_ef.#.png";
+            image.normal: "core_dropdown_label_bg.#.png";
+            color_class: "B0733L1";
+         }
+      }
+      part {
+         name: "content_left_top_padding";
+         type: SPACER;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: CTXPOPUP_DROPDOWN_CONTENT_LR_PADDING CTXPOPUP_DROPDOWN_CONTENT_TB_PADDING;
+            max: CTXPOPUP_DROPDOWN_CONTENT_LR_PADDING CTXPOPUP_DROPDOWN_CONTENT_TB_PADDING;
+            rel1.to: "frame_bg";
+            rel2 {to: "frame_bg"; relative: 0.0 0.0;}
+            align: 0.0 0.0;
+            fixed: 1 1;
+         }
+      }
+      part {
+         name: "content_right_bottom_padding";
+         type: SPACER;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: CTXPOPUP_DROPDOWN_CONTENT_LR_PADDING CTXPOPUP_DROPDOWN_CONTENT_TB_PADDING;
+            max: CTXPOPUP_DROPDOWN_CONTENT_LR_PADDING CTXPOPUP_DROPDOWN_CONTENT_TB_PADDING;
+            rel1 {to: "frame_bg"; relative: 1.0 1.0;}
+            rel2.to: "frame_bg";
+            align: 1.0 1.0;
+            fixed: 1 1;
          }
       }
       part { name: "access.outline";
@@ -929,8 +957,8 @@ group {
          description {
             state: "default" 0.0;
             align: 0 0;
-            rel1.to: "frame_bg";
-            rel2.to: "frame_bg";
+            rel1 {to: "content_left_top_padding"; relative: 1.0 1.0;}
+            rel2 {to: "content_right_bottom_padding"; relative: 0.0 0.0;}
          }
       }
    }
@@ -944,7 +972,7 @@ group {
       public multi_down = 0;
    }
 
-   data.item: "item_max_size" CTXPOPUP_TEXT_MAX;
+   data.item: "item_max_size" CTXPOPUP_DROPDOWN_TEXT_MAX;
 
    parts {
       part {
@@ -964,13 +992,19 @@ group {
          description {
             state: "default" 0.0;
             visible: 0;
-            min: CTXPOPUP_WIDTH 1;
-            max: CTXPOPUP_WIDTH CTXPOPUP_ITEM_HEIGHT_MAX;
+            min: (CTXPOPUP_DROPDOWN_WIDTH-CTXPOPUP_DROPDOWN_CONTENT_LR_PADDING*2) 1;
+            max: (CTXPOPUP_DROPDOWN_WIDTH-CTXPOPUP_DROPDOWN_CONTENT_LR_PADDING*2) CTXPOPUP_DROPDOWN_ITEM_HEIGHT_MAX;
             color_class: "B041P";
          }
          description {
             state: "clicked" 0.0;
             inherit: "default" 0.0;
+            visible: 1;
+         }
+         description {
+            state: "clicked_separator" 0.0;
+            inherit: "default" 0.0;
+            rel1 {to_y: "separator"; relative: 0.0 1.0;}
             visible: 1;
          }
       }
@@ -980,12 +1014,30 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_ITEM_TEXT_LR_PADDING CTXPOPUP_ITEM_TEXT_TB_PADDING;
-            max: CTXPOPUP_ITEM_TEXT_LR_PADDING CTXPOPUP_ITEM_TEXT_TB_PADDING;
-            rel1.to: "bg";
-            rel2.to: "bg";
+            min: CTXPOPUP_DROPDOWN_ITEM_TEXT_LR_PADDING 0;
+            max: CTXPOPUP_DROPDOWN_ITEM_TEXT_LR_PADDING 0;
             align: 0 0;
             fixed: 1 1;
+         }
+      }
+      part {
+         name: "separator";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 CTXPOPUP_DROPDOWN_SEPARATOR_HEIGHT;
+            max: -1 CTXPOPUP_DROPDOWN_SEPARATOR_HEIGHT;
+            rel1 {to: "left_top_padding"; relative: 1.0 0.0;}
+            rel2 {to: "right_bottom_padding"; relative: 0.0 0.0;}
+            align: 0.5 0.0;
+            color_class: "B0733L2";
+            visible: 0;
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
       part {
@@ -995,15 +1047,15 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: 1 CTXPOPUP_ITEM_TEXT_HEIGHT_MIN;
-            max: CTXPOPUP_TEXT_MAX (CTXPOPUP_ITEM_HEIGHT_MAX-CTXPOPUP_ITEM_TEXT_TB_PADDING*2);
+            min: 1 CTXPOPUP_DROPDOWN_ITEM_HEIGHT_MIN;
+            max: CTXPOPUP_DROPDOWN_TEXT_MAX CTXPOPUP_DROPDOWN_ITEM_HEIGHT_MAX;
             align: 0.5 0.5;
             rel1 {relative: 1.0 1.0; to: "left_top_padding";}
             rel2 {relative: 0.0 0.0; to: "right_bottom_padding";}
-            color_class: "T126";
+            color_class: "T12351";
             text {
-               text_class: "T126";
-               size_range: CTXPOPUP_ITEM_TEXT_SIZE CTXPOPUP_ITEM_TEXT_MAX_SIZE;
+               text_class: "T12351";
+               size_range: CTXPOPUP_DROPDOWN_ITEM_TEXT_SIZE CTXPOPUP_DROPDOWN_ITEM_TEXT_MAX_SIZE;
                align: 0 0.5;
                min: 1 1;
             }
@@ -1011,32 +1063,28 @@ group {
          description {
             state: "clicked" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T126P";
-            color_class: "T126P";
+            text.text_class: "T12352";
+            color_class: "T12352";
          }
          description {
             state: "disabled" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T126D";
-            color_class: "T126D";
          }
          description {
             state: "ellipsis" 0.0;
             inherit: "default" 0.0;
-            min: CTXPOPUP_TEXT_MAX CTXPOPUP_ITEM_TEXT_HEIGHT_MIN;
+            min: CTXPOPUP_DROPDOWN_TEXT_MAX CTXPOPUP_DROPDOWN_ITEM_HEIGHT_MIN;
             text.min: 0 1;
          }
          description {
             state: "ellipsis_clicked" 0.0;
             inherit: "ellipsis" 0.0;
-            text.text_class: "T126P";
-            color_class: "T126P";
+            text.text_class: "T12352";
+            color_class: "T12352";
          }
          description {
             state: "ellipsis_disabled" 0.0;
             inherit: "ellipsis" 0.0;
-            text.text_class: "T126D";
-            color_class: "T126D";
          }
       }
       part {
@@ -1045,8 +1093,8 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_ITEM_TEXT_LR_PADDING CTXPOPUP_ITEM_TEXT_TB_PADDING;
-            max: CTXPOPUP_ITEM_TEXT_LR_PADDING CTXPOPUP_ITEM_TEXT_TB_PADDING;
+            min: CTXPOPUP_DROPDOWN_ITEM_TEXT_LR_PADDING 0;
+            max: CTXPOPUP_DROPDOWN_ITEM_TEXT_LR_PADDING 0;
             fixed: 1 1;
             align: 1.0 1.0;
          }
@@ -1076,6 +1124,20 @@ group {
       }
    }
    programs {
+      program {
+         name: "hide_separator";
+         signal: "elm,state,default";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "separator";
+      }
+      program {
+         name: "show_separator";
+         signal: "elm,state,separator";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         target: "separator";
+      }
       program {
          name: "text_default";
          signal: "elm,state,text,default";
@@ -1154,11 +1216,15 @@ group {
          signal: "mouse,down,1";
          source: "events";
          script {
+            new st[31];
+            new Float:vl;
             if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
                set_int(mouse_down, 1);
-               set_state(PART:"bg", "clicked", 0.0);
-               new st[31];
-               new Float:vl;
+               get_state(PART:"separator", st, 30, vl);
+               if (!strcmp(st, "visible"))
+                 set_state(PART:"bg", "clicked_separator", 0.0);
+               else
+                 set_state(PART:"bg", "clicked", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "default"))
                  set_state(PART:"elm.text", "clicked", 0.0);
@@ -1217,7 +1283,7 @@ group {
       public multi_down = 0;
    }
 
-   data.item: "item_max_size" CTXPOPUP_TEXT_MAX;
+   data.item: "item_max_size" CTXPOPUP_DROPDOWN_TEXT_MAX;
 
    parts {
       part {
@@ -1237,13 +1303,19 @@ group {
          description {
             state: "default" 0.0;
             visible: 0;
-            min: 100 1;
-            max: CTXPOPUP_WIDTH CTXPOPUP_ITEM_HEIGHT_MAX;
+            min: 0 1;
+            max: CTXPOPUP_DROPDOWN_WIDTH CTXPOPUP_DROPDOWN_ITEM_HEIGHT_MAX;
             color_class: "B041P";
          }
          description {
             state: "clicked" 0.0;
             inherit: "default" 0.0;
+            visible: 1;
+         }
+         description {
+            state: "clicked_separator" 0.0;
+            inherit: "default" 0.0;
+            rel1 {to_y: "separator"; relative: 0.0 1.0;}
             visible: 1;
          }
       }
@@ -1253,12 +1325,30 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_ITEM_TEXT_LR_PADDING CTXPOPUP_ITEM_TEXT_TB_PADDING;
-            max: CTXPOPUP_ITEM_TEXT_LR_PADDING CTXPOPUP_ITEM_TEXT_TB_PADDING;
-            rel1.to: "bg";
-            rel2.to: "bg";
+            min: CTXPOPUP_DROPDOWN_ITEM_TEXT_LR_PADDING 0;
+            max: CTXPOPUP_DROPDOWN_ITEM_TEXT_LR_PADDING 0;
             align: 0 0;
             fixed: 1 1;
+         }
+      }
+      part {
+         name: "separator";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 CTXPOPUP_DROPDOWN_SEPARATOR_HEIGHT;
+            max: -1 CTXPOPUP_DROPDOWN_SEPARATOR_HEIGHT;
+            rel1 {to: "left_top_padding"; relative: 1.0 0.0;}
+            rel2 {to: "right_bottom_padding"; relative: 0.0 0.0;}
+            align: 0.5 0.0;
+            color_class: "B0733L2";
+            visible: 0;
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
       part {
@@ -1268,15 +1358,15 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: 1 CTXPOPUP_ITEM_TEXT_HEIGHT_MIN;
-            max: CTXPOPUP_TEXT_MAX (CTXPOPUP_ITEM_HEIGHT_MAX-CTXPOPUP_ITEM_TEXT_TB_PADDING*2);
+            min: 1 CTXPOPUP_DROPDOWN_ITEM_HEIGHT_MIN;
+            max: CTXPOPUP_DROPDOWN_TEXT_MAX CTXPOPUP_DROPDOWN_ITEM_HEIGHT_MAX;
             align: 0.5 0.5;
             rel1 {relative: 1.0 1.0; to: "left_top_padding";}
             rel2 {relative: 0.0 0.0; to: "right_bottom_padding";}
             color_class: "T12351";
             text {
                text_class: "T12351";
-               size_range: CTXPOPUP_ITEM_TEXT_SIZE CTXPOPUP_ITEM_TEXT_MAX_SIZE;
+               size_range: CTXPOPUP_DROPDOWN_ITEM_TEXT_SIZE CTXPOPUP_DROPDOWN_ITEM_TEXT_MAX_SIZE;
                align: 0 0.5;
                min: 1 1;
             }
@@ -1290,13 +1380,11 @@ group {
          description {
             state: "disabled" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T12351";
-            color_class: "T12351";
          }
          description {
             state: "ellipsis" 0.0;
             inherit: "default" 0.0;
-            min: CTXPOPUP_TEXT_MAX CTXPOPUP_ITEM_TEXT_HEIGHT_MIN;
+            min: CTXPOPUP_DROPDOWN_TEXT_MAX CTXPOPUP_DROPDOWN_ITEM_HEIGHT_MIN;
             text.min: 0 1;
          }
          description {
@@ -1308,8 +1396,6 @@ group {
          description {
             state: "ellipsis_disabled" 0.0;
             inherit: "ellipsis" 0.0;
-            text.text_class: "T12351";
-            color_class: "T12351";
          }
       }
       part {
@@ -1318,8 +1404,8 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_ITEM_TEXT_LR_PADDING CTXPOPUP_ITEM_TEXT_TB_PADDING;
-            max: CTXPOPUP_ITEM_TEXT_LR_PADDING CTXPOPUP_ITEM_TEXT_TB_PADDING;
+            min: CTXPOPUP_DROPDOWN_ITEM_TEXT_LR_PADDING 0;
+            max: CTXPOPUP_DROPDOWN_ITEM_TEXT_LR_PADDING 0;
             fixed: 1 1;
             align: 1.0 1.0;
          }
@@ -1349,6 +1435,20 @@ group {
       }
    }
    programs {
+      program {
+         name: "hide_separator";
+         signal: "elm,state,default";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "separator";
+      }
+      program {
+         name: "show_separator";
+         signal: "elm,state,separator";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         target: "separator";
+      }
       program {
          name: "text_default";
          signal: "elm,state,text,default";
@@ -1427,11 +1527,15 @@ group {
          signal: "mouse,down,1";
          source: "events";
          script {
+            new st[31];
+            new Float:vl;
             if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
                set_int(mouse_down, 1);
-               set_state(PART:"bg", "clicked", 0.0);
-               new st[31];
-               new Float:vl;
+               get_state(PART:"separator", st, 30, vl);
+               if (!strcmp(st, "visible"))
+                 set_state(PART:"bg", "clicked_separator", 0.0);
+               else
+                 set_state(PART:"bg", "clicked", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "default"))
                  set_state(PART:"elm.text", "clicked", 0.0);
