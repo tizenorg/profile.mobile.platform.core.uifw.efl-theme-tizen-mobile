@@ -75,19 +75,17 @@ group {
    }
    parts {
       part { name: "bg";
-         type: RECT;
+         type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
             min: NO_CONTENT_WIDTH NO_CONTENT_HEIGHT;
             align: 0.0 0.0;
-            color: 0 0 0 0;
          }
       }
        part { name: "bg_con";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            min: NO_CONTENT_WIDTH NO_CONTENT_BG_HEIGHT;
             rel1.to: "bg";
             rel2.to: "bg";
             color_class: "B238L1";
@@ -97,8 +95,8 @@ group {
          type: IMAGE;
          scale: 1;
          description { state: "default" 0.0;
-            rel1.to: "bg_con";
-            rel2.to: "bg_con";
+            rel1.to: "bg";
+            rel2.to: "bg";
             color_class: "B238L2";
             image.normal: "core_pattern_empty_bg.png";
          }
@@ -109,7 +107,7 @@ group {
          description { state: "default" 0.0;
             min: NO_CONTENT_LEFT_RIGHT_PADDING 0;
             fixed: 1 0;
-            align: 0 0;
+            align: 0.0 0.0;
             rel1.to: "bg";
             rel2.to: "bg";
             rel2.relative: 0.0 1.0;
@@ -122,8 +120,10 @@ group {
             min: NO_CONTENT_LEFT_RIGHT_PADDING 0;
             fixed: 1 0;
             align: 1.0 0.0;
-            rel1.to: "bg";
-            rel1.relative: 1.0 0.0;
+            rel1 {
+               to: "bg";
+               relative: 1.0 0.0;
+            }
             rel2.to: "bg";
           }
       }
@@ -131,38 +131,52 @@ group {
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: 0 NO_CONTENT_TOP_PADDING;
+            min: 0 NO_CONTENT_TOP_BOTTOM_PADDING;
+            align: 0.5 0.0;
             fixed: 0 1;
             rel1.to: "bg";
-            rel2.to: "bg";
-            rel2.relative: 1.0 0.0;
+            rel2 {
+               to: "bg";
+               relative: 1.0 0.0;
+            }
          }
       }
-      part { name: "swallow_area";
-         type: SWALLOW;
+      part { name: "bottom_padding";
+         type:SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: 0 NO_CONTENT_BUTTON_HEIGHT;
+            min: 0 NO_CONTENT_TOP_BOTTOM_PADDING;
             fixed: 0 1;
-            align: 0 1;
-            rel1.to: "bg";
-            rel1.relative: 0.0 1.0;
+            align: 0.5 1.0;
+            rel1 {
+               to: "bg";
+               relative: 0.0 1.0;
+            }
             rel2.to: "bg";
          }
       }
-      part{ name: "bottom_padding";
-         type: SPACER;
+      part { name: "bg_ex";
+         type:SPACER;
          scale: 1;
          description { state: "default" 0.0;
+            min: 0 NO_CONTENT_TEXT_SIZE;
+            max: -1 NO_CONTENT_TEXT_SIZE;
             fixed: 0 1;
-            min: 0 NO_CONTENT_BOTTOM_HEIGHT;
-            rel1.relative: 1.0 0.0 ;
-            rel1.to_x:"left_padding";
-            rel1.to_y:"swallow_area";
-            rel2.relative: 0.0 0.0 ;
-            rel2.to_y: "swallow_area";
-            rel2.to_x:"right_padding";
-            align: 1.0 1.0 ;
+            rel1 {
+               to_x: "left_padding";
+               to_y: "top_padding";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to_x: "right_padding";
+               to_y: "bottom_padding";
+               relative: 0.0 0.0;
+            }
+         }
+         description { state: "center_align" 0.0;
+            inherit: "default" 0.0;
+            min: 0 NO_CONTENT_TEXT_ALIGN_SIZE;
+            max: -1 NO_CONTENT_TEXT_ALIGN_SIZE;
          }
       }
       part { name: "elm.text";
@@ -171,16 +185,11 @@ group {
          description { state: "default" 0.0;
             min: 0 NO_CONTENT_TEXT_PART_SIZE;
             fixed: 0 1;
-            align:0.0 0.0;
-            rel1 {
-               relative: 1.0 1.0;
-               to_x: "left_padding";
-               to_y: "top_padding";
-            }
+            align:0.5 0.0;
+            rel1.to: "bg_ex";
             rel2 {
-               relative: 0.0 1.0;
-               to_x: "right_padding";
-               to_y: "top_padding";
+               relative: 1.0 0.0;
+               to: "bg_ex";
             }
             text {
                style:"empty_state_1";
@@ -210,9 +219,8 @@ group {
          type: TEXTBLOCK;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0.5 0.0;
-            min: 0 NO_CONTENT_HELP_TEXT_PART_SIZE;
             fixed: 1 1;
+            align: 0.5 0.0;
             rel1.relative: 0.0 1.0;
             rel1.to: "padding_after_text";
             rel2 {
@@ -225,6 +233,15 @@ group {
                min: 0 1;
                max: 0 1;
             }
+         }
+      }
+   }
+    programs {
+      program { name: "align_center";
+         signal: "align.center";
+         source: "elm";
+         script {
+               set_state(PART:"bg_ex", "center_align", 0.0);
          }
       }
    }
