@@ -2613,9 +2613,229 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_bg_72x72.png", CHECK
       }
    }
 
+
    group { name: "elm/check/base/multiline";
-      inherit: "elm/check/base/default";
+      data {
+         item: "access_highlight" "off";
+      }
+      images {
+         image: "00_check_activate.png" COMP;
+         image: "00_check_activate_ef.png" COMP;
+         image: "00_check_bg.png" COMP;
+         image: "00_check_bg_ef.png" COMP;
+         image: "00_check_focus.png" COMP;
+         image: "00_check_bg_line.png" COMP;
+         image: "B16-8_TTS_focus.png" COMP;
+      }
+      script {
+         public check_state = CHECK_STATE_DEFAULT;
+         public check_visible = CHECK_HIDE;
+      }
       parts {
+         part { name: "back_bg";
+            type: RECT;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel2.relative: 0.0 1.0;
+               align: 0.0 0.0;
+               min: CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_WIDTH_INC CHECK_STYLE_DEFAULT_DEFAULT_BG_IMAGE_MIN_HEIGHT_INC;
+               fixed: 1 0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "bg";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC;
+               max: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC;
+               fixed: 1 1;
+               rel1.to: "back_bg";
+               rel2.to: "back_bg";
+               align: 0.5 0.0;
+               image.normal: "00_check_bg.png";
+               fill.smooth : 0;
+               color_class: "W013L1";
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+            }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W013L1P";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W013L1D";
+            }
+         }
+         part { name: "bg_effect";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC;
+               max: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC;
+               fixed: 1 1;
+               rel1.to: "back_bg";
+               rel2.to: "back_bg";
+               align: 0.5 0.0;
+               image.normal: "00_check_bg_ef.png";
+               fill.smooth : 0;
+            }
+         }
+         part { name: "bg_line";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC;
+               max: CHECK_STYLE_DEFAULT_BG_NORMAL_MIN_MAX_INC;
+               fixed: 1 1;
+               rel1.to: "back_bg";
+               rel2.to: "back_bg";
+               align: 0.5 0.0;
+               image.normal: "00_check_bg_line.png";
+               fill.smooth : 0;
+               color_class: "W013L2";
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+            }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W013L2P";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W013L2D";
+            }
+         }
+         part { name: "check";
+            clip_to: "sequence_clip";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               align: 0.5 0.0;
+               visible: 0;
+               image.normal: "00_check_activate.png";
+               color_class: "W013L3";
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+            description { state: "active_disable" 0.0;
+               inherit: "visible" 0.0;
+               color_class: "W013L3D";
+            }
+            description { state: "active_pressed" 0.0;
+               inherit: "visible" 0.0;
+               color_class: "W013L3P";
+            }
+         }
+         part { name: "check_effect";
+            clip_to: "sequence_clip";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               align: 0.5 0.0;
+               visible: 0;
+               image.normal: "00_check_activate_ef.png";
+            }
+         }
+         part { name: "focus_image";
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1.to: "check";
+               rel2.to: "check";
+               align: 0.5 0.0;
+               image.normal: "00_check_focus.png";
+               visible: 0;
+               color_class: "W161";
+            }
+            description { state: "focused_on" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "sequence_clip";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1.to: "bg";
+               rel2 {
+                  relative: 0.0 1.0;
+                  to: "bg";
+               }
+               align: 0.5 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel2 {
+                  relative: 1.0 1.0;
+                  to: "bg";
+               }
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               fixed: 1 0;
+               visible: 0;
+               align: 0.0 0.0;
+               rel1 {
+                  to_x: "bg";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to_x: "bg";
+                  relative: 1.0 1.0;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               fixed: 1 1;
+               visible: 1;
+               aspect: 1.0 1.0;
+               aspect_preference: VERTICAL;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+            }
+            description { state: "disabled_visible" 0.0;
+               inherit: "default" 0.0;
+               fixed: 1 1;
+               visible: 1;
+               aspect: 1.0 1.0;
+            }
+         }
+         part { name: "padding_before_text";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 0.0 0.0;
+               min: 0 0;
+               fixed: 1 1;
+               rel1 {
+                  to_x: "elm.swallow.content";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to_x: "elm.swallow.content";
+                  relative: 1.0 1.0;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: CHECK_STYLE_DEFAULT_PADDING_BEFORE_TEXT_INC;
+               max: CHECK_STYLE_DEFAULT_PADDING_BEFORE_TEXT_INC;
+               fixed: 1 1;
+            }
+         }
          part { name: "elm.text";
             type: TEXTBLOCK;
             mouse_events: 0;
@@ -2624,16 +2844,15 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_bg_72x72.png", CHECK
                visible: 0;
                fixed: 1 1;
                rel1 {
-                  relative: 1.0 0.0;
-                  to_x: "padding_before_text";
+                  relative: 1.0 1.0;
+                  to: "padding_before_text";
                }
                rel2 {
                   relative: 1.0 1.0;
-                  offset: 0 0;
                }
                text {
                   style: "check_label_textblock_mixed_wrap_style";
-                  align: 0.0 0.5;
+                  align: 0.0 0.0;
                   min: 0 0;
                }
             }
@@ -2650,10 +2869,292 @@ CHECK_STYLE_FAVORITE("favorite/extended", "00_icon_favorite_bg_72x72.png", CHECK
                visible: 1;
                text {
                   style: "check_label_textblock_mixed_wrap_style_disable";
-                  align: 0.0 0.5;
+                  align: 0.0 0.0;
                   min: 0 0;
                }
             }
+         }
+         part { name: "events1";
+            type: RECT;
+            ignore_flags: ON_HOLD;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "events2";
+            type: RECT;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "disabler";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+               visible: 0;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "access_image";
+            mouse_events:  0;
+            description { state: "default" 0.0;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               visible: 0;
+               image {
+                   normal: "B16-8_TTS_focus.png";
+                   border: TTS_FOCUS_BORDER;
+                   border_scale: 1;
+               }
+            }
+            description { state: "highlighted" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+      }
+      programs {
+         program { name: "show";
+            signal: "show";
+            script {
+               set_int(check_visible, CHECK_SHOW);
+            }
+         }
+         program { name: "hide";
+            signal: "hide";
+            script {
+               set_int(check_visible, CHECK_HIDE);
+            }
+         }
+         program { name: "click";
+            signal: "mouse,clicked,1";
+            source: "events1";
+            action: SIGNAL_EMIT "elm,action,check,toggle" "";
+            after: "touch_sound";
+         }
+         program { name: "touch_sound";
+            action: RUN_PLUGIN "touch_sound";
+         }
+         program { name: "bg_normal";
+            signal: "mouse,up,1";
+            source: "events2";
+            script {
+               if (get_int(check_state) == CHECK_STATE_VISIBLE)
+                  set_state(PART:"check", "visible", 0.0);
+               set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"bg_line", "default", 0.0);
+            }
+         }
+         program { name: "pressed";
+            signal: "mouse,down,1";
+            source: "events2";
+            script {
+               if (get_int(check_state) == CHECK_STATE_VISIBLE)
+                  set_state(PART:"check", "active_pressed", 0.0);
+               set_state(PART:"bg", "pressed", 0.0);
+               set_state(PART:"bg_line", "pressed", 0.0);
+            }
+         }
+         program { name: "mouse,out";
+            signal: "mouse,out";
+            source: "events2";
+            script {
+               if (get_int(check_state) == CHECK_STATE_VISIBLE)
+                 {
+                    set_state(PART:"check", "visible", 0.0);
+                    set_state(PART:"sequence_clip", "visible", 0.0);
+                 }
+               set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"bg_line", "default", 0.0);
+            }
+         }
+         program { name: "check_on";
+            signal: "elm,state,check,on";
+            source: "elm";
+            script {
+               set_int(check_state, CHECK_STATE_VISIBLE);
+               if (get_int(check_visible) == CHECK_SHOW)
+                 {
+                    run_program(PROGRAM:"check_show_effect");
+                    run_program(PROGRAM:"check_draw_effect");
+                 }
+               else
+                 {
+                    set_state(PART:"check", "visible", 0.0);
+                    set_state(PART:"sequence_clip", "visible", 0.0);
+                 }
+               set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"bg_line", "default", 0.0);
+            }
+         }
+         program { name: "check_off";
+            signal: "elm,state,check,off";
+            source: "elm";
+            script {
+               if (get_int(check_state) == CHECK_STATE_VISIBLE)
+                 {
+                    set_int(check_state, CHECK_STATE_DEFAULT);
+                    set_state(PART:"check", "default", 0.0);
+                    set_state(PART:"sequence_clip", "default", 0.0);
+                 }
+            }
+         }
+         program { name: "check_show_effect";
+            action: STATE_SET "visible" 0.0;
+            transition: LINEAR 0.233;
+            target: "check";
+         }
+         program { name: "check_draw_effect";
+            action: STATE_SET "visible" 0.0;
+            transition: LINEAR 0.267;
+            target: "sequence_clip";
+            after: "check_on_signal";
+         }
+         program { name: "check_on_signal";
+            action: SIGNAL_EMIT "elm,action,show,finished" "elm";
+         }
+         program { name: "text_show";
+            signal: "elm,state,text,visible";
+            source: "elm";
+            action: STATE_SET "visible" 0.0;
+            target: "padding_before_text";
+            target: "elm.text";
+         }
+         program { name: "text_hide";
+            signal: "elm,state,text,hidden";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "padding_before_text";
+            target: "elm.text";
+         }
+         program { name: "icon_show";
+            signal: "elm,state,icon,visible";
+            source: "elm";
+            action: STATE_SET "visible" 0.0;
+            target: "elm.swallow.content";
+         }
+         program { name: "icon_hide";
+            signal: "elm,state,icon,hidden";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.swallow.content";
+         }
+         program { name: "key_press";
+            signal: "elm,action,pressed";
+            source: "elm";
+            script {
+               if (get_int(check_state) == CHECK_STATE_VISIBLE)
+                  set_state(PART:"check", "active_pressed", 0.0);
+               set_state(PART:"bg", "pressed", 0.0);
+               set_state(PART:"bg_line", "pressed", 0.0);
+            }
+         }
+         program { name: "key_unpress";
+            signal: "elm,action,unpressed";
+            source: "elm";
+            script {
+               if (get_int(check_state) == CHECK_STATE_VISIBLE)
+                 {
+                    set_state(PART:"check", "visible", 0.0);
+                    set_state(PART:"sequence_clip", "visible", 0.0);
+                 }
+               set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"bg_line", "default", 0.0);
+            }
+         }
+         program { name: "action_focus";
+            signal: "elm,action,focus_highlight,show";
+            source: "elm";
+            action: STATE_SET "focused_on" 0.0;
+            target: "focus_image";
+         }
+         program { name: "action_unfocus";
+            signal: "elm,action,focus_highlight,hide";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "focus_image";
+         }
+         program { name: "disable";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "disabler";
+            target: "bg";
+            target: "bg_line";
+            after: "disable_text";
+         }
+         program { name: "disable_text";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "visible"))
+                 set_state(PART:"elm.text", "disabled_visible", 0.0);
+               else
+                 set_state(PART:"elm.text", "disabled", 0.0);
+               get_state(PART:"elm.swallow.content", st, 30, vl);
+               if (!strcmp(st, "visible"))
+                 set_state(PART:"elm.swallow.content", "disabled_visible", 0.0);
+               else
+                 set_state(PART:"elm.swallow.content", "disabled", 0.0);
+               get_state(PART:"check", st, 30, vl);
+               if (!strcmp(st, "visible"))
+                 {
+                    set_state(PART:"check", "active_disable", 0.0);
+                    set_int(check_state, CHECK_STATE_DISABLED_VISIBLE);
+                 }
+            }
+         }
+         program { name: "enable";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "disabler";
+            target: "bg";
+            target: "bg_line";
+            after: "enable_text";
+         }
+         program { name: "enable_text";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "disabled_visible"))
+                 set_state(PART:"elm.text", "visible", 0.0);
+               else
+                 set_state(PART:"elm.text", "default", 0.0);
+               get_state(PART:"elm.swallow.content", st, 30, vl);
+               if (!strcmp(st, "visible"))
+                 set_state(PART:"elm.swallow.content", "visible", 0.0);
+               else
+                 set_state(PART:"elm.swallow.content", "default", 0.0);
+               get_state(PART:"check", st, 30, vl);
+               if (!strcmp(st, "active_disable"))
+                 {
+                    set_state(PART:"check", "visible", 0.0);
+                    set_int(check_state, CHECK_STATE_VISIBLE);
+                 }
+               else
+                 {
+                    set_int(check_state, CHECK_STATE_DEFAULT);
+                 }
+            }
+         }
+         program { name: "action_highlight";
+            signal: "elm,action,access_highlight,show";
+            source: "elm";
+            action: STATE_SET "highlighted" 0.0;
+            target: "access_image";
+         }
+         program { name: "action_no_highlight";
+            signal: "elm,action,access_highlight,hide";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "access_image";
          }
       }
    }
