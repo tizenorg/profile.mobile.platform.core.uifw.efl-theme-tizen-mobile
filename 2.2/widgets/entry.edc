@@ -5102,13 +5102,17 @@ group { name: "elm/entry/base-password/popup";
 					color: 0 0 0 0;
 				}
 			}
-			part { name: "be_left_mask";
+			part { name: "bg_left_mask";
 				scale: 1;
 				description { state: "default" 0.0;
 					rel1.to: "bg_left";
 					rel2.to: "bg_left";
 					image.normal: "copy&paste_Magnifier_mask_left.#.png";
 					color_class: "B011";
+				}
+				description { state: "custom_cc" 0.0;
+					inherit: "default" 0.0;
+					color_class: "mgf_custom_cc";
 				}
 			}
 			part { name: "bg_left";
@@ -5131,6 +5135,10 @@ group { name: "elm/entry/base-password/popup";
 					image.normal: "copy&paste_Magnifier_mask_center.#.png";
 					color_class: "B011";
 				}
+				description { state: "custom_cc" 0.0;
+					inherit: "default" 0.0;
+					color_class: "mgf_custom_cc";
+				}
 			}
 			part { name: "bg_middle";
 				mouse_events: 0;
@@ -5149,6 +5157,10 @@ group { name: "elm/entry/base-password/popup";
 					rel2.to: "bg_right";
 					image.normal: "copy&paste_Magnifier_mask_right.#.png";
 					color_class: "B011";
+				}
+				description { state: "custom_cc" 0.0;
+					inherit: "default" 0.0;
+					color_class: "mgf_custom_cc";
 				}
 			}
 			part { name: "bg_right";
@@ -5177,6 +5189,23 @@ group { name: "elm/entry/base-password/popup";
 						to: "bg";
 						offset: -21+5 -44+10;
 					}
+				}
+			}
+		}
+		script {
+			public message(Msg_Type:type, id, ...) {
+				if (type == MSG_INT_SET) {
+					new r, g, b, a;
+
+					r = getarg(2);
+					g = getarg(3);
+					b = getarg(4);
+					a = getarg(5);
+
+					set_state(PART:"bg_left_mask", "custom_cc", 0.0);
+					set_state(PART:"bg_middle_mask", "custom_cc", 0.0);
+					set_state(PART:"bg_right_mask", "custom_cc", 0.0);
+					set_color_class("mgf_custom_cc", r, g, b, a);
 				}
 			}
 		}
