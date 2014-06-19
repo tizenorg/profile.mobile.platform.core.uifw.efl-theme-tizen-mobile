@@ -430,14 +430,6 @@ group { name: "elm/popup/base/default";
             min: POPUP_BASE_DEFAULT_TITLE_DEFAULT_MIN_INC;
             max: POPUP_BASE_DEFAULT_TITLE_DEFAULT_MIN_INC;
          }
-         description { state: "landscape" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "landscape_visible" 0.0;
-            inherit: "landscape" 0.0;
-            min: POPUP_BASE_DEFAULT_TITLE_LANDSCAPE_MIN_INC;
-            max: POPUP_BASE_DEFAULT_TITLE_LANDSCAPE_MIN_INC;
-         }
       }
       part { name: "title_left_top_padding";
          type: SPACER;
@@ -580,11 +572,7 @@ group { name: "elm/popup/base/default";
               set_state(PART:"elm.swallow.content", "show_action_title_area", 0.0);
             else
               set_state(PART:"elm.swallow.content", "show_title_area", 0.0);
-            get_state(PART:"base", st, 30, vl);
-            if (!strcmp(st, "landscape"))
-              set_state(PART:"elm.bg.title", "landscape_visible", 0.0);
-            else
-              set_state(PART:"elm.bg.title", "visible", 0.0);
+            set_state(PART:"elm.bg.title", "visible", 0.0);
          }
       }
       program { name: hide_title_area;
@@ -599,11 +587,7 @@ group { name: "elm/popup/base/default";
               set_state(PART:"elm.swallow.content", "show_action_area", 0.0);
             else
               set_state(PART:"elm.swallow.content", "default", 0.0);
-            get_state(PART:"base", st, 30, vl);
-            if (!strcmp(st, "landscape"))
-              set_state(PART:"elm.bg.title", "landscape", 0.0);
-            else
-              set_state(PART:"elm.bg.title", "default", 0.0);
+            set_state(PART:"elm.bg.title", "default", 0.0);
          }
       }
       program { name: show_action_area;
@@ -613,7 +597,7 @@ group { name: "elm/popup/base/default";
             new st[31];
             new Float:vl;
             get_state(PART:"elm.bg.title", st, 30, vl);
-            if ((!strcmp(st, "visible")) || (!strcmp(st, "landscape_visible")))
+            if ((!strcmp(st, "visible")))
               set_state(PART:"elm.swallow.content", "show_action_title_area", 0.0);
             else
               set_state(PART:"elm.swallow.content", "show_action_area", 0.0);
@@ -628,7 +612,7 @@ group { name: "elm/popup/base/default";
             new st[31];
             new Float:vl;
             get_state(PART:"elm.bg.title", st, 30, vl);
-            if ((!strcmp(st, "visible")) || (!strcmp(st, "landscape_visible")))
+            if ((!strcmp(st, "visible")))
               set_state(PART:"elm.swallow.content", "show_title_area", 0.0);
             else
               set_state(PART:"elm.swallow.content", "default", 0.0);
@@ -636,32 +620,16 @@ group { name: "elm/popup/base/default";
          }
       }
       program { name: "change_to_landscape";
-         script {
-            new st[31];
-            new Float:vl;
-            set_state(PART:"base", "landscape", 0.0);
-            get_state(PART:"elm.bg.title", st, 30, vl);
-            if ((!strcmp(st, "visible")) || (!strcmp(st, "landscape_visible")))
-              set_state(PART:"elm.bg.title", "landscape_visible", 0.0);
-            else
-              set_state(PART:"elm.bg.title", "landscape", 0.0);
-         }
+         action: STATE_SET "landscape" 0.0;
+         target: "base";
          after: "orientation_change";
       }
       program { name: "orientation_change";
          action: SIGNAL_EMIT "elm,state,orientation,changed" "";
       }
       program { name: "change_to_portrait";
-         script {
-            new st[31];
-            new Float:vl;
-            set_state(PART:"base", "default", 0.0);
-            get_state(PART:"elm.bg.title", st, 30, vl);
-            if ((!strcmp(st, "visible")) || (!strcmp(st, "landscape_visible")))
-              set_state(PART:"elm.bg.title", "visible", 0.0);
-            else
-              set_state(PART:"elm.bg.title", "default", 0.0);
-         }
+         action: STATE_SET "default" 0.0;
+         target: "base";
          after: "orientation_change";
       }
       program { name: "landscape_mode";
