@@ -33,12 +33,6 @@
 #define ENTRY_EDITFIELD_FOCUS_DATA \
    data.item: "focus_highlight" "on";
 
-#define ENTRY_EDITFIELD_FOCUS_IMAGE \
-   images { \
-      image: "00_edit_field_outline.#.png" COMP; \
-      image: "00_edit_field_bg.#.png" COMP; \
-   }
-
 #define ENTRY_TOP_BOTTOM_PADDING( SIZE ) \
    part { name: "top_padding"; \
       type: SPACER; \
@@ -139,13 +133,12 @@
 #define ENTRY_EDITFIELD_FOCUS_PARTS \
    ENTRY_TOP_BOTTOM_PADDING(ENTRY_TOP_BOTTOM_PADDING_HEIGHT) \
    part { name: "focus_bg"; \
-      type: IMAGE; \
+      type: RECT; \
       scale: 1; \
       mouse_events: 0; \
       repeat_events: 1; \
       description { state: "default" 0.0; \
          visible: 1; \
-         image.normal: "00_edit_field_bg.#.png"; \
          rel1.relative: 0.0 0.0; \
          rel2.relative: 1.0 1.0; \
          color_class: "F054"; \
@@ -209,12 +202,15 @@
          max: 0 0; \
       } \
    } \
-   part { name: "focus_image"; \
+   part { name: "focus_rect_top"; \
+      type: RECT; \
       scale: 1; \
       mouse_events: 0; \
       description { state: "default" 0.0; \
          visible: 1; \
-         image.normal: "00_edit_field_outline.#.png"; \
+         min: 0 ENTRY_FOCUS_RECT_EDGE_INC; \
+         max: -1 ENTRY_FOCUS_RECT_EDGE_INC; \
+         align: 0.0 0.0; \
          rel1 { \
             to: "focus_bg"; \
             relative: 0.0 0.0; \
@@ -222,6 +218,102 @@
          rel2 { \
             to: "focus_bg"; \
             relative: 1.0 1.0; \
+         } \
+         color_class: "F055"; \
+      } \
+      description { state: "focused" 0.0; \
+         inherit: "default" 0.0; \
+         color_class: "F057"; \
+      } \
+      description { state: "disabled" 0.0; \
+         inherit: "default" 0.0; \
+         color_class: "F059"; \
+      } \
+      description { state: "hidden" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 0; \
+      } \
+   } \
+   part { name: "focus_rect_left"; \
+      type: RECT; \
+      scale: 1; \
+      mouse_events: 0; \
+      description { state: "default" 0.0; \
+         visible: 1; \
+         min: ENTRY_FOCUS_RECT_EDGE_INC 0; \
+         max: ENTRY_FOCUS_RECT_EDGE_INC -1; \
+         align: 0.0 0.0; \
+         rel1 { \
+            to: "focus_rect_top"; \
+            relative: 0.0 1.0; \
+         } \
+         rel2 { \
+            to: "focus_bg"; \
+            relative: 1.0 1.0; \
+         } \
+         color_class: "F055"; \
+      } \
+      description { state: "focused" 0.0; \
+         inherit: "default" 0.0; \
+         color_class: "F057"; \
+      } \
+      description { state: "disabled" 0.0; \
+         inherit: "default" 0.0; \
+         color_class: "F059"; \
+      } \
+      description { state: "hidden" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 0; \
+      } \
+   } \
+   part { name: "focus_rect_right"; \
+      type: RECT; \
+      scale: 1; \
+      mouse_events: 0; \
+      description { state: "default" 0.0; \
+         visible: 1; \
+         min: ENTRY_FOCUS_RECT_EDGE_INC 0; \
+         max: ENTRY_FOCUS_RECT_EDGE_INC -1; \
+         align: 1.0 0.0; \
+         rel1 { \
+            to: "focus_rect_top"; \
+            relative: 0.0 1.0; \
+         } \
+         rel2 { \
+            to: "focus_bg"; \
+            relative: 1.0 1.0; \
+         } \
+         color_class: "F055"; \
+      } \
+      description { state: "focused" 0.0; \
+         inherit: "default" 0.0; \
+         color_class: "F057"; \
+      } \
+      description { state: "disabled" 0.0; \
+         inherit: "default" 0.0; \
+         color_class: "F059"; \
+      } \
+      description { state: "hidden" 0.0; \
+         inherit: "default" 0.0; \
+         visible: 0; \
+      } \
+   } \
+   part { name: "focus_rect_bottom"; \
+      type: RECT; \
+      scale: 1; \
+      mouse_events: 0; \
+      description { state: "default" 0.0; \
+         visible: 1; \
+         min: 0 ENTRY_FOCUS_RECT_EDGE_INC; \
+         max: -1 ENTRY_FOCUS_RECT_EDGE_INC; \
+         align: 0.0 1.0; \
+         rel1 { \
+            to: "focus_rect_left"; \
+            relative: 1.0 0.0; \
+         } \
+         rel2 { \
+            to: "focus_rect_right"; \
+            relative: 0.0 1.0; \
          } \
          color_class: "F055"; \
       } \
@@ -282,7 +374,10 @@
       script { \
          set_int(scroll_enabled, 1); \
          set_state(PART:"focus_bg", "hidden", 0.0); \
-         set_state(PART:"focus_image", "hidden", 0.0); \
+         set_state(PART:"focus_rect_top", "hidden", 0.0); \
+         set_state(PART:"focus_rect_left", "hidden", 0.0); \
+         set_state(PART:"focus_rect_right", "hidden", 0.0); \
+         set_state(PART:"focus_rect_bottom", "hidden", 0.0); \
          set_state(PART:"focus_left_padding", "hidden", 0.0); \
          set_state(PART:"focus_right_padding", "hidden", 0.0); \
       } \
@@ -293,7 +388,10 @@
       script { \
          set_int(scroll_enabled, 0); \
          set_state(PART:"focus_bg", "default", 0.0); \
-         set_state(PART:"focus_image", "default", 0.0); \
+         set_state(PART:"focus_rect_top", "default", 0.0); \
+         set_state(PART:"focus_rect_left", "default", 0.0); \
+         set_state(PART:"focus_rect_right", "default", 0.0); \
+         set_state(PART:"focus_rect_bottom", "default", 0.0); \
          set_state(PART:"focus_left_padding", "default", 0.0); \
          set_state(PART:"focus_right_padding", "default", 0.0); \
       } \
@@ -332,7 +430,10 @@
          v = get_int(scroll_enabled); \
          if (!v) { \
             set_state(PART:"focus_bg", "focused", 0.0); \
-            set_state(PART:"focus_image", "focused", 0.0); \
+            set_state(PART:"focus_rect_top", "focused", 0.0); \
+            set_state(PART:"focus_rect_left", "focused", 0.0); \
+            set_state(PART:"focus_rect_right", "focused", 0.0); \
+            set_state(PART:"focus_rect_bottom", "focused", 0.0); \
          } \
          set_state(PART:"elm.text", "focused", 0.0); \
       } \
@@ -345,7 +446,10 @@
          v = get_int(scroll_enabled); \
          if (!v) { \
             set_state(PART:"focus_bg", "default", 0.0); \
-            set_state(PART:"focus_image", "default", 0.0); \
+            set_state(PART:"focus_rect_top", "default", 0.0); \
+            set_state(PART:"focus_rect_left", "default", 0.0); \
+            set_state(PART:"focus_rect_right", "default", 0.0); \
+            set_state(PART:"focus_rect_bottom", "default", 0.0); \
          } \
          set_state(PART:"elm.text", "default", 0.0); \
       } \
@@ -358,7 +462,10 @@
          v = get_int(scroll_enabled); \
          if (!v) { \
             set_state(PART:"focus_bg", "default", 0.0); \
-            set_state(PART:"focus_image", "default", 0.0); \
+            set_state(PART:"focus_rect_top", "default", 0.0); \
+            set_state(PART:"focus_rect_left", "default", 0.0); \
+            set_state(PART:"focus_rect_right", "default", 0.0); \
+            set_state(PART:"focus_rect_bottom", "default", 0.0); \
          } \
       } \
    } \
@@ -370,7 +477,10 @@
          v = get_int(scroll_enabled); \
          if (!v) { \
             set_state(PART:"focus_bg", "disabled", 0.0); \
-            set_state(PART:"focus_image", "disabled", 0.0); \
+            set_state(PART:"focus_rect_top", "disabled", 0.0); \
+            set_state(PART:"focus_rect_left", "disabled", 0.0); \
+            set_state(PART:"focus_rect_right", "disabled", 0.0); \
+            set_state(PART:"focus_rect_bottom", "disabled", 0.0); \
          } \
       } \
    }
@@ -990,7 +1100,6 @@ group { name: "elm/entry/base/editfield";
       item: context_menu_orientation "horizontal";
    }
    ENTRY_EDITFIELD_FOCUS_DATA
-   ENTRY_EDITFIELD_FOCUS_IMAGE
    parts {
       ENTRY_EDITFIELD_FOCUS_PARTS
       ENTRY_EDITFIELD_EVENT_RECT_SWALLOW_PART
@@ -1187,7 +1296,6 @@ group { name: "elm/entry/base/editfield/fixed_size";
       item: context_menu_orientation "horizontal";
    }
    ENTRY_EDITFIELD_FOCUS_DATA
-   ENTRY_EDITFIELD_FOCUS_IMAGE
    parts {
       ENTRY_EDITFIELD_FOCUS_PARTS
       ENTRY_EDITFIELD_EVENT_RECT_SWALLOW_PART
@@ -1381,7 +1489,6 @@ group { name: "elm/entry/base-charwrap/editfield";
       item: context_menu_orientation "horizontal";
    }
    ENTRY_EDITFIELD_FOCUS_DATA
-   ENTRY_EDITFIELD_FOCUS_IMAGE
    parts {
       ENTRY_EDITFIELD_FOCUS_PARTS
       ENTRY_EDITFIELD_EVENT_RECT_SWALLOW_PART
@@ -1575,7 +1682,6 @@ group { name: "elm/entry/base-charwrap/editfield/fixed_size";
       item: context_menu_orientation "horizontal";
    }
    ENTRY_EDITFIELD_FOCUS_DATA
-   ENTRY_EDITFIELD_FOCUS_IMAGE
    parts {
       ENTRY_EDITFIELD_FOCUS_PARTS
       ENTRY_EDITFIELD_EVENT_RECT_SWALLOW_PART
@@ -1768,7 +1874,6 @@ group { name: "elm/entry/base-single/editfield";
       item: context_menu_orientation "horizontal";
    }
    ENTRY_EDITFIELD_FOCUS_DATA
-   ENTRY_EDITFIELD_FOCUS_IMAGE
    parts {
       ENTRY_EDITFIELD_FOCUS_PARTS
       ENTRY_EDITFIELD_EVENT_RECT_SWALLOW_PART
@@ -1959,7 +2064,6 @@ group { name: "elm/entry/base-single/editfield/fixed_size";
       item: context_menu_orientation "horizontal";
    }
    ENTRY_EDITFIELD_FOCUS_DATA
-   ENTRY_EDITFIELD_FOCUS_IMAGE
    parts {
       ENTRY_EDITFIELD_FOCUS_PARTS
       ENTRY_EDITFIELD_EVENT_RECT_SWALLOW_PART
@@ -8186,7 +8290,25 @@ group { name: "elm/scroller/entry/default";
             description { state: "default" 0.0;
             }
          }
-         part { name: "focus_image";
+         part { name: "focus_rect_top";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+            }
+         }
+         part { name: "focus_rect_left";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+            }
+         }
+         part { name: "focus_rect_right";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+            }
+         }
+         part { name: "focus_rect_bottom";
             type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
@@ -8700,19 +8822,14 @@ group { name: "elm/scroller/entry/editfield";
       data {
          item: "focus_highlight" "on";
       }
-      images {
-         image: "00_edit_field_outline.#.png" COMP;
-         image: "00_edit_field_bg.#.png" COMP;
-      }
       parts {
          part { name: "focus_bg";
-            type: IMAGE;
+            type: RECT;
             scale: 1;
             mouse_events: 0;
             repeat_events: 1;
             description { state: "default" 0.0;
                visible: 1;
-               image.normal: "00_edit_field_bg.#.png";
                color_class: "F054";
             }
             description { state: "focused" 0.0;
@@ -8760,14 +8877,16 @@ group { name: "elm/scroller/entry/editfield";
                }
             }
          }
-         part { name: "focus_image";
-            type: IMAGE;
+         part { name: "focus_rect_top";
+            type: RECT;
             scale: 1;
             mouse_events: 0;
             repeat_events: 1;
             description { state: "default" 0.0;
                visible: 1;
-               image.normal: "00_edit_field_outline.#.png";
+               min: 0 ENTRY_FOCUS_RECT_EDGE_INC;
+               max: -1 ENTRY_FOCUS_RECT_EDGE_INC;
+               align: 0 0;
                rel1 {
                   to: "focus_bg";
                   relative: 0.0 0.0;
@@ -8775,6 +8894,93 @@ group { name: "elm/scroller/entry/editfield";
                rel2 {
                   to: "focus_bg";
                   relative: 1.0 1.0;
+               }
+               color_class: "F055";
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               color_class: "F057";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "F059";
+            }
+         }
+         part { name: "focus_rect_left";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               visible: 1;
+               min: ENTRY_FOCUS_RECT_EDGE_INC 0;
+               max: ENTRY_FOCUS_RECT_EDGE_INC -1;
+               align: 0 0;
+               rel1 {
+                  to: "focus_rect_top";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  to: "focus_bg";
+                  relative: 1.0 1.0;
+               }
+               color_class: "F055";
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               color_class: "F057";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "F059";
+            }
+         }
+         part { name: "focus_rect_right";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               visible: 1;
+               min: ENTRY_FOCUS_RECT_EDGE_INC 0;
+               max: ENTRY_FOCUS_RECT_EDGE_INC -1;
+               align: 1 0;
+               rel1 {
+                  to: "focus_rect_top";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  to: "focus_bg";
+                  relative: 1.0 1.0;
+               }
+               color_class: "F055";
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               color_class: "F057";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "F059";
+            }
+         }
+         part { name: "focus_rect_bottom";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               visible: 1;
+               min: 0 ENTRY_FOCUS_RECT_EDGE_INC;
+               max: -1 ENTRY_FOCUS_RECT_EDGE_INC;
+               align: 0 1;
+               rel1 {
+                  to: "focus_rect_left";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to: "focus_rect_right";
+                  relative: 0.0 1.0;
                }
                color_class: "F055";
             }
@@ -8831,28 +9037,40 @@ group { name: "elm/scroller/entry/editfield";
             source: "*";
             action: STATE_SET "focused" 0.0;
             target: "focus_bg";
-            target: "focus_image";
+            target: "focus_rect_top";
+            target: "focus_rect_left";
+            target: "focus_rect_right";
+            target: "focus_rect_bottom";
          }
          program { name: "action_unfocus";
             signal: "elm,state,focus,off";
             source: "*";
             action: STATE_SET "default" 0.0;
             target: "focus_bg";
-            target: "focus_image";
+            target: "focus_rect_top";
+            target: "focus_rect_left";
+            target: "focus_rect_right";
+            target: "focus_rect_bottom";
          }
          program { name: "disable";
             signal: "elm,state,disabled";
             source: "elm";
             action: STATE_SET "disabled" 0.0;
             target: "focus_bg";
-            target: "focus_image";
+            target: "focus_rect_top";
+            target: "focus_rect_left";
+            target: "focus_rect_right";
+            target: "focus_rect_bottom";
          }
          program { name: "enabled";
             signal: "elm,state,enabled";
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "focus_bg";
-            target: "focus_image";
+            target: "focus_rect_top";
+            target: "focus_rect_left";
+            target: "focus_rect_right";
+            target: "focus_rect_bottom";
          }
       }
 }
@@ -8865,21 +9083,16 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
          item: "focus_highlight" "on";
       }
       images {
-         image: "00_search_edit_field_bg.#.png" COMP;
-         image: "00_search_edit_field_selected.#.png" COMP;
          image: "00_search_icon.png" COMP;
       }
       parts {
          part { name: "focus_bg";
-            type: IMAGE;
+            type: RECT;
             scale: 1;
             mouse_events: 0;
             repeat_events: 1;
             description { state: "default" 0.0;
                color_class: "W031L1";
-               image {
-                  normal: "00_search_edit_field_bg.#.png";
-               }
             }
             description { state: "focused" 0.0;
                inherit: "default" 0.0;
@@ -8926,14 +9139,16 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
                }
             }
          }
-         part { name: "focus_image";
-            type: IMAGE;
+         part { name: "focus_rect_top";
+            type: RECT;
             scale: 1;
             mouse_events: 0;
             repeat_events: 1;
             description { state: "default" 0.0;
                color_class: "F055";
-               image.normal: "00_search_edit_field_selected.#.png";
+               min: 0 ENTRY_FOCUS_RECT_EDGE_INC;
+               max: -1 ENTRY_FOCUS_RECT_EDGE_INC;
+               align: 0.0 0.0;
                rel1 {
                   to: "focus_bg";
                   relative: 0.0 0.0;
@@ -8941,6 +9156,90 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
                rel2 {
                   to: "focus_bg";
                   relative: 1.0 1.0;
+               }
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W031L2";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "F059";
+            }
+         }
+         part { name: "focus_rect_left";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               color_class: "F055";
+               min: ENTRY_FOCUS_RECT_EDGE_INC 0;
+               max: ENTRY_FOCUS_RECT_EDGE_INC -1;
+               align: 0.0 0.0;
+               rel1 {
+                  to: "focus_rect_top";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  to: "focus_bg";
+                  relative: 1.0 1.0;
+               }
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W031L2";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "F059";
+            }
+         }
+         part { name: "focus_rect_right";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               color_class: "F055";
+               min: ENTRY_FOCUS_RECT_EDGE_INC 0;
+               max: ENTRY_FOCUS_RECT_EDGE_INC -1;
+               align: 1.0 0.0;
+               rel1 {
+                  to: "focus_rect_top";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  to: "focus_bg";
+                  relative: 1.0 1.0;
+               }
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W031L2";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "F059";
+            }
+         }
+         part { name: "focus_rect_bottom";
+            type: RECT;
+            scale: 1;
+            mouse_events: 0;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               color_class: "F055";
+               min: 0 ENTRY_FOCUS_RECT_EDGE_INC;
+               max: -1 ENTRY_FOCUS_RECT_EDGE_INC;
+               align: 0.0 1.0;
+               rel1 {
+                  to: "focus_rect_left";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to: "focus_rect_right";
+                  relative: 0.0 1.0;
                }
             }
             description { state: "focused" 0.0;
@@ -9221,7 +9520,10 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
             source: "*";
             action: STATE_SET "focused" 0.0;
             target: "focus_bg";
-            target: "focus_image";
+            target: "focus_rect_top";
+            target: "focus_rect_left";
+            target: "focus_rect_right";
+            target: "focus_rect_bottom";
             target: "search_icon.clipper";
          }
          program { name: "action_unfocus";
@@ -9229,7 +9531,11 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
             source: "*";
             action: STATE_SET "default" 0.0;
             target: "focus_bg";
-            target: "focus_image";
+            target: "focus_rect_top";
+            target: "focus_rect_left";
+            target: "focus_rect_right";
+            target: "focus_rect_bottom";
+            target: "search_icon.clipper";
             target: "search_icon.clipper";
          }
          program { name: "search_icon_touch_snd";
@@ -9244,7 +9550,11 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
             target: "search_icon_disabler";
             target: "search_icon.clipper";
             target: "focus_bg";
-            target: "focus_image";
+            target: "focus_rect_top";
+            target: "focus_rect_left";
+            target: "focus_rect_right";
+            target: "focus_rect_bottom";
+            target: "search_icon.clipper";
          }
          program { name: "enable";
             signal: "elm,state,enabled";
@@ -9253,7 +9563,11 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
             target: "search_icon_disabler";
             target: "search_icon.clipper";
             target: "focus_bg";
-            target: "focus_image";
+            target: "focus_rect_top";
+            target: "focus_rect_left";
+            target: "focus_rect_right";
+            target: "focus_rect_bottom";
+            target: "search_icon.clipper";
          }
          program { name: "clear_show";
             signal: "elm,state,clear,visible";
