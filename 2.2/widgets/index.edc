@@ -559,19 +559,6 @@
             source: "elm";
             action: STATE_SET "active" 0.0;
             target: "clip";
-            after: "disable_timer";
-         }
-         program { name: "index0.inactive";
-            signal: "elm,state,inactive";
-            source: "elm";
-            script {
-               new v;
-               v = get_int(timer_id);
-               if (v > 0) cancel_timer(v);
-               run_program(PROGRAM:"enable_timer");
-               v = timer(0.0, "index_hide_timer", 0);
-               set_int(timer_id, v);
-            }
          }
          program { name: "index1.inactive";
             signal: "elm,state,level,0";
@@ -624,33 +611,22 @@
             target: "text.left.padding";
          }
          program { name: "index0.hide";
+            signal: "elm,state,inactive";
+            source: "elm";
             action: STATE_SET "default" 0.0;
             target: "clip";
-            after: "disable_timer";
          }
          program { name: "left.line.active";
             signal: "mouse,down,1";
             source: "elm.swallow.event.0";
             action: STATE_SET "active" 0.0;
             target: "left.line";
-            after: "disable_timer_2";
-         }
-         program { name: "left.line.inactive";
-            signal: "mouse,up,1";
-            source: "elm.swallow.event.0";
-            script {
-               new v;
-               v = get_int(timer_id_2);
-               if (v > 0) cancel_timer(v);
-               run_program(PROGRAM:"enable_timer_2");
-               v = timer(0.0, "left_line_hide_timer", 0);
-               set_int(timer_id_2, v);
-            }
          }
          program { name: "left.line.dim";
+            signal: "mouse,up,1";
+            source: "elm.swallow.event.0";
             action: STATE_SET "default" 0.0;
             target: "left.line";
-            after: "disable_timer_2";
          }
          program { name: "index.active";
             signal: "elm,indicator,state,active";
@@ -717,26 +693,6 @@
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "access";
-         }
-         program { name: "disable_timer";
-            script {
-               set_int(timer_flag, 0);
-            }
-         }
-         program { name: "enable_timer";
-            script {
-               set_int(timer_flag, 1);
-            }
-         }
-         program { name: "disable_timer_2";
-            script {
-               set_int(timer_flag_2, 0);
-            }
-         }
-         program { name: "enable_timer_2";
-            script {
-               set_int(timer_flag_2, 1);
-            }
          }
       }
    }
