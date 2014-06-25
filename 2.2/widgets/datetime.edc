@@ -442,6 +442,9 @@ group { name: "elm/spinner/base/default";
          }
       }
    }
+   script {
+      public is_long_press = 0;
+   }
    programs {
       program { name: "text_show";
          signal: "elm,state,text,visible";
@@ -549,16 +552,34 @@ group { name: "elm/spinner/base/default";
          signal: "mouse,clicked,1";
          source: "up.btn";
          action: RUN_PLUGIN "touch_sound";
+         script {
+            if (!get_int(is_long_press))
+              run_program(PROGRAM:"play_sound");
+            set_int(is_long_press, 0);
+         }
       }
       program {
          name:   "longpress_sound";
          signal: "elm,action,longpress";
          source: "elm";
-         action: RUN_PLUGIN "touch_sound";
+         script {
+            set_int(is_long_press, 1);
+            run_program(PROGRAM:"play_haptic");
+         }
       }
-      program { name: "down_ouch_snd";
+      program { name: "play_haptic";
+         action: RUN_PLUGIN "touch_haptic";
+      }
+      program { name: "down_touch_snd";
          signal: "mouse,clicked,1";
          source: "down.btn";
+         script {
+            if (!get_int(is_long_press))
+              run_program(PROGRAM:"play_sound");
+            set_int(is_long_press, 0);
+         }
+      }
+      program { name: "play_sound";
          action: RUN_PLUGIN "touch_sound";
       }
       program {
