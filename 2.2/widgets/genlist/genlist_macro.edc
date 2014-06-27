@@ -463,24 +463,10 @@
 
 #define PROLOG_LIST_NORMAL \
    PROLOG_LIST \
-   data.item: "treesize" GENLIST_TREESIZE_DEFAULT; \
-   images { \
-      image : "00_list_group_bg.#.png" COMP; \
-      image : "00_list_group_bg_ef.#.png" COMP; \
-   }
+   data.item: "treesize" GENLIST_TREESIZE_DEFAULT;
 
 #define PROLOG_LIST_DIALOGUE \
    PROLOG_LIST \
-   images { \
-         image : "00_list_group_bg.#.png" COMP; \
-         image : "00_list_group_bg_ef.#.png" COMP; \
-         image : "00_list_group_bg_top.#.png" COMP; \
-         image : "00_list_group_bg_top_ef.#.png" COMP; \
-         image : "00_list_group_bg_center.#.png" COMP; \
-         image : "00_list_group_bg_center_ef.#.png" COMP; \
-         image : "00_list_group_bg_bottom.#.png" COMP; \
-         image : "00_list_group_bg_bottom_ef.#.png" COMP; \
-   }
 
 //              |  Top Padding   |
 // ---------------------------------------------
@@ -568,35 +554,15 @@
          max: -1 2; \
       ) \
    ) \
-   PART(IMAGE, "bg_reorder", \
+   PART(RECT, "bg_reorder", \
       clip_to: "bg_reorder_clip"; \
       DESC_LRTB("bg_reorder_left", "bg_reorder_right", \
          "bg_reorder_top", "bg_reorder_bottom", \
-         image { \
-            normal: "00_list_group_bg.#.png"; \
-         } \
          color_class: "B0217L1"; \
       ) \
       description { state: "pressed" 0.0; \
          inherit: "default"; \
          color_class: "B041P"; \
-      } \
-      description { state: "flipped" 0.0; \
-         inherit: "default"; \
-         visible: 0; \
-      } \
-   ) \
-   PART(IMAGE, "bg_reorder_ef", \
-      clip_to: "bg_reorder_clip"; \
-      DESC_LRTB("bg_reorder_left", "bg_reorder_right", \
-         "bg_reorder_top", "bg_reorder_bottom", \
-         image { \
-            normal: "00_list_group_bg_ef.#.png"; \
-         } \
-         color_class: "B0217L2"; \
-      ) \
-      description { state: "pressed" 0.0; \
-         inherit: "default"; \
       } \
       description { state: "flipped" 0.0; \
          inherit: "default"; \
@@ -623,18 +589,6 @@
          visible: 0; \
       } \
    ) \
-   PART(RECT, "bg", \
-      mouse_events: 0; \
-      description { state: "default" 0.0; \
-         visible: 0; \
-      } \
-      description { state: "pressed" 0.0; \
-         visible: 0; \
-      } \
-      description { state: "disabled" 0.0; \
-         visible: 0; \
-      } \
-   ) \
    PART(RECT, "bg_reorder_clip", \
       mouse_events: 0; \
       description { state: "default" 0.0; \
@@ -650,30 +604,6 @@
          visible: 0; \
       } \
       description { state: "reorder_flip" 0.0; \
-         visible: 0; \
-      } \
-   ) \
-   PART(IMAGE, "bg_reorder", \
-      mouse_events: 0; \
-      description {state: "default" 0.0;\
-         visible: 0;\
-      }\
-      description { state: "pressed" 0.0; {\
-         visible: 0; \
-      } \
-      description { state: "flipped" 0.0; {\
-         visible: 0; \
-      } \
-   ) \
-   PART(IMAGE, "bg_reorder_ef", \
-      mouse_events: 0; \
-      description {state: "default" 0.0;\
-         visible: 0;\
-      }\
-      description { state: "pressed" 0.0; {\
-         visible: 0; \
-      } \
-      description { state: "flipped" 0.0; {\
          visible: 0; \
       } \
    )
@@ -955,9 +885,6 @@
 //****************************************************************************//
 // ****************************** BG Image **********************************//
 //****************************************************************************//
-
-
-
 #define GENLIST_PART_BG_DIALOGUE \
    PART(SPACER, "bg_dialogue_left", \
       description { state: "default" 0.0; \
@@ -977,81 +904,47 @@
          rel1.relative: 1 0; \
       } \
    ) \
-   PART(RECT, "bg_dialogue_clip", \
+   PART(RECT, "bg_dialogue_bottom_line_clip", \
       description { state: "default" 0.0;\
-         color_class: "B0217L1"; \
+         visible: 0; \
       }\
+      description { state: "show" 0.0;\
+         visible: 1; \
+      }\
+   ) \
+   PART(RECT, "bg_dialogue_bottom_line", \
+      clip_to: "bg_dialogue_bottom_line_clip"; \
+      mouse_events: 0; \
+      insert_after: "bg_dialogue"; \
+      DESC_LR("bg_dialogue_left", "bg_dialogue_right", \
+         min: 0 GENLIST_PART_LIST_LINE_HEIGHT; \
+         max: -1 GENLIST_PART_LIST_LINE_HEIGHT; \
+         fixed: 0 1; \
+         align: 0.5 1; \
+         color_class: "B0217L2"; \
+      ) \
+      description { state: "2depth" 0.0;\
+         inherit: "default" 0.0; \
+         color_class: "B0223"; \
+      }\
+   ) \
+   PART(RECT, "bg_dialogue", \
+      insert_after: "base"; \
+      DESC_LR("bg_dialogue_left", "bg_dialogue_right", \
+         color_class: "B0217L1"; \
+      ) \
       description { state: "pressed" 0.0;\
+         inherit: "default" 0.0; \
          color_class: "B041P"; \
       }\
       description { state: "2depth" 0.0;\
+         inherit: "default" 0.0; \
          color_class: "B0214L1"; \
       }\
       description { state: "2depth_pressed" 0.0;\
+         inherit: "default" 0.0; \
          color_class: "B041P"; \
       }\
-   )\
-   PART(IMAGE, "bg_dialogue", \
-      clip_to: "bg_dialogue_clip"; \
-      insert_after: "base"; \
-      DESC_LR("bg_dialogue_left", "bg_dialogue_right", \
-         image { \
-            normal: "00_list_group_bg.#.png"; \
-         } \
-      ) \
-      description { state: "top" 0.0; \
-         inherit: "default" 0.0; \
-         image { \
-            normal: "00_list_group_bg_top.#.png"; \
-         } \
-      } \
-      description { state: "center" 0.0; \
-         inherit: "default" 0.0; \
-         image { \
-            normal: "00_list_group_bg_center.#.png"; \
-         } \
-      } \
-      description { state: "bottom" 0.0; \
-         inherit: "default" 0.0; \
-         image { \
-            normal: "00_list_group_bg_bottom.#.png"; \
-         } \
-      } \
-   ) \
-   PART(RECT, "bg_dialogue_ef_clip", \
-      description { state: "default" 0.0;\
-         color_class: "B0217L2"; \
-      }\
-      description { state: "2depth" 0.0;\
-         color_class: "B0214L2"; \
-      }\
-   )\
-   PART(IMAGE, "bg_dialogue_ef", \
-      clip_to: "bg_dialogue_ef_clip"; \
-      insert_after: "bg_dialogue"; \
-      DESC_LR("bg_dialogue_left", "bg_dialogue_right", \
-         image { \
-            normal: "00_list_group_bg_ef.#.png"; \
-         } \
-      ) \
-      description { state: "top" 0.0; \
-         inherit: "default" 0.0; \
-         image { \
-            normal: "00_list_group_bg_top_ef.#.png"; \
-         } \
-      } \
-      description { state: "center" 0.0; \
-         inherit: "default" 0.0; \
-         image { \
-            normal: "00_list_group_bg_center_ef.#.png"; \
-         } \
-      } \
-      description { state: "bottom" 0.0; \
-         inherit: "default" 0.0; \
-         image { \
-            normal: "00_list_group_bg_bottom_ef.#.png"; \
-         } \
-      } \
    )
 
 //****************************************************************************//
@@ -1735,7 +1628,7 @@
             source: "*"; \
             script { \
                set_state(PART:"bg_dialogue", "top", 0.0); \
-               set_state(PART:"bg_dialogue_ef", "top", 0.0); \
+               set_state(PART:"bg_dialogue_bottom_line_clip", "show", 0.0); \
             } \
          } \
          program { name: "bg_center"; \
@@ -1743,7 +1636,7 @@
             source: "*"; \
             script { \
                set_state(PART:"bg_dialogue", "center", 0.0); \
-               set_state(PART:"bg_dialogue_ef", "center", 0.0); \
+               set_state(PART:"bg_dialogue_bottom_line_clip", "show", 0.0); \
             } \
          } \
          program { name: "bg_bottom"; \
@@ -1751,7 +1644,7 @@
             source: "*"; \
             script { \
                set_state(PART:"bg_dialogue", "bottom", 0.0); \
-               set_state(PART:"bg_dialogue_ef", "bottom", 0.0); \
+               set_state(PART:"bg_dialogue_bottom_line_clip", "default", 0.0); \
             } \
          } \
          program { name: "bg_normal"; \
@@ -1759,7 +1652,7 @@
             source: "*"; \
             script { \
                set_state(PART:"bg_dialogue", "default", 0.0); \
-               set_state(PART:"bg_dialogue_ef", "default", 0.0); \
+               set_state(PART:"bg_dialogue_bottom_line_clip", "default", 0.0); \
             } \
          }
 
@@ -1770,11 +1663,11 @@
             script { \
                new st[31]; \
                new Float:vl; \
-               get_state(PART:"bg_dialogue_clip", st, 30, vl); \
+               get_state(PART:"bg_dialogue", st, 30, vl); \
                if (!strcmp(st, "2depth")) \
-                  set_state(PART:"bg_dialogue_clip", "2depth_pressed", 0.0); \
+                  set_state(PART:"bg_dialogue", "2depth_pressed", 0.0); \
                else \
-                  set_state(PART:"bg_dialogue_clip", "pressed", 0.0); \
+                  set_state(PART:"bg_dialogue", "pressed", 0.0); \
                run_program(PROGRAM:"target_selected"); \
             } \
          } \
@@ -1784,11 +1677,11 @@
             script { \
                new st[31]; \
                new Float:vl; \
-               get_state(PART:"bg_dialogue_clip", st, 30, vl); \
+               get_state(PART:"bg_dialogue", st, 30, vl); \
                if (!strcmp(st, "2depth_pressed")) \
-                  set_state(PART:"bg_dialogue_clip", "2depth", 0.0); \
+                  set_state(PART:"bg_dialogue", "2depth", 0.0); \
                else if (!strcmp(st, "pressed")) \
-                  set_state(PART:"bg_dialogue_clip", "default", 0.0); \
+                  set_state(PART:"bg_dialogue", "default", 0.0); \
                run_program(PROGRAM:"target_unselected"); \
             } \
          } \
@@ -2055,7 +1948,6 @@
          target: "bottom_line"; \
          target: "bottom_line_clip"; \
          target: "bg_reorder"; \
-         target: "bg_reorder_ef"; \
          target: "bg_reorder_clip"; \
          target: "elm.padding.left"; \
          target: "elm.padding.right"; \
@@ -2067,14 +1959,12 @@
       GENLIST_PROGRAM_DISABLED( TARGET \
          target: "bg"; \
          target: "bg_reorder"; \
-         target: "bg_reorder_ef"; \
       ) \
       GENLIST_PROGRAM_BOTTOMLINE \
       GENLIST_PROGRAM_FOCUS_NORMAL \
       GENLIST_PROGRAM_SELECT( TARGET \
          target: "bg"; \
          target: "bg_reorder"; \
-         target: "bg_reorder_ef"; \
       ) \
       PROGRAM_LIST_SOUND \
       GENLIST_PROGRAM_DECORATE_REORDER("normal", TARGET \
@@ -2092,9 +1982,9 @@
 #define GENLIST_PROGRAMS_DIALOGUE( TARGET ) \
    programs { \
       GENLIST_PROGRAM_DEFAULT( TARGET \
-         target: "bg_dialogue_clip"; \
          target: "bg_dialogue"; \
-         target: "bg_dialogue_ef"; \
+         target: "bg_dialogue_bottom_line"; \
+         target: "bg_dialogue_bottom_line_clip"; \
          target: "elm.padding.left"; \
          target: "elm.padding.right"; \
          target: "bg_dialogue_right"; \
@@ -2107,8 +1997,8 @@
          signal: "bg_color_change"; \
          source: "elm"; \
          action: STATE_SET "2depth" 0.0; \
-         target: "bg_dialogue_clip"; \
-         target: "bg_dialogue_ef_clip"; \
+         target: "bg_dialogue"; \
+         target: "bg_dialogue_bottom_line"; \
       } \
       PROGRAM_LIST_SOUND \
       GENLIST_PROGRAM_DECORATE_REORDER( "normal", TARGET \
@@ -2153,7 +2043,6 @@
       target: "bottom_line"; \
       target: "bottom_line_clip"; \
       target: "bg_reorder"; \
-      target: "bg_reorder_ef"; \
       target: "elm.padding.left"; \
       target: "elm.padding.right"; \
       target: "focus_part"; \
@@ -2174,9 +2063,9 @@
 
 #define GENLIST_PROGRAMS_DIALOGUE_ENTRY( TARGET ) \
    GENLIST_PROGRAM_DEFAULT( TARGET \
-      target: "bg_dialogue_clip"; \
       target: "bg_dialogue"; \
-      target: "bg_dialogue_ef"; \
+      target: "bg_dialogue_bottom_line"; \
+      target: "bg_dialogue_bottom_line_clip"; \
       target: "elm.padding.left"; \
       target: "elm.padding.right"; \
    ) \
@@ -2186,8 +2075,8 @@
       signal: "bg_color_change"; \
       source: "elm"; \
       action: STATE_SET "2depth" 0.0; \
-      target: "bg_dialogue_clip"; \
-      target: "bg_dialogue_ef_clip"; \
+      target: "bg_dialogue"; \
+      target: "bg_dialogue_bottom_line"; \
    } \
    GENLIST_PROGRAM_BG_DIALOGUE \
    GENLIST_PROGRAM_DECORATE_REORDER( "normal", TARGET \
