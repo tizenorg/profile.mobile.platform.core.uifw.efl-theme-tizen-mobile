@@ -1204,6 +1204,7 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
          public was_drag = 0;
          public check_on = 0;
          public check_disable = 0;
+         public is_changed = 0;
       }
       parts {
          part { name: "bg";
@@ -1467,17 +1468,6 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                visible: 1;
             }
          }
-         part { name: "button_events";
-            type: RECT;
-            dragable {
-               events: "button";
-            }
-            description { state: "default" 0.0;
-               rel1.to_x: "bg";
-               rel2.to_x: "bg";
-               color: 0 0 0 0;
-            }
-         }
          part { name: "onrect";
             type: RECT;
             scale: 1;
@@ -1626,6 +1616,26 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                }
             }
          }
+         part { name: "bg_events";
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "button_events";
+            type: RECT;
+            repeat_events: 1;
+            dragable {
+               events: "button";
+            }
+            description { state: "default" 0.0;
+               rel1.to_x: "bg";
+               rel2.to_x: "bg";
+               color: 0 0 0 0;
+            }
+         }
          part { name: "disabler";
             type: RECT;
             description { state: "default" 0.0;
@@ -1639,29 +1649,24 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
          }
       }
       programs {
+         program { name: "bg_down";
+            signal: "mouse,down,1";
+            source: "bg_events";
+            script {
+               set_int(is_changed, 0);
+            }
+         }
          program { name: "button_click";
             signal: "mouse,clicked,1";
-            source: "button";
+            source: "bg_events";
             script {
-               new Float:dx, Float:dy;
-               get_drag(PART:"button", dx, dy);
-               if (!get_int(was_drag)) {
-                  if (dx > 0.5)
-                    set_drag(PART:"button", 0.0, 0.0);
-                  else
-                    set_drag(PART:"button", 1.0, 0.0);
-                  if (((get_int(is_rtl) == 1) && (dx <= 0.5)) ||
-                      (get_int(is_rtl) == 0) && (dx > 0.5)) {
-                     if (get_int(check_on)) {
-                       emit("elm,action,check,off", "");
-                       emit("elm,action,touch,sound", "");
-                     }
-                  }
-                  else {
-                     if (!get_int(check_on)) {
-                       emit("elm,action,check,on", "");
-                       emit("elm,action,touch,sound", "");
-                     }
+               if (!get_int(is_changed)) {
+                  if (get_int(check_on)) {
+                    emit("elm,action,check,off", "");
+                    emit("elm,action,touch,sound", "");
+                  } else {
+                    emit("elm,action,check,on", "");
+                    emit("elm,action,touch,sound", "");
                   }
                }
             }
@@ -1703,12 +1708,14 @@ CHECK_STYLE_FOR_GENLIST("default/genlist_edit", CHECK_STYLE_FAVORITE_DEFAULT_BG_
                      if (!get_int(check_on)) {
                        emit("elm,action,check,on", "");
                        emit("elm,action,touch,sound", "");
+                       set_int(is_changed, 1);
                      }
                   }
                   else {
                      if (get_int(check_on)) {
                        emit("elm,action,check,off", "");
                        emit("elm,action,touch,sound", "");
+                       set_int(is_changed, 1);
                      }
                   }
                   set_int(was_drag, get_int(is_drag));
