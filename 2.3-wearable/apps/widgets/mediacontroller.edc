@@ -1,0 +1,518 @@
+// ***************************** Button ***************************************/
+// Mini
+#define BUTTON_MINI_ICON_SIZE                          110 110
+#define BUTTON_MINI_ICON_ICON_SIZE                     68 68
+#define BUTTON_MINI_ICON_TOP_LEFT_PADDING_SIZE         21 21
+#define BUTTON_MINI_ICON_BOTTOM_RIGHT_PADDING_SIZE     21 21
+
+// ***************************** Check ****************************************/
+// Mini
+#define CHECK_MINI_ICON_SIZE                           110 110
+#define CHECK_MINI_ICON_ICON_SIZE                      68 68
+#define CHECK_MINI_ICON_TOP_LEFT_PADDING_SIZE          21 21
+#define CHECK_MINI_ICON_BOTTOM_RIGHT_PADDING_SIZE      21 21
+
+#define BUTTON_MINI_ICON( PARAM, PRESS_IMAGE, IMAGE0 ) \
+group { name: "elm/button/base/mini_icon/"PARAM; \
+   script { \
+      public mouse_down = 0; \
+      public multi_down = 0; \
+   } \
+   images { \
+      image: PRESS_IMAGE COMP; \
+      image: IMAGE0 COMP; \
+   } \
+   parts { \
+      part { name: "bg"; \
+         scale: 1; \
+         description { state: "default" 0.0; \
+            min: BUTTON_MINI_ICON_SIZE; \
+            max: BUTTON_MINI_ICON_SIZE; \
+            image.normal: PRESS_IMAGE; \
+            visible: 0; \
+         } \
+         description { state: "pressed" 0.0; \
+            inherit: "default"; \
+            visible: 1; \
+         } \
+         description { state: "disabled" 0.0; \
+            inherit: "default"; \
+         } \
+      } \
+      part { name: "top_left_padding"; \
+         type: SPACER; \
+         scale: 1; \
+         description { state: "default" 0.0; \
+            min: BUTTON_MINI_ICON_TOP_LEFT_PADDING_SIZE; \
+            max: BUTTON_MINI_ICON_TOP_LEFT_PADDING_SIZE; \
+            fixed: 1 1; \
+            rel2.relative: 0.0 0.0; \
+            align: 0.0 0.0; \
+         } \
+      } \
+      part { name: "bottom_right_padding"; \
+         type: SPACER; \
+         scale: 1; \
+         description { state: "default" 0.0; \
+            min: BUTTON_MINI_ICON_BOTTOM_RIGHT_PADDING_SIZE; \
+            max: BUTTON_MINI_ICON_BOTTOM_RIGHT_PADDING_SIZE; \
+            fixed: 1 1; \
+            rel1.relative: 1.0 1.0; \
+            align: 1.0 1.0; \
+         } \
+      } \
+      part { name: "state_images"; \
+         scale: 1; \
+         description { state: "default" 0.0; \
+            min: BUTTON_MINI_ICON_ICON_SIZE; \
+            max: BUTTON_MINI_ICON_ICON_SIZE; \
+            fixed: 1 1; \
+            rel1.to: "top_left_padding"; \
+            rel2.to: "bottom_right_padding"; \
+            image.normal: IMAGE0; \
+         } \
+      } \
+      part { name: "event"; \
+         type: RECT; \
+         scale: 1; \
+         mouse_events: 1; \
+         description { state: "default" 0.0; \
+            color: 0 0 0 0; \
+         } \
+      } \
+   } \
+   programs { \
+      program { name: "pressed"; \
+         signal: "mouse,down,1*"; \
+         source: "event"; \
+         script { \
+            if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
+              { \
+                  set_int(mouse_down, 1); \
+                  run_program(PROGRAM:"button_press1"); \
+              } \
+         } \
+      } \
+      program { name: "button_press1"; \
+         script { \
+            new st[31]; \
+            new Float:vl; \
+            get_state(PART:"event", st, 30, vl); \
+            if (strcmp(st, "disabled")) { \
+               set_state(PART:"bg", "pressed", 0.0); \
+               emit("elm,action,press", ""); \
+            } \
+         } \
+      } \
+      program { name: "unpressed"; \
+         signal: "mouse,up,1"; \
+         source: "event"; \
+         script { \
+            new st[31]; \
+            new Float:vl; \
+            if (get_int(mouse_down) == 1) { \
+               set_int(mouse_down, 0); \
+               get_state(PART:"event", st, 30, vl); \
+               if (strcmp(st, "disabled")) { \
+                  set_state(PART:"bg", "default", 0.0); \
+                  emit("elm,action,unpress", ""); \
+               } \
+            } \
+         } \
+      } \
+      program { name: "clicked"; \
+         signal: "mouse,clicked,1"; \
+         source: "event"; \
+         script { \
+            new st[31]; \
+            new Float:vl; \
+            if (get_int(multi_down) == 0) { \
+               get_state(PART:"event", st, 30, vl); \
+               if (strcmp(st, "disabled")) { \
+                  play_sample("touch_sound", 1.0); \
+                  emit("elm,action,click", ""); \
+               } \
+            } \
+         } \
+      } \
+      program { name: "disable"; \
+         signal: "elm,state,disabled"; \
+         source: "elm"; \
+         action: STATE_SET "disabled" 0.0; \
+         target: "event"; \
+         target: "bg"; \
+      } \
+      program { name: "enable"; \
+         signal: "elm,state,enabled"; \
+         source: "elm"; \
+         action: STATE_SET "default" 0.0; \
+         target: "event"; \
+         target: "bg"; \
+      } \
+      program { name: "multi_down"; \
+         signal: "elm,action,multi,down"; \
+         source: "elm"; \
+         script { \
+            set_int(multi_down, 1); \
+         } \
+      } \
+      program { name: "multi_up"; \
+         signal: "elm,action,multi,up"; \
+         source: "elm"; \
+         script { \
+            set_int(multi_down, 0); \
+         } \
+      } \
+   } \
+}
+
+#define BUTTON_MINI_ICON_TRIPLE_STATE( PARAM, PRESS_IMAGE, IMAGE0, IMAGE1, IMAGE2 ) \
+group { name: "elm/button/base/mini_icon/triple_state/"PARAM; \
+   images { \
+      image: PRESS_IMAGE COMP; \
+      image: IMAGE0 COMP; \
+      image: IMAGE1 COMP; \
+      image: IMAGE2 COMP; \
+   } \
+   script { \
+      public current_state = 0; \
+      public mouse_down = 0; \
+      public multi_down = 0; \
+   } \
+   parts { \
+      part { name: "bg"; \
+         scale: 1; \
+         description { state: "default" 0.0; \
+            min: BUTTON_MINI_ICON_SIZE; \
+            max: BUTTON_MINI_ICON_SIZE; \
+            image.normal: PRESS_IMAGE; \
+            visible: 0; \
+         } \
+         description { state: "pressed" 0.0; \
+            inherit: "default"; \
+            visible: 1; \
+         } \
+         description { state: "disabled" 0.0; \
+            inherit: "default"; \
+         } \
+      } \
+      part { name: "top_left_padding"; \
+         type: SPACER; \
+         scale: 1; \
+         description { state: "default" 0.0; \
+            min: BUTTON_MINI_ICON_TOP_LEFT_PADDING_SIZE; \
+            max: BUTTON_MINI_ICON_TOP_LEFT_PADDING_SIZE; \
+            fixed: 1 1; \
+            rel2.relative: 0.0 0.0; \
+            align: 0.0 0.0; \
+         } \
+      } \
+      part { name: "bottom_right_padding"; \
+         type: SPACER; \
+         scale: 1; \
+         description { state: "default" 0.0; \
+            min: BUTTON_MINI_ICON_BOTTOM_RIGHT_PADDING_SIZE; \
+            max: BUTTON_MINI_ICON_BOTTOM_RIGHT_PADDING_SIZE; \
+            fixed: 1 1; \
+            rel1.relative: 1.0 1.0; \
+            align: 1.0 1.0; \
+         } \
+      } \
+      part { name: "state_images"; \
+         scale: 1; \
+         description { state: "default" 0.0; \
+            min: BUTTON_MINI_ICON_ICON_SIZE; \
+            max: BUTTON_MINI_ICON_ICON_SIZE; \
+            fixed: 1 1; \
+            rel1.to: "top_left_padding"; \
+            rel2.to: "bottom_right_padding"; \
+            image.normal: IMAGE0; \
+         } \
+         description { state: "state1" 0.0; \
+            inherit: "default" 0.0; \
+            image.normal: IMAGE1; \
+         } \
+         description { state: "state2" 0.0; \
+            inherit: "default" 0.0; \
+            image.normal: IMAGE2; \
+         } \
+      } \
+      part { name: "event"; \
+         type: RECT; \
+         scale: 1; \
+         mouse_events: 1; \
+         description { state: "default" 0.0; \
+            color: 0 0 0 0; \
+         } \
+      } \
+   } \
+   programs { \
+      program { name: "pressed"; \
+         signal: "mouse,down,1*"; \
+         source: "event"; \
+         script { \
+            if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
+              { \
+                  set_int(mouse_down, 1); \
+                  run_program(PROGRAM:"button_press1"); \
+              } \
+         } \
+      } \
+      program { name: "button_press1"; \
+         script { \
+            new st[31]; \
+            new Float:vl; \
+            get_state(PART:"event", st, 30, vl); \
+            if (strcmp(st, "disabled")) { \
+               set_state(PART:"bg", "pressed", 0.0); \
+               emit("elm,action,press", ""); \
+            } \
+         } \
+      } \
+      program { name: "unpressed"; \
+         signal: "mouse,up,1"; \
+         source: "event"; \
+         script { \
+            new st[31]; \
+            new Float:vl; \
+            if (get_int(mouse_down) == 1) { \
+               set_int(mouse_down, 0); \
+               get_state(PART:"event", st, 30, vl); \
+               if (strcmp(st, "disabled")) { \
+                  set_state(PART:"bg", "default", 0.0); \
+                  emit("elm,action,unpress", ""); \
+               } \
+            } \
+         } \
+      } \
+      program { name: "clicked"; \
+         signal: "mouse,clicked,1"; \
+         source: "event"; \
+         script { \
+            new st[31]; \
+            new Float:vl; \
+            new s; \
+            if (get_int(multi_down) == 0) { \
+               s = get_int(current_state); \
+               get_state(PART:"event", st, 30, vl); \
+               if (strcmp(st, "disabled")) { \
+                  s = s + 1; \
+                  if (s > 2) \
+                     s = 0; \
+                  set_int(current_state, s); \
+                  if (s == 0) \
+                     set_state(PART:"state_images", "default", 0.0); \
+                  else if (s == 1) \
+                     set_state(PART:"state_images", "state1", 0.0); \
+                  else \
+                     set_state(PART:"state_images", "state2", 0.0); \
+                  play_sample("touch_sound", 1.0); \
+                  emit("elm,action,click", ""); \
+               } \
+            } \
+         } \
+      } \
+      program { name: "disable"; \
+         signal: "elm,state,disabled"; \
+         source: "elm"; \
+         action: STATE_SET "disabled" 0.0; \
+         target: "event"; \
+         target: "bg"; \
+      } \
+      program { name: "enable"; \
+         signal: "elm,state,enabled"; \
+         source: "elm"; \
+         action: STATE_SET "default" 0.0; \
+         target: "event"; \
+         target: "bg"; \
+      } \
+      program { name: "set_state0" ; \
+         signal: "set,state,0"; \
+         source: "*"; \
+         script { \
+            set_state(PART:"state_images", "default", 0.0); \
+            set_int(current_state, 0); \
+         } \
+      } \
+      program { name: "set_state1" ; \
+         signal: "set,state,1"; \
+         source: "*"; \
+         script { \
+            set_state(PART:"state_images", "state1", 0.0); \
+            set_int(current_state, 1); \
+         } \
+      } \
+      program { name: "set_state2" ; \
+         signal: "set,state,2"; \
+         source: "*"; \
+         script { \
+            set_state(PART:"state_images", "state2", 0.0); \
+            set_int(current_state, 2); \
+         } \
+      } \
+      program { name: "multi_down"; \
+         signal: "elm,action,multi,down"; \
+         source: "elm"; \
+         script { \
+            set_int(multi_down, 1); \
+         } \
+      } \
+      program { name: "multi_up"; \
+         signal: "elm,action,multi,up"; \
+         source: "elm"; \
+         script { \
+            set_int(multi_down, 0); \
+         } \
+      } \
+   } \
+}
+
+#define CHECK_MINI_ICON( PARAM, PRESS_IMAGE, IMAGE_ON, IMAGE_OFF ) \
+group { name: "elm/check/base/mini_icon/"PARAM; \
+   images { \
+      image: PRESS_IMAGE COMP; \
+      image: IMAGE_ON COMP; \
+      image: IMAGE_OFF COMP; \
+   } \
+   script { \
+      public check_state; \
+      public check_disabled; \
+   } \
+   parts { \
+      part { name: "bg"; \
+         scale: 1; \
+         description { state: "default" 0.0; \
+            min: CHECK_MINI_ICON_SIZE; \
+            max: CHECK_MINI_ICON_SIZE; \
+            image.normal: PRESS_IMAGE; \
+            visible: 0; \
+         } \
+         description { state: "pressed" 0.0; \
+            inherit: "default"; \
+            visible: 1; \
+         } \
+         description { state: "disabled" 0.0; \
+            inherit: "default"; \
+            visible: 0; \
+         } \
+      } \
+      part { name: "top_left_padding"; \
+         type: SPACER; \
+         scale: 1; \
+         description { state: "default" 0.0; \
+            min: CHECK_MINI_ICON_TOP_LEFT_PADDING_SIZE; \
+            max: CHECK_MINI_ICON_TOP_LEFT_PADDING_SIZE; \
+            fixed: 1 1; \
+            rel2.relative: 0.0 0.0; \
+            align: 0.0 0.0; \
+         } \
+      } \
+      part { name: "bottom_right_padding"; \
+         type: SPACER; \
+         scale: 1; \
+         description { state: "default" 0.0; \
+            min: CHECK_MINI_ICON_BOTTOM_RIGHT_PADDING_SIZE; \
+            max: CHECK_MINI_ICON_BOTTOM_RIGHT_PADDING_SIZE; \
+            fixed: 1 1; \
+            rel1.relative: 1.0 1.0; \
+            align: 1.0 1.0; \
+         } \
+      } \
+      part { name: "state_icon"; \
+         scale: 1; \
+         description { state: "default" 0.0; \
+            min: CHECK_MINI_ICON_ICON_SIZE; \
+            max: CHECK_MINI_ICON_ICON_SIZE; \
+            fixed: 1 1; \
+            rel1.to: "top_left_padding"; \
+            rel2.to: "bottom_right_padding"; \
+            image.normal: IMAGE_OFF; \
+         } \
+         description { state: "on" 0.0; \
+            inherit: "default" 0.0; \
+            image.normal: IMAGE_ON; \
+         } \
+      } \
+      part { name: "event"; \
+         type: RECT; \
+         scale: 1; \
+         mouse_events: 1; \
+         description { state: "default" 0.0; \
+            color: 0 0 0 0; \
+         } \
+      } \
+   } \
+   programs { \
+      program { name: "click"; \
+         signal: "mouse,clicked,1"; \
+         source: "event"; \
+         script { \
+            if (get_int(check_disabled) == 1) return; \
+            emit("elm,action,check,toggle", ""); \
+            play_sample("touch_sound", 1.0); \
+         } \
+      } \
+      program { name: "unpressed"; \
+         signal: "mouse,up,1"; \
+         source: "event"; \
+         script { \
+            if (get_int(check_disabled) == 1) return; \
+            set_state(PART:"bg", "default", 0.0); \
+         } \
+      } \
+      program { name: "pressed"; \
+         signal: "mouse,down,1"; \
+         source: "event"; \
+         script { \
+            if (get_int(check_disabled) == 1) return; \
+            set_state(PART:"bg", "pressed", 0.0); \
+         } \
+      } \
+      program { name: "check_on"; \
+         signal: "elm,state,check,on"; \
+         source: "elm"; \
+         script { \
+            set_state(PART:"state_icon", "on", 0.0); \
+            set_int(check_state, 1); \
+         } \
+      } \
+      program { name: "check_off"; \
+         signal: "elm,state,check,off"; \
+         source: "elm"; \
+         script { \
+            set_state(PART:"state_icon", "default", 0.0); \
+            set_int(check_state, 0); \
+         } \
+      } \
+      program { name: "disable"; \
+         signal: "elm,state,disabled"; \
+         source: "elm"; \
+         script { \
+            set_state(PART:"bg", "disabled", 0.0); \
+            set_int(check_disabled, 1); \
+         } \
+      } \
+      program { name: "enable"; \
+         signal: "elm,state,enabled"; \
+         source: "elm"; \
+         script { \
+            set_state(PART:"bg", "default", 0.0); \
+            set_int(check_disabled, 0); \
+         } \
+      } \
+   } \
+}
+
+BUTTON_MINI_ICON(info,
+   "b_music_mini_press.png", "b_music_mini_icon_info.png");
+BUTTON_MINI_ICON_TRIPLE_STATE(bluetooth,
+   "b_music_mini_press.png", "b_music_mini_icon_Bluetooth_on.png",
+   "b_music_mini_icon_Bluetooth_off.png", "b_music_mini_icon_speak.png");
+BUTTON_MINI_ICON_TRIPLE_STATE(repeat,
+   "b_music_mini_press.png", "b_music_mini_icon_repeat_all.png",
+   "b_music_mini_icon_repeat_one.png", "b_music_mini_icon_repeat_off.png");
+
+CHECK_MINI_ICON(favorite, "b_music_mini_press.png",
+   "b_music_mini_icon_favorite_on.png", "b_music_mini_icon_favorite_off.png");
+CHECK_MINI_ICON(shuffle, "b_music_mini_press.png",
+   "b_music_mini_icon_shuffle_on.png", "b_music_mini_icon_shuffle_off.png");

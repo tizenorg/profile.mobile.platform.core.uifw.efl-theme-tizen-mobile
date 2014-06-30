@@ -5,7 +5,7 @@ EDJE_FLAGS_VERBOSE_ =
 EDJE_FLAGS_VERBOSE_0 =
 EDJE_FLAGS_VERBOSE_1 = -v
 SRC=tizen
-SIZE=HD
+SIZE=HVGA
 
 all:
 	for s in $(SIZE); do \
@@ -13,23 +13,31 @@ all:
 		perl -pi -e "s/TIZEN_TMP_INC/\"$$s-inc.edc\"/g" $(SRC)-$(TARGET)-$$s.edc; \
 		edje_cc $(EDJE_FLAGS_$(V))\
 		-id ./$$s/images/\
-		-id ./$$s/images/Content_views\
-		-id ./$$s/images/Content_views/Gengrid\
-		-id ./$$s/images/Controls\
-		-id ./$$s/images/Controls/00_Progress_circle_bg\
-		-id ./$$s/images/Controls/Button\
-		-id ./$$s/images/Controls/Check_box\
-		-id ./$$s/images/Controls/Radio_button\
-		-id ./$$s/images/Copy_Paste\
-		-id ./$$s/images/Focus\
-		-id ./$$s/images/GUI_Style_Guide\
-		-id ./$$s/images/Indicator\
-		-id ./$$s/images/Map\
-		-id ./$$s/images/Naviframe\
-		-id ./$$s/images/Naviframe/Icon\
+		-id ./$$s/images/Action_bar\
+		-id ./$$s/images/Body\
+		-id ./$$s/images/Controller_icon\
+		-id ./$$s/images/List\
+		-id ./$$s/images/Overscrolling\
+		-id ./$$s/images/Overscrolling/Bottom\
+		-id ./$$s/images/Overscrolling/Left\
+		-id ./$$s/images/Overscrolling/Right\
+		-id ./$$s/images/Overscrolling/Top\
 		-id ./$$s/images/Popup\
-		-id ./$$s/images/Process\
+		-id ./$$s/images/Progress\
 		-id ./$$s/images/Screen_Reader\
+		-id ./$$s/images/Slider\
+		-id ./$$s/images/TimePicker\
+		-id ./$$s/images/temp\
+		-id ./$$s/images/temp/Copy_Paste\
+		-id ./$$s/images/temp/swipe\
+		-id ./$$s/images/Apps\
+		-id ./$$s/images/Apps/Call\
+		-id ./$$s/images/Apps/Call/call\ menu\
+		-id ./$$s/images/Apps/Email\
+		-id ./$$s/images/Apps/Gallery\
+		-id ./$$s/images/Apps/Logs\
+		-id ./$$s/images/Apps/Music_player\
+		-id ./$$s/images/Apps/Widget_schedule\
 		-sd ./$$s/sounds -fd ../objects \
 		$(SRC)-$(TARGET)-$$s.edc $(SRC)-$(TARGET)-$$s.edj; \
 	done
