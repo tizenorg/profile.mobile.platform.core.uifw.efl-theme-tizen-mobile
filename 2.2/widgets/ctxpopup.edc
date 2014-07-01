@@ -531,6 +531,9 @@ group {
 ///////////////////////////////////////////////////////////////////////////////
 group {
    name: "elm/ctxpopup/bg/default";
+   script {
+      public event_grab = 0;
+   }
    parts {
       part {
          name: "bg";
@@ -548,13 +551,51 @@ group {
             visible: 1;
          }
       }
+      part {
+         name: "event_checker";
+         type: RECT;
+         dragable {
+            x: 1 1 0;
+            y: 1 1 0;
+         }
+         description {
+            state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            color: 0 0 0 0;
+         }
+      }
    }
    programs {
       program {
-         name:	"clicked_event";
-         signal: "mouse,clicked,1";
-         source: "bg";
-         action: SIGNAL_EMIT "elm,action,click" "";
+         name: "mouse_down";
+         signal: "mouse,down,1";
+         source: "event_checker";
+         script {
+            set_int(event_grab, 1);
+         }
+      }
+      program {
+         name: "mouse_drag";
+         signal: "drag";
+         source: "event_checker";
+         script {
+            new Float:dx, Float:dy;
+            get_drag(PART:"event_checker", dx, dy);
+            if (abs(dx) > 60 || abs(dy) > 60) {
+               set_int(event_grab, 0);
+            }
+         }
+      }
+      program {
+         name: "mouse_up";
+         signal: "mouse,up,1";
+         source: "event_checker";
+         script {
+            if (get_int(event_grab))
+               emit("elm,action,click", "");
+            set_drag(PART:"event_checker", 0.0, 0.0);
+         }
       }
       program {
          name: "show";
