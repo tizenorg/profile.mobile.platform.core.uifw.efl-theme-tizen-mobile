@@ -446,6 +446,9 @@ group { name: "elm/notify/center/no_effect";
 group { name: "elm/notify/block_events/popup";
    alias: "elm/notify/block_events/verticalbuttonstyle";
    alias: "elm/notify/block_events/content_expand";
+   script {
+      public event_grab = 0;
+   }
    parts {
       part { name: "block_events_color";
          type: RECT;
@@ -462,8 +465,48 @@ group { name: "elm/notify/block_events/popup";
             color_class: "B015";
          }
       }
+      part { name: "event";
+         type: RECT;
+         dragable {
+            x: 1 1 0;
+            y: 1 1 0;
+         }
+         description { state: "default" 0.0;
+            rel1.to: "block_events_color";
+            rel2.to: "block_events_color";
+            color: 0 0 0 0;
+         }
+      }
    }
    programs {
+      program { name: "mouse_down";
+         signal: "mouse,down,1";
+         source: "event";
+         script {
+            set_int(event_grab, 1);
+         }
+      }
+      program { name: "mouse_drag";
+         signal: "drag";
+         source: "event";
+         script {
+            new Float:dx, Float:dy;
+            get_drag(PART:"event", dx, dy);
+            if (abs(dx) > 60 || abs(dy) > 60)
+              set_int(event_grab, 0);
+         }
+      }
+      program { name: "mouse_up";
+         signal: "mouse,up,1";
+         source: "event";
+         script {
+            if (get_int(event_grab)) {
+              run_program(PROGRAM:"block_clicked");
+            }
+            set_drag(PART:"event", 0.0, 0.0);
+            set_int(event_grab, 0);
+         }
+      }
       program { name: "show";
          signal: "elm,action,show";
          source: "elm";
@@ -477,8 +520,6 @@ group { name: "elm/notify/block_events/popup";
          target: "block_events_color";
       }
       program { name: "block_clicked";
-         signal: "mouse,clicked,1";
-         source: "block_events_color";
          action: SIGNAL_EMIT "elm,action,click" "elm";
          after: "deeper_block_color";
       }
@@ -530,8 +571,6 @@ group { name: "elm/notify/block_events/center_popup";
          target: "block_events_color";
       }
       program { name: "block_clicked";
-         signal: "mouse,clicked,1";
-         source: "block_events_color";
          action: SIGNAL_EMIT "elm,action,click" "elm";
          after: "deeper_block_color";
       }
@@ -552,6 +591,9 @@ group { name: "elm/notify/block_events/center_popup";
 }
 
 group { name: "elm/notify/block_events/no_effect";
+   script {
+      public event_grab = 0;
+   }
    parts {
       part { name: "block_events_color";
          type: RECT;
@@ -560,8 +602,48 @@ group { name: "elm/notify/block_events/no_effect";
             color_class: "B015";
          }
       }
+      part { name: "event";
+         type: RECT;
+         dragable {
+            x: 1 1 0;
+            y: 1 1 0;
+         }
+         description { state: "default" 0.0;
+            rel1.to: "block_events_color";
+            rel2.to: "block_events_color";
+            color: 0 0 0 0;
+         }
+      }
    }
    programs {
+      program { name: "mouse_down";
+         signal: "mouse,down,1";
+         source: "event";
+         script {
+            set_int(event_grab, 1);
+         }
+      }
+      program { name: "mouse_drag";
+         signal: "drag";
+         source: "event";
+         script {
+            new Float:dx, Float:dy;
+            get_drag(PART:"event", dx, dy);
+            if (abs(dx) > 60 || abs(dy) > 60)
+              set_int(event_grab, 0);
+         }
+      }
+      program { name: "mouse_up";
+         signal: "mouse,up,1";
+         source: "event";
+         script {
+            if (get_int(event_grab)) {
+              run_program(PROGRAM:"block_clicked");
+            }
+            set_drag(PART:"event", 0.0, 0.0);
+            set_int(event_grab, 0);
+         }
+      }
       program { name: "show";
          signal: "show";
          source: "elm";
@@ -569,8 +651,6 @@ group { name: "elm/notify/block_events/no_effect";
          target: "block_events_color";
       }
       program { name: "block_clicked";
-         signal: "mouse,clicked,1";
-         source: "block_events_color";
          action: SIGNAL_EMIT "elm,action,click" "elm";
       }
    }
@@ -579,6 +659,9 @@ group { name: "elm/notify/block_events/no_effect";
 group { name: "elm/notify/block_events/transparent";
    alias: "elm/notify/block_events/verticalbuttonstyle_transparent";
    alias: "elm/notify/block_events/content_expand_transparent";
+   script {
+      public event_grab = 0;
+   }
    parts {
       part { name: "block_events";
          type: RECT;
@@ -586,11 +669,49 @@ group { name: "elm/notify/block_events/transparent";
             color: POPUP_DIM_BG_TRANS_COLOR_INC;
          }
       }
+      part { name: "event";
+         type: RECT;
+         dragable {
+            x: 1 1 0;
+            y: 1 1 0;
+         }
+         description { state: "default" 0.0;
+            rel1.to: "block_events";
+            rel2.to: "block_events";
+            color: 0 0 0 0;
+         }
+      }
    }
    programs {
+      program { name: "mouse_down";
+         signal: "mouse,down,1";
+         source: "event";
+         script {
+            set_int(event_grab, 1);
+         }
+      }
+      program { name: "mouse_drag";
+         signal: "drag";
+         source: "event";
+         script {
+            new Float:dx, Float:dy;
+            get_drag(PART:"event", dx, dy);
+            if (abs(dx) > 60 || abs(dy) > 60)
+              set_int(event_grab, 0);
+         }
+      }
+      program { name: "mouse_up";
+         signal: "mouse,up,1";
+         source: "event";
+         script {
+            if (get_int(event_grab)) {
+              run_program(PROGRAM:"block_clicked");
+            }
+            set_drag(PART:"event", 0.0, 0.0);
+            set_int(event_grab, 0);
+         }
+      }
       program { name: "block_clicked";
-         signal: "mouse,clicked,1";
-         source: "block_events";
          action: SIGNAL_EMIT "elm,action,click" "elm";
       }
    }

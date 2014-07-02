@@ -71,12 +71,14 @@
 
 #define ENTRY_EDITFIELD_TEXTBLOCK_DEFAULT_REL \
    rel1 { \
+      to_x: "left_padding"; \
       to_y: "top_padding"; \
-      relative: 0.0 1.0; \
+      relative: 1.0 1.0; \
    } \
    rel2 { \
+      to_x: "right_padding"; \
       to_y: "bottom_padding"; \
-      relative: 1.0 0.0; \
+      relative: 0.0 0.0; \
    }
 
 #define ENTRY_EDITFIELD_SWALLOW_SCRIPT_PUBLIC \
@@ -138,6 +140,40 @@
          rel2.relative: 1.0 1.0; \
       } \
    } \
+   part { name: "left_padding"; \
+      type: SPACER; \
+      scale: 1; \
+      description { state: "default" 0.0; \
+         min: 10 0; \
+         max: 10 0; \
+         fixed: 1 0; \
+         align: 0.0 0.5; \
+         rel1.relative: 0.0 0.0; \
+         rel2.relative: 0.0 1.0; \
+      } \
+      description { state: "hidden" 0.0; \
+         inherit: "default" 0.0; \
+         min: 0 0; \
+         max: 0 0; \
+      } \
+   } \
+   part { name: "right_padding"; \
+      type: SPACER; \
+      scale: 1; \
+      description { state: "default" 0.0; \
+         min: 10 0; \
+         max: 10 0; \
+         align: 1.0 0.5; \
+         fixed: 1 0; \
+         rel1.relative: 1.0 0.0; \
+         rel2.relative: 1.0 1.0; \
+      } \
+      description { state: "hidden" 0.0; \
+         inherit: "default" 0.0; \
+         min: 0 0; \
+         max: 0 0; \
+      } \
+   } \
    part { name: "focus_underline"; \
       type: RECT; \
       scale: 1; \
@@ -147,12 +183,14 @@
          align: 0.5 1.0; \
          fixed: 0 1; \
          rel1 { \
-            relative: 0.0 0.0; \
-            to: "focus_underline_bottom_padding"; \
+            relative: 1.0 0.0; \
+            to_x: "left_padding"; \
+            to_y: "focus_underline_bottom_padding"; \
          } \
          rel2 { \
-            relative: 1.0 0.0; \
-            to: "focus_underline_bottom_padding"; \
+            relative: 0.0 0.0; \
+            to_x: "right_padding"; \
+            to_y: "focus_underline_bottom_padding"; \
          } \
          color_class: "F059"; \
          visible: 1; \
@@ -214,6 +252,8 @@
          set_state(PART:"focus_underline", "hidden", 0.0); \
          set_state(PART:"top_padding", "hidden", 0.0); \
          set_state(PART:"bottom_padding", "hidden", 0.0); \
+         set_state(PART:"left_padding", "hidden", 0.0); \
+         set_state(PART:"right_padding", "hidden", 0.0); \
       } \
    } \
    program { name: "scroll_disabled"; \
@@ -224,6 +264,8 @@
          set_state(PART:"focus_underline", "default", 0.0); \
          set_state(PART:"top_padding", "default", 0.0); \
          set_state(PART:"bottom_padding", "default", 0.0); \
+         set_state(PART:"left_padding", "default", 0.0); \
+         set_state(PART:"right_padding", "default", 0.0); \
       } \
    } \
    program { name: "clear_show"; \
@@ -904,7 +946,7 @@ group { name: "elm/entry/base/editfield";
                min: 0 1;
                max: 0 1;
             }
-            ENTRY_EDITFIELD_TEXTBLOCK_DEFAULT_REL
+            ENTRY_EDITFIELD_TEXTBLOCK_DEFAULT_REL;
          }
          description { state: "focused" 0.0;
             inherit: "default" 0.0;
@@ -4891,17 +4933,53 @@ group { name: "elm/scroller/entry/editfield";
                rel2.relative: 1.0 1.0;
             }
          }
+         part { name: "left_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               max: 10 0;
+               fixed: 1 0;
+               align: 0.0 0.5;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.0 1.0;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               min: 0 0;
+               max: 0 0;
+            }
+         }
+         part { name: "right_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 10 0;
+               max: 10 0;
+               align: 1.0 0.5;
+               fixed: 1 0;
+               rel1.relative: 1.0 0.0;
+               rel2.relative: 1.0 1.0;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               min: 0 0;
+               max: 0 0;
+            }
+         }
          part { name: "bg";
             type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
                rel1 {
+                  to_x: "left_padding";
                   to_y: "top_padding";
-                  relative: 0.0 1.0;
+                  relative: 1.0 1.0;
                }
                rel2 {
+                  to_x: "right_padding";
                   to_y: "bottom_padding";
-                  relative: 1.0 0.0;
+                  relative: 0.0 0.0;
                }
             }
          }
@@ -4912,8 +4990,14 @@ group { name: "elm/scroller/entry/editfield";
                min: ENTRY_EDITFIELD_FOCUS_UNDERLINE_BOTTOM_PADDING_SIZE_INC;
                align: 0.5 1.0;
                fixed: 0 1;
-               rel1.relative: 0.0 1.0;
-               rel2.relative: 1.0 1.0;
+               rel1 {
+                  to_x: "bg";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  to_x: "bg";
+                  relative: 1.0 1.0;
+               }
             }
          }
          part { name: "focus_underline";
@@ -4926,11 +5010,11 @@ group { name: "elm/scroller/entry/editfield";
                align: 0.5 1.0;
                fixed: 0 1;
                rel1 {
-                  to_y: "focus_underline_bottom_padding";
+                  to: "focus_underline_bottom_padding";
                   relative: 0.0 0.0;
                }
                rel2 {
-                  to_y: "focus_underline_bottom_padding";
+                  to: "focus_underline_bottom_padding";
                   relative: 1.0 0.0;
                }
                color_class: "F059";
