@@ -4873,11 +4873,14 @@
             signal: "elm,state,title,show";
             source: "elm";
             script {
-               if (!get_int(landscape))
-                 set_state(PART:"title_bg", "default", 0.0);
-               else
-                 set_state(PART:"title_bg", "landscape", 0.0);
-               set_state(PART:"tabbar", "default", 0.0);
+               if (!get_int(landscape)) {
+                  set_state(PART:"title_bg", "default", 0.0);
+                  set_state(PART:"tabbar", "default", 0.0);
+               }
+               else {
+                  set_state(PART:"title_bg", "landscape", 0.0);
+                  set_state(PART:"tabbar", "landscape", 0.0);
+               }
                run_program(PROGRAM:"start_title_slide");
             }
          }
@@ -4894,13 +4897,14 @@
             signal: "elm,action,title,show";
             source: "elm";
             script {
-               set_state(PART:"tabbar", "default", 0.0);
                if (!get_int(landscape)) {
                   set_state(PART:"title_bg", "hide_trans", 0.0);
+                  set_state(PART:"tabbar", "default", 0.0);
                   run_program(PROGRAM:"title_show_anim_start_default");
                }
                else {
                   set_state(PART:"title_bg", "hide_trans_landscape", 0.0);
+                  set_state(PART:"tabbar", "landscape", 0.0);
                   run_program(PROGRAM:"title_show_anim_start_landscape");
                }
             }
@@ -4908,12 +4912,14 @@
          program { name: "title_show_anim_start_default";
             action: STATE_SET "default" 0.0;
             target: "title_bg";
+            target: "tabbar";
             transition: SIN_FAC NAVIFRAME_TITLE_TRANS_TIME 1.7;
             after: "title_show_anim_finished";
          }
          program { name: "title_show_anim_start_landscape";
             action: STATE_SET "landscape" 0.0;
             target: "title_bg";
+            target: "tabbar";
             transition: SIN_FAC NAVIFRAME_TITLE_TRANS_TIME 1.7;
             after: "title_show_anim_finished";
          }
