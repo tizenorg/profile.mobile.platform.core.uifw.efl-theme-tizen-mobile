@@ -1,6 +1,6 @@
-PREFIX ?= /usr
+prefix ?= /usr
 INSTALL=install -c
-THEME_DIR=$(DESTDIR)$(PREFIX)/share/elementary/themes
+THEME_DIR=$(DESTDIR)/$(prefix)/share/elementary/themes
 EDJE_FLAGS_VERBOSE_ =
 EDJE_FLAGS_VERBOSE_0 =
 EDJE_FLAGS_VERBOSE_1 = -v

@@ -1,0 +1,242 @@
+// ***************************** List *****************************************/
+#define LIST_EMAIL_ADDRESS_TEXT_SIZE                   27
+#define LIST_EMAIL_NUMBER_TEXT_SIZE                    27
+#define LIST_EMAIL_GROUP_PADDING_TOP_SIZE              9
+#define LIST_EMAIL_GROUP_PADDING_BOTTOM_SIZE           9
+#define LIST_EMAIL_GROUP_PADDING_RIGHT_SIZE            7
+#define LIST_EMAIL_GROUP_HEIGHT                        34
+#define LIST_EMAIL_GROUP_PADDING_SIZE                  3
+
+// ***************************** Check ****************************************/
+#define CHECK_EMAIL_ICON_NEW_SIZE                      32 32
+
+styles {
+  style { name: "list_email_address_style";
+    base: "font=Tizen:style=Regular font_size="LIST_EMAIL_ADDRESS_TEXT_SIZE" align=center color_class=T0233 text_class=T0233 ellipsis=1.0 align=left";
+    STYLE_TAG
+    STYLE_TAG_MATCH
+  }
+  style { name: "list_email_number_style";
+    base: "font=Tizen:style=Regular font_size="LIST_EMAIL_NUMBER_TEXT_SIZE" align=center color_class=T0232 text_class=T0232 ellipsis=1.0";
+    STYLE_TAG
+    STYLE_TAG_MATCH
+  }
+}
+
+group { name: "elm/genlist/item/email/default";
+   PROLOG_LIST
+   data.item: "texts" "elm.text.1 elm.text.2 elm.text.noti";
+   data.item: "contents" "elm.swallow.colorbar elm.icon";
+
+   parts {
+      PART_LIST_BG
+      PART_LIST_PADDINGS(
+         LIST_PADDING_LEFT_SIZE, LIST_PADDING_RIGHT_SIZE,
+         LIST_2LINE_PADDING_TOP_SIZE, LIST_2LINE_PADDING_BOTTOM_SIZE
+      )
+      PART_LIST_BOTTOMLINE
+      PART(TEXTBLOCK, "elm.text.1",
+         DESC_LRTB("elm.padding.left", "elm.icon", "elm.padding.top", "elm.text.2",
+            min: 0 0;
+            PARAM_TEXT("list_text_main_normal",)
+         ) DESCRIPIONS_TEXT("list_text_main_dim", "list_text_main_press")
+      )
+      PART(SWALLOW, "elm.icon",
+         DESC_RTB("elm.padding.right", "elm.padding.top", "elm.text.2",
+            min: 0 LIST_NOTI_NUMBER_ICON_HEIGHT;
+         )
+      )
+      PART(TEXTBLOCK, "elm.text.noti",
+         mouse_events: 0;
+         DESC_TO("elm.icon",
+            min: 0 LIST_NOTI_NUMBER_ICON_HEIGHT;
+            PARAM_TEXT("list_noti_style", min: 1 1;)
+         )
+      )
+      PART(TEXTBLOCK, "elm.text.2",
+         DESC_LRB("elm.padding.left", "elm.padding.right", "elm.padding.bottom",
+            min: 0 0;
+            PARAM_TEXT("list_text_sub_normal",)
+         ) DESCRIPIONS_TEXT("list_text_sub_dim", "list_text_sub_press")
+      )
+   }
+   PROGRAMS_LIST( target: "elm.text.1"; target: "elm.text.2";
+                 target: "elm.text.noti"; target: "elm.icon";)
+}
+
+group { name: "elm/genlist/item/email/sweep/default";
+   inherit: "elm/genlist/item/email/default";
+   data.item: "texts" "elm.text.1 elm.text.2 elm.text.noti elm.text.sweep";
+   data.item: "contents" "elm.swallow.colorbar elm.icon elm.icon.sweep";
+   SCRIPTS_LIST_SWEEP
+   parts {
+      PARTS_LIST_SWEEP
+   }
+   programs {
+      PROGRAMS_LIST_SWEEP
+   }
+}
+
+group { name: "elm/genlist/item/email/group/default";
+   PROLOG_LIST
+
+   data.item: "texts" "elm.text.1 elm.text.2";
+
+   parts {
+      PART(RECT, "bg_clip",
+         mouse_events: 0;
+         description { state: "default" 0.0; }
+         description { state: "decorate" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "reorder" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "decorate_reorder" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      )
+      PART(RECT, "bg",
+         clip_to: "bg_clip";
+         description { state: "default" 0.0;
+            color_class: "B012";
+         }
+         description { state: "selected" 0.0;
+            color_class: "B041P";
+         }
+      )
+      PART_LIST_PADDINGS(
+         LIST_PADDING_LEFT_SIZE, LIST_EMAIL_GROUP_PADDING_RIGHT_SIZE,
+         LIST_EMAIL_GROUP_PADDING_TOP_SIZE, LIST_EMAIL_GROUP_PADDING_BOTTOM_SIZE
+      )
+      PART_LIST_BOTTOMLINE
+      PART(TEXTBLOCK, "elm.text.1",
+         DESC_LRTB("elm.padding.left", "elm.text.2.left", "elm.padding.top", "elm.padding.bottom",
+            min: 0 LIST_EMAIL_GROUP_HEIGHT;
+            PARAM_TEXT("list_email_address_style",)
+         )
+      )
+      PART(SPACER, "elm.text.2.left",
+         DESC_RTB("elm.text.2", "elm.padding.top", "elm.padding.bottom",
+            min: LIST_EMAIL_GROUP_PADDING_SIZE 0;
+            max: LIST_EMAIL_GROUP_PADDING_SIZE -1;
+         )
+      )
+      PART(TEXTBLOCK, "elm.text.2",
+         DESC_RTB("elm.padding.right", "elm.padding.top", "elm.padding.bottom",
+            min: 0 LIST_EMAIL_GROUP_HEIGHT;
+            PARAM_TEXT("list_email_number_style", min: 1 1; )
+         )
+      )
+   }
+   PROGRAMS_LIST( target: "elm.text.1"; target: "elm.text.2";)
+}
+
+group { name: "elm/check/base/bookmark";
+   script {
+      public check_state;
+      public check_disabled;
+   }
+   images {
+      image: "b_email_bookmark_icon_on.png" COMP;
+      image: "b_email_bookmark_icon_off.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         scale: 1;
+         description { state: "default" 0.0;
+            min: CHECK_EMAIL_ICON_NEW_SIZE;
+            max: CHECK_EMAIL_ICON_NEW_SIZE;
+            fixed: 1 1;
+            image.normal: "b_email_bookmark_icon_off.png";
+            color_class: "W013L1";
+         }
+         description { state: "on" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "b_email_bookmark_icon_on.png";
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W013L1P";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W013L1D";
+         }
+      }
+      part { name: "event";
+         scale: 1;
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      program { name: "click";
+         signal: "mouse,clicked,1";
+         source: "event";
+         script {
+            if (get_int(check_disabled) == 1) return;
+            emit("elm,action,check,toggle", "");
+            play_sample("touch_sound", 1.0);
+         }
+      }
+      program { name: "unpressed";
+         signal: "mouse,up,1";
+         source: "event";
+         script {
+            if (get_int(check_disabled) == 1) return;
+            set_state(PART:"bg", "default", 0.0);
+         }
+      }
+      program { name: "pressed";
+         signal: "mouse,down,1";
+         source: "event";
+         script {
+            if (get_int(check_disabled) == 1) return;
+            set_state(PART:"bg", "pressed", 0.0);
+         }
+      }
+      program { name: "check_on";
+         signal: "elm,state,check,on";
+         source: "elm";
+         script {
+            set_state(PART:"bg", "on", 0.0);
+            set_int(check_state, 1);
+         }
+      }
+      program { name: "check_off";
+         signal: "elm,state,check,off";
+         source: "elm";
+         script {
+            set_state(PART:"bg", "default", 0.0);
+            set_int(check_state, 0);
+         }
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         script {
+            set_state(PART:"bg", "disabled", 0.0);
+            set_int(check_disabled, 1);
+         }
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         script {
+            set_state(PART:"bg", "default", 0.0);
+            if (get_int(check_state) == 1) {
+               set_state(PART:"bg", "on", 0.0);
+            } else {
+               set_state(PART:"bg", "default", 0.0);
+            }
+            set_int(check_disabled, 0);
+         }
+      }
+   }
+}
