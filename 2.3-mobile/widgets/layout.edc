@@ -78,11 +78,10 @@ group {
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: NO_CONTENT_WIDTH NO_CONTENT_HEIGHT;
-            align: 0.0 0.0;
+            min: NO_CONTENT_WIDTH_INC 0;
          }
       }
-       part { name: "bg_con";
+      part { name: "bg_con";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
@@ -91,7 +90,7 @@ group {
             color_class: "B238L1";
          }
       }
-       part { name: "bg_image";
+      part { name: "bg_image";
          type: IMAGE;
          scale: 1;
          description { state: "default" 0.0;
@@ -101,15 +100,24 @@ group {
             image.normal: "core_pattern_empty_bg.png";
          }
       }
+      part { name: "text_bg";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            max: -1 NO_CONTENT_MAX_HEIGHT_INC;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
       part { name: "left_padding";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: NO_CONTENT_LEFT_RIGHT_PADDING 0;
+            min: NO_CONTENT_LEFT_RIGHT_PADDING_WIDTH_INC 0;
             fixed: 1 0;
             align: 0.0 0.0;
-            rel1.to: "bg";
-            rel2.to: "bg";
+            rel1.to: "text_bg";
+            rel2.to: "text_bg";
             rel2.relative: 0.0 1.0;
          }
       }
@@ -117,60 +125,44 @@ group {
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: NO_CONTENT_LEFT_RIGHT_PADDING 0;
+            min: NO_CONTENT_LEFT_RIGHT_PADDING_WIDTH_INC 0;
             fixed: 1 0;
             align: 1.0 0.0;
             rel1 {
-               to: "bg";
+               to: "text_bg";
                relative: 1.0 0.0;
             }
-            rel2.to: "bg";
-          }
-      }
-      part{ name: "top_padding";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 NO_CONTENT_TOP_BOTTOM_PADDING;
-            align: 0.5 0.0;
-            fixed: 0 1;
-            rel1.to: "bg";
-            rel2 {
-               to: "bg";
-               relative: 1.0 0.0;
-            }
-         }
-      }
-      part { name: "bottom_padding";
-         type:SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 NO_CONTENT_TOP_BOTTOM_PADDING;
-            fixed: 0 1;
-            align: 0.5 1.0;
-            rel1 {
-               to: "bg";
-               relative: 0.0 1.0;
-            }
-            rel2.to: "bg";
+            rel2.to: "text_bg";
          }
       }
       part { name: "elm.text";
          type: TEXTBLOCK;
          scale: 1;
          description { state: "default" 0.0;
-            min: 0 NO_CONTENT_TEXT_PART_SIZE;
-            fixed: 0 1;
-            align:0.0 1.0;
-            rel1.to: "padding_after_text";
-            rel2 {
+            rel1 {
+               to_x: "left_padding";
+               to_y: "text_bg";
                relative: 1.0 0.0;
-               to: "padding_after_text";
+            }
+            rel2 {
+               to_x: "right_padding";
+               to_y: "text_bg";
+               relative: 0.0 1.0;
             }
             text {
-               style:"empty_state_1";
+               style: "empty_state_1";
                min: 0 1;
                max: 0 1;
+            }
+         }
+         description { state: "help_text_set" 0.0;
+            inherit: "default" 0.0;
+            fixed: 0 1;
+            align: 0.0 1.0;
+            rel1.to: "padding_after_text";
+            rel2 {
+               to: "padding_after_text";
+               relative: 1.0 0.0;
             }
          }
       }
@@ -179,7 +171,7 @@ group {
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 1.0;
-            min: 0 NO_CONTENT_PADDING_TEXT;
+            min: 0 NO_CONTENT_TEXT_PADDING_HEIGHT_INC;
             fixed: 1 1;
             rel1.to:"elm.help.text";
             rel2 {
@@ -188,21 +180,45 @@ group {
             }
          }
       }
+      part { name: "help_text_top_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 (NO_CONTENT_TITLE_TEXT_HEIGHT_INC + NO_CONTENT_TEXT_PADDING_HEIGHT_INC);
+            fixed: 0 1;
+            align: 0.5 0.0;
+            rel1.to: "text_bg";
+            rel2 {
+               to: "text_bg";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "help_text_bg";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "help_text_top_padding";
+               relative: 0.0 1.0;
+            }
+            rel2.to: "text_bg";
+         }
+      }
       part { name: "elm.help.text";
          type: TEXTBLOCK;
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             rel1 {
-               relative: 1.0 1.0;
+               relative: 1.0 0.0;
                to_x:"left_padding";
-               to_y:"top_padding";
-               offset: 0 25;
+               to_y:"help_text_bg";
             }
             rel2 {
-               relative: 0.0 0.0;
+               relative: 0.0 1.0;
                to_x:"right_padding";
-               to_y:"bottom_padding";
+               to_y:"help_text_bg";
             }
             text {
                style: "empty_state_2";
@@ -210,6 +226,20 @@ group {
                min: 0 1;
                max: 0 1;
             }
+         }
+      }
+   }
+   programs {
+      program { name: "align_center";
+         signal: "align.center";
+         source: "elm";
+         script {
+            new buf[1024];
+            get_text(PART:"elm.help.text", buf, 1024);
+            if (strlen(buf) > 0)
+              set_state(PART:"elm.text", "help_text_set", 0.0);
+            else
+              set_state(PART:"elm.text", "default", 0.0);
          }
       }
    }
