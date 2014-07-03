@@ -1523,3 +1523,423 @@ group { name: "elm/layout/body_thumbnail/default";
       }
    }
 }
+
+   /*************************************************/
+   /* elm_layout -> searchbar style                 */
+   /*************************************************/
+   group { name: "elm/layout/application/searchbar_base";
+      parts {
+         part { name: "elm.swallow.bg";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+            }
+         }
+         part { name: "searchbar";
+            type: SWALLOW;
+            mouse_events: 1;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 SEARCHBAR_H_INC;
+               fixed: 0 1;
+               align: 0.0 1.0;
+               rel2 {
+                  relative: 1.0 0.0;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               align: 0.0 0.0;
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            mouse_events: 1;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 0.0 0.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to: "searchbar";
+               }
+            }
+         }
+      }
+      programs {
+         program { name: "show_searchbar";
+            signal: "elm,state,show,searchbar";
+            source: "elm";
+            action: STATE_SET "visible" 0.0;
+            target: "searchbar";
+         }
+         program { name: "show_searchbar_with_animation";
+            signal: "elm,state,show,searchbar,animation";
+            source: "elm";
+            action: STATE_SET "visible" 0.0;
+            transition: DECELERATE 0.3;
+            target: "searchbar";
+         }
+         program { name: "hide_searchbar";
+            signal: "elm,state,hide,searchbar";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "searchbar";
+         }
+         program { name: "hide_searchbar_with_animation";
+            signal: "elm,state,hide,searchbar,animation";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "searchbar";
+         }
+      }
+   }
+
+group { name: "elm/layout/searchbar/default";
+   script {
+      public multi_down = 0;
+   }
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 1;
+            color_class: "B081";
+         }
+      }
+      part { name: "inputfield_base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 SEARCHBAR_BASE_HEIGHT_INC;
+            align: 0.0 0.0;
+         }
+      }
+      part { name: "top_left_padding";
+         type: SPACER;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: SEARCHBAR_LEFT_PADDING_INC SEARCHBAR_TOP_PADDING_INC;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            rel1 { relative: 0.0 0.0; to: "inputfield_base"; }
+            rel2 { relative: 0.0 0.0; to: "inputfield_base"; }
+         }
+      }
+      part { name: "bottom_right_padding";
+         type: SPACER;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: SEARCHBAR_RIGHT_PADDING_INC SEARCHBAR_BOTTOM_PADDING_INC;
+            fixed: 1 1;
+            align: 1.0 1.0;
+            rel1 { relative: 1.0 1.0; to: "inputfield_base"; }
+            rel2 { relative: 1.0 1.0; to: "inputfield_base"; }
+         }
+      }
+      part { name: "inputfield_rect";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: SEARCHBAR_WIDTH_INC SEARCHBAR_HEIGHT_INC;
+            align: 0.0 0.5;
+            rel1 { relative: 1.0 1.0; to: "top_left_padding"; }
+            rel2 { relative: 0.0 0.0; to: "bottom_right_padding"; }
+            color: 0 0 0 0;
+         }
+      }
+      part {
+         name: "elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            min: SEARCHBAR_WIDTH_INC SEARCHBAR_HEIGHT_INC;
+            rel1 {
+               relative : 0.0 0.0;
+               to: "inputfield_rect";
+            }
+            rel2 {
+               relative : 1.0 1.0;
+               to: "inputfield_rect";
+            }
+            align: 0.0 0.5;
+         }
+      }
+   }
+   programs {
+     program {
+         name: "bg_clicked";
+         signal: "mouse,clicked,1";
+         source: "inputfield_rect";
+         script {
+            if (get_int(multi_down) == 0)
+               emit("elm,bg,clicked", "elm");
+         }
+      }
+      program {
+         name: "sound_play";
+         signal: "mouse,clicked,1";
+         source: "elm.text";
+         script {
+            if (get_int(multi_down) == 0)
+               run_program(PROGRAM:"play_sample");
+         }
+      }
+      program {
+         name: "play_sample";
+         action: PLAY_SAMPLE "touch_sound" 1.0;
+      }
+      program {
+         name: "multi_down";
+         signal: "elm,action,multi,down";
+         source: "elm";
+         script {
+            set_int(multi_down, 1);
+         }
+      }
+      program {
+         name: "multi_up";
+         signal: "elm,action,multi,up";
+         source: "elm";
+         script {
+            set_int(multi_down, 0);
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/searchbar/cancel_button";
+   script {
+      public multi_down = 0;
+   }
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 1;
+            color_class: "B081";
+         }
+      }
+      part { name: "inputfield_base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 SEARCHBAR_BASE_HEIGHT_INC;
+            align: 0.0 0.0;
+         }
+      }
+     part { name: "top_padding_rect";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 SEARCHBAR_TOP_PADDING_INC;
+            fixed: 0 1;
+            align: 0 0;
+            rel1.to: "inputfield_base";
+            rel2.to: "inputfield_base";
+            rel2.relative: 1.0 0.0;
+         }
+      }
+      part { name: "bottom_padding_rect";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 SEARCHBAR_BOTTOM_PADDING_INC;
+            fixed: 0 1;
+            align: 0 1;
+            rel1.to: "inputfield_base";
+            rel1.relative: 0.0 1.0;
+            rel2.to: "inputfield_base";
+         }
+      }
+      part { name: "base_bg";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 SEARCHBAR_HEIGHT_INC;
+            align: 0 0.5;
+            fixed: 0 1;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "top_padding_rect";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to: "bottom_padding_rect";
+            }
+         }
+      }
+      part { name: "left_padding_rect";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: SEARCHBAR_LEFT_PADDING_INC 0;
+            fixed: 1 0;
+            align: 0 0;
+            rel1.to: "inputfield_base";
+            rel2.to: "inputfield_base";
+            rel2.relative: 0.0 1.0;
+         }
+      }
+      part { name: "right_padding_rect";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: SEARCHBAR_RIGHT_PADDING_INC 0;
+            fixed: 1 0;
+            align: 1.0 0.0;
+            rel1.to: "inputfield_base";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "inputfield_base";
+         }
+      }
+      part { name: "inputfield_rect";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: SEARCHBAR_WIDTH_INC SEARCHBAR_HEIGHT_INC;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "left_padding_rect";
+               to_y: "base_bg";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "right_btn_padding_rect";
+               to_y: "base_bg";
+            }
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "right_btn_padding_rect";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 0;
+            fixed: 1 0;
+            align: 1.0 0.0;
+            rel1.relative: 0.0 0.0;
+            rel1.to: "right_padding_rect";
+            rel2.relative: 0.0 1.0;
+            rel2.to: "right_padding_rect";
+         }
+         description { state: "in" 0.0;
+            inherit: "default" 0.0;
+            min: SEARCHBAR_CANCEL_BUTTON_LEFT_PADDING_INC 0;
+            rel1.to: "button_cancel";
+            rel2.to: "button_cancel";
+         }
+      }
+      part { name: "button_cancel";
+         type: SWALLOW;
+         mouse_events: 1;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: SEARCHBAR_CANCEL_BUTTON_W_INC 0;
+            align: 1.0 0.5;
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+               to_x: "right_padding_rect";
+               to_y: "top_padding_rect";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to_x: "right_padding_rect";
+               to_y: "bottom_padding_rect";
+            }
+         }
+      }
+      part {
+         name: "elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            min: SEARCHBAR_WIDTH_INC SEARCHBAR_HEIGHT_INC;
+            rel1 {
+               relative : 0.0 0.0;
+               to: "inputfield_rect";
+            }
+            rel2 {
+               relative : 1.0 1.0;
+               to: "inputfield_rect";
+            }
+            align: 0.0 0.5;
+         }
+      }
+   }
+   programs {
+      program {
+         name: "sound_play";
+         signal: "mouse,clicked,1";
+         source: "elm.text";
+         script {
+            if (get_int(multi_down) == 0)
+               run_program(PROGRAM:"play_sample");
+         }
+      }
+      program {
+         name: "play_sample";
+         action: PLAY_SAMPLE "touch_sound" 1.0;
+      }
+     program {
+         name: "bg_clicked";
+         signal: "mouse,clicked,1";
+         source: "inputfield_rect";
+         script {
+            if (get_int(multi_down) == 0)
+               emit("elm,bg,clicked", "elm");
+         }
+      }
+      program {
+         name: "multi_down";
+         signal: "elm,action,multi,down";
+         source: "elm";
+         script {
+            set_int(multi_down, 1);
+         }
+      }
+      program {
+         name: "multi_up";
+         signal: "elm,action,multi,up";
+         source: "elm";
+         script {
+            set_int(multi_down, 0);
+         }
+      }
+      program { name: "cancel_in";
+         signal: "cancel,in";
+         source: "";
+         action: STATE_SET "in" 0.0;
+         target: "right_btn_padding_rect";
+         transition: LINEAR 0.3;
+      }
+      program { name: "cancel_out";
+         signal: "cancel,out";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "right_btn_padding_rect";
+         transition: LINEAR 0.3;
+      }
+      program { name: "cancel_show";
+         signal: "cancel,show";
+         source: "";
+         action: STATE_SET "in" 0.0;
+         target: "right_btn_padding_rect";
+      }
+      program { name: "cancel_hide";
+         signal: "cancel,hide";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "right_btn_padding_rect";
+      }
+   }
+}
