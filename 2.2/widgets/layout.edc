@@ -1592,6 +1592,39 @@ group {
       public landscape_mode = 0;
    }
    parts {
+      part{ name: "bottom_base";
+        type:SPACER;
+        scale:1;
+        description { state: "default" 0.0;
+          fixed: 0 1;
+          align: 0.0 1.0;
+          min: NOCONTENT_BOTTOM_BASE_PORTRAIT_MIN_WIDTH_HEIGHT_INC;
+          rel1 {
+             relative: 0.0 1.0;
+          }
+          rel2 {
+             relative: 1.0 1.0;
+          }
+        }
+        description { state: "landscape" 0.0;
+           inherit: "default" 0.0;
+           min: NOCONTENT_BOTTOM_BASE_LANDS_MIN_WIDTH_HEIGHT_INC;
+        }
+      }
+      part{ name: "base";
+        type:SPACER;
+        scale:1;
+        description { state: "default" 0.0;
+          align: 0.5 0.0;
+          rel1 {
+             relative: 0.0 0.0;
+          }
+          rel2 {
+             relative: 1.0 0.0;
+             to: "bottom_base";
+          }
+        }
+      }
       part { name: "bg";
          type: SPACER;
          scale: 1;
@@ -1600,9 +1633,11 @@ group {
             min: NOCONTENT_BASE_PORTRAIT_MIN_WIDTH_HEIGHT_INC;
             rel1 {
                relative: 0.0 0.5;
+               to: "base";
             }
             rel2 {
                relative: 1.0 0.5;
+               to: "base";
             }
          }
          description { state: "help_txt_port_centre_align";
@@ -1686,6 +1721,25 @@ group {
             min: NOCONTENT_LANDSCAPE_AFTER_TEXT_PADDING_INC;
          }
       }
+      part { name: "right_pad_help_text";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: NOCONTENT_PORTRAIT_AFTER_TEXT_PADDING_INC;
+            fixed: 1 1;
+            rel1 {
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+            }
+         }
+         description { state: "landscape" 0.0;
+            inherit: "default" 0.0;
+            min: NOCONTENT_LANDSCAPE_AFTER_TEXT_PADDING_INC;
+         }
+      }
       part { name: "elm.help.text";
          type: TEXTBLOCK;
          scale: 1;
@@ -1699,12 +1753,12 @@ group {
             }
             rel2 {
                relative: 0.0 1.0;
-               to_x: "pad_after_help_text";
+               to_x: "right_pad_help_text";
                to_y: "padding_after_text";
             }
             text {
                style: "nocontent_help_text";
-               align: 0.0 0.5;
+               align: 0.0 0.0;
                min: 0 1;
                max: 0 1;
             }
@@ -1712,27 +1766,6 @@ group {
          description { state: "landscape" 0.0;
             inherit: "default" 0.0;
             min: NOCONTENT_LANDSCAPE_HELP_TEXT_STYLE_BG_MIN_INC;
-         }
-      }
-      part { name: "pad_after_help_text";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            min: NOCONTENT_PORTRAIT_AFTER_HELP_TEXT_PADDING_INC;
-            fixed: 1 1;
-            rel1 {
-               relative: 1.0 1.0;
-               to_y: "elm.help.text";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               to_y: "elm.help.text";
-            }
-         }
-         description { state: "landscape" 0.0;
-            inherit: "default" 0.0;
-            min: NOCONTENT_LANDSCAPE_AFTER_HELP_TEXT_PADDING_INC;
          }
       }
       part { name: "pad_left_button";
@@ -1744,11 +1777,9 @@ group {
             fixed: 1 1;
             rel1 {
                relative: 0.0 1.0;
-               to_y: "pad_after_help_text";
             }
             rel2 {
                relative: 0.0 1.0;
-               to_y: "pad_after_help_text";
             }
          }
          description { state: "landscape" 0.0;
@@ -1765,11 +1796,9 @@ group {
             fixed: 1 1;
             rel1 {
                relative: 1.0 1.0;
-               to_y: "pad_after_help_text";
             }
             rel2 {
                relative: 1.0 1.0;
-               to_y: "pad_after_help_text";
             }
          }
          description { state: "landscape" 0.0;
@@ -1786,11 +1815,13 @@ group {
             align: 0.5 0.0;
             rel1 {
                relative: 1.0 0.0;
-               to: "pad_left_button";
+               to_x: "pad_left_button";
+               to_y: "bottom_base";
             }
             rel2 {
-               relative: 0.0 1.0;
-               to: "pad_right_button";
+               relative: 0.0 0.0;
+               to_x: "pad_right_button";
+               to_y: "bottom_base";
             }
          }
       }
@@ -1805,9 +1836,10 @@ group {
                set_state(PART:"bg", "help_txt_lands_centre_align", 0.0);
             else
                set_state(PART:"bg", "landscape", 0.0);
+            set_state(PART:"bottom_base", "landscape", 0.0);
             set_state(PART:"elm.help.text", "landscape", 0.0);
             set_state(PART:"padding_after_text", "landscape", 0.0);
-            set_state(PART:"pad_after_help_text", "landscape", 0.0);
+            set_state(PART:"right_pad_help_text", "landscape", 0.0);
             set_state(PART:"pad_left_button", "landscape", 0.0);
             set_state(PART:"pad_right_button", "landscape", 0.0);
          }
@@ -1821,9 +1853,10 @@ group {
                set_state(PART:"bg", "help_txt_lands_centre_align", 0.0);
             else
                set_state(PART:"bg", "landscape", 0.0);
+            set_state(PART:"bottom_base", "landscape", 0.0);
             set_state(PART:"elm.help.text", "landscape", 0.0);
             set_state(PART:"padding_after_text", "landscape", 0.0);
-            set_state(PART:"pad_after_help_text", "landscape", 0.0);
+            set_state(PART:"right_pad_help_text", "landscape", 0.0);
             set_state(PART:"pad_left_button", "landscape", 0.0);
             set_state(PART:"pad_right_button", "landscape", 0.0);
          }
@@ -1837,9 +1870,10 @@ group {
                set_state(PART:"bg", "help_txt_port_centre_align", 0.0);
             else
                set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"bottom_base", "default", 0.0);
             set_state(PART:"elm.help.text", "default", 0.0);
             set_state(PART:"padding_after_text", "default", 0.0);
-            set_state(PART:"pad_after_help_text", "default", 0.0);
+            set_state(PART:"right_pad_help_text", "default", 0.0);
             set_state(PART:"pad_left_button", "default", 0.0);
             set_state(PART:"pad_right_button", "default", 0.0);
          }
@@ -1853,9 +1887,10 @@ group {
                set_state(PART:"bg", "help_txt_port_centre_align", 0.0);
             else
                set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"bottom_base", "default", 0.0);
             set_state(PART:"elm.help.text", "default", 0.0);
             set_state(PART:"padding_after_text", "default", 0.0);
-            set_state(PART:"pad_after_help_text", "default", 0.0);
+            set_state(PART:"right_pad_help_text", "default", 0.0);
             set_state(PART:"pad_left_button", "default", 0.0);
             set_state(PART:"pad_right_button", "default", 0.0);
          }

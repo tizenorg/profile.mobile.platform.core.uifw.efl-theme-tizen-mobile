@@ -1,12 +1,12 @@
 Name:          efl-theme-tizen
 Summary:       Tizen theme files
-Version:       1.0.353
+Version:       1.0.354
 Release:       1
 Group:         TO_BE/FILLED_IN
 License:       TO_BE/FILLED_IN
 Source0:       %{name}-%{version}.tar.gz
 BuildRequires: sec-product-features
-BuildRequires: edje-bin, embryo-bin
+BuildRequires: edje-bin
 %define _unpackaged_files_terminate_build 0
 
 %description
