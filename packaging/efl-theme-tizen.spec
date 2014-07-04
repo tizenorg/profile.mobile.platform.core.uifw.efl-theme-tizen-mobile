@@ -6,7 +6,7 @@ Group:         TO_BE/FILLED_IN
 License:       TO_BE/FILLED_IN
 Source0:       %{name}-%{version}.tar.gz
 BuildRequires: sec-product-features
-BuildRequires: edje-bin, embryo-bin
+BuildRequires: edje-bin
 %define _unpackaged_files_terminate_build 0
 
 %description
