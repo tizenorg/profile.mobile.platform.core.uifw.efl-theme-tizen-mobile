@@ -130,7 +130,7 @@
             type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
-               min: 0 PROGRESSBAR_BOTTOM_PADDING_HEIGHT_INC;
+               min: 0 PROGRESSBAR_PADDING_HEIGHT_INC;
                rel1 {
                   to: "elm.swallow.bar";
                   relative: 0.0 1.0;
@@ -161,10 +161,87 @@
                text {
                   min: 0 0;
                   align: 0.5 0.5;
-                  text_class: "T057";
+                  text_class: "T058";
                }
                align: 1.0 0.0;
+               color_class: "T058";
+            }
+            description { state: "show" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               text.min: 1 1;
+            }
+         }
+         part { name: "elm.bottom.text";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               visible: 0;
+               rel1 {
+                  to: "swallowbar.bottom.pad";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  to: "swallowbar.bottom.pad";
+                  relative: 0.0 1.0;
+               }
+               text {
+                  min: 0 0;
+                  align: 0.5 0.5;
+                  text_class: "T057";
+                  text: "00/00";
+               }
+               align: 0.0 0.0;
                color_class: "T057";
+            }
+            description { state: "show" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               text.min: 1 1;
+            }
+         }
+         part { name: "swallowbar.top.pad";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 PROGRESSBAR_PADDING_HEIGHT_INC;
+               rel1 {
+                  to: "elm.swallow.bar";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to: "elm.swallow.bar";
+                  relative: 1.0 0.0;
+               }
+               align: 0.5 1.0;
+               fixed: 1 1;
+            }
+         }
+         part { name: "elm.text";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               visible: 0;
+               rel1 {
+                  to: "swallowbar.top.pad";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to: "swallowbar.top.pad";
+                  relative: 1.0 0.0;
+               }
+               text {
+                  min: 0 0;
+                  align: 0.5 0.5;
+                  text_class: "T058";
+                  text: "Lorem";
+               }
+               align: 1.0 1.0;
+               color_class: "T058";
             }
             description { state: "show" 0.0;
                inherit: "default" 0.0;
@@ -265,8 +342,24 @@
          }
       }
       programs {
+         program { name: "units_show";
+            signal: "elm,units,show";
+            source: "elm";
+            action: STATE_SET "show" 0.0;
+            target: "elm.text.status";
+            target: "elm.text";
+            target: "elm.bottom.text";
+         }
+         program { name: "units_hide";
+            signal: "elm,units,hide";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text.status";
+            target: "elm.text";
+            target: "elm.bottom.text";
+         }
          program { name: "slide_to_end";
-            action:  STATE_SET "state_end" 0.0;
+            action: STATE_SET "state_end" 0.0;
             transition: LINEAR 0.5;
             target: "elm.progress.progressbar";
             after: "slide_to_begin";
@@ -309,13 +402,13 @@
          program { name: "set_invert_on";
             signal: "elm,state,inverted,on";
             source: "elm";
-            action:  STATE_SET "invert" 0.0;
+            action: STATE_SET "invert" 0.0;
             target: "elm.progress.progressbar";
          }
          program { name: "set_invert_off";
             signal: "elm,state,inverted,off";
             source: "elm";
-            action:  STATE_SET "default" 0.0;
+            action: STATE_SET "default" 0.0;
             target: "elm.progress.progressbar";
          }
       }
@@ -401,6 +494,129 @@
                }
             }
          }
+         part { name: "swallowbar.bottom.pad";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 PROGRESSBAR_PADDING_HEIGHT_INC;
+               rel1 {
+                  to: "elm.swallow.bar";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  to: "elm.swallow.bar";
+                  relative: 1.0 1.0;
+               }
+               align: 0.5 0.0;
+               fixed: 1 1;
+            }
+         }
+         part { name: "elm.text.status";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               visible: 0;
+               rel1 {
+                  to: "swallowbar.bottom.pad";
+                  relative: 1.0 1.0;
+               }
+               rel2 {
+                  to: "swallowbar.bottom.pad";
+                  relative: 1.0 1.0;
+               }
+               text {
+                  min: 0 0;
+                  align: 0.5 0.5;
+                  text_class: "T058";
+               }
+               align: 1.0 0.0;
+               color_class: "T058";
+            }
+            description { state: "show" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               text.min: 1 1;
+            }
+         }
+         part { name: "elm.bottom.text";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               visible: 0;
+               rel1 {
+                  to: "swallowbar.bottom.pad";
+                  relative: 0.0 1.0;
+               }
+               rel2 {
+                  to: "swallowbar.bottom.pad";
+                  relative: 0.0 1.0;
+               }
+               text {
+                  min: 0 0;
+                  align: 0.5 0.5;
+                  text_class: "T057";
+                  text: "00/00";
+               }
+               align: 0.0 0.0;
+               color_class: "T057";
+            }
+            description { state: "show" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               text.min: 1 1;
+            }
+         }
+         part { name: "swallowbar.top.pad";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0 PROGRESSBAR_PADDING_HEIGHT_INC;
+               rel1 {
+                  to: "elm.swallow.bar";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to: "elm.swallow.bar";
+                  relative: 1.0 0.0;
+               }
+               align: 0.5 1.0;
+               fixed: 1 1;
+            }
+         }
+         part { name: "elm.text";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               visible: 0;
+               rel1 {
+                  to: "swallowbar.top.pad";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to: "swallowbar.top.pad";
+                  relative: 1.0 0.0;
+               }
+               text {
+                  min: 0 0;
+                  align: 0.5 0.5;
+                  text_class: "T058";
+                  text: "Lorem";
+               }
+               align: 1.0 1.0;
+               color_class: "T058";
+            }
+            description { state: "show" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               text.min: 1 1;
+            }
+         }
          part { name: "background";
             mouse_events: 0;
             scale: 1;
@@ -456,6 +672,22 @@
          public state_end = 0;
       }
       programs {
+         program { name: "units_show";
+            signal: "elm,units,show";
+            source: "elm";
+            action: STATE_SET "show" 0.0;
+            target: "elm.text.status";
+            target: "elm.text";
+            target: "elm.bottom.text";
+         }
+         program { name: "units_hide";
+            signal: "elm,units,hide";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text.status";
+            target: "elm.text";
+            target: "elm.bottom.text";
+         }
          program { name: "slide_to_end";
             in: 0.3 0.0;
             script {
