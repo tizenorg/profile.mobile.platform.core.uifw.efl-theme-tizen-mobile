@@ -52,8 +52,7 @@ group { name: "elm/photocam/base/default";
        images {
            image: "00_scroll_bar_v.#.png" COMP;
            image: "00_scroll_bar_h.#.png" COMP;
-           image: "00_list_process_bg_L.png" COMP;
-           image: "00_list_process_bar_L.png" COMP;
+           image: "00_list_process_L_00.png" COMP;
        }
        parts {
            part { name: "bg";
@@ -122,39 +121,22 @@ group { name: "elm/photocam/base/default";
                     relative: 0.9 0.9;
                     offset:   -9 -9;
                  }
-              image {
-                 normal: "00_list_process_bg_L.png";
+                 image {
+                    normal: "00_list_process_L_00.png";
+                 }
+              }
+              description { state: "pulse" 0.0;
+                 inherit: "default" 0.0;
+                 map {
+                    on: 1;
+                    smooth: 0;
+                    perspective_on: 1;
+                    rotation {
+                       z: -360;
+                    }
+                 }
               }
            }
-       }
-      part { name: "bar";
-         mouse_events: 0;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: PROCESS_LARGE_IMAGE_WIDTH_INC PROCESS_LARGE_IMAGE_HEIGHT_INC;
-            max: PROCESS_LARGE_IMAGE_WIDTH_INC PROCESS_LARGE_IMAGE_HEIGHT_INC;
-            aspect: 1.0 1.0;
-            aspect_preference: BOTH;
-            image {
-               normal: "00_list_process_bar_L.png";
-            }
-         }
-         description { state: "pulse" 0.0;
-            inherit: "default" 0.0;
-            image {
-               normal: "00_list_process_bar_L.png";
-            }
-            map {
-               on: 1;
-               smooth: 0;
-               perspective_on: 1;
-               rotation {
-                  z: -360;
-               }
-            }
-         }
-      }
          part { name: "sb_vbar_clip_master";
             type: RECT;
             mouse_events: 0;
@@ -506,7 +488,7 @@ group { name: "elm/photocam/base/default";
            }
            program { name: "continue_pulse";
                action: STATE_SET "default" 0.0;
-               target: "bar";
+               target: "busy";
                transition: LINEAR 1.5;
                after: "start_pulse";
            }
@@ -514,12 +496,12 @@ group { name: "elm/photocam/base/default";
                signal: "elm,state,busy,start";
                source: "elm";
                action: STATE_SET "pulse" 0.0;
-               target: "bar";
+               target: "busy";
                after: "continue_pulse";
            }
            program { name: "init_pulse";
                action: STATE_SET "default" 0.0;
-               target: "bar";
+               target: "busy";
            }
            program { name: "stop1";
                signal: "elm,state,busy,stop";
