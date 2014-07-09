@@ -65,6 +65,7 @@
       script { \
          public radio_state = RADIO_STATE_DEFAULT; \
          public radio_visible = RADIO_HIDE; \
+         public is_transition_finished = 0; \
       } \
       parts { \
          part { name: "back_bg"; \
@@ -366,8 +367,10 @@
             signal: "mouse,up,1"; \
             source: "over2"; \
             script { \
-               if (get_int(radio_state) == RADIO_STATE_VISIBLE) \
-                  set_state(PART:"radio", "visible", 0.0); \
+               if (get_int(radio_state) == RADIO_STATE_VISIBLE) { \
+                  if (get_int(is_transition_finished) == 1) \
+                    set_state(PART:"radio", "visible", 0.0); \
+               } \
                else \
                   set_state(PART:"radio", "default", 0.0); \
                set_state(PART:"bg", "default", 0.0); \
@@ -378,8 +381,10 @@
             signal: "mouse,down,1"; \
             source: "over2"; \
             script { \
-               if (get_int(radio_state) == RADIO_STATE_VISIBLE) \
-                  set_state(PART:"radio", "pressed", 0.0); \
+               if (get_int(radio_state) == RADIO_STATE_VISIBLE) { \
+                  if (get_int(is_transition_finished) == 1) \
+                    set_state(PART:"radio", "pressed", 0.0); \
+               } \
                else \
                   set_state(PART:"radio", "default", 0.0); \
                set_state(PART:"bg", "pressed", 0.0); \
@@ -407,11 +412,13 @@
                set_int(radio_state, RADIO_STATE_VISIBLE); \
                if (get_int(radio_visible) == RADIO_SHOW) \
                  { \
+                    set_int(is_transition_finished, 0); \
                     run_program(PROGRAM:"radio_show_effect"); \
                     run_program(PROGRAM:"radio_draw_effect"); \
                  } \
                else \
                  { \
+                    set_int(is_transition_finished, 1); \
                     set_state(PART:"radio", "visible", 0.0); \
                     set_state(PART:"opacity_clip", "visible", 0.0); \
                     set_state(PART:"radio_effect", "visible", 0.0); \
@@ -425,6 +432,7 @@
                if (get_int(radio_state) == RADIO_STATE_VISIBLE) \
                  { \
                     set_int(radio_state, RADIO_STATE_DEFAULT); \
+                    set_int(is_transition_finished, 0); \
                     set_state(PART:"radio", "default", 0.0); \
                     set_state(PART:"radio_effect", "default", 0.0); \
                     set_state(PART:"opacity_clip", "default", 0.0); \
@@ -448,7 +456,10 @@
             after: "radio_on_signal"; \
          } \
          program { name: "radio_on_signal"; \
-            action: SIGNAL_EMIT "elm,action,show,finished" "elm"; \
+            script { \
+               set_int(is_transition_finished, 1); \
+               emit("elm,action,show,finished", "elm"); \
+            } \
          } \
          program { name: "key_press"; \
             signal: "elm,action,pressed"; \
@@ -610,6 +621,7 @@ RADIO_STYLE_DEFAULT("default/extended", RADIO_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
       script { \
          public radio_state = RADIO_STATE_DEFAULT; \
          public radio_visible = RADIO_HIDE; \
+         public is_transition_finished = 0; \
       } \
       parts { \
          part { name: "back_bg"; \
@@ -902,8 +914,10 @@ RADIO_STYLE_DEFAULT("default/extended", RADIO_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             signal: "elm,state,mouse,up"; \
             source: "elm"; \
             script { \
-               if (get_int(radio_state) == RADIO_STATE_VISIBLE) \
-                  set_state(PART:"radio", "visible", 0.0); \
+               if (get_int(radio_state) == RADIO_STATE_VISIBLE) { \
+                  if (get_int(is_transition_finished) == 1) \
+                    set_state(PART:"radio", "visible", 0.0); \
+               } \
                else \
                   set_state(PART:"radio", "default", 0.0); \
                set_state(PART:"bg", "default", 0.0); \
@@ -914,8 +928,10 @@ RADIO_STYLE_DEFAULT("default/extended", RADIO_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             signal: "elm,state,mouse,down"; \
             source: "elm"; \
             script { \
-               if (get_int(radio_state) == RADIO_STATE_VISIBLE) \
-                  set_state(PART:"radio", "pressed", 0.0); \
+               if (get_int(radio_state) == RADIO_STATE_VISIBLE) { \
+                  if (get_int(is_transition_finished) == 1) \
+                    set_state(PART:"radio", "pressed", 0.0); \
+               } \
                else \
                   set_state(PART:"radio", "default", 0.0); \
                set_state(PART:"bg", "pressed", 0.0); \
@@ -943,11 +959,13 @@ RADIO_STYLE_DEFAULT("default/extended", RADIO_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
                set_int(radio_state, RADIO_STATE_VISIBLE); \
                if (get_int(radio_visible) == RADIO_SHOW) \
                  { \
+                    set_int(is_transition_finished, 0); \
                     run_program(PROGRAM:"radio_show_effect"); \
                     run_program(PROGRAM:"radio_draw_effect"); \
                  } \
                else \
                  { \
+                    set_int(is_transition_finished, 1); \
                     set_state(PART:"radio", "visible", 0.0); \
                     set_state(PART:"opacity_clip", "visible", 0.0); \
                     set_state(PART:"radio_effect", "visible", 0.0); \
@@ -960,6 +978,7 @@ RADIO_STYLE_DEFAULT("default/extended", RADIO_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             script { \
                if (get_int(radio_state) == RADIO_STATE_VISIBLE) \
                  { \
+                    set_int(is_transition_finished, 0); \
                     set_int(radio_state, RADIO_STATE_DEFAULT); \
                     set_state(PART:"radio", "default", 0.0); \
                     set_state(PART:"radio_effect", "default", 0.0); \
@@ -984,7 +1003,10 @@ RADIO_STYLE_DEFAULT("default/extended", RADIO_STYLE_DEFAULT_EXTENDED_BG_IMAGE_MI
             after: "radio_on_signal"; \
          } \
          program { name: "radio_on_signal"; \
-            action: SIGNAL_EMIT "elm,action,show,finished" "elm"; \
+            script { \
+               set_int(is_transition_finished, 1); \
+               emit("elm,action,show,finished", "elm"); \
+            } \
          } \
          program { name: "key_press"; \
             signal: "elm,action,pressed"; \

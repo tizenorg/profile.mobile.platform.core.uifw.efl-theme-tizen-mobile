@@ -29,6 +29,10 @@ all:
 		-id ./$$s/images/Naviframe/Icon\
 		-id ./$$s/images/Popup\
 		-id ./$$s/images/Process\
+		-id ./$$s/images/Process/xlarge\
+		-id ./$$s/images/Process/large\
+		-id ./$$s/images/Process/medium\
+		-id ./$$s/images/Process/small\
 		-id ./$$s/images/Screen_Reader\
 		-sd ./$$s/sounds -fd ../objects \
 		$(SRC)-$(TARGET)-$$s.edc $(SRC)-$(TARGET)-$$s.edj; \
