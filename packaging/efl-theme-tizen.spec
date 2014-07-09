@@ -45,11 +45,6 @@ make
 
 make install prefix=%{_prefix} DESTDIR=%{buildroot}
 
-# install redwood theme as fallback for lite temporarily
-%if 0%{?sec_product_feature_profile_lite}
-    mv %{buildroot}/%{_datadir}/elementary/themes/tizen-2.2-HD.edj %{buildroot}/%{_datadir}/elementary/themes/default.edj
-%endif
-
 mkdir -p %{buildroot}%{_datadir}/license
 cp %{_builddir}/%{buildsubdir}/COPYING %{buildroot}/%{_datadir}/license/%{name}
 
