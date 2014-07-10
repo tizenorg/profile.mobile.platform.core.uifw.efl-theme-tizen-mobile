@@ -5,7 +5,6 @@ EDJE_FLAGS_VERBOSE_ =
 EDJE_FLAGS_VERBOSE_0 =
 EDJE_FLAGS_VERBOSE_1 = -v
 SRC=tizen
-SIZE=HVGA
 
 all:
 	for s in $(SIZE); do \
