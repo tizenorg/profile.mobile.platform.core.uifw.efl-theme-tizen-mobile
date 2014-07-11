@@ -22,12 +22,14 @@ all:
 		-id ./$$s/images/Overscrolling/Left\
 		-id ./$$s/images/Overscrolling/Right\
 		-id ./$$s/images/Overscrolling/Top\
+		-id ./$$s/images/Option\ popup\
 		-id ./$$s/images/Popup\
 		-id ./$$s/images/Progress\
 		-id ./$$s/images/Screen_Reader\
 		-id ./$$s/images/Slider\
 		-id ./$$s/images/TimePicker\
 		-id ./$$s/images/Search\
+		-id ./$$s/images/Focus\
 		-id ./$$s/images/temp\
 		-id ./$$s/images/temp/Copy_Paste\
 		-id ./$$s/images/temp/swipe\

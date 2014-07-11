@@ -1,6 +1,6 @@
 Name:          efl-theme-tizen
 Summary:       Tizen theme files
-Version:       1.1.2
+Version:       1.1.3
 Release:       1
 Group:         TO_BE/FILLED_IN
 License:       TO_BE/FILLED_IN
@@ -23,6 +23,11 @@ export LDFLAGS+=" -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=/usr/lib"
     export TARGET=2.3-wearable
 %else
     %if 0%{?sec_product_feature_profile_lite}
+        %if "%{?sec_product_feature_display_resolution}" == "480x800"
+            export SIZE=WVGA
+        %else
+            export SIZE=HVGA
+        %endif
         export TARGET="2.2 2.3-mobile"
     %else
         export TARGET=2.2
@@ -37,6 +42,11 @@ make
     export TARGET=2.3-wearable
 %else
     %if 0%{?sec_product_feature_profile_lite}
+        %if "%{?sec_product_feature_display_resolution}" == "480x800"
+            export SIZE=WVGA
+        %else
+            export SIZE=HVGA
+        %endif
         export TARGET="2.2 2.3-mobile"
     %else
         export TARGET=2.2
