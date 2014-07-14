@@ -29,6 +29,7 @@
 #define NAVIFRAME_VIEW_SLIDE_TRANS_PREPARE_TIME 0.05 //Sliding prepare time for pop
 #define NAVIFRAME_TITLE_TRANS_TIME 0.5               //Title transition time
 #define NAVIFRAME_HIDDEN_BTN_TRANS_TIME 0.5          //Hidden Button transition time
+#define NAVIFRAME_TEXT_FADE_OUT_CALC_TIME 0.2         //Text fade out calculation time
 
 group { name: "elm/naviframe/base/default";
    parts {
@@ -48,10 +49,17 @@ group { name: "elm/naviframe/item/basic/default";
       image: "tw_action_text_fadeout_right_holo_dark.png" COMP;
    }
    script {
-      public g_mirrored = 0; //Mirrored on/off status
+      public g_mirrored = 0;                 //Mirrored on/off status
+      public g_text_fade_out_calc_timer = 0; //Text fade out calculation timer
 
       public title_text_fade_out() {
          new x, y, w, h, w2;
+
+         if (get_int(g_text_fade_out_calc_timer)) {
+            cancel_timer(g_text_fade_out_calc_timer);
+            set_int(g_text_fade_out_calc_timer, 0);
+         }
+
          get_geometry(PART:"elm.text.title", x, y, w, h);
          get_geometry(PART:"title_text_bg", x, y, w2, h);
 
@@ -464,7 +472,7 @@ group { name: "elm/naviframe/item/basic/default";
          script {
             set_state(PART:"base", "default", 0.0);
             set_state(PART:"clipper", "default", 0.0);
-            title_text_fade_out();
+            run_program(PROGRAM:"title_text_fade_out");
          }
       }
       program { name: "invisible";
@@ -515,7 +523,7 @@ group { name: "elm/naviframe/item/basic/default";
          script {
             set_state(PART:"title_bg", "default", 0.0);
             set_state(PART:"title_clip", "default", 0.0);
-            title_text_fade_out();
+            run_program(PROGRAM:"title_text_fade_out");
          }
       }
       program { name: "title_show_trans";
@@ -542,7 +550,7 @@ group { name: "elm/naviframe/item/basic/default";
          signal: "elm,state,title_label,show";
          source: "elm";
          script {
-            title_text_fade_out();
+            run_program(PROGRAM:"title_text_fade_out");
          }
       }
       program { name: "title_label_hide";
@@ -559,7 +567,7 @@ group { name: "elm/naviframe/item/basic/default";
             set_state(PART:"title_text_bg", "icon_show", 0.0);
             set_state(PART:"elm.text.title", "icon_show", 0.0);
             set_state(PART:"title_left_padding", "show", 0.0);
-            title_text_fade_out();
+            run_program(PROGRAM:"title_text_fade_out");
          }
       }
       program { name: "icon_hide";
@@ -569,21 +577,21 @@ group { name: "elm/naviframe/item/basic/default";
             set_state(PART:"title_left_padding", "default", 0.0);
             set_state(PART:"title_text_bg", "default", 0.0);
             set_state(PART:"elm.text.title", "default", 0.0);
-            title_text_fade_out();
+            run_program(PROGRAM:"title_text_fade_out");
          }
       }
       program { name: "next_btn_show";
          signal: "elm,state,next_btn,show";
          source: "elm";
          script {
-            title_text_fade_out();
+            run_program(PROGRAM:"title_text_fade_out");
          }
       }
       program { name: "next_btn_hide";
          signal: "elm,state,next_btn,hide";
          source: "elm";
          script {
-            title_text_fade_out();
+            run_program(PROGRAM:"title_text_fade_out");
          }
       }
       program { name: "hidden_btn_show";
@@ -625,7 +633,7 @@ group { name: "elm/naviframe/item/basic/default";
          source: "edje";
          script {
             set_int(g_mirrored, 1);
-            title_text_fade_out();
+            run_program(PROGRAM:"title_text_fade_out");
          }
       }
       program {
@@ -634,7 +642,17 @@ group { name: "elm/naviframe/item/basic/default";
          source: "edje";
          script {
             set_int(g_mirrored, 0);
-            title_text_fade_out();
+            run_program(PROGRAM:"title_text_fade_out");
+         }
+      }
+      program {
+         name: "title_text_fade_out";
+         script {
+             if (get_int(g_text_fade_out_calc_timer)) {
+               cancel_timer(g_text_fade_out_calc_timer);
+               set_int(g_text_fade_out_calc_timer, 0);
+            }
+            set_int(g_text_fade_out_calc_timer, timer(NAVIFRAME_TEXT_FADE_OUT_CALC_TIME, "title_text_fade_out", 0));
          }
       }
    }
