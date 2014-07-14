@@ -63,27 +63,3 @@ cp %{_builddir}/%{buildsubdir}/COPYING %{buildroot}/%{_datadir}/license/%{name}
 %{_datadir}/elementary/themes/*.edj
 %{_datadir}/license/%{name}
 %manifest %{name}.manifest
-
-
-############# Temporary ###################
-# Remove below after redwood is completed
-#%if ! 0%{?sec_product_feature_profile_lite}
-#%if ! 0%{?sec_product_feature_uifw_efl_b3_theme}
-%package hd
-Summary:       Tizen HD theme files
-Group:         TO_BE/FILLED_IN
-BuildRequires: sec-product-features
-BuildRequires: edje-bin, embryo-bin
-
-%description hd
-Temporary package only for backward compatibility of redwood
-
-%files hd
-%defattr(-,root,root,-)
-%defattr(-,root,root,-)
-%{_datadir}/elementary/themes/*.edj
-%{_datadir}/license/%{name}
-%manifest %{name}.manifest
-#%endif
-#%endif
-#############################################3
