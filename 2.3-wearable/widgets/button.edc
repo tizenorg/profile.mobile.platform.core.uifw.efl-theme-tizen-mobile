@@ -1512,10 +1512,21 @@ group { name: "elm/button/base/bottom_left";
       image: "tw_timepicker_left_softbtn.png" COMP;
    }
    parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            min: BUTTON_BOTTOM_BG_SIZE_LEFT;
+            max: BUTTON_BOTTOM_BG_SIZE_LEFT;
+            fixed: 1 1;
+            color_class: "B0543";
+         }
+      }
       part { name: "controller";
          description { state: "default" 0.0;
             min: BUTTON_BOTTOM_SIZE_LEFT;
             max: BUTTON_BOTTOM_SIZE_LEFT;
+            rel1.to: "bg";
+            rel2.to: "bg";
             fixed: 1 1;
             image.normal: "tw_timepicker_left_softbtn.png";
             color_class: "B052L4";
@@ -1634,11 +1645,22 @@ group { name: "elm/button/base/bottom_right";
       image: "tw_timepicker_right_softbtn.png" COMP;
    }
    parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            min: BUTTON_BOTTOM_BG_SIZE_RIGHT;
+            max: BUTTON_BOTTOM_BG_SIZE_RIGHT;
+            fixed: 1 1;
+            color_class: "B0543";
+         }
+      }
       part { name: "controller";
          description { state: "default" 0.0;
             image.normal: "tw_timepicker_right_softbtn.png";
             min: BUTTON_BOTTOM_SIZE_RIGHT;
             max: BUTTON_BOTTOM_SIZE_RIGHT;
+            rel1.to: "bg";
+            rel2.to: "bg";
             fixed: 1 1;
          }
          description { state: "pressed" 0.0;
@@ -1803,161 +1825,6 @@ group { name: "elm/button/base/list_divider_btn";
          action: STATE_SET "default" 0.0;
          target: "event";
          target: "bg";
-      }
-   }
-}
-
-group { name: "elm/button/base/popup_controller_ff";
-   images {
-      image: "tw_controller_module_ff.png" COMP;
-   }
-   parts {
-      part { name: "bg";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            color_class: "W171L2";
-         }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
-            color_class: "W171L2P";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            color_class: "W171L2D";
-         }
-      }
-      part { name: "image";
-         type: IMAGE;
-         scale: 1;
-         clip_to: "clip";
-         description { state: "default" 0.0;
-            rel1.to: "bg";
-            rel2.to: "bg";
-            min: BUTTON_POPUP_CONTROLLER_ICON_SIZE;
-            max: BUTTON_POPUP_CONTROLLER_ICON_SIZE;
-            image.normal: "tw_controller_module_ff.png";
-         }
-      }
-      part { name: "clip";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            color_class: "W083L1";
-            rel1.to: "image";
-            rel2.to: "image";
-         }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
-            color_class: "W083L1P";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            color_class: "W083L1D";
-         }
-      }
-      part { name: "event";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-         }
-      }
-   }
-   programs {
-      program { name: "pressed";
-         signal: "mouse,down,1*";
-         source: "event";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"event", st, 30, vl);
-            if (strcmp(st, "disabled")) {
-               set_state(PART:"bg", "pressed", 0.0);
-               set_state(PART:"clip", "pressed", 0.0);
-               emit("elm,action,press", "");
-            }
-         }
-      }
-      program{ name: "unpressed";
-         signal: "mouse,up,1";
-         source: "event";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"event", st, 30, vl);
-            if (strcmp(st, "disabled")) {
-               set_state(PART:"bg", "default", 0.0);
-               set_state(PART:"clip", "default", 0.0);
-               emit("elm,action,unpress", "");
-            }
-         }
-      }
-      program { name: "touch_snd";
-         signal: "mouse,clicked,1";
-         source: "event";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"event", st, 30, vl);
-            if (strcmp(st, "disabled")) {
-               play_sample("touch_sound", 1.0);
-               emit("elm,action,click", "");
-            }
-         }
-      }
-      program { name: "disable";
-         signal: "elm,state,disabled";
-         source: "elm";
-         action: STATE_SET "disabled" 0.0;
-         target: "bg";
-         target: "clip";
-         target: "event";
-         }
-      program { name: "enable";
-         signal: "elm,state,enabled";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "bg";
-         target: "clip";
-         target: "event";
-      }
-   }
-}
-
-group { name: "elm/button/base/popup_controller_rw";
-   inherit: "elm/button/base/popup_controller_ff";
-   images {
-      image: "tw_controller_module_rw.png" COMP;
-   }
-   parts {
-      part { name: "image";
-         type: IMAGE;
-         scale: 1;
-         clip_to: "clip";
-         description { state: "default" 0.0;
-            image.normal: "tw_controller_module_rw.png";
-         }
-      }
-   }
-}
-
-group { name: "elm/button/base/popup_controller_close";
-   inherit: "elm/button/base/popup_controller_ff";
-   images {
-      image: "tw_controller_module_close.png" COMP;
-   }
-   parts {
-      part { name: "image";
-         type: IMAGE;
-         scale: 1;
-         clip_to: "clip";
-         description { state: "default" 0.0;
-            image.normal: "tw_controller_module_close.png";
-         }
       }
    }
 }
