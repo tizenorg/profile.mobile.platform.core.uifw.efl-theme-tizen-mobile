@@ -669,10 +669,10 @@ group { name: "elm/check/base/list_divider";
 
 group { name: "elm/check/base/on&off";
    images {
-      image: "tw_btn_toggle_bg_holo_dark.png" COMP;
+      image: "tw_btn_toggle_bg_holo.png" COMP;
       image: "tw_btn_toggle_on_holo_dark.png" COMP;
       image: "tw_btn_toggle_off_holo_dark.png" COMP;
-      image: "tw_btn_toggle_handle_holo_dark.png" COMP;
+      image: "tw_btn_toggle_handle_holo.png" COMP;
    }
    script {
       public is_rtl = 0;
@@ -698,17 +698,31 @@ group { name: "elm/check/base/on&off";
          description { state: "default" 0.0;
             min: CHECK_TOGGLE_SIZE;
             max: CHECK_TOGGLE_SIZE;
+            rel1.to: "bg";
+            rel2.to: "bg";
             fixed: 1 1;
-            image.normal: "tw_btn_toggle_bg_holo_dark.png";
-            color_class: "W014L1";
+            image.normal: "tw_btn_toggle_bg_holo.png";
+            color_class: "W014L2";
          }
-         description { state: "pressed" 0.0;
+         description { state: "on_pressed" 0.0;
             inherit: "default" 0.0;
             color_class: "W014L1P";
          }
-         description { state: "disabled" 0.0;
+         description { state: "on_disabled" 0.0;
             inherit: "default" 0.0;
             color_class: "W014L1D";
+         }
+         description { state: "off_pressed" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W014L2P";
+         }
+         description { state: "off_disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W014L2D";
+         }
+         description { state: "on" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W014L1";
          }
       }
       part { name: "drag_container";
@@ -738,28 +752,28 @@ group { name: "elm/check/base/on&off";
             rel1.to: "button";
             rel2.to: "button";
             fixed: 1 1;
-            image.normal: "tw_btn_toggle_handle_holo_dark.png";
-            color_class: "W014L3";
+            image.normal: "tw_btn_toggle_handle_holo.png";
+            color_class: "W014L4";
          }
          description { state: "on" 0.0;
             inherit: "default" 0.0;
-            color_class: "W014L2";
+            color_class: "W014L3";
          }
          description { state: "on_pressed" 0.0;
             inherit: "default" 0.0;
-            color_class: "W014L2P";
+            color_class: "W014L3P";
          }
          description { state: "on_disabled" 0.0;
             inherit: "default" 0.0;
-            color_class: "W014L2D";
+            color_class: "W014L3D";
          }
          description { state: "off_pressed" 0.0;
             inherit: "default" 0.0;
-            color_class: "W014L3P";
+            color_class: "W014L4P";
          }
          description { state: "off_disabled" 0.0;
             inherit: "default" 0.0;
-            color_class: "W014L3D";
+            color_class: "W014L4D";
          }
       }
       part { name: "button";
@@ -779,28 +793,28 @@ group { name: "elm/check/base/on&off";
             align: 0.0 0.5;
             fixed: 1 1;
             image.normal: "tw_btn_toggle_off_holo_dark.png";
-            color_class: "W014L5";
+            color_class: "W014L6";
          }
          description { state: "on" 0.0;
             inherit: "default" 0.0;
             image.normal: "tw_btn_toggle_on_holo_dark.png";
-            color_class: "W014L4";
+            color_class: "W014L5";
          }
          description { state: "on_pressed" 0.0;
             inherit: "on" 0.0;
-            color_class: "W014L4P";
+            color_class: "W014L5P";
          }
          description { state: "on_disabled" 0.0;
             inherit: "on" 0.0;
-            color_class: "W014L4D";
+            color_class: "W014L5D";
          }
          description { state: "off_pressed" 0.0;
             inherit: "default" 0.0;
-            color_class: "W014L5P";
+            color_class: "W014L6P";
          }
          description { state: "off_disabled" 0.0;
             inherit: "default" 0.0;
-            color_class: "W014L5D";
+            color_class: "W014L6D";
          }
       }
       part { name: "button_events";
@@ -944,12 +958,13 @@ group { name: "elm/check/base/on&off";
             if (get_int(check_on)) {
               set_state(PART:"button", "on_pressed", 0.0);
               set_state(PART:"button_handler", "on_pressed", 0.0);
+              set_state(PART:"bg_image", "on_pressed", 0.0);
             }
             else {
                set_state(PART:"button", "off_pressed", 0.0);
                set_state(PART:"button_handler", "off_pressed", 0.0);
+               set_state(PART:"bg_image", "off_pressed", 0.0);
             }
-            set_state(PART:"bg_image", "pressed", 0.0);
          }
       }
       program { name: "unpress";
@@ -959,12 +974,13 @@ group { name: "elm/check/base/on&off";
             if (get_int(check_on)) {
                set_state(PART:"button", "on", 0.0);
                set_state(PART:"button_handler", "on", 0.0);
+               set_state(PART:"bg_image", "on", 0.0);
             }
             else {
                set_state(PART:"button", "default", 0.0);
                set_state(PART:"button_handler", "default", 0.0);
+               set_state(PART:"bg_image", "default", 0.0);
             }
-            set_state(PART:"bg_image", "default", 0.0);
          }
       }
       program { name: "touch_sound";
@@ -1033,10 +1049,16 @@ group { name: "elm/check/base/on&off";
                drag = 0.0;
             }
             set_drag(PART:"button", drag, 0.0);
-            if (get_int(check_disabled) == 0)
-              set_state(PART:"bg_image", "default", 0.0);
-            set_state(PART:"button", "on", 0.0);
-            set_state(PART:"button_handler", "on", 0.0);
+            if (get_int(check_disabled) == 0) {
+              set_state(PART:"bg_image", "on", 0.0);
+              set_state(PART:"button", "on", 0.0);
+              set_state(PART:"button_handler", "on", 0.0);
+            }
+            else {
+              set_state(PART:"bg_image", "on_disabled", 0.0);
+              set_state(PART:"button", "on_disabled", 0.0);
+              set_state(PART:"button_handler", "on_disabled", 0.0);
+            }
             set_int(check_on, 1);
          }
       }
@@ -1052,10 +1074,16 @@ group { name: "elm/check/base/on&off";
                drag = 100.0;
             }
             set_drag(PART:"button", drag, 0.0);
-            if (get_int(check_disabled) == 0)
+            if (get_int(check_disabled) == 0) {
                set_state(PART:"bg_image", "default", 0.0);
-            set_state(PART:"button", "default", 0.0);
-            set_state(PART:"button_handler", "default", 0.0);
+               set_state(PART:"button", "default", 0.0);
+               set_state(PART:"button_handler", "default", 0.0);
+            }
+            else {
+               set_state(PART:"bg_image", "off_disabled", 0.0);
+               set_state(PART:"button", "off_disbaled", 0.0);
+               set_state(PART:"button_handler", "off_disbaled", 0.0);
+            }
             set_int(check_on, 0);
          }
       }
@@ -1078,12 +1106,13 @@ group { name: "elm/check/base/on&off";
             if (get_int(check_on) == 1) {
                set_state(PART:"button", "on_disabled", 0.0);
                set_state(PART:"button_handler", "on_disabled", 0.0);
+               set_state(PART:"bg_image", "on_disabled", 0.0);
             }
             else {
                set_state(PART:"button", "off_disabled", 0.0);
                set_state(PART:"button_handler", "off_disabled", 0.0);
+               set_state(PART:"bg_image", "off_disabled", 0.0);
             }
-            set_state(PART:"bg_image", "disabled", 0.0);
             set_state(PART:"onrect", "disabled", 0.0);
             set_state(PART:"offrect", "disabled", 0.0);
             set_state(PART:"disabler", "disabled", 0.0);
@@ -1097,12 +1126,13 @@ group { name: "elm/check/base/on&off";
             if (get_int(check_on) == 1) {
                set_state(PART:"button", "on", 0.0);
                set_state(PART:"button_handler", "on", 0.0);
+               set_state(PART:"bg_image", "on", 0.0);
             }
             else {
                set_state(PART:"button", "default", 0.0);
                set_state(PART:"button_handler", "default", 0.0);
+               set_state(PART:"bg_image", "default", 0.0);
             }
-            set_state(PART:"bg_image", "default", 0.0);
             set_state(PART:"onrect", "default", 0.0);
             set_state(PART:"offrect", "default", 0.0);
             set_state(PART:"disabler", "default", 0.0);
