@@ -108,6 +108,9 @@ group { name: "elm/slider/horizontal/indicator/default";
 
    group { name: "elm/slider/horizontal/default";
            alias: "elm/slider/horizontal/disabled";
+      images {
+         image: "tw_timepicker_num_bg_new.#.png" COMP;
+      }
       script {
          public invert_on = 0;
          public set_invert_on() {
@@ -125,128 +128,284 @@ group { name: "elm/slider/horizontal/indicator/default";
          public thumb_up() {
             if(get_int(invert_on) == 0)
                set_state(PART:"level", "default", 0.0);
+         }
+      }
+      parts {
+         part { name: "access";
+            type: RECT;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               color: 0 0 0 0;
+             }
+         }
+         part {
+            name: "bg";
+            type: SPACER;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min: 0 SLIDER_BG_HEIGHT_INC;
+               max: -1 SLIDER_BG_HEIGHT_INC;
             }
          }
-         parts {
-            part { name: "access";
-               type: RECT;
-               description { state: "default" 0.0;
-                  fixed: 1 1;
-                  color: 0 0 0 0;
+         part {
+            name: "top_padding";
+            type: SPACER;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min: 0 0;
+               max: 0 0;
+               rel1.to: "bg";
+               rel2 {
+                  relative: 1.0  0.0;
+                  to: "bg";
                }
+               align: 0.5 1.0;
+               fixed: 1 1;
             }
-            part {
-               name: "bg";
-               type: RECT;
-               scale: 1;
-               description {
-                  state: "default" 0.0;
-                  min: 0 PROGRESSBAR_HEIGHT;
-                  max: -1 PROGRESSBAR_HEIGHT;
-                  fixed: 0 1;
-                  color_class: "B065L3";
-               }
+            description { state: "visible";
+               inherit: "default" 0.0;
+               min: 0 SLIDER_POPUP_BOTTOM_PADDING_HEIGHT_INC;
+               max: -1 SLIDER_POPUP_BOTTOM_PADDING_HEIGHT_INC;
             }
-            part { name: "level";
-               type: RECT;
-               mouse_events: 0;
-               scale: 1;
-               clip_to: "clipper";
-               description { state: "default" 0.0;
-                  fixed: 0 1;
-                  rel1 {
-                     to_x: "bg";
-                     relative: 0.0 0.0;
-                  }
-                  rel2 {
-                     to_x: "elm.dragable.slider";
-                     relative: 0.5 1.0;
-                  }
-                  color_class: "B065L2";
-                  min: 0 PROGRESSBAR_HEIGHT;
-                  max: -1 PROGRESSBAR_HEIGHT;
-                  fixed: 0 1;
+         }
+         part { name: "popup_bg";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1.to: "top_padding";
+               rel2 {
+                  relative: 1.0 0.0;
+                  to: "top_padding";
                }
-               description { state: "inverted" 0.0;
-                  inherit: "default" 0.0;
-                  visible: 0;
-               }
-               description { state: "pressed" 0.0;
-                  inherit: "default" 0.0;
-               }
+               min: SLIDER_POPUP_SIZE_INC;
+               max: SLIDER_POPUP_SIZE_INC;
+               fixed: 1 1;
+               align: 0.5 1.0;
             }
-            part { name: "base";
-               type: RECT;
-               mouse_events: 0;
-               scale: 1;
-               description { state: "default" 0.0;
-                  visible: 0;
-                  rel1.to: "elm.swallow.bar";
-                  rel1.offset: -20 0; // FIXME: slider image has transparent area
-                  rel2.to: "elm.swallow.bar";
-                  rel2.offset: 10 0;  // FIXME: slider image has transparent area
-               }
+         }
+         part { name: "popup.image";
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               fixed: 1 1;
+               rel1.to: "popup_bg";
+               rel2.to: "popup_bg";
+               image.normal: "tw_timepicker_num_bg_new.#.png";
+               color_class: "W0811";
             }
-            part { name: "elm.swallow.bar";
-               type: SWALLOW;
-               mouse_events: 0;
-               scale: 1;
-               description { state: "default" 0.0;
-                  min: 0  SLIDER_IND_HEIGHT;
-                  max: -1 SLIDER_IND_HEIGHT;
-                  align: 1.0 0.5;
-                  fixed: 0 1;
-                  rel1 {
-                     to_x: "bg";
-                     relative: 0.0 0.0;
-                  }
-                  rel2 {
-                     to_x: "bg";
-                     relative: 1.0 1.0;
-                  }
-               }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
             }
-            part { name: "elm.dragable.slider";
-               type: GROUP;
-               source: "elm/slider/horizontal/indicator/default";
-               mouse_events: 1;
-               scale: 1;
-               dragable {
-                  x: 1 1 0;
-                  y: 0 0 0;
-                  confine: "base";
-               }
-               description { state: "default" 0.0;
-                  min: SLIDER_IND_WIDTH SLIDER_IND_HEIGHT;
-                  fixed: 1 1;
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color_class: "W0812";
+            }
+         }
+         part { name: "elm.indicator";
+            type: TEXT;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               fixed: 1 1;
+               color_class: "T051";
+               rel1.to: "popup.image";
+               rel2.to: "popup.image";
+               text {
                   align: 0.5 0.5;
-                  color: 0 0 0 0;
+                  min: 1 1;
+                  text_class: "T051";
                }
             }
-            part { name: "disabler";
-               type: RECT;
-               mouse_events: 1;
-               repeat_events: 0;
-               scale: 1;
-               description { state: "default" 0.0;
-                  visible: 0;
-                  color: 0 0 0 0;
-               }
-               description { state: "disabled" 0.0;
-                  inherit: "default" 0.0;
-                  visible: 1;
-               }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
             }
-            part { name: "clipper";
-               type: RECT;
-               description { state: "default" 0.0;
-                  color: 255 255 255 255;
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               color_class: "T051P";
+               visible: 1;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "T051D";
+               visible: 1;
+            }
+         }
+         part { name: "elm.swallow.icon";
+            type: SWALLOW;
+            clip_to: "icon_clipper";
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to: "bg";
                }
-               description { state: "disabled" 0.0;
-                  color: 255 255 255 102;
+               rel2 {
+                  relative: 0.0 1.0;
+                  to: "bg";
+               }
+               align: 0.0 0.5;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part {
+            name: "icon_padding";
+            type: SPACER;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min: 0 0;
+               max: 0 0;
+               rel1 {
+                  relative: 1.0  0.0;
+                  to: "elm.swallow.icon";
+               }
+               rel2 {
+                  relative: 1.0  1.0;
+                  to: "elm.swallow.icon";
+               }
+               align: 0.0 0.5;
+               fixed: 1 1;
+            }
+            description { state: "visible";
+               inherit: "default" 0.0;
+               min: SLIDER_ICON_PADDING_SIZE_INC;
+               max: SLIDER_ICON_PADDING_SIZE_INC;
+            }
+         }
+         part {
+            name: "base";
+            type: RECT;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "icon_padding";
+                  to_y: "bg";
+               }
+               rel2.to: "bg";
+               min: 0 PROGRESSBAR_HEIGHT;
+               max: -1 PROGRESSBAR_HEIGHT;
+               fixed: 0 1;
+               color_class: "B065L3";
+            }
+         }
+         part { name: "level";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            clip_to: "clipper";
+            description { state: "default" 0.0;
+               fixed: 0 1;
+               rel1 {
+                  to_x: "base";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to_x: "elm.dragable.slider";
+                  relative: 0.5 1.0;
+               }
+               color_class: "B065L2";
+               min: 0 PROGRESSBAR_HEIGHT;
+               max: -1 PROGRESSBAR_HEIGHT;
+               fixed: 0 1;
+            }
+            description { state: "inverted" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+            }
+         }
+         part { name: "darg_base";
+            type: RECT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1.to: "elm.swallow.bar";
+               rel1.offset: -20 0; // FIXME: slider image has transparent area
+               rel2.to: "elm.swallow.bar";
+               rel2.offset: 20 0;  // FIXME: slider image has transparent area
+            }
+         }
+         part { name: "elm.swallow.bar";
+            type: SWALLOW;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 0  SLIDER_IND_HEIGHT;
+               max: -1 SLIDER_IND_HEIGHT;
+               align: 1.0 0.5;
+               fixed: 0 1;
+               rel1 {
+                  to_x: "base";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to_x: "base";
+                  relative: 1.0 1.0;
                }
             }
          }
+         part { name: "elm.dragable.slider";
+            type: GROUP;
+            source: "elm/slider/horizontal/indicator/default";
+            mouse_events: 1;
+            scale: 1;
+            dragable {
+               x: 1 1 0;
+               y: 0 0 0;
+               confine: "darg_base";
+            }
+            description { state: "default" 0.0;
+               min: SLIDER_IND_WIDTH SLIDER_IND_HEIGHT;
+               fixed: 1 1;
+               align: 0.5 0.5;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "disabler";
+            type: RECT;
+            mouse_events: 1;
+            repeat_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 0 0 0 0;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "clipper";
+            type: RECT;
+            description { state: "default" 0.0;
+               color_class: "B065L2";
+            }
+            description { state: "disabled" 0.0;
+               color_class: "B0651L2";
+            }
+         }
+         part { name: "icon_clipper";
+            scale: 1;
+            type: RECT;
+            description { state: "default" 0.0;
+               color_class: "W173L1";
+            }
+         }
+      }
       programs {
          program { name: "invert_on";
             signal: "elm,state,inverted,on";
@@ -276,6 +435,37 @@ group { name: "elm/slider/horizontal/indicator/default";
                thumb_up();
             }
          }
+         program { name: "popup_val_show";
+            signal: "elm,state,val,show";
+            source: "elm";
+            action:  STATE_SET "visible" 0.0;
+            target: "top_padding";
+            target: "popup.image";
+            target: "elm.indicator";
+         }
+         program { name: "popup,show";
+            signal: "popup,show";
+            source: "elm";
+            action:  STATE_SET "visible" 0.0;
+            target: "top_padding";
+            target: "popup.image";
+            target: "elm.indicator";
+         }
+         program { name: "popup_hide";
+            signal: "popup,hide";
+            source: "elm";
+            action:  STATE_SET "default" 0.0;
+            target: "top_padding";
+            target: "popup.image";
+            target: "elm.indicator";
+         }
+         program { name: "icon_show";
+            signal: "elm,state,icon,visible";
+            source: "elm";
+            action:  STATE_SET "visible" 0.0;
+            target: "elm.swallow.icon";
+            target: "icon_padding";
+         }
          program { name: "slider_disable";
             signal: "elm,state,disabled";
             source: "elm";
@@ -284,11 +474,11 @@ group { name: "elm/slider/horizontal/indicator/default";
             target: "clipper";
          }
          program { name: "slider_enable";
-            signal: "elm,state,enabled";
-            source: "elm";
-            action:  STATE_SET "default" 0.0;
-            target: "disabler";
-            target: "clipper";
+           signal: "elm,state,enabled";
+           source: "elm";
+           action:  STATE_SET "default" 0.0;
+           target: "disabler";
+           target: "clipper";
          }
       }
    }

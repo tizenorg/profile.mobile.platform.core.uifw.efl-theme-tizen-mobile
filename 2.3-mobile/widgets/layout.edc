@@ -72,6 +72,7 @@ group {
    name: "elm/layout/nocontents/default";
    images {
       image: "core_pattern_empty_bg.png" COMP;
+      image: "core_pattern_empty_bg_h.png" COMP;
    }
    parts {
       part { name: "bg";
@@ -79,6 +80,10 @@ group {
          scale: 1;
          description { state: "default" 0.0;
             min: NO_CONTENT_WIDTH_INC 0;
+         }
+         description { state: "landscape" 0.0;
+           inherit: "default" 0.0;
+           min: NO_CONTENT_WIDTH_LANDSCAPE_INC 0;
          }
       }
       part { name: "bg_con";
@@ -94,10 +99,20 @@ group {
          type: IMAGE;
          scale: 1;
          description { state: "default" 0.0;
+            min:NO_CONTENT_WIDTH_INC NO_CONTENT_BG_HEIGHT_INC;
             rel1.to: "bg";
-            rel2.to: "bg";
+            rel2 {
+              to: "bg";
+              relative: 1.0 0.0;
+            }
+            align: 0.0 0.0;
             color_class: "B238L2";
             image.normal: "core_pattern_empty_bg.png";
+         }
+         description { state: "landscape" 0.0;
+           inherit: "default" 0.0;
+           min: NO_CONTENT_WIDTH_LANDSCAPE_INC NO_CONTENT_BG_LANDSCAPE_HEIGHT_INC;
+           image.normal: "core_pattern_empty_bg_h.png";
          }
       }
       part { name: "text_bg";
@@ -159,7 +174,10 @@ group {
             inherit: "default" 0.0;
             fixed: 0 1;
             align: 0.0 1.0;
-            rel1.to: "padding_after_text";
+            rel1 {
+               to: "padding_after_text";
+               relative: 0.0 0.0 ;
+            }
             rel2 {
                to: "padding_after_text";
                relative: 1.0 0.0;
@@ -230,6 +248,38 @@ group {
       }
    }
    programs {
+      program { name: "landscape_mode";
+         source: "elm";
+         signal: "elm,state,orient,90";
+         script {
+            set_state(PART:"bg", "landscape", 0.0);
+            set_state(PART:"bg_image", "landscape", 0.0);
+         }
+      }
+      program { name: "landscape_mode2";
+         source: "elm";
+         signal: "elm,state,orient,270";
+         script {
+            set_state(PART:"bg", "landscape", 0.0);
+            set_state(PART:"bg_image", "landscape", 0.0);
+         }
+      }
+      program { name: "portrait_mode";
+         source: "elm";
+         signal: "elm,state,orient,0";
+         script {
+            set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"bg_image", "default", 0.0);
+         }
+      }
+      program { name: "portrait_mode2";
+         source: "elm";
+         signal: "elm,state,orient,180";
+         script {
+            set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"bg_image", "default", 0.0);
+         }
+      }
       program { name: "align_center";
          signal: "align.center";
          source: "elm";

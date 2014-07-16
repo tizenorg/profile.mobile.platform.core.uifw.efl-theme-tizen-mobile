@@ -29,20 +29,13 @@ group {
    alias: "elm/colorselector/palette/default";
    data.item: "horizontal_pad" COLORSELECTOR_PORTRAIT_HOR_PAD_COLORPLANE_INC;
    data.item: "vertical_pad" COLORSELECTOR_PORTRAIT_VER_PAD_COLORPLANE_INC;
-   images {
-         image: "core_color_picker_expand_open.png" COMP;
-         image: "core_color_picker_expand_close.png" COMP;
-         image: "core_color_picker_expand_bg.png" COMP;
-      }
-   script {
-      public colorplane_visible = 0;
-   }
+
    parts {
       part { name: "base";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            min: 0 COLORSELECTOR_PALETTE_COLORPLANE_HEIGHT_INC;
+            min: COLORSELECTOR_PALETTE_COLORPLANE_WIDTH_INC COLORSELECTOR_PALETTE_COLORPLANE_HEIGHT_INC;
             max: -1 -1;
          }
       }
@@ -89,142 +82,6 @@ group {
             align: 0.0 0.0;
          }
       }
-      part { name: "plane";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            fixed: 0 1;
-            rel1 {
-               relative: 0.0 1.0;
-               to_y: "palette_bottom_padding";
-            }
-            rel2.to_y: "palette_bottom_padding";
-            visible: 0;
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part{ name: "plane_bottom_padding";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 COLORSELECTOR_TOPBOTTOM_PAD_COLORPLANE_INC;
-            fixed: 0 1;
-            rel1 {
-               relative: 0.0 1.0;
-               to: "plane";
-            }
-            rel2.to: "plane";
-            align: 0.0 0.0;
-         }
-      }
-      part { name: "arrow_bg";
-         scale: 1;
-         description { state: "default" 0.0;
-            color_class: "B041";
-            align: 0.0 0.0;
-            min: 0 COLORSELECTOR_ARROW_BG_HEIGHT_INC;
-            max: -1 COLORSELECTOR_ARROW_BG_HEIGHT_INC;
-            fixed: 1 1;
-            rel1 {
-               relative: 0.0 1.0;
-               to_y: "palette_bottom_padding";
-            }
-            rel2.to_y: "palette_bottom_padding";
-            image.normal: "core_color_picker_expand_bg.png";
-         }
-         description { state: "after_plane" 0.0;
-            inherit: "default" 0.0;
-            rel1 {
-               relative: 0.0 1.0;
-               to_y: "plane_bottom_padding";
-            }
-            rel2.to_y: "plane_bottom_padding";
-         }
-         description { state: "pressed1" 0.0;
-            inherit: "default" 0.0;
-            color_class: "B041P";
-         }
-         description { state: "pressed2" 0.0;
-            inherit: "after_plane" 0.0;
-            color_class: "B041P";
-         }
-      }
-      part { name:"arrow_image";
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: COLORSELECTOR_ARROW_IMAGE_SIZE_INC COLORSELECTOR_ARROW_IMAGE_SIZE_INC;
-            max: COLORSELECTOR_ARROW_IMAGE_SIZE_INC COLORSELECTOR_ARROW_IMAGE_SIZE_INC;
-            fixed: 1 1;
-            color_class: "F060L1";
-            rel1 {
-               to: "arrow_bg";
-            }
-            rel2 {
-               to: "arrow_bg";
-            }
-            image.normal: "core_color_picker_expand_open.png";
-         }
-         description { state: "close_image" 0.0;
-            inherit: "default" 0.0;
-            image.normal: "core_color_picker_expand_close.png";
-         }
-      }
-   }
-   programs{
-      program { name: "arrow_pressed";
-         signal: "mouse,down,1*";
-         source: "arrow_bg";
-         script {
-            if (get_int(colorplane_visible) == 0)
-                 set_state(PART:"arrow_bg","pressed1", 0.0);
-            else
-                 set_state(PART:"arrow_bg","pressed2", 0.0);
-         }
-      }
-      program { name: "toggle_colorplane";
-         signal: "mouse,up,1*";
-         source: "arrow_bg";
-         script {
-            if (get_int(colorplane_visible) == 0)
-              {
-                 set_int(colorplane_visible,1);
-                 set_state(PART:"plane","visible", 0.0);
-                 set_state(PART:"arrow_bg","after_plane", 0.0);
-                 set_state(PART:"arrow_image","close_image", 0.0);
-              }
-            else
-              {
-                 set_int(colorplane_visible,0);
-                 set_state(PART:"plane","default", 0.0);
-                 set_state(PART:"arrow_bg","default", 0.0);
-                 set_state(PART:"arrow_image","default", 0.0);
-              }
-         }
-      }
-      program { name: "custom_palette_toggle_colorplane";
-         signal: "elm,state,custom,toggle,plane";
-         source: "";
-         script {
-            if (get_int(colorplane_visible) == 0)
-              {
-                 set_int(colorplane_visible,1);
-                 set_state(PART:"plane","visible", 0.0);
-                 set_state(PART:"arrow_bg","after_plane", 0.0);
-                 set_state(PART:"arrow_image","close_image", 0.0);
-              }
-            else
-              {
-                 set_int(colorplane_visible,0);
-                 set_state(PART:"plane","default", 0.0);
-                 set_state(PART:"arrow_bg","default", 0.0);
-                 set_state(PART:"arrow_image","default", 0.0);
-              }
-         }
-      }
    }
 }
 
@@ -233,8 +90,8 @@ group {
    alias: "elm/colorselector/item/default";
    images {
       image: "core_color_picker_palette_focus.png" COMP;
+      image: "core_color_picker_palette_focus_bg.png" COMP;
       image: "core_color_picker_color_shadow.png" COMP;
-      image: "core_color_picker_palette_more.png" COMP;
    }
    parts {
       part {
@@ -266,11 +123,28 @@ group {
          }
       }
       part {
+         name: "focus_bg_image";
+         type: IMAGE;
+         mouse_events: 0;
+         description{
+            state: "default" 0.0;
+            visible: 0;
+            rel1.to: "color_bg";
+            rel2.to: "color_bg";
+            image.normal: "core_color_picker_palette_focus_bg.png";
+         }
+         description {
+            state: "focused" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color_class: "W162";
+         }
+      }
+      part {
          name: "focus_image";
          description {
             state: "default" 0.0;
             visible: 0;
-            image.normal: "core_color_picker_palette_focus.png";
             rel1 {
                to: "color_bg";
                offset: -1 -1;
@@ -279,12 +153,13 @@ group {
                to: "color_bg";
                offset: 0 0;
             }
+            image.normal: "core_color_picker_palette_focus.png";
          }
          description {
             state: "focused" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            color_class: "W161";
+            color_class: "W162L1";
          }
       }
       part { name: "over1";
@@ -297,46 +172,13 @@ group {
             color: 0 0 0 0;
          }
       }
-      part {
-         name: "color_custom_image";
-         ignore_flags: ON_HOLD;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            image.normal: "core_color_picker_palette_more.png";
-            image.border_scale: 1;
-            rel1.to: "color_bg";
-            rel2.to: "color_bg";
-         }
-         description {
-            state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "over2";
-         type: RECT;
-         repeat_events: 1;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            rel1.to: "color_custom_image";
-            rel2.to: "color_custom_image";
-            color: 0 0 0 0;
-         }
-         description {
-            state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
       part { name: "highlight";
          type: IMAGE;
          scale: 1;
          description { state: "default" 0.0;
             visible: 0;
             image.normal: "core_color_picker_palette_focus.png";
-            color_class: "W161";
+            color_class: "W162L1";
          }
          description { state: "highlighted" 0.0;
             inherit: "default" 0.0;
@@ -350,6 +192,7 @@ group {
          signal: "elm,state,selected";
          script {
             set_state(PART:"focus_image", "focused", 0.0);
+            set_state(PART:"focus_bg_image", "focused", 0.0);
             emit("elm,state,up", "");
          }
       }
@@ -358,6 +201,7 @@ group {
          signal: "elm,state,unselected";
          script {
             set_state(PART:"focus_image", "default", 0.0);
+            set_state(PART:"focus_bg_image", "default", 0.0);
          }
       }
       program { name: "item_down";
@@ -372,14 +216,8 @@ group {
          source: "over1";
          script {
             set_state(PART:"focus_image", "focused", 0.0);
+            set_state(PART:"focus_bg_image", "focused", 0.0);
             emit("elm,state,up", "");
-         }
-      }
-      program { name: "custom_clicked";
-         signal: "mouse,clicked,1";
-         source: "color_custom_image";
-         script {
-            emit("elm,state,image,clicked", "");
          }
       }
       program { name: "item_unfocus_all";
@@ -387,21 +225,8 @@ group {
          signal: "elm,state,unhighlight";
          script {
             set_state(PART:"focus_image", "default", 0.0);
+            set_state(PART:"focus_bg_image", "default", 0.0);
          }
-      }
-      program { name: "custom_image_show";
-         source: "";
-         signal: "elm,state,custom,show";
-         action: STATE_SET "visible" 0.0;
-         target: "color_custom_image";
-         target: "over2";
-      }
-      program { name: "custom_image_hide";
-         source: "";
-         signal: "elm,state,custom,hide";
-         action: STATE_SET "default" 0.0;
-         target: "color_custom_image";
-         target: "over2";
       }
       program { name: "highlight_on";
          signal: "elm,highlight,on";
@@ -420,21 +245,9 @@ group {
         source: "over1";
         action: RUN_PLUGIN "touch_sound";
       }
-      program { name: "touch_sound_over2";
-        signal: "mouse,clicked,1";
-        source: "over2";
-        action: RUN_PLUGIN "touch_sound";
-      }
-      program { name: "item_down2";
-         signal: "mouse,clicked,1";
-         source: "over2";
-         script {
-            set_state(PART:"focus_image", "focused", 0.0);
-            emit("elm,state,up", "");
-         }
-      }
    }
 }
+
 group {
    name: "elm/colorselector/item/color/colorplane";
    alias: "elm/colorselector/item/color/colorplane_landscape";
@@ -444,7 +257,7 @@ group {
    }
    parts {
       part {
-         name: "color_rect";
+         name: "color_image";
          type: IMAGE;
          mouse_events: 1;
          scale: 1;
@@ -455,178 +268,4 @@ group {
       }
    }
 }
-group {
-    name: "elm/colorselector/colorplane/default";
-    images {
-        image: "core_color_picker_color.png" COMP;
-        image: "core_color_picker_color_handler.png" COMP;
-    }
-    parts{
-       part {
-          name: "base";
-          type: SPACER;
-          scale: 1;
-          description {
-             state: "default" 0.0;
-             min: 0 COLORPLANE_MIN_HEIGHT_INC;
-          }
-        }
-        part {
-            name: "colorplane_bg";
-            type: IMAGE;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-                aspect_preference: SOURCE;
-                rel1.to: "base";
-                rel2.to: "base";
-                image.normal: "core_color_picker_color.png";
-            }
-        }
-        part {
-           name: "events";
-           type: RECT;
-           description {
-              state: "default" 0.0;
-              rel1.to: "colorplane_bg";
-              rel2.to: "colorplane_bg";
-              color: 0 0 0 0;
-           }
-        }
-        part{
-           name: "elm.touch";
-           type: SPACER;
-           mouse_events: 0;
-           scale: 1;
-           description{
-              state: "default" 0.0;
-              min: 1 1;
-              fixed: 1 1;
-           }
-          dragable {
-             confine: "colorplane_bg";
-             x: 1 1 1;
-             y: 1 1 1;
-          }
-        }
-        part {
-           name: "elm.touch.image";
-           type: IMAGE;
-           clip_to: "disclip";
-           scale: 1;
-           mouse_events: 0;
-           scale: 1;
-           description {
-              state: "default" 0.0;
-              min: COLORSELECTOR_COLORPLANE_CONTROL_SIZE_INC;
-              fixed: 1 1;
-              visible: 0;
-              rel1.to: "elm.touch";
-              rel2.to: "elm.touch";
-              image.normal: "core_color_picker_color_handler.png";
-           }
-           description {
-              state: "visible" 0.0;
-              inherit: "default" 0.0;
-              visible:1;
-           }
-        }
-        part {
-           name: "access";
-           type: RECT;
-           scale: 1;
-           repeat_events: 1;
-           description { state: "default" 0.0;
-              rel1.to: "base";
-              rel2.to: "base";
-              color: 0 0 0 0;
-           }
-        }
-        part {
-           name: "disclip";
-           type: RECT;
-           description { state: "default" 0.0;
-           }
-        }
-    }
-    script {
-        public mouse_down_done = 0;
-    }
-    programs {
-        program { name: "touch_sound";
-          signal: "mouse,up,1";
-          source: "events";
-          action: RUN_PLUGIN "touch_sound";
-        }
-        program {
-          name: "mouse_down";
-          signal: "mouse,down,1";
-          source: "events";
-          script {
-             new x1, y1;
-             new x2, y2, w, h;
-             get_mouse(x1, y1);
-             get_geometry(PART:"colorplane_bg", x2, y2, w, h);
-             if ( w == 0) w = 1;
-             if ( h == 0) h = 1;
-             new x_offset = x1 - x2;
-             new y_offset = y1 - y2;
-             new Float:d_x = (1.0 *(x_offset)) / (w - 1);
-             new Float:d_y = (1.0 * (y_offset)) / (h - 1) ;
-             set_drag(PART:"elm.touch", d_x, d_y);
-             set_int(mouse_down_done, 1);
-             set_state(PART:"elm.touch.image", "visible", 0.0);
-             emit("changed", "");
-          }
-       }
-       program {
-          name: "mouse_up";
-          signal: "mouse,up,1";
-          source: "events";
-          script {
-             set_int(mouse_down_done, 0);
-          }
-       }
-       program {
-          name: "show";
-          signal: "show";
-          source: "elm";
-          script {
-             set_state(PART:"elm.touch.image", "visible", 0.0);
-          }
-       }
-       program {
-          name: "hide";
-          signal: "hide";
-          source: "elm";
-          script {
-             set_state(PART:"elm.touch.image", "default", 0.0);
-          }
-       }
-       program {
-          name: "mouse_move";
-          signal: "mouse,move";
-          source: "events";
-          script {
-             new x1, y1;
-             new x2, y2, w, h;
-             if (get_int(mouse_down_done)) {
-                get_mouse(x1, y1);
-                get_geometry(PART:"colorplane_bg", x2, y2, w, h);
-                if ( w == 0) w = 1;
-                if ( h == 0) h = 1;
-                if (x1 < x2) x1 = x2;
-                if (x1 > (x2 + w - 1)) x1 = x2 + w - 1;
-                if (y1 < y2) y1 = y2;
-                if (y1 > (y2 + h - 1)) y1 = y2 + h -1;
-                new x_offset = x1 - x2;
-                new y_offset = y1 - y2;
-                new Float:d_x = (1.0 *(x_offset)) / (w - 1);
-                new Float:d_y = (1.0 * (y_offset)) / (h - 1) ;
-                set_drag(PART:"elm.touch", d_x, d_y);
-                emit("changed", "");
-              }
-          }
-       }
-    }
-}
+
