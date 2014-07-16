@@ -59,15 +59,12 @@ group { name: "elm/radio/base/default";
                rel1.to: "bg";
                rel2.to: "bg";
                image.normal: "core_radio_icon.png";
-               color_class: "W014LiE1";
+               color_class: "W014Li";
+               visible:0;
             }
             description { state: "on" 0.0;
                inherit: "default" 0.0;
-               color_class: "W014Li";
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               color_class: "W014LiD";
+               visible:1;
             }
          }
          part { name: "event";
@@ -127,7 +124,10 @@ group { name: "elm/radio/base/default";
             signal: "elm,state,radio,on";
             source: "elm";
             script {
-              set_state(PART:"bg", "on", 0.0);
+               if (get_int(radio_disabled) == 1)
+                  set_state(PART:"bg", "disabled", 0.0);
+               else
+                  set_state(PART:"bg", "on", 0.0);
               set_state(PART:"radio", "on", 0.0);
               set_int(radio_state, 1);
             }
@@ -136,7 +136,10 @@ group { name: "elm/radio/base/default";
             signal: "elm,state,radio,off";
             source: "elm";
             script {
-              set_state(PART:"bg", "default", 0.0);
+               if (get_int(radio_disabled) == 1)
+                  set_state(PART:"bg", "disabled", 0.0);
+               else
+                  set_state(PART:"bg", "default", 0.0);
               set_state(PART:"radio", "default", 0.0);
               set_int(radio_state, 0);
             }
@@ -147,7 +150,6 @@ group { name: "elm/radio/base/default";
             script {
               set_int(radio_disabled, 1);
               set_state(PART:"bg", "disabled", 0.0);
-              set_state(PART:"radio", "disabled", 0.0);
             }
          }
          program { name: "enable";
@@ -155,14 +157,10 @@ group { name: "elm/radio/base/default";
             source: "elm";
             script {
               set_int(radio_disabled, 0);
-              if (get_int(radio_state) == 1) {
-                set_state(PART:"radio", "on", 0.0);
+              if (get_int(radio_state) == 1)
                 set_state(PART:"bg", "on", 0.0);
-              }
-              else {
-                set_state(PART:"radio", "default", 0.0);
+              else
                 set_state(PART:"bg", "default", 0.0);
-              }
             }
          }
       }

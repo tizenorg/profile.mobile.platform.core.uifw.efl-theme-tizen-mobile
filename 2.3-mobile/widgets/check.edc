@@ -55,20 +55,17 @@ group { name: "elm/check/base/default";
       part { name: "check";
          scale: 1;
          description { state: "default" 0.0;
-            min: CHECK_SIZE;
-            max: CHECK_SIZE;
+            min: CHECK_ICON_SIZE;
+            max: CHECK_ICON_SIZE;
             rel1.to: "bg";
             rel2.to: "bg";
             image.normal: "core_check_icon.png";
-            color_class:"W013L1iE1";
+            color_class:"W013L1i";
+            visible:0;
          }
          description { state: "on" 0.0;
             inherit: "default" 0.0;
-            color_class:"W013L1i";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            color_class:"W013L1iD";
+            visible: 1;
          }
       }
       part { name: "event";
@@ -141,7 +138,10 @@ group { name: "elm/check/base/default";
          signal: "elm,state,check,on";
          source: "elm";
          script {
-            set_state(PART:"bg", "on", 0.0);
+            if (get_int(check_disabled) == 1)
+               set_state(PART:"bg", "disabled", 0.0);
+            else
+               set_state(PART:"bg", "on", 0.0);
             set_state(PART:"check", "on", 0.0);
             set_int(check_state, 1);
          }
@@ -150,7 +150,10 @@ group { name: "elm/check/base/default";
          signal: "elm,state,check,off";
          source: "elm";
          script {
-            set_state(PART:"bg", "default", 0.0);
+            if (get_int(check_disabled) == 1)
+               set_state(PART:"bg", "disabled", 0.0);
+            else
+               set_state(PART:"bg", "default", 0.0);
             set_state(PART:"check", "default", 0.0);
             set_int(check_state, 0);
          }
@@ -161,7 +164,6 @@ group { name: "elm/check/base/default";
          script {
             set_int(check_disabled, 1);
             set_state(PART:"bg", "disabled", 0.0);
-            set_state(PART:"check", "disabled", 0.0);
          }
       }
       program { name: "enable";
@@ -169,14 +171,10 @@ group { name: "elm/check/base/default";
          source: "elm";
          script {
             set_int(check_disabled, 0);
-            if (get_int(check_state) == 1) {
-              set_state(PART:"check", "on", 0.0);
+            if (get_int(check_state) == 1)
               set_state(PART:"bg", "on", 0.0);
-            }
-            else {
-              set_state(PART:"check", "default", 0.0);
+            else
               set_state(PART:"bg", "default", 0.0);
-            }
          }
       }
    }
@@ -300,6 +298,8 @@ group { name: "elm/check/base/on&off";
       image: "core_toggle_bg.png" COMP;
       image: "core_toggle_icon_off.png" COMP;
       image: "core_toggle_icon_on.png" COMP;
+      image: "core_toggle_on.png" COMP;
+      image: "core_toggle_off.png" COMP;
    }
    script {
       public check_state;
@@ -323,11 +323,29 @@ group { name: "elm/check/base/on&off";
             rel1.to: "bg";
             rel2.to: "bg";
             image.normal: "core_toggle_bg.png";
-            color_class: "W015L1D";
+            color_class: "W015L1E1";
          }
          description { state: "on" 0.0;
             inherit: "default" 0.0;
             color_class: "W015L1";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W015L1D";
+         }
+      }
+      part { name: "bg_effect";
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            fixed: 1 1;
+            image.normal: "core_toggle_on.png";
+         }
+         description { state: "on" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "core_toggle_off.png";
          }
       }
       part { name: "button";
@@ -389,10 +407,12 @@ group { name: "elm/check/base/on&off";
             if (get_int(check_disabled) == 1) return;
             if (get_int(check_state) == 1) {
               set_state(PART:"bg_image", "on", 0.0);
+              set_state(PART:"bg_effect", "on", 0.0);
               set_state(PART:"button", "on", 0.0);
             }
             else {
               set_state(PART:"bg_image", "default", 0.0);
+              set_state(PART:"bg_effect", "default", 0.0);
               set_state(PART:"button", "default", 0.0);
             }
          }
@@ -404,10 +424,12 @@ group { name: "elm/check/base/on&off";
             if (get_int(check_disabled) == 1) return;
             if (get_int(check_state) == 1) {
               set_state(PART:"bg_image", "on", 0.0);
+              set_state(PART:"bg_effect", "on", 0.0);
               set_state(PART:"button", "on", 0.0)
             }
             else {
               set_state(PART:"bg_image", "default", 0.0);
+              set_state(PART:"bg_effect", "default", 0.0);
               set_state(PART:"button", "default", 0.0);
             }
          }
@@ -416,7 +438,11 @@ group { name: "elm/check/base/on&off";
          signal: "elm,state,check,on";
          source: "elm";
          script {
-            set_state(PART:"bg_image", "on", 0.0);
+            if (get_int(check_disabled) == 1)
+               set_state(PART:"bg_image", "disabled", 0.0);
+            else
+               set_state(PART:"bg_image", "on", 0.0);
+            set_state(PART:"bg_effect", "on", 0.0);
             set_state(PART:"button", "on", 0.0)
             set_int(check_state, 1);
          }
@@ -425,7 +451,11 @@ group { name: "elm/check/base/on&off";
          signal: "elm,state,check,off";
          source: "elm";
          script {
-            set_state(PART:"bg_image", "default", 0.0);
+            if (get_int(check_disabled) == 1)
+               set_state(PART:"bg_image", "disabled", 0.0);
+            else
+               set_state(PART:"bg_image", "default", 0.0);
+            set_state(PART:"bg_effect", "default", 0.0);
             set_state(PART:"button", "default", 0.0);
             set_int(check_state, 0);
          }
@@ -435,6 +465,7 @@ group { name: "elm/check/base/on&off";
          source: "elm";
          script {
             set_int(check_disabled, 1);
+            set_state(PART:"bg_image", "disabled", 0.0);
          }
       }
       program { name: "enable";
@@ -442,6 +473,10 @@ group { name: "elm/check/base/on&off";
          source: "elm";
          script {
             set_int(check_disabled, 0);
+            if (get_int(check_state) == 1)
+              set_state(PART:"bg_image", "on", 0.0);
+            else
+              set_state(PART:"bg_image", "default", 0.0);
          }
       }
    }
