@@ -235,6 +235,97 @@ group { name: "elm/genlist/item/groupindex/default";
    LIST_PROGRAMS( target: "elm.text.main"; target: "elm.text.sub"; )
 }
 
+group { name: "elm/genlist/item/select_all/default";
+   alias: "elm/layout/select_all/default";
+
+   data.item: "texts" "elm.text.main";
+   data.item: "contents" "elm.icon";
+
+   parts {
+      PART(RECT, "bg",
+         description { state: "default" 0.0;
+            color_class: "B0216";
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            color_class: "B0216P";
+         }
+      )
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: LIST_SELECT_ALL_PADDING_LEFT_SIZE 0;
+            max: LIST_SELECT_ALL_PADDING_LEFT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: LIST_SELECT_ALL_PADDING_RIGHT_SIZE 0;
+            max: LIST_SELECT_ALL_PADDING_RIGHT_SIZE -1;
+         )
+      )
+      PART(RECT, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_SELECT_ALL_PADDING_BOTTOM_SIZE;
+            max: -1 LIST_SELECT_ALL_PADDING_BOTTOM_SIZE;
+            color_class:"B0216L1";
+         )
+      )
+      PART(SWALLOW, "elm.icon",
+         DSC_R("default" 0.0,
+            "elm.padding.right",
+            min: LIST_SELECT_ALL_ICON_SIZE ;
+         )
+      )
+      PART(SPACER, "elm.padding.center",
+         DSC_R("default" 0.0,
+            "elm.icon",
+            min: LIST_SELECT_ALL_PADDING_CENTER_SIZE 0;
+            max: LIST_SELECT_ALL_PADDING_CENTER_SIZE -1;
+         )
+      )
+      PART(TEXTBLOCK, "elm.text.main",
+         DSC_LR("default" 0.0,
+            "elm.padding.left", "elm.padding.center",
+            min: 0 LIST_SELECT_ALL_HEIGHT;
+            text.min: 0 1;
+            text.style: "list_text_select";
+         )
+      )
+      PART(RECT, "event",
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            color: 0 0 0 0;
+         }
+      )
+   }
+   programs{
+      program { name: "play_sound";
+         signal: "mouse,clicked,1";
+         source: "event";
+         action: RUN_PLUGIN "touch_sound";
+      }
+      program { name: "unselect";
+         signal: "mouse,up,1";
+         source: "event";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+      }
+      program { name: "select";
+         signal: "mouse,down,1";
+         source: "event";
+         action: STATE_SET "pressed" 0.0;
+         target: "bg";
+      }
+      LIST_PROGRAM_DEFAULT(
+         target: "bg";
+      )
+      LIST_PROGRAM_SELECT(
+         target: "bg";
+      )
+   }
+}
+
 // 2.1.2
 // 2.1.3
 // 2.1.4
@@ -1744,6 +1835,89 @@ group { name: "elm/genlist/item/entry.main/default";
    }
 }
 
+// 2.1.1.A58
+
+group { name: "elm/genlist/item/empty_area/default";
+
+   data.item: "texts" "elm.text.main";
+   data.item: "contents" "elm.icon";
+   images {
+      image: "core_group_list_bg_ef.#.png" COMP;
+   }
+   parts {
+      PART(RECT, "bg",
+         description { state: "default" 0.0;
+            min: 0 LIST_GROUP_HEIGHT;
+            max: -1 LIST_GROUP_HEIGHT;
+            align: 0.5 0.0;
+            color_class: "B074";
+         }
+      )
+      PART(IMAGE, "bg_image",
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            image.normal: "core_group_list_bg_ef.#.png";
+         }
+      )
+   }
+}
+
+group { name: "elm/genlist/item/description/default";
+
+   data.item: "texts" "elm.text.main";
+   data.item: "contents" "elm.icon";
+   images {
+      image: "core_group_list_bg_ef.#.png" COMP;
+   }
+   parts {
+      PART(RECT, "bg",
+         description { state: "default" 0.0;
+            color_class: "B074";
+         }
+      )
+      PART(IMAGE, "bg_image",
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            image.normal: "core_group_list_bg_ef.#.png";
+         }
+      )
+      PART(SPACER, "elm.padding.top",
+         DSC_FROM_T("default" 0.0,
+            min: 0 LIST_DESC_PADDING_TOP_SIZE;
+            max: -1 LIST_DESC_PADDING_TOP_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.bottom",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_DESC_PADDING_BOTTOM_SIZE;
+            max: -1 LIST_DESC_PADDING_BOTTOM_SIZE;
+         )
+      )
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: LIST_DESC_PADDING_LEFT_RIGHT_SIZE 0;
+            max: LIST_DESC_PADDING_LEFT_RIGHT_SIZE -1;
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+          DSC_FROM_R("default" 0.0,
+            min: LIST_DESC_PADDING_LEFT_RIGHT_SIZE 0;
+            max: LIST_DESC_PADDING_LEFT_RIGHT_SIZE -1;
+         )
+      )
+      PART(TEXTBLOCK, "elm.text.main",
+         DSC_LRTB("default" 0.0,
+            "elm.padding.left", "elm.padding.right", "elm.padding.top", "elm.padding.bottom",
+            text.min: 0 1;
+            text.style: "list_text_desc";
+         )
+      )
+   }
+}
+
+
 // 2.2.1.A61
 group { name: "elm/genlist/item/progress.main/default";
 
@@ -1801,9 +1975,16 @@ group { name: "elm/genlist/item/progress.main/default";
             text.style: "list_text_main_dim";
          }
       )
+      PART(SPACER, "elm.padding.center",
+         DSC_LRT("default" 0.0,
+            "elm.padding.left", "elm.padding.right", "elm.text.main",
+            min: 0 LIST_PROGRESSBAR_PADDING_CENTER_SIZE;
+            max: -1 LIST_PROGRESSBAR_PADDING_CENTER_SIZE;
+         )
+      )
       PART(SWALLOW, "elm.icon",
          DSC_LRTB("default" 0.0,
-            "elm.padding.left", "elm.padding.right", "elm.text.main", "elm.padding.bottom",
+            "elm.padding.left", "elm.padding.right", "elm.padding.center", "elm.padding.bottom",
             min: 0 LIST_PROGRESSBAR_HEIGHT;
             max: -1 LIST_PROGRESSBAR_HEIGHT;
          )
@@ -1902,16 +2083,16 @@ group { name: "elm/layout/list/A/left.icon/default";
       )
       PART(SPACER, "elm.padding.right",
          DSC_FROM_R("default" 0.0,
-            min: 10 0;
-            max: 10 -1;
+            min: LIST_PADDING_CENTER_LEFT_SIZE 0;
+            max: LIST_PADDING_CENTER_LEFT_SIZE -1;
          )
       )
 
       PART(SWALLOW, "elm.swallow.content",
          DSC_LR("default" 0.0,
             "elm.padding.left", "elm.padding.right",
-            min: 22 22;
-            max: 22 22;
+            min: LIST_A_LEFTICON_SIZE;
+            max: LIST_A_LEFTICON_SIZE;
          )
       )
    }
@@ -1922,8 +2103,8 @@ group { name: "elm/layout/list/A/right.icon/default";
    parts {
        PART(SPACER, "elm.padding.left",
          DSC_FROM_L("default" 0.0,
-            min: 10 0;
-            max: 10 -1;
+            min: LIST_A_RIGHTICON_LEFT_PADDING_WIDTH 0;
+            max: LIST_A_RIGHTICON_LEFT_PADDING_WIDTH -1;
          )
       )
       PART(SPACER, "elm.padding.right",
@@ -1935,8 +2116,8 @@ group { name: "elm/layout/list/A/right.icon/default";
       PART(SWALLOW, "elm.swallow.content",
          DSC_LR("default" 0.0,
             "elm.padding.left", "elm.padding.right",
-            min: 22 22;
-            max: 22 22;
+            min: LIST_A_RIGHTICON_SIZE;
+            max: LIST_A_RIGHTICON_SIZE;
          )
       )
    }
@@ -1949,8 +2130,8 @@ group { name: "elm/layout/list/B/type.1/default";
    parts {
       PART(SWALLOW, "elm.swallow.content",
          description { state: "default" 0.0;
-            min: 64 64;
-            max: 64 64;
+            min: LIST_B_TYPE1_ICON_SIZE;
+            max: LIST_B_TYPE1_ICON_SIZE;
          }
       )
    }
@@ -1961,21 +2142,21 @@ group { name: "elm/layout/list/B/type.2/default";
    parts {
       PART(SPACER, "elm.padding.left",
          DSC_FROM_L("default" 0.0,
-            min: 10 0;
-            max: 10 -1;
+            min: LIST_B_TYPE2_LEFT_PADDING_WIDTH 0;
+            max: LIST_B_TYPE2_LEFT_PADDING_WIDTH -1;
          )
       )
       PART(SPACER, "elm.padding.right",
          DSC_FROM_R("default" 0.0,
-            min: 5 0;
-            max: 5 -1;
+            min: LIST_B_TYPE2_RIGHT_PADDING_WIDTH 0;
+            max: LIST_B_TYPE2_RIGHT_PADDING_WIDTH -1;
          )
       )
       PART(SWALLOW, "elm.swallow.content",
          DSC_LR("default" 0.0,
             "elm.padding.left", "elm.padding.right",
-            min: 49 49;
-            max: 49 49;
+            min: LIST_B_TYPE2_ICON_SIZE;
+            max: LIST_B_TYPE2_ICON_SIZE;
          )
       )
    }
@@ -1986,8 +2167,8 @@ group { name: "elm/layout/list/B/type.3/default";
    parts {
       PART(SPACER, "elm.padding.left",
          DSC_FROM_L("default" 0.0,
-            min: 10 0;
-            max: 10 -1;
+            min: LIST_B_TYPE3_LEFT_PADDING_WIDTH 0;
+            max: LIST_B_TYPE3_LEFT_PADDING_WIDTH -1;
          )
       )
       PART(SPACER, "elm.padding.right",
@@ -1999,8 +2180,8 @@ group { name: "elm/layout/list/B/type.3/default";
       PART(SWALLOW, "elm.swallow.content",
          DSC_LR("default" 0.0,
             "elm.padding.left", "elm.padding.right",
-            min: 30 30;
-            max: 30 30;
+            min: LIST_B_TYPE3_ICON_SIZE;
+            max: LIST_B_TYPE3_ICON_SIZE;
          )
       )
    }
@@ -2011,21 +2192,21 @@ group { name: "elm/layout/list/B/type.4/default";
    parts {
       PART(SPACER, "elm.padding.left",
          DSC_FROM_L("default" 0.0,
-            min: 13 0;
-            max: 13 -1;
+            min: LIST_B_TYPE4_LEFT_PADDING_WIDTH 0;
+            max: LIST_B_TYPE4_LEFT_PADDING_WIDTH -1;
          )
       )
       PART(SPACER, "elm.padding.right",
          DSC_FROM_R("default" 0.0,
-            min: 3 0;
-            max: 3 -1;
+            min: LIST_B_TYPE4_RIGHT_PADDING_WIDTH 0;
+            max: LIST_B_TYPE4_RIGHT_PADDING_WIDTH -1;
          )
       )
       PART(SWALLOW, "elm.swallow.content",
          DSC_LR("default" 0.0,
             "elm.padding.left", "elm.padding.right",
-            min: 24 24;
-            max: 24 24;
+            min: LIST_B_TYPE4_ICON_SIZE;
+            max: LIST_B_TYPE4_ICON_SIZE;
          )
       )
    }
@@ -2038,21 +2219,21 @@ group { name: "elm/layout/list/C/type.1/default";
    parts {
       PART(SPACER, "elm.padding.left",
          DSC_FROM_L("default" 0.0,
-            min: 10 0;
-            max: 10 -1;
+            min: 0 0;
+            max: 0 -1;
          )
       )
       PART(SPACER, "elm.padding.right",
          DSC_FROM_R("default" 0.0,
-            min: 10 0;
-            max: 10 -1;
+            min: LIST_C_TYPE1_RIGHT_PADDING_WIDTH 0;
+            max: LIST_C_TYPE1_RIGHT_PADDING_WIDTH -1;
          )
       )
       PART(SWALLOW, "elm.swallow.content",
          DSC_LR("default" 0.0,
             "elm.padding.left", "elm.padding.right",
-            min: 30 30;
-            max: 30 30;
+            min: LIST_C_TYPE1_ICON_SIZE;
+            max: LIST_C_TYPE1_ICON_SIZE;
          )
       )
    }
@@ -2063,21 +2244,21 @@ group { name: "elm/layout/list/C/type.2/default";
    parts {
       PART(SPACER, "elm.padding.left",
          DSC_FROM_L("default" 0.0,
-            min: 8 0;
-            max: 8 -1;
+            min: 0 0;
+            max: 0 -1;
          )
       )
       PART(SPACER, "elm.padding.right",
          DSC_FROM_R("default" 0.0,
-            min: 18 0;
-            max: 18 -1;
+            min: LIST_C_TYPE2_RIGHT_PADDING_WIDTH 0;
+            max: LIST_C_TYPE2_RIGHT_PADDING_WIDTH -1;
          )
       )
       PART(SWALLOW, "elm.swallow.content",
          DSC_LR("default" 0.0,
             "elm.padding.left", "elm.padding.right",
-            min: 24 24;
-            max: 24 24;
+            min: LIST_C_TYPE2_ICON_SIZE;
+            max: LIST_C_TYPE2_ICON_SIZE;
          )
       )
    }
@@ -2094,15 +2275,15 @@ group { name: "elm/layout/list/C/type.3/default";
       )
       PART(SPACER, "elm.padding.right",
          DSC_FROM_R("default" 0.0,
-            min: 10 0;
-            max: 10 -1;
+            min: LIST_C_TYPE3_RIGHT_PADDING_WIDTH 0;
+            max: LIST_C_TYPE3_RIGHT_PADDING_WIDTH -1;
          )
       )
       PART(SWALLOW, "elm.swallow.content",
          DSC_LR("default" 0.0,
             "elm.padding.left", "elm.padding.right",
-            min: 40 40;
-            max: 40 40;
+            min: LIST_C_TYPE3_ICON_SIZE;
+            max: LIST_C_TYPE3_ICON_SIZE;
          )
       )
    }
