@@ -25,7 +25,6 @@ all:
 		-id ./$$s/images/Option\ popup\
 		-id ./$$s/images/Popup\
 		-id ./$$s/images/Progress\
-		-id ./$$s/images/Screen_Reader\
 		-id ./$$s/images/Slider\
 		-id ./$$s/images/TimePicker\
 		-id ./$$s/images/Search\
