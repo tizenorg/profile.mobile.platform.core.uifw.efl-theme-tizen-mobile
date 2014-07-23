@@ -33,14 +33,6 @@ all:
 		-id ./$$s/images/temp\
 		-id ./$$s/images/temp/Copy_Paste\
 		-id ./$$s/images/temp/swipe\
-		-id ./$$s/images/Apps\
-		-id ./$$s/images/Apps/Call\
-		-id ./$$s/images/Apps/Call/call\ menu\
-		-id ./$$s/images/Apps/Email\
-		-id ./$$s/images/Apps/Gallery\
-		-id ./$$s/images/Apps/Logs\
-		-id ./$$s/images/Apps/Music_player\
-		-id ./$$s/images/Apps/Widget_schedule\
 		-sd ./$$s/sounds -fd ../objects \
 		$(SRC)-$(TARGET)-$$s.edc $(SRC)-$(TARGET)-$$s.edj; \
 	done

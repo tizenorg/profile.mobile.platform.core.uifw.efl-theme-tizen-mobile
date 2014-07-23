@@ -37,100 +37,6 @@
       image: "bouncing_right_edge.png" COMP;\
       image: "bouncing_right_glow.png" COMP;
 
-#define OVERSCROLL_EFFECT_DESCRIPTIONS(NAME)\
-         OVERSCROLL_EFFECT_DESCRIPTION_EDJE(NAME)\
-         OVERSCROLL_EFFECT_DESCRIPTION_GLOW(NAME)\
-         OVERSCROLL_EFFECT_DESCRIPTION_GLOW_E(NAME)
-
-#define OVERSCROLL_EFFECT_DESCRIPTION_EDJE(NAME)\
-         description { state: "show_effect" 0.0;\
-            inherit: "default" 0.0;\
-            visible: 1;\
-            image.normal: "bouncing_"NAME"_edge.png";\
-            color_class: "B019"; \
-         }
-#define OVERSCROLL_EFFECT_DESCRIPTION_GLOW(NAME)\
-         description { state: "show_effect" 0.01;\
-            inherit: "default" 0.0;\
-            visible: 1;\
-            image.normal: "bouncing_"NAME"_glow.png";\
-            color_class: "B018E";\
-         }
-#define OVERSCROLL_EFFECT_DESCRIPTION_GLOW_E(NAME)\
-         description { state: "show_effect" 0.02;\
-            inherit: "default" 0.0;\
-            visible: 1;\
-            image.normal: "bouncing_"NAME"_glow.png";\
-            color_class: "B018E";\
-         }
-#define OVERSCROLL_EFFECT_FUNCTION(NAME, SRC)\
-      program { name: "start_effect_"NAME;\
-          script {\
-              new st[31];\
-              new Float:state;\
-              get_state(PART:SRC, st, 30, state);\
-              if (state == 0.0)\
-              {\
-                state += 0.01;\
-                set_state(PART:SRC, "show_effect", state);\
-                run_program(PROGRAM:"delay_"NAME);\
-              }\
-              else if (state == 0.01  && !get_int(effect_hold))\
-              {\
-                state += 0.01;\
-                set_state(PART:SRC, "show_effect", state);\
-                run_program(PROGRAM:"delay_"NAME);\
-              }\
-              else if (state == 0.02 && !get_int(effect_hold))\
-              {\
-                set_int(effect_on, 0);\
-                set_state(PART:SRC, "hidden", 0.0);\
-                run_program(PROGRAM:"end_action_"NAME);\
-              }\
-              else\
-              {\
-                run_program(PROGRAM:"delay_"NAME);\
-              }\
-          }\
-      }\
-      program { name: "content_move_"NAME;\
-         signal: "elm,action,scroll";\
-         source: "elm";\
-         script {\
-            new st[31];\
-            new Float:state;\
-            get_state(PART:SRC, st, 30, state);\
-            if (!strcmp(st, "show_effect"))\
-              {\
-                set_int(effect_on, 0);\
-                set_state(PART:SRC, "hidden", 0.0);\
-                run_program(PROGRAM:"end_action_"NAME);\
-              }\
-         }\
-      }\
-      program { name: "delay_"NAME;\
-          in: 0.033 0.0;\
-          after: "start_effect_"NAME;\
-      }\
-      program { name: "end_action_"NAME;\
-         action: ACTION_STOP;\
-         target: "start_effect_"NAME;\
-         target: "delay_"NAME;\
-      }\
-      program { name: "edge_"NAME;\
-         signal: "elm,edge,"NAME;\
-         source: "elm";\
-         script {\
-             if (!get_int(effect_on)) {\
-                 set_int(effect_on, 1);\
-                 if (get_int(mouse_down))\
-                   set_int(effect_hold, 1);\
-                 set_state(PART:SRC, "show_effect", 0.0);\
-                 run_program(PROGRAM:"start_effect_"NAME);\
-             }\
-         }\
-      }
-
 group { name: "elm/scroller/base/default";
    alias: "elm/gengrid/base/no_effect";
 
@@ -141,9 +47,26 @@ group { name: "elm/scroller/base/default";
    script {
       public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
       public sh_v, sh_h;
-      public effect_on, effect_top, effect_bottom, effect_left, effect_right, effect_hold, mouse_down;
-      public anim1_top, anim2_top, anim1_bottom, anim2_bottom;
-      public anim1_left, anim2_left, anim1_right, anim2_right;
+      public top_down_x = 0, top_down_y = 0
+      public top_move_x = 0, top_move_y = 0
+      public top_diff = 0, top_prev_diff = 0
+      public effect_top_down = 0, effect_top_start = 0, effect_top_reset = 0, effect_top_anim = 0;
+      public effect_top_end = 0, effect_top_move = 0, effect_top_max = 0;
+      public bottom_down_x = 0, bottom_down_y = 0
+      public bottom_move_x = 0, bottom_move_y = 0
+      public bottom_diff = 0, bottom_prev_diff = 0
+      public effect_bottom_down = 0, effect_bottom_start = 0, effect_bottom_reset = 0, effect_bottom_anim = 0;
+      public effect_bottom_end = 0, effect_bottom_move = 0, effect_bottom_max = 0;
+      public left_down_x = 0, left_down_y = 0
+      public left_move_x = 0, left_move_y = 0
+      public left_diff = 0, left_prev_diff = 0
+      public effect_left_down = 0, effect_left_start = 0, effect_left_reset = 0, effect_left_anim = 0;
+      public effect_left_end = 0, effect_left_move = 0, effect_left_max = 0;
+      public right_down_x = 0, right_down_y = 0
+      public right_move_x = 0, right_move_y = 0
+      public right_diff = 0, right_prev_diff = 0
+      public effect_right_down = 0, effect_right_start = 0, effect_right_reset = 0, effect_right_anim = 0;
+      public effect_right_end = 0, effect_right_move = 0, effect_right_max = 0;
       public timer0(val) {
          new v;
          v = get_int(sbvis_v);
@@ -702,103 +625,219 @@ group { name: "elm/scroller/base/effect";
 
    parts {
       part { name: "shadow_top";
+         clip_to: "clipper";
          type: IMAGE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            min: 0 100;
-            fixed: 1 1;
-            align: 0.5 0.0;
+            min: 0 END_EFFECT_HORIZONTAL_EDGE_SIZE;
+            max: -1 END_EFFECT_HORIZONTAL_EDGE_SIZE;
+            fixed: 0 1;
+            align: 0.5 1.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 0.0;
             rel1.to: "bg";
             rel2.to: "bg";
             rel1.offset: 0 0;
             rel2.offset: -1 -1;
-            visible: 0;
             image {
                normal: "bouncing_top_edge.png";
             }
+            color_class: "B019";
          }
-         OVERSCROLL_EFFECT_DESCRIPTIONS("top")
-         description { state: "hidden" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
+         description { state: "start" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: 0 END_EFFECT_HORIZONTAL_EDGE_SIZE;
+            rel2.offset: -1 END_EFFECT_HORIZONTAL_EDGE_SIZE-1;
          }
       }
-      part { name: "shadow_bottom";
+      part { name: "shadow_top_glow";
+         clip_to: "clipper";
          type: IMAGE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            min: 0 100;
-            fixed: 1 1;
+            min: 0 END_EFFECT_GLOW_MAX_SIZE;
+            max: -1 END_EFFECT_GLOW_MAX_SIZE;
+            fixed: 0 1;
             align: 0.5 1.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: 0 0;
+            rel2.offset: -1 -1;
+            image {
+               normal: "bouncing_top_glow.png";
+            }
+            color_class: "B018E";
+         }
+         description { state: "start" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: 0 END_EFFECT_GLOW_MIN_SIZE;
+            rel2.offset: -1 END_EFFECT_GLOW_MIN_SIZE-1;
+         }
+      }
+      part { name: "shadow_bottom";
+         clip_to: "clipper";
+         type: IMAGE;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: 0 END_EFFECT_HORIZONTAL_EDGE_SIZE;
+            max: -1 END_EFFECT_HORIZONTAL_EDGE_SIZE;
+            fixed: 0 1;
+            align: 0.5 0.0;
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 1.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: 0 0;
+            rel2.offset: -1 -1;
+            image {
+               normal: "bouncing_bottom_edge.png";
+            }
+            color_class: "B019";
+         }
+         description { state: "start" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: 0 -END_EFFECT_HORIZONTAL_EDGE_SIZE;
+            rel2.offset: -1 -END_EFFECT_HORIZONTAL_EDGE_SIZE+1;
+         }
+      }
+      part { name: "shadow_bottom_glow";
+         clip_to: "clipper";
+         type: IMAGE;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: 0 END_EFFECT_GLOW_MAX_SIZE;
+            max: -1 END_EFFECT_GLOW_MAX_SIZE;
+            fixed: 0 1;
+            align: 0.5 0.0;
             rel1.relative: 0.0 1.0;
             rel2.relative: 1.0 1.0;
             rel1.to: "bg";
             rel2.to: "bg";
             rel1.offset: 0 0;
             rel2.offset: -1 -2;
-            visible: 0;
             image {
-               normal: "bouncing_bottom_edge.png";
+               normal: "bouncing_bottom_glow.png";
             }
+            color_class: "B018E";
          }
-         OVERSCROLL_EFFECT_DESCRIPTIONS("bottom")
-         description { state: "hidden" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
+         description { state: "start" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: 0 -END_EFFECT_GLOW_MIN_SIZE;
+            rel2.offset: -1 -END_EFFECT_GLOW_MIN_SIZE+1;
          }
       }
       part { name: "shadow_left";
+         clip_to: "clipper";
          type: IMAGE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            min: 100 0;
-            fixed: 1 1;
-            align: 0.0 0.5;
+            min: END_EFFECT_VERTICAL_EDGE_SIZE 0;
+            max: END_EFFECT_VERTICAL_EDGE_SIZE -1;
+            fixed: 1 0;
+            align: 1.0 0.5;
             rel1.relative: 0.0 0.0;
             rel2.relative: 0.0 1.0;
             rel1.to: "bg";
             rel2.to: "bg";
             rel1.offset: 0 0;
             rel2.offset: -1 -1;
-            visible: 0;
             image {
                normal: "bouncing_left_edge.png";
             }
+            color_class: "B019";
          }
-         OVERSCROLL_EFFECT_DESCRIPTIONS("left")
-         description { state: "hidden" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
+         description { state: "start" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: END_EFFECT_VERTICAL_EDGE_SIZE 0;
+            rel2.offset: END_EFFECT_VERTICAL_EDGE_SIZE-1 -1;
          }
       }
-      part { name: "shadow_right";
+      part { name: "shadow_left_glow";
+         clip_to: "clipper";
          type: IMAGE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            min: 100 0;
+            min: END_EFFECT_GLOW_MAX_SIZE 0;
+            max: END_EFFECT_GLOW_MAX_SIZE -1;
             fixed: 1 1;
             align: 1.0 0.5;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: 0 0;
+            rel2.offset: -1 -1;
+            image {
+               normal: "bouncing_left_glow.png";
+            }
+            color_class: "B018E";
+         }
+         description { state: "start" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: END_EFFECT_GLOW_MIN_SIZE 0;
+            rel2.offset: END_EFFECT_GLOW_MIN_SIZE-1 -1;
+         }
+      }
+      part { name: "shadow_right";
+         clip_to: "clipper";
+         type: IMAGE;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: END_EFFECT_VERTICAL_EDGE_SIZE 0;
+            max: END_EFFECT_VERTICAL_EDGE_SIZE -1;
+            fixed: 1 0;
+            align: 0.0 0.5;
             rel1.relative: 1.0 0.0;
             rel2.relative: 1.0 1.0;
             rel1.to: "bg";
             rel2.to: "bg";
             rel1.offset: 0 0;
             rel2.offset: -1 -1;
-            visible: 0;
             image {
                normal: "bouncing_right_edge.png";
             }
+            color_class: "B019";
          }
-         OVERSCROLL_EFFECT_DESCRIPTIONS("right")
-         description { state: "hidden" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
+         description { state: "start" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: -END_EFFECT_VERTICAL_EDGE_SIZE 0;
+            rel2.offset: END_EFFECT_VERTICAL_EDGE_SIZE-1 -1;
+         }
+      }
+      part { name: "shadow_right_glow";
+         clip_to: "clipper";
+         type: IMAGE;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: END_EFFECT_GLOW_MAX_SIZE 0;
+            max: END_EFFECT_GLOW_MAX_SIZE -1;
+            fixed: 1 0;
+            align: 0.0 0.5;
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel1.offset: 0 0;
+            rel2.offset: -1 -1;
+            image {
+               normal: "bouncing_right_glow.png";
+            }
+            color_class: "B019";
+         }
+         description { state: "start" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: -END_EFFECT_GLOW_MIN_SIZE 0;
+            rel2.offset: -END_EFFECT_GLOW_MIN_SIZE+1 -1;
          }
       }
    }
@@ -807,10 +846,6 @@ group { name: "elm/scroller/base/effect";
          script {
             set_state(PART:"sb_hbar_clip", "hidden", 0.0);
             set_state(PART:"sb_vbar_clip", "hidden", 0.0);
-            set_state(PART:"shadow_top", "hidden", 0.0);
-            set_state(PART:"shadow_bottom", "hidden", 0.0);
-            set_state(PART:"shadow_left", "hidden", 0.0);
-            set_state(PART:"shadow_right", "hidden", 0.0);
             set_int(sbvis_h, 0);
             set_int(sbvis_v, 0);
             set_int(sbalways_v, 0);
@@ -843,30 +878,640 @@ group { name: "elm/scroller/base/effect";
             set_int(sbvis_timer, v);
          }
       }
-      OVERSCROLL_EFFECT_FUNCTION("top", "shadow_top")
-      OVERSCROLL_EFFECT_FUNCTION("bottom", "shadow_bottom")
-      OVERSCROLL_EFFECT_FUNCTION("left", "shadow_left")
-      OVERSCROLL_EFFECT_FUNCTION("right", "shadow_right")
-      program { name: "content_move";
-         signal: "elm,state,mouse,move";
-         source: "elm";
-         script {
-            set_int(mouse_down, 1);
-         }
-      }
-      program { name: "content_press";
+      program { name: "edge_top_mouse_down";
          signal: "elm,state,mouse,down";
          source: "elm";
          script {
-            set_int(mouse_down, 1);
+            set_int(effect_top_down, 1);
          }
       }
-      program { name: "content_unpress";
+      /* Effect Hide */
+      program { name: "edge_top_mouse_up";
          signal: "elm,state,mouse,up";
          source: "elm";
          script {
-            set_int(mouse_down, 0);
-            set_int(effect_hold, 0);
+            set_int(effect_top_down, 0);
+            if (get_int(effect_top_start))
+              {
+                 set_int(effect_top_reset, 0);
+                 if (!get_int(effect_top_anim))
+                   {
+                      if (!get_int(effect_top_end))
+                        {
+                           set_int(effect_top_end, 1);
+                           run_program(PROGRAM:"edge_top_end");
+                        }
+                   }
+              }
+         }
+      }
+      program { name: "edge_top_scroll";
+         signal: "elm,action,scroll";
+         source: "elm";
+         script {
+            if (get_int(effect_top_start))
+            {
+               set_state(PART:"shadow_top", "default", 0.0);
+               set_state(PART:"shadow_top_glow", "default", 0.0);
+               set_int(effect_top_reset, 0);
+               run_program(PROGRAM:"edge_top_init");
+            }
+         }
+      }
+      program { name: "edge_top_end";
+         action: STATE_SET "default" 0.0;
+         target: "shadow_top";
+         transition: SINUSOIDAL 0.1;
+         after: "edge_top_glow_end";
+      }
+      program { name: "edge_top_glow_end";
+         action: STATE_SET "default" 0.0;
+         target: "shadow_top_glow";
+         transition: SINUSOIDAL 0.3;
+         after: "edge_top_init";
+      }
+      program { name: "edge_top_init";
+         script {
+            set_int(effect_top_move, 0);
+            if (!get_int(effect_top_reset))
+              set_int(effect_top_start, 0);
+            set_int(effect_top_max, 0);
+            set_int(top_prev_diff, 0);
+            set_int(effect_top_end, 0);
+         }
+      }
+      /* Effect Show */
+      program { name: "edge_top";
+         signal: "elm,edge,top";
+         source: "elm";
+         script {
+             if (!get_int(effect_top_start))
+               {
+                  set_int(effect_top_start, 1);
+                  set_int(effect_top_anim, 1);
+                  run_program(PROGRAM:"edge_top_start");
+               }
+         }
+      }
+      program { name: "edge_top_start";
+         action: STATE_SET "start" 0.0;
+         target: "shadow_top";
+         target: "shadow_top_glow";
+         transition: SINUSOIDAL 0.2;
+         after: "edge_top_after";
+      }
+      program { name: "edge_top_after";
+         script {
+            new xx, yy;
+            get_mouse(xx, yy);
+            set_int(top_down_y, yy);
+            set_int(effect_top_anim, 0);
+            /* mouse down */
+            if (get_int(effect_top_down))
+              {
+                 set_int(effect_top_move, 1);
+              }
+            /* mouse up */
+            else
+              {
+                 set_int(effect_top_reset, 0);
+                 if (!get_int(effect_top_end))
+                   {
+                      set_int(effect_top_end, 1);
+                      run_program(PROGRAM:"edge_top_end");
+                   }
+              }
+         }
+      }
+      program { name: "edge_top_mouse_move";
+         signal: "elm,state,mouse,move";
+         source: "elm";
+         script {
+            if (get_int(effect_top_move))
+              {
+                 new xx, yy;
+                 new Float:fx1, Float:fx2;
+                 get_mouse(xx, yy);
+                 set_int(top_move_y, yy);
+                 set_int(top_diff, (get_int(top_move_y) - get_int(top_down_y)));
+                 if (get_int(top_diff) < get_int(top_prev_diff))
+                   {
+                      set_int(top_prev_diff, 0);
+                      set_int(effect_top_move, 0);
+                      set_int(effect_top_reset, 1);
+                      if (!get_int(effect_top_end))
+                        {
+                           set_int(effect_top_end, 1);
+                           run_program(PROGRAM:"edge_top_end");
+                        }
+                   }
+                 else
+                   {
+                      if (!get_int(effect_top_end))
+                        {
+                          if (get_int(top_diff) <= 90 && !get_int(effect_top_max))
+                            {
+                               fx1 = fx2 = sin(get_int(top_diff), DEGREES);
+                               fx1 = fx1 * END_EFFECT_GLOW_MOVE_CORRECTION_VALUE + END_EFFECT_GLOW_MIN_SIZE;
+                               fx2 = END_EFFECT_HORIZONTAL_EDGE_SIZE;
+                            }
+                          else
+                            {
+                               set_int(effect_top_max, 1);
+                               fx1 = END_EFFECT_GLOW_MAX_SIZE;
+                               fx2 = END_EFFECT_HORIZONTAL_EDGE_SIZE;
+                            }
+                          custom_state(PART:"shadow_top_glow", "default", 0.0);
+                          set_state_val(PART:"shadow_top_glow", STATE_REL1_OFFSET, 0, round(fx1));
+                          set_state_val(PART:"shadow_top_glow", STATE_REL2_OFFSET, -1, round(fx1) - 1);
+                          set_state(PART:"shadow_top_glow", "custom", 0.0);
+
+                          custom_state(PART:"shadow_top", "default", 0.0);
+                          set_state_val(PART:"shadow_top", STATE_REL1_OFFSET, 0, round(fx2));
+                          set_state_val(PART:"shadow_top", STATE_REL2_OFFSET, -1, round(fx2) - 1);
+                          set_state(PART:"shadow_top", "custom", 0.0);
+
+                          set_int(top_prev_diff, get_int(top_diff));
+                        }
+                   }
+             }
+         }
+      }
+      program { name: "edge_bottom_mouse_down";
+         signal: "elm,state,mouse,down";
+         source: "elm";
+         script {
+            set_int(effect_bottom_down, 1);
+         }
+      }
+      /* Effect Hide */
+      program { name: "edge_bottom_mouse_up";
+         signal: "elm,state,mouse,up";
+         source: "elm";
+         script {
+            set_int(effect_bottom_down, 0);
+            if (get_int(effect_bottom_start))
+              {
+                 set_int(effect_bottom_reset, 0);
+                 if (!get_int(effect_bottom_anim))
+                   {
+                      if (!get_int(effect_bottom_end))
+                        {
+                           set_int(effect_bottom_end, 1);
+                           run_program(PROGRAM:"edge_bottom_end");
+                        }
+                   }
+              }
+         }
+      }
+      program { name: "edge_bottom_scroll";
+         signal: "elm,action,scroll";
+         source: "elm";
+         script {
+            if (get_int(effect_bottom_start))
+            {
+               set_state(PART:"shadow_bottom", "default", 0.0);
+               set_state(PART:"shadow_bottom_glow", "default", 0.0);
+               set_int(effect_bottom_reset, 0);
+               run_program(PROGRAM:"edge_bottom_init");
+            }
+         }
+      }
+      program { name: "edge_bottom_end";
+         action: STATE_SET "default" 0.0;
+         target: "shadow_bottom";
+         transition: SINUSOIDAL 0.1;
+         after: "edge_bottom_glow_end";
+      }
+      program { name: "edge_bottom_glow_end";
+         action: STATE_SET "default" 0.0;
+         target: "shadow_bottom_glow";
+         transition: SINUSOIDAL 0.3;
+         after: "edge_bottom_init";
+      }
+      program { name: "edge_bottom_init";
+         script {
+            set_int(effect_bottom_move, 0);
+            if (!get_int(effect_bottom_reset))
+              set_int(effect_bottom_start, 0);
+            set_int(effect_bottom_max, 0);
+            set_int(bottom_prev_diff, 0);
+            set_int(effect_bottom_end, 0);
+         }
+      }
+      /* Effect Show */
+      program { name: "edge_bottom";
+         signal: "elm,edge,bottom";
+         source: "elm";
+         script {
+             if (!get_int(effect_bottom_start))
+               {
+                  set_int(effect_bottom_start, 1);
+                  set_int(effect_bottom_anim, 1);
+                  run_program(PROGRAM:"edge_bottom_start");
+               }
+         }
+      }
+      program { name: "edge_bottom_start";
+         action: STATE_SET "start" 0.0;
+         target: "shadow_bottom";
+         target: "shadow_bottom_glow";
+         transition: SINUSOIDAL 0.2;
+         after: "edge_bottom_after";
+      }
+      program { name: "edge_bottom_after";
+         script {
+            new xx, yy;
+            get_mouse(xx, yy);
+            set_int(effect_bottom_anim, 0);
+            set_int(bottom_down_y, yy);
+            /* mouse down */
+            if (get_int(effect_bottom_down))
+              {
+                 set_int(effect_bottom_move, 1);
+              }
+            /* mouse up */
+            else
+              {
+                 set_int(effect_bottom_reset, 0);
+                 if (!get_int(effect_bottom_end))
+                   {
+                      set_int(effect_bottom_end, 1);
+                      run_program(PROGRAM:"edge_bottom_end");
+                   }
+              }
+         }
+      }
+      program { name: "edge_bottom_mouse_move";
+         signal: "elm,state,mouse,move";
+         source: "elm";
+         script {
+            if (get_int(effect_bottom_move))
+              {
+                 new xx, yy;
+                 new Float:fx1, Float:fx2;
+                 get_mouse(xx, yy);
+                 set_int(bottom_move_y, yy);
+                 set_int(bottom_diff, (get_int(bottom_down_y) - get_int(bottom_move_y)));
+                 if (get_int(bottom_diff) < get_int(bottom_prev_diff))
+                   {
+                      set_int(bottom_prev_diff, 0);
+                      set_int(effect_bottom_move, 0);
+                      set_int(effect_bottom_reset, 1);
+                      if (!get_int(effect_bottom_end))
+                        {
+                           set_int(effect_bottom_end, 1);
+                           run_program(PROGRAM:"edge_bottom_end");
+                        }
+                   }
+                 else
+                   {
+                      if (!get_int(effect_bottom_end))
+                        {
+                           if (get_int(bottom_diff) <= 90 && !get_int(effect_bottom_max))
+                             {
+                                fx1 = fx2 =  sin(get_int(bottom_diff), DEGREES);
+                                fx1 = fx1 * END_EFFECT_GLOW_MOVE_CORRECTION_VALUE + END_EFFECT_GLOW_MIN_SIZE;
+                                fx2 = END_EFFECT_HORIZONTAL_EDGE_SIZE;
+                             }
+                           else
+                             {
+                                set_int(effect_bottom_max, 1);
+                                fx1 = END_EFFECT_GLOW_MAX_SIZE;
+                                fx2 = END_EFFECT_HORIZONTAL_EDGE_SIZE;
+                             }
+                           custom_state(PART:"shadow_bottom_glow", "default", 0.0);
+                           set_state_val(PART:"shadow_bottom_glow", STATE_REL1_OFFSET, 0, round(fx1) * -1);
+                           set_state_val(PART:"shadow_bottom_glow", STATE_REL2_OFFSET, -1, (round(fx1) - 1) * -1);
+                           set_state(PART:"shadow_bottom_glow", "custom", 0.0);
+
+                           custom_state(PART:"shadow_bottom", "default", 0.0);
+                           set_state_val(PART:"shadow_bottom", STATE_REL1_OFFSET, 0, round(fx2) * -1);
+                           set_state_val(PART:"shadow_bottom", STATE_REL2_OFFSET, -1, (round(fx2) - 1) * -1);
+                           set_state(PART:"shadow_bottom", "custom", 0.0);
+
+                           set_int(bottom_prev_diff, get_int(bottom_diff));
+                        }
+                   }
+             }
+         }
+      }
+      program { name: "edge_left_mouse_down";
+         signal: "elm,state,mouse,down";
+         source: "elm";
+         script {
+            set_int(effect_left_down, 1);
+         }
+      }
+      /* Effect Hide */
+      program { name: "edge_left_mouse_up";
+         signal: "elm,state,mouse,up";
+         source: "elm";
+         script {
+            set_int(effect_left_down, 0);
+            if (get_int(effect_left_start))
+              {
+                 set_int(effect_left_reset, 0);
+                 if (!get_int(effect_left_anim))
+                   {
+                      if (!get_int(effect_left_end))
+                        {
+                           set_int(effect_left_end, 1);
+                           run_program(PROGRAM:"edge_left_end");
+                        }
+                   }
+              }
+         }
+      }
+      program { name: "edge_left_scroll";
+         signal: "elm,action,scroll";
+         source: "elm";
+         script {
+            if (get_int(effect_left_start))
+            {
+               set_state(PART:"shadow_left", "default", 0.0);
+               set_state(PART:"shadow_left_glow", "default", 0.0);
+               set_int(effect_left_reset, 0);
+               run_program(PROGRAM:"edge_left_init");
+            }
+         }
+      }
+      program { name: "edge_left_end";
+         action: STATE_SET "default" 0.0;
+         target: "shadow_left";
+         transition: SINUSOIDAL 0.1;
+         after: "edge_left_glow_end";
+      }
+      program { name: "edge_left_glow_end";
+         action: STATE_SET "default" 0.0;
+         target: "shadow_left_glow";
+         transition: SINUSOIDAL 0.3;
+         after: "edge_left_init";
+      }
+      program { name: "edge_left_init";
+         script {
+            set_int(effect_left_move, 0);
+            if (!get_int(effect_left_reset))
+              set_int(effect_left_start, 0);
+            set_int(effect_left_max, 0);
+            set_int(left_prev_diff, 0);
+            set_int(effect_left_end, 0);
+         }
+      }
+      /* Effect Show */
+      program { name: "edge_left";
+         signal: "elm,edge,left";
+         source: "elm";
+         script {
+             if (!get_int(effect_left_start))
+               {
+                  set_int(effect_left_start, 1);
+                  set_int(effect_left_anim, 1);
+                  run_program(PROGRAM:"edge_left_start");
+               }
+         }
+      }
+      program { name: "edge_left_start";
+         action: STATE_SET "start" 0.0;
+         target: "shadow_left";
+         target: "shadow_left_glow";
+         transition: SINUSOIDAL 0.2;
+         after: "edge_left_after";
+      }
+      program { name: "edge_left_after";
+         script {
+            new xx, yy;
+            get_mouse(xx, yy);
+            set_int(left_down_x, xx);
+            set_int(effect_left_anim, 0);
+            /* mouse down */
+            if (get_int(effect_left_down))
+              {
+                 set_int(effect_left_move, 1);
+              }
+            /* mouse up */
+            else
+              {
+                 set_int(effect_left_reset, 0);
+                 if (!get_int(effect_left_end))
+                   {
+                      set_int(effect_left_end, 1);
+                      run_program(PROGRAM:"edge_left_end");
+                   }
+              }
+         }
+      }
+      program { name: "edge_left_mouse_move";
+         signal: "elm,state,mouse,move";
+         source: "elm";
+         script {
+            if (get_int(effect_left_move))
+              {
+                 new xx, yy;
+                 new Float:fx1, Float:fx2;
+                 get_mouse(xx, yy);
+                 set_int(left_move_x, xx);
+                 set_int(left_diff, (get_int(left_move_x) - get_int(left_down_x)));
+                 if (get_int(left_diff) < get_int(left_prev_diff))
+                   {
+                      set_int(left_prev_diff, 0);
+                      set_int(effect_left_move, 0);
+                      set_int(effect_left_reset, 1);
+                      if (!get_int(effect_left_end))
+                        {
+                           set_int(effect_left_end, 1);
+                           run_program(PROGRAM:"edge_left_end");
+                        }
+                   }
+                 else
+                   {
+                      if (!get_int(effect_left_end))
+                        {
+                           if (get_int(left_diff) <= 90 && !get_int(effect_left_max))
+                             {
+                                fx1 = sin(get_int(left_diff), DEGREES);
+                                fx1 = fx1 * END_EFFECT_GLOW_MOVE_CORRECTION_VALUE + END_EFFECT_GLOW_MIN_SIZE;
+                                fx2 = END_EFFECT_VERTICAL_EDGE_SIZE;
+                             }
+                           else
+                             {
+                                set_int(effect_left_max, 1);
+                                fx1 = END_EFFECT_GLOW_MAX_SIZE;
+                                fx2 = END_EFFECT_VERTICAL_EDGE_SIZE;
+                             }
+                           custom_state(PART:"shadow_left_glow", "default", 0.0);
+                           set_state_val(PART:"shadow_left_glow", STATE_REL1_OFFSET, round(fx1), 0);
+                           set_state_val(PART:"shadow_left_glow", STATE_REL2_OFFSET, round(fx1) - 1, -1);
+                           set_state(PART:"shadow_left_glow", "custom", 0.0);
+
+                           custom_state(PART:"shadow_left", "default", 0.0);
+                           set_state_val(PART:"shadow_left", STATE_REL1_OFFSET, round(fx2), 0);
+                           set_state_val(PART:"shadow_left", STATE_REL2_OFFSET, round(fx2) - 1, -1);
+                           set_state(PART:"shadow_left", "custom", 0.0);
+
+                           set_int(left_prev_diff, get_int(left_diff));
+                        }
+                   }
+             }
+         }
+      }
+      program { name: "edge_right_mouse_down";
+         signal: "elm,state,mouse,down";
+         source: "elm";
+         script {
+            set_int(effect_right_down, 1);
+         }
+      }
+      /* Effect Hide */
+      program { name: "edge_right_mouse_up";
+         signal: "elm,state,mouse,up";
+         source: "elm";
+         script {
+            set_int(effect_right_down, 0);
+            if (get_int(effect_right_start))
+              {
+                 set_int(effect_right_reset, 0);
+                 if (!get_int(effect_right_anim))
+                   {
+                      if (!get_int(effect_right_end))
+                        {
+                           set_int(effect_right_end, 1);
+                           run_program(PROGRAM:"edge_right_end");
+                        }
+                   }
+              }
+         }
+      }
+      program { name: "edge_right_scroll";
+         signal: "elm,action,scroll";
+         source: "elm";
+         script {
+            if (get_int(effect_right_start))
+            {
+               set_state(PART:"shadow_right", "default", 0.0);
+               set_state(PART:"shadow_right_glow", "default", 0.0);
+               set_int(effect_right_reset, 0);
+               run_program(PROGRAM:"edge_right_init");
+            }
+         }
+      }
+      program { name: "edge_right_end";
+         action: STATE_SET "default" 0.0;
+         target: "shadow_right";
+         transition: SINUSOIDAL 0.1;
+         after: "edge_right_glow_end";
+      }
+      program { name: "edge_right_glow_end";
+         action: STATE_SET "default" 0.0;
+         target: "shadow_right_glow";
+         transition: SINUSOIDAL 0.3;
+         after: "edge_right_init";
+      }
+      program { name: "edge_right_init";
+         script {
+            set_int(effect_right_move, 0);
+            if (!get_int(effect_right_reset))
+              set_int(effect_right_start, 0);
+            set_int(effect_right_max, 0);
+            set_int(right_prev_diff, 0);
+            set_int(effect_right_end, 0);
+         }
+      }
+      /* Effect Show */
+      program { name: "edge_right";
+         signal: "elm,edge,right";
+         source: "elm";
+         script {
+             if (!get_int(effect_right_start))
+               {
+                  set_int(effect_right_start, 1);
+                  set_int(effect_right_anim, 1);
+                  run_program(PROGRAM:"edge_right_start");
+               }
+         }
+      }
+      program { name: "edge_right_start";
+         action: STATE_SET "start" 0.0;
+         target: "shadow_right";
+         target: "shadow_right_glow";
+         transition: SINUSOIDAL 0.2;
+         after: "edge_right_after";
+      }
+      program { name: "edge_right_after";
+         script {
+            new xx, yy;
+            get_mouse(xx, yy);
+            set_int(right_down_x, xx);
+            set_int(effect_right_anim, 0);
+            /* mouse down */
+            if (get_int(effect_right_down))
+              {
+                 set_int(effect_right_move, 1);
+              }
+            /* mouse up */
+            else
+              {
+                 set_int(effect_right_reset, 0);
+                 if (!get_int(effect_right_end))
+                   {
+                      set_int(effect_right_end, 1);
+                      run_program(PROGRAM:"edge_right_end");
+                   }
+              }
+         }
+      }
+      program { name: "edge_right_mouse_move";
+         signal: "elm,state,mouse,move";
+         source: "elm";
+         script {
+            if (get_int(effect_right_move))
+              {
+                 new xx, yy;
+                 new Float:fx1, Float:fx2;
+                 get_mouse(xx, yy);
+                 set_int(right_move_x, xx);
+                 set_int(right_diff, (get_int(right_down_x) - get_int(right_move_x)));
+                 if (get_int(right_diff) < get_int(right_prev_diff))
+                   {
+                      set_int(right_prev_diff, 0);
+                      set_int(effect_right_move, 0);
+                      set_int(effect_right_reset, 1);
+                      if (!get_int(effect_right_end))
+                        {
+                           set_int(effect_right_end, 1);
+                           run_program(PROGRAM:"edge_right_end");
+                        }
+                   }
+                 else
+                   {
+                      if (!get_int(effect_right_end))
+                        {
+                           if (get_int(right_diff) <= 90 && !get_int(effect_right_max))
+                             {
+                                fx1 = sin(get_int(right_diff), DEGREES);
+                                fx1 = fx1 * END_EFFECT_GLOW_MOVE_CORRECTION_VALUE + END_EFFECT_GLOW_MIN_SIZE;
+                                fx2 = END_EFFECT_VERTICAL_EDGE_SIZE;
+                             }
+                           else
+                             {
+                                set_int(effect_right_max, 1);
+                                fx1 = END_EFFECT_GLOW_MAX_SIZE;
+                                fx2 = END_EFFECT_VERTICAL_EDGE_SIZE;
+                             }
+                           custom_state(PART:"shadow_right_glow", "default", 0.0);
+                           set_state_val(PART:"shadow_right_glow", STATE_REL1_OFFSET, round(fx1) * -1, 0);
+                           set_state_val(PART:"shadow_right_glow", STATE_REL2_OFFSET, (round(fx1) - 1) * -1, -1);
+                           set_state(PART:"shadow_right_glow", "custom", 0.0);
+
+                           custom_state(PART:"shadow_right", "default", 0.0);
+                           set_state_val(PART:"shadow_right", STATE_REL1_OFFSET, round(fx2) * -1, 0);
+                           set_state_val(PART:"shadow_right", STATE_REL2_OFFSET, (round(fx2) - 1) * -1, -1);
+                           set_state(PART:"shadow_right", "custom", 0.0);
+
+                           set_int(right_prev_diff, get_int(right_diff));
+                        }
+                   }
+             }
          }
       }
    }

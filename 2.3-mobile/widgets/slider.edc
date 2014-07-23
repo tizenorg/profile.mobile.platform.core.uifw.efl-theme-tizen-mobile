@@ -104,7 +104,6 @@
 group { name: "elm/slider/horizontal/default";
       alias: "elm/slider/horizontal/disabled";
       images {
-         image: "core_progress_bg.#.png" COMP;
          image: "core_progress_bar.#.png" COMP;
          image: "core_slider_center_point_bg.png" COMP;
       }
@@ -204,11 +203,12 @@ group { name: "elm/slider/horizontal/default";
                }
             }
             part {
-               name: "bar_icon_right_padding";
+               name: "bar_icon_right_padding_1";
                type: SPACER;
                scale: 1;
                description {
                   state: "default" 0.0;
+                  align: 0.0 0.5;
                   min: 0 0;
                   max: 0 0;
                   rel1 {
@@ -227,6 +227,31 @@ group { name: "elm/slider/horizontal/default";
                   max: SLIDER_ICON_PADDING_SIZE_INC;
                }
             }
+            part {
+               name: "bar_icon_right_padding_2";
+               type: SPACER;
+               scale: 1;
+               description {
+                  state: "default" 0.0;
+                  align: 0.0 0.5;
+                  min: 0 0;
+                  max: 0 0;
+                  rel1 {
+                     relative: 1.0  0.0;
+                     to: "bar_icon_right_padding_1";
+                  }
+                  rel2 {
+                     relative: 1.0  1.0;
+                     to: "bar_icon_right_padding_1";
+                  }
+                  fixed: 1 1;
+               }
+               description { state: "visible";
+                  inherit: "default" 0.0;
+                  min: SLIDER_LEFT_RIGHT_PADDING_SIZE_INC;
+                  max: SLIDER_LEFT_RIGHT_PADDING_SIZE_INC;
+               }
+            }
             part { name: "base";
                mouse_events: 0;
                scale: 1;
@@ -234,7 +259,7 @@ group { name: "elm/slider/horizontal/default";
                   min: 0 SLIDER_BASE_HEIGHT_INC;
                   max: -1 SLIDER_BASE_HEIGHT_INC;
                   rel1 {
-                     to: "bar_icon_right_padding";
+                     to: "bar_icon_right_padding_2";
                      relative: 1.0 0.0;
                   }
                   rel2 {
@@ -242,7 +267,7 @@ group { name: "elm/slider/horizontal/default";
                      relative: 0.0 1.0;
                   }
                   fixed: 0 1;
-                  image.normal: "core_progress_bg.#.png";
+                  image.normal: "core_progress_bar.#.png";
                   color_class: "W062L1D";
                }
             }
@@ -253,7 +278,7 @@ group { name: "elm/slider/horizontal/default";
                   rel1 {
                      to_x: "bar_image_left_padding";
                      to_y: "bg";
-                     relative: 0.5 0.0;
+                     relative: 0.0 0.0;
                   }
                   rel2.to: "bg";
                   fixed: 1 1;
@@ -261,9 +286,9 @@ group { name: "elm/slider/horizontal/default";
                description { state: "visible" 0.0;
                   inherit: "default" 0.0;
                   rel1 {
-                     to_x: "bar_icon_right_padding";
+                     to_x: "bar_icon_right_padding_2";
                      to_y: "bg";
-                     relative: 0.5 0.0;
+                     relative: 0.0 0.0;
                   }
                   rel2.to: "bg";
                }
@@ -274,7 +299,7 @@ group { name: "elm/slider/horizontal/default";
                clip_to: "clipper";
                description { state: "default" 0.0;
                   rel1 {
-                     to_x: "bar_icon_right_padding";
+                     to_x: "bar_icon_right_padding_2";
                      relative: 1.0 0.0;
                   }
                   rel2 {
@@ -345,7 +370,7 @@ group { name: "elm/slider/horizontal/default";
                   max: -1 SLIDER_SWALLOWBAR_HEIGHT_INC;
                   fixed: 0 1;
                   rel1 {
-                     to: "bar_icon_right_padding";
+                     to: "bar_icon_right_padding_2";
                      relative: 1.0 0.0;
                   }
                   rel2 {
@@ -361,8 +386,8 @@ group { name: "elm/slider/horizontal/default";
                   max: SLIDER_CENTER_POINT_SIZE_INC;
                   visible: 0;
                   image.normal: "core_slider_center_point_bg.png";
-                  rel1.to: "bg";
-                  rel2.to: "bg";
+                  rel1.to: "base";
+                  rel2.to: "base";
                   fixed: 0 1;
                   color_class: "W062";
                }
@@ -432,7 +457,8 @@ group { name: "elm/slider/horizontal/default";
             source: "elm";
             action:  STATE_SET "visible" 0.0;
             target: "elm.swallow.icon";
-            target: "bar_icon_right_padding";
+            target: "bar_icon_right_padding_1";
+            target: "bar_icon_right_padding_2";
             target: "drag_base";
          }
          program { name: "center_point_enable";
