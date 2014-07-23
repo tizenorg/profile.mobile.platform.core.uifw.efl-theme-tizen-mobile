@@ -193,14 +193,18 @@ group { name: "elm/check/base/favorite";
       part { name: "bg";
          scale: 1;
          description { state: "default" 0.0;
-            min: CHECK_GEN_SIZE ;
-            max: CHECK_GEN_SIZE ;
+            min: CHECK_BG_SIZE ;
+            max: CHECK_BG_SIZE ;
             image.normal: "core_icon_favorite.png";
-            color_class: "W016L1iD";
+            color_class: "W016L1iE1";
          }
          description { state: "on" 0.0;
             inherit: "default" 0.0;
             color_class: "W016L1i";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W016L1iD";
          }
       }
       part { name: "event";
@@ -272,7 +276,10 @@ group { name: "elm/check/base/favorite";
          signal: "elm,state,check,off";
          source: "elm";
          script {
-            set_state(PART:"bg", "default", 0.0);
+            if (get_int(check_disabled) == 1)
+               set_state(PART:"bg", "disabled", 0.0);
+            else
+               set_state(PART:"bg", "default", 0.0);
             set_int(check_state, 0);
          }
       }
@@ -281,6 +288,10 @@ group { name: "elm/check/base/favorite";
          source: "elm";
          script {
             set_int(check_disabled, 1);
+            if (get_int(check_state) == 1)
+              set_state(PART:"bg", "on", 0.0);
+            else
+              set_state(PART:"bg", "disabled", 0.0);
          }
       }
       program { name: "enable";
@@ -288,6 +299,10 @@ group { name: "elm/check/base/favorite";
          source: "elm";
          script {
             set_int(check_disabled, 0);
+            if (get_int(check_state) == 1)
+              set_state(PART:"bg", "on", 0.0);
+            else
+              set_state(PART:"bg", "default", 0.0);
          }
       }
    }
