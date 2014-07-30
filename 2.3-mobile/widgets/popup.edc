@@ -399,6 +399,11 @@ group { name: "elm/popup/base/default";
          tag:  "br" "\n";
          tag:  "tab" "\t";
       }
+      style { name: "popup_subtitle_style";
+         base: "font=Tizen:style=Regular align=center font_size="POPUP_SUBTITLE_TEXT_FONT_SIZE_INC" color=#FFFFFF color_class=T1211 wrap=mixed ellipsis=1.0 text_class=T1211 style=far_shadow,bottom shadow_color="POPUP_SUBTITLE_TEXT_SHADOW_COLOR_INC"";
+         tag:  "br" "\n";
+         tag:  "tab" "\t";
+      }
    }
    parts {
       part { name: "base";
@@ -458,8 +463,8 @@ group { name: "elm/popup/base/default";
             align: 0.0 0.0;
             rel1.to: "elm.bg.title";
             fixed: 1 1;
-            min: POPUP_TITLE_LEFT_PADDING 0;
-            max: POPUP_TITLE_LEFT_PADDING 0;
+            min: POPUP_TITLE_LEFT_PADDING POPUP_TITLE_TOP_PADDING;
+            max: POPUP_TITLE_LEFT_PADDING POPUP_TITLE_TOP_PADDING;
          }
       }
       part { name: "title_right_bottom_padding";
@@ -469,8 +474,8 @@ group { name: "elm/popup/base/default";
             align: 1.0 1.0;
             rel2.to: "elm.bg.title";
             fixed: 1 1;
-            min: POPUP_TITLE_RIGHT_PADDING 0;
-            max: POPUP_TITLE_RIGHT_PADDING 0;
+            min: POPUP_TITLE_RIGHT_PADDING POPUP_TITLE_BOTTOM_PADDING;
+            max: POPUP_TITLE_RIGHT_PADDING POPUP_TITLE_BOTTOM_PADDING;
          }
       }
       part { name: "elm.text.title";
@@ -490,6 +495,38 @@ group { name: "elm/popup/base/default";
                relative: 0.0 0.0;
                to: "title_right_bottom_padding";
             }
+         }
+         description { state: "subtitle_visible" 0.0;
+            inherit: "default" 0.0;
+            rel2 {
+               relative: 1.0 0.0;
+               to: "elm.text.subtitle";
+            }
+         }
+      }
+      part { name: "elm.text.subtitle";
+         type: TEXTBLOCK;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 POPUP_SUBTITLE_HEIGHT;
+            max: -1 POPUP_SUBTITLE_HEIGHT;
+            text.style: "popup_subtitle_style";
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "title_left_top_padding";
+               to_y: "title_right_bottom_padding";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "title_right_bottom_padding";
+            }
+            align: 0.5 1.0;
+            fixed: 1 1;
+            visible: 0;
+         }
+         description { state: "subtitle_visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
       part { name: "access.title";
@@ -581,6 +618,20 @@ group { name: "elm/popup/base/default";
       }
    }
    programs {
+      program { name: "show_subtitle";
+         signal: "elm,state,subtitle,text,visible";
+         source: "elm";
+         action: STATE_SET "subtitle_visible" 0.0;
+         target: "elm.text.title";
+         target: "elm.text.subtitle";
+      }
+      program { name: "hide_subtitle";
+         signal: "elm,state,subtitle,text,hidden";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text.title";
+         target: "elm.text.subtitle";
+      }
       program { name: show_title_area;
          signal: "elm,state,title_area,visible";
          source: "elm";
