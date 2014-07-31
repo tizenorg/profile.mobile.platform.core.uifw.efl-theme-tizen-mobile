@@ -1,6 +1,6 @@
 Name:          efl-theme-tizen
 Summary:       Tizen theme files
-Version:       1.1.13
+Version:       1.1.14
 Release:       1
 Group:         TO_BE/FILLED_IN
 License:       TO_BE/FILLED_IN
@@ -30,7 +30,8 @@ export LDFLAGS+=" -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=/usr/lib"
         %endif
         export TARGET=2.3-mobile
     %else
-        export TARGET=2.2
+        export TARGET="2.2 2.3-mobile"
+        export SIZE=WVGA
     %endif
 %endif
 
@@ -49,7 +50,8 @@ make
         %endif
         export TARGET=2.3-mobile
     %else
-        export TARGET=2.2
+        export TARGET="2.2 2.3-mobile"
+        export SIZE=WVGA
     %endif
 %endif
 
