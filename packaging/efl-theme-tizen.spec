@@ -30,8 +30,7 @@ export LDFLAGS+=" -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=/usr/lib"
         %endif
         export TARGET=2.3-mobile
     %else
-        export TARGET="2.2 2.3-mobile"
-        export SIZE=WVGA
+        export TARGET=2.2
     %endif
 %endif
 
@@ -50,8 +49,7 @@ make
         %endif
         export TARGET=2.3-mobile
     %else
-        export TARGET="2.2 2.3-mobile"
-        export SIZE=WVGA
+        export TARGET=2.2
     %endif
 %endif
 
