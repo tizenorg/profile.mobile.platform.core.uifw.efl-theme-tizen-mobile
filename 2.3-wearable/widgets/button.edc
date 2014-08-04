@@ -24,150 +24,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-   group { name: "elm/button/base/transparent";
-      script {
-         public mouse_down = 0;
-         public multi_down = 0;
-      }
-      parts {
-         part { name: "bg";
-            type: RECT;
-            scale: 1;
-            description { state: "default" 0.0;
-               color: 0 0 0 0;
-               min: 0 BUTTON_HEIGHT;
-            }
-         }
-         part { name: "elm.text";
-            type: TEXTBLOCK;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               text {
-                  min: 0 1;
-                  style: "button_general_text_normal";
-               }
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               text.style: "button_general_text_dim";
-            }
-            description { state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               text.style: "button_general_text_press";
-            }
-         }
-         part { name: "elm.swallow.content";
-            clip_to: "elm.swallow.content.clip";
-            type: SWALLOW;
-            scale: 1;
-            description { state: "default" 0.0; }
-         }
-         part { name: "elm.swallow.content.clip";
-            type: RECT;
-            scale: 1;
-            description { state: "default" 0.0;
-               color_class: "F022L1i";
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               color_class: "F022L1iD";
-            }
-         }
-      }
-      programs {
-         program { name: "pressed";
-            signal: "mouse,down,1*";
-            source: "bg";
-            script {
-               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
-                 {
-                     set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_press1");
-                 }
-            }
-         }
-         program { name: "button_press1";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"bg", st, 30, vl);
-               if (strcmp(st, "disabled")) {
-                  //set_state(PART:"bg", "pressed", 0.0);
-                  set_state(PART:"elm.text", "pressed", 0.0);
-                  emit("elm,action,press", "");
-               }
-            }
-         }
-         program { name: "unpressed";
-            signal: "mouse,up,1";
-            source: "bg";
-            script {
-               if (get_int(mouse_down) == 1) {
-                 set_int(mouse_down, 0);
-                 run_program(PROGRAM:"button_unpress1");
-               }
-            }
-         }
-         program { name: "button_unpress1";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"bg", st, 30, vl);
-               if (strcmp(st, "disabled")) {
-                  //set_state(PART:"bg", "default", 0.0);
-                  set_state(PART:"elm.text", "default", 0.0);
-                  emit("elm,action,unpress", "");
-               }
-            }
-         }
-         program { name: "touch_snd";
-            signal: "mouse,clicked,1";
-            source: "bg";
-            script {
-               new st[31];
-               new Float:vl;
-               if (get_int(multi_down) == 0) {
-                  get_state(PART:"bg", st, 30, vl);
-                  if (strcmp(st, "disabled")) {
-                     play_sample("touch_sound", 1.0);
-                     emit("elm,action,click", "");
-                  }
-               }
-            }
-         }
-         program { name: "disable";
-            signal: "elm,state,disabled";
-            source: "elm";
-            action: STATE_SET "disabled" 0.0;
-            target: "elm.swallow.content.clip";
-            target: "elm.text";
-         }
-         program { name: "enable";
-            signal: "elm,state,enabled";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "elm.swallow.content.clip";
-            target: "elm.text";
-         }
-         program { name: "multi_down";
-            signal: "elm,action,multi,down";
-            source: "elm";
-            script {
-               set_int(multi_down, 1);
-            }
-         }
-         program { name: "multi_up";
-            signal: "elm,action,multi,up";
-            source: "elm";
-            script {
-               set_int(multi_down, 0);
-            }
-         }
-      }
-   }
-
    group { name: "elm/button/base/default";
       script {
          public mouse_down = 0;
@@ -369,11 +225,15 @@
                if (get_int(multi_down) == 0) {
                   get_state(PART:"bg", st, 30, vl);
                   if (strcmp(st, "disabled")) {
-                     play_sample("touch_sound", 1.0);
+                     run_program(PROGRAM:"play_sample");
                      emit("elm,action,click", "");
                   }
                }
             }
+         }
+         program {
+            name: "play_sample";
+            action: RUN_PLUGIN "touch_sound";
          }
          program { name: "text_show";
             signal: "elm,state,text,visible";
@@ -738,11 +598,15 @@ group { name: "elm/button/base/red";
                if (get_int(multi_down) == 0) {
                   get_state(PART:"bg", st, 30, vl);
                   if (strcmp(st, "disabled")) {
-                     play_sample("touch_sound", 1.0);
+                     run_program(PROGRAM:"play_sample");
                      emit("elm,action,click", "");
                   }
                }
             }
+         }
+         program {
+            name: "play_sample";
+            action: RUN_PLUGIN "touch_sound";
          }
          program { name: "text_show";
             signal: "elm,state,text,visible";
@@ -962,7 +826,7 @@ group { name: "elm/button/base/red";
             }
          }
          program { name: "play_sound";
-            action: PLAY_SAMPLE "touch_sound" 1.0;
+            action: RUN_PLUGIN "touch_sound";
          }
          program { name: "button_unclick3";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -1089,11 +953,15 @@ group { name: "elm/button/base/nextdepth";
             if (get_int(multi_down) == 0) {
                get_state(PART:"bg", st, 30, vl);
                if (strcmp(st, "disabled")) {
-                  play_sample("touch_sound", 1.0);
+                  run_program(PROGRAM:"play_sample");
                   emit("elm,action,click", "");
                }
             }
          }
+      }
+      program {
+         name: "play_sample";
+         action: RUN_PLUGIN "touch_sound";
       }
       program { name: "disable";
          signal: "elm,state,disabled";
@@ -1232,11 +1100,15 @@ group { name: "elm/button/base/plus";
             if (get_int(multi_down) == 0) {
                get_state(PART:"event", st, 30, vl);
                if (strcmp(st, "disabled")) {
-                  play_sample("touch_sound", 1.0);
+                  run_program(PROGRAM:"play_sample");
                   emit("elm,action,click", "");
                }
             }
          }
+      }
+      program {
+         name: "play_sample";
+         action: RUN_PLUGIN "touch_sound";
       }
       program { name: "disable";
          signal: "elm,state,disabled";
@@ -1390,11 +1262,15 @@ group { name: "elm/button/base/controller_plus";
             if (get_int(multi_down) == 0) {
                get_state(PART:"event", st, 30, vl);
                if (strcmp(st, "disabled")) {
-                  play_sample("touch_sound", 1.0);
+                  run_program(PROGRAM:"play_sample");
                   emit("elm,action,click", "");
                }
             }
          }
+      }
+      program {
+         name: "play_sample";
+         action: RUN_PLUGIN "touch_sound";
       }
       program { name: "disable";
          signal: "elm,state,disabled";
@@ -1602,11 +1478,15 @@ group { name: "elm/button/base/bottom_left";
             if (get_int(multi_down) == 0) {
                get_state(PART:"event", st, 30, vl);
                if (strcmp(st, "disabled")) {
-                  play_sample("touch_sound", 1.0);
+                  run_program(PROGRAM:"play_sample");
                   emit("elm,action,click", "");
                }
             }
          }
+      }
+      program {
+         name: "play_sample";
+         action: RUN_PLUGIN "touch_sound";
       }
       program { name: "disable";
          signal: "elm,state,disabled";
@@ -1807,10 +1687,14 @@ group { name: "elm/button/base/list_divider_btn";
             new Float:vl;
             get_state(PART:"event", st, 30, vl);
             if (strcmp(st, "disabled")) {
-               play_sample("touch_sound", 1.0);
+               run_program(PROGRAM:"play_sample");
                emit("elm,action,click", "");
             }
          }
+      }
+      program {
+         name: "play_sample";
+         action: RUN_PLUGIN "touch_sound";
       }
       program { name: "disable";
          signal: "elm,state,disabled";
@@ -1957,7 +1841,7 @@ group { name: "elm/button/base/AM_PM";
          }
       }
       program { name: "play_sound";
-         action: PLAY_SAMPLE "touch_sound" 1.0;
+         action: RUN_PLUGIN "touch_sound";
       }
       program { name: "button_clicked";
          action: SIGNAL_EMIT "elm,action,click" "";
@@ -2154,6 +2038,7 @@ group { name: "elm/button/base/AM_PM";
             }
          }
          program { name: "play_sound";
+            action: RUN_PLUGIN "touch_sound";
          }
          program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -2445,6 +2330,7 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
             after: "button_unpress_anim";
          }
          program { name: "play_sound";
+            action: RUN_PLUGIN "touch_sound";
          }
          program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";

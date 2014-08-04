@@ -121,8 +121,12 @@ group { name: "elm/check/base/default";
          script {
             if (get_int(check_disabled) == 1) return;
             emit("elm,action,check,toggle", "");
-            play_sample("touch_sound", 1.0);
+            run_program(PROGRAM:"play_sample");
          }
+      }
+      program {
+            name: "play_sample";
+            action: RUN_PLUGIN "touch_sound";
       }
       program { name: "unpressed";
          signal: "mouse,up,1";
@@ -240,153 +244,6 @@ group { name: "elm/check/base/default";
               set_state(PART:"check", "on", 0.0);
             else
               set_state(PART:"check", "default", 0.0);
-            set_state(PART:"bg", "default", 0.0);
-            set_int(check_disabled, 0);
-         }
-      }
-   }
-}
-
-group { name: "elm/check/base/radio";
-   script {
-      public check_state;
-      public check_disabled;
-   }
-   images {
-      image: "tw_btn_radio_holo_dark.png" COMP;
-      image: "tw_btn_radiobox_holo_dark.png" COMP;
-   }
-   parts {
-      part { name: "bg";
-         scale: 1;
-         description { state: "default" 0.0;
-            min: RADIO_SIZE;
-            max: RADIO_SIZE;
-            image.normal: "tw_btn_radiobox_holo_dark.png";
-            color_class: "W013L1";
-         }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
-            color_class: "W013L1P";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            color_class: "W013L1D";
-         }
-      }
-      part { name: "radio";
-         scale: 1;
-         description { state: "default" 0.0;
-            min: RADIO_SIZE;
-            max: RADIO_SIZE;
-            visible: 0;
-            image.normal: "tw_btn_radio_holo_dark.png";
-            color_class: "W013L2";
-         }
-         description { state: "on" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-         description { state: "pressed" 0.0;
-            inherit: "on" 0.0;
-            color_class: "W013L2P";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "on" 0.0;
-            color_class: "W013L2D";
-         }
-      }
-      part { name: "event";
-         scale: 1;
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-      }
-   }
-   programs {
-      program { name: "click";
-         signal: "mouse,clicked,1";
-         source: "event";
-         script {
-            if (get_int(check_disabled) == 1) return;
-            emit("elm,action,check,toggle", "");
-            play_sample("touch_sound", 1.0);
-         }
-      }
-      program { name: "unpressed";
-         signal: "mouse,up,1";
-         source: "event";
-         script {
-            if (get_int(check_disabled) == 1) return;
-            set_state(PART:"bg", "default", 0.0);
-            if (get_int(check_state) == 1)
-               set_state(PART:"radio", "on", 0.0);
-            else
-               set_state(PART:"radio", "default", 0.0);
-         }
-      }
-      program { name: "pressed";
-         signal: "mouse,down,1";
-         source: "event";
-         script {
-            if (get_int(check_disabled) == 1) return;
-            if (get_int(check_state) == 1)
-               set_state(PART:"radio", "pressed", 0.0);
-            else
-               set_state(PART:"radio", "default", 0.0);
-            set_state(PART:"bg", "pressed", 0.0);
-         }
-      }
-      program { name: "check_on";
-         signal: "elm,state,check,on";
-         source: "elm";
-         script {
-            if (get_int(check_disabled) == 1)
-              {
-                 set_state(PART:"bg", "disabled", 0.0);
-                 set_state(PART:"radio", "disabled", 0.0);
-              }
-            else
-              {
-                 set_state(PART:"bg", "default", 0.0);
-                 set_state(PART:"radio", "on", 0.0);
-              }
-            set_int(check_state, 1);
-         }
-      }
-      program { name: "check_off";
-         signal: "elm,state,check,off";
-         source: "elm";
-         script {
-            if (get_int(check_disabled) == 1)
-              set_state(PART:"bg", "disabled", 0.0);
-            else
-              set_state(PART:"bg", "default", 0.0);
-            set_state(PART:"radio", "default", 0.0);
-            set_int(check_state, 0);
-         }
-      }
-      program { name: "disable";
-         signal: "elm,state,disabled";
-         source: "elm";
-         script {
-            if (get_int(check_state) == 1)
-               set_state(PART:"radio", "disabled", 0.0);
-            else
-               set_state(PART:"radio", "default", 0.0);
-            set_state(PART:"bg", "disabled", 0.0);
-            set_int(check_disabled, 1);
-         }
-      }
-      program { name: "enable";
-         signal: "elm,state,enabled";
-         source: "elm";
-         script {
-            if (get_int(check_state) == 1)
-               set_state(PART:"radio", "on", 0.0);
-            else
-               set_state(PART:"radio", "default", 0.0);
             set_state(PART:"bg", "default", 0.0);
             set_int(check_disabled, 0);
          }
@@ -975,7 +832,7 @@ group { name: "elm/check/base/on&off";
       program { name: "touch_sound";
          signal: "elm,action,touch,sound";
          source: "";
-         action: PLAY_SAMPLE "touch_sound" 1.0;
+         action: RUN_PLUGIN "touch_sound";
       }
       program {
          signal: "drag";
