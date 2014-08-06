@@ -15,6 +15,7 @@ all:
 		-id ./$$s/images/Content_views\
 		-id ./$$s/images/Controls\
 		-id ./$$s/images/Copy_Paste\
+		-id ./$$s/images/Emoticon\
 		-id ./$$s/images/Navigation_elements\
 		-id ./$$s/images/Popups\
 		-sd ./$$s/sounds -fd ../objects \
