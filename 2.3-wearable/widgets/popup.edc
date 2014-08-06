@@ -36,30 +36,18 @@ group { name: "elm/notify/bottom/popup";
             rel2.relative: 1.0 1.0;
          }
       }
-      part { name: "top_padding";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 POPUP_MOVE_PAD_INC;
-            max: 0 POPUP_MOVE_PAD_INC ;
-            fixed: 0 1;
-            align: 0.5 0.0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 0.0;
-         }
-         description { state: "end" 0.0;
-            inherit: "default" 0.0;
-            min: 0 0;
-         }
-      }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
             fixed: 1 1;
+            align: 0.5 0.0;
+         }
+         description { state: "end" 0.0;
+            inherit: "default" 0.0;
             align: 0.5 1.0;
-            rel1 {to_y: "top_padding"; relative: 1.0 1.0;}
-            rel2 {to_y: "top_padding"; relative: 0.0 1.0;}
          }
       }
       part { name: "block";
@@ -101,9 +89,9 @@ group { name: "elm/notify/bottom/popup";
       }
       program { name: "end2";
          action: STATE_SET "end" 0.0;
-         transition: SIN_FAC 0.2 0.5;
+         transition: SIN_FAC 0.25 1.7;
          target: "block";
-         target: "top_padding";
+         target: "elm.swallow.content";
          after: "showfinished";
       }
       program { name: "showfinished";
@@ -113,6 +101,7 @@ group { name: "elm/notify/bottom/popup";
          signal: "elm,action,hide";
          source: "elm";
          action: STATE_SET "default" 0.0;
+         transition: SIN_FAC 0.25 1.7;
          target: "elm.swallow.content";
       }
    }
@@ -125,14 +114,12 @@ group { name: "elm/notify/block_events/popup";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
+            color_class: "transparent";
          }
          description { state: "show" 0.0;
-            color: 255 255 255 255;
             color_class: "W1712";
          }
          description { state: "clicked" 0.0;
-            color: 255 255 255 255;
             color_class: "W1712";
          }
       }
@@ -147,7 +134,7 @@ group { name: "elm/notify/block_events/popup";
       program { name: "show1";
          signal: "show";
          action: STATE_SET "show" 0.0;
-         transition: SIN_FAC 0.22 0.5;
+         transition: LINEAR 0.25;
          target: "block_events_color";
       }
       program { name: "block_clicked";
@@ -160,14 +147,14 @@ group { name: "elm/notify/block_events/popup";
          name: "deeper_block_color";
          action: STATE_SET "clicked" 0.0;
          target: "block_events_color";
-         transition: LINEAR 0.2;
+         transition: LINEAR 0.25;
          after: "default_block_color";
       }
       program {
          name: "default_block_color";
          action: STATE_SET "show" 0.0;
          target: "block_events_color";
-         transition: LINEAR 0.2;
+         transition: LINEAR 0.25;
       }
    }
 }
