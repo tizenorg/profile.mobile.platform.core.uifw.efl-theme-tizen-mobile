@@ -625,9 +625,23 @@ group { name: "elm/check/base/on&off";
             color_class: "W014L4D";
          }
       }
+      part { name: "opacity_clip_button";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1.to: "button";
+            rel2.to: "button";
+            color: 255 255 255 255;
+         }
+         description { state: "on" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
       part { name: "button";
          scale: 1;
          clip_to: "clipper";
+         clip_to: "opacity_clip_button";
          mouse_events: 1;
          dragable {
             x: 1 1 0;
@@ -896,7 +910,10 @@ group { name: "elm/check/base/on&off";
             }
             set_drag(PART:"button", drag, 0.0);
             if (get_int(check_disabled) == 0) {
-              set_state(PART:"bg_image", "on", 0.0);
+              set_state(PART:"bg_image", "on_pressed", 0.0);
+              run_program(PROGRAM:"check_show_on_effect");
+              set_state(PART:"opacity_clip_button", "on", 0.0);
+              run_program(PROGRAM:"check_draw_on_effect");
               set_state(PART:"button", "on", 0.0);
               set_state(PART:"button_handler", "on", 0.0);
             }
@@ -907,6 +924,16 @@ group { name: "elm/check/base/on&off";
             }
             set_int(check_on, 1);
          }
+      }
+      program { name: "check_show_on_effect";
+         action: STATE_SET "on" 0.0;
+         transition: SIN_FAC 0.25 1.7;
+         target: "bg_image";
+      }
+      program { name: "check_draw_on_effect";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.25;
+         target: "opacity_clip_button";
       }
       program { name: "check_off";
          signal: "elm,state,check,off";
@@ -921,7 +948,10 @@ group { name: "elm/check/base/on&off";
             }
             set_drag(PART:"button", drag, 0.0);
             if (get_int(check_disabled) == 0) {
-               set_state(PART:"bg_image", "default", 0.0);
+               set_state(PART:"bg_image", "off_pressed", 0.0);
+               run_program(PROGRAM:"check_show_off_effect");
+               set_state(PART:"opacity_clip_button", "on", 0.0);
+               run_program(PROGRAM:"check_draw_off_effect");
                set_state(PART:"button", "default", 0.0);
                set_state(PART:"button_handler", "default", 0.0);
             }
@@ -932,6 +962,16 @@ group { name: "elm/check/base/on&off";
             }
             set_int(check_on, 0);
          }
+      }
+      program { name: "check_show_off_effect";
+         action: STATE_SET "default" 0.0;
+         transition: SIN_FAC 0.25 1.7;
+         target: "bg_image";
+      }
+      program { name: "check_draw_off_effect";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.25;
+         target: "opacity_clip_button";
       }
       program { name: "icon_show";
          signal: "elm,state,icon,visible";

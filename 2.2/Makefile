@@ -21,6 +21,7 @@ all:
 		-id ./$$s/images/Controls/Check_box\
 		-id ./$$s/images/Controls/Radio_button\
 		-id ./$$s/images/Copy_Paste\
+		-id ./$$s/images/Emoticon\
 		-id ./$$s/images/Focus\
 		-id ./$$s/images/GUI_Style_Guide\
 		-id ./$$s/images/Indicator\
