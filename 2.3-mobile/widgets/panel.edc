@@ -587,7 +587,6 @@ group { name: "elm/panel/left/internal/default";
 }
 
 group { name: "elm/panel/right/default";
-   alias: "elm/panel/bottom/default";
    script {
       public timer_id;
       public signal_emit_timer(val) {
@@ -764,6 +763,113 @@ group { name: "elm/panel/right/internal/default";
          target: "elm.bg.content";
          target: "elm.swallow.content";
          transition: LINEAR 0.25;
+      }
+   }
+}
+
+group { name: "elm/panel/bottom/default";
+   images.image: "core_icon_picker_arrow_up.png" COMP;
+   images.image: "core_icon_picker_arrow_down.png" COMP;
+   data.item: "focus_highlight" "off";
+   parts {
+      part { name: "all"; type: SPACER;
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "base"; type: RECT;
+         description { state: "default" 0.0;
+            rel1.to_y: "elm.swallow.event";
+            rel1.relative: 0.0 1.0;
+            rel2.to_y: "all";
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.swallow.content"; type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1.offset: 4 4;
+            rel1.to: "base";
+            rel2.offset: -5 -5;
+            rel2.to: "base";
+         }
+      }
+      part { name: "elm.swallow.event"; type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 99999 20;
+            align: 0.5 1.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            align: 0.5 1.0;
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      part { name: "btn"; type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "elm.swallow.event";
+            rel2.to: "elm.swallow.event";
+            color: 64 64 64 255;
+         }
+      }
+      part { name: "icn"; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 20;
+            rel1.to: "btn";
+            rel2.to: "btn";
+            image.normal: "core_icon_picker_arrow_down.png";
+         }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "core_icon_picker_arrow_up.png";
+         }
+      }
+   }
+   programs {
+      program {
+         signal: "mouse,clicked,1"; source: "btn";
+         action: SIGNAL_EMIT "elm,action,panel,toggle" "elm";
+      }
+      program {
+         signal: "elm,action,show"; source: "elm";
+         action: STATE_SET "default" 0.0;
+         transition: DECELERATE 0.3;
+         target: "elm.swallow.event";
+         target: "base";
+         target: "icn";
+      }
+      program {
+         signal: "elm,action,hide"; source: "elm";
+         action: STATE_SET "hidden" 0.0;
+         transition: ACCELERATE 0.3;
+         target: "elm.swallow.event";
+         target: "icn";
+      }
+      program { name: "hide1";
+         signal: "elm,action,hide"; source: "elm";
+         script {
+            new x, y, w, h;
+
+            custom_state(PART:"base", "default", 0.0);
+            set_state_val(PART:"base", STATE_REL1, 0.0, 2.0);
+            set_state_val(PART:"base", STATE_REL2, 1.0, 3.0);
+            get_geometry(PART:"elm.swallow.event", x, y, w, h);
+            set_state_val(PART:"base", STATE_REL1_OFFSET, 0, -h);
+            set_state_val(PART:"base", STATE_REL2_OFFSET, 0, -h);
+         }
+         after: "hide2";
+      }
+      program { name: "hide2";
+         action: STATE_SET "custom" 0.0;
+         transition: ACCELERATE 0.3;
+         target: "base";
       }
    }
 }
