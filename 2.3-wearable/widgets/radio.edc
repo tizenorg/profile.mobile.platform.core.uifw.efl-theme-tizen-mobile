@@ -28,6 +28,7 @@ group { name: "elm/radio/base/default";
       images {
          image: "tw_btn_radiobox_holo_dark.png" COMP;
          image: "tw_btn_radio_holo_dark.png" COMP;
+         image: "tw_btn_radiobox_line.png" COMP;
       }
       script {
          public radio_state;
@@ -74,6 +75,27 @@ group { name: "elm/radio/base/default";
             description { state: "disabled" 0.0;
                inherit: "on" 0.0;
                color_class: "W013L2D";
+            }
+         }
+         part { name: "outline";
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               image.normal: "tw_btn_radiobox_line.png";
+               color_class: "W241";
+            }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W241P";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W241D";
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W201";
             }
          }
          part { name: "opacity_clip";
@@ -135,6 +157,7 @@ group { name: "elm/radio/base/default";
                else
                  set_state(PART:"radio", "default", 0.0);
                set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"outline", "default", 0.0);
             }
          }
          program { name: "pressed";
@@ -149,6 +172,7 @@ group { name: "elm/radio/base/default";
                else
                  set_state(PART:"radio", "default", 0.0);
                set_state(PART:"bg", "pressed", 0.0);
+               set_state(PART:"outline", "pressed", 0.0);
             }
          }
          program { name: "radio_on";
@@ -158,6 +182,7 @@ group { name: "elm/radio/base/default";
                set_int(radio_state, 1);
                if (get_int(radio_disabled) == 1) {
                   set_state(PART:"bg", "disabled", 0.0);
+                  set_state(PART:"outline", "disabled", 0.0);
                   set_state(PART:"radio", "disabled", 0.0);
                }
                else {
@@ -172,6 +197,7 @@ group { name: "elm/radio/base/default";
                      set_state(PART:"opacity_clip", "on", 0.0);
                   }
                   set_state(PART:"bg", "default", 0.0);
+                  set_state(PART:"outline", "default", 0.0);
                }
             }
          }
@@ -179,11 +205,14 @@ group { name: "elm/radio/base/default";
             signal: "elm,state,radio,off";
             source: "elm";
             script {
-               if (get_int(radio_disabled) == 1)
-                 set_state(PART:"bg", "disabled", 0.0);
+               if (get_int(radio_disabled) == 1) {
+                  set_state(PART:"bg", "disabled", 0.0);
+                  set_state(PART:"outline", "disabled", 0.0);
+               }
                else {
                   if (get_int(radio_state) == 1) {
                      set_state(PART:"bg", "default", 0.0);
+                     set_state(PART:"outline", "default", 0.0);
                      set_state(PART:"radio", "default", 0.0);
                      set_state(PART:"opacity_clip", "default", 0.0);
                      set_int(radio_state, 0);
@@ -208,6 +237,18 @@ group { name: "elm/radio/base/default";
                emit("elm,action,show,finished", "elm");
             }
          }
+         program { name: "focus";
+            signal: "elm,action,focus_highlight,show";
+            source: "elm";
+            action: STATE_SET "focused" 0.0;
+            target: "outline";
+         }
+         program { name: "unfocus";
+            signal: "elm,action,focus_highlight,hide";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "outline";
+         }
          program { name: "disable";
             signal: "elm,state,disabled";
             source: "elm";
@@ -217,6 +258,7 @@ group { name: "elm/radio/base/default";
                else
                   set_state(PART:"radio", "default", 0.0);
                set_state(PART:"bg", "disabled", 0.0);
+               set_state(PART:"outline", "disabled", 0.0);
                set_int(radio_disabled, 1);
             }
          }
@@ -229,6 +271,7 @@ group { name: "elm/radio/base/default";
                else
                   set_state(PART:"radio", "default", 0.0);
                set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"outline", "default", 0.0);
                set_int(radio_disabled, 0);
             }
          }
@@ -431,6 +474,7 @@ group { name: "elm/radio/base/list";
       images {
          image: "tw_btn_radiobox_holo_dark.png" COMP;
          image: "tw_btn_radio_holo_dark.png" COMP;
+         image: "tw_btn_radiobox_line.png" COMP;
       }
       script {
          public radio_state;
@@ -479,6 +523,27 @@ group { name: "elm/radio/base/list";
                color_class: "W013L2D";
             }
          }
+         part { name: "outline";
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               image.normal: "tw_btn_radiobox_line.png";
+               color_class: "W241";
+            }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W241P";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W241D";
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W201";
+            }
+         }
          part { name: "opacity_clip";
             type: RECT;
             mouse_events: 0;
@@ -525,6 +590,7 @@ group { name: "elm/radio/base/list";
                else
                  set_state(PART:"radio", "default", 0.0);
                set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"outline", "default", 0.0);
             }
          }
          program { name: "pressed";
@@ -539,6 +605,7 @@ group { name: "elm/radio/base/list";
                else
                  set_state(PART:"radio", "default", 0.0);
                set_state(PART:"bg", "pressed", 0.0);
+               set_state(PART:"outline", "pressed", 0.0);
             }
          }
          program { name: "radio_on";
@@ -548,6 +615,7 @@ group { name: "elm/radio/base/list";
                set_int(radio_state, 1);
                if (get_int(radio_disabled) == 1) {
                   set_state(PART:"bg", "disabled", 0.0);
+                  set_state(PART:"outline", "disabled", 0.0);
                   set_state(PART:"radio", "disabled", 0.0);
                }
                else {
@@ -562,6 +630,7 @@ group { name: "elm/radio/base/list";
                      set_state(PART:"opacity_clip", "on", 0.0);
                   }
                   set_state(PART:"bg", "default", 0.0);
+                  set_state(PART:"outline", "default", 0.0);
                }
             }
          }
@@ -569,11 +638,14 @@ group { name: "elm/radio/base/list";
             signal: "elm,state,radio,off";
             source: "elm";
             script {
-               if (get_int(radio_disabled) == 1)
-                 set_state(PART:"bg", "disabled", 0.0);
+               if (get_int(radio_disabled) == 1) {
+                  set_state(PART:"bg", "disabled", 0.0);
+                  set_state(PART:"outline", "disabled", 0.0);
+               }
                else {
                   if (get_int(radio_state) == 1) {
                      set_state(PART:"bg", "default", 0.0);
+                     set_state(PART:"outline", "default", 0.0);
                      set_state(PART:"radio", "default", 0.0);
                      set_state(PART:"opacity_clip", "default", 0.0);
                      set_int(radio_state, 0);
@@ -598,6 +670,18 @@ group { name: "elm/radio/base/list";
                emit("elm,action,show,finished", "elm");
             }
          }
+         program { name: "focus";
+            signal: "elm,action,focus_highlight,show";
+            source: "elm";
+            action: STATE_SET "focused" 0.0;
+            target: "outline";
+         }
+         program { name: "unfocus";
+            signal: "elm,action,focus_highlight,hide";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "outline";
+         }
          program { name: "disable";
             signal: "elm,state,disabled";
             source: "elm";
@@ -607,6 +691,7 @@ group { name: "elm/radio/base/list";
                else
                   set_state(PART:"radio", "default", 0.0);
                set_state(PART:"bg", "disabled", 0.0);
+               set_state(PART:"outline", "disabled", 0.0);
                set_int(radio_disabled, 1);
             }
          }
@@ -619,6 +704,7 @@ group { name: "elm/radio/base/list";
                else
                   set_state(PART:"radio", "default", 0.0);
                set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"outline", "default", 0.0);
                set_int(radio_disabled, 0);
             }
          }
