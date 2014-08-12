@@ -27,6 +27,7 @@ group { name: "elm/check/base/default";
    images {
       image: "tw_btn_checkbox_holo_dark.png" COMP;
       image: "tw_btn_check_holo_dark.png" COMP;
+      image: "tw_btn_checkbox_line_holo_dark.png" COMP;
    }
    script {
       public check_state;
@@ -73,6 +74,27 @@ group { name: "elm/check/base/default";
          description { state: "disabled" 0.0;
             inherit: "on" 0.0;
             color_class: "W012L2D";
+         }
+      }
+      part { name: "outline";
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            image.normal: "tw_btn_checkbox_line_holo_dark.png";
+            color_class: "W231";
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W231P";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W231D";
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W201";
          }
       }
       part { name: "sequence_clip";
@@ -138,6 +160,7 @@ group { name: "elm/check/base/default";
             else
               set_state(PART:"check", "default", 0.0);
             set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"outline", "default", 0.0);
          }
       }
       program { name: "unpressed2";
@@ -150,6 +173,7 @@ group { name: "elm/check/base/default";
             else
               set_state(PART:"check", "default", 0.0);
             set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"outline", "default", 0.0);
          }
       }
       program { name: "pressed";
@@ -162,6 +186,7 @@ group { name: "elm/check/base/default";
             else
               set_state(PART:"check", "default", 0.0);
             set_state(PART:"bg", "pressed", 0.0);
+            set_state(PART:"outline", "pressed", 0.0);
          }
       }
       program { name: "pressed2";
@@ -174,6 +199,7 @@ group { name: "elm/check/base/default";
             else
               set_state(PART:"check", "default", 0.0);
             set_state(PART:"bg", "pressed", 0.0);
+            set_state(PART:"outline", "pressed", 0.0);
          }
       }
       program { name: "check_on";
@@ -183,18 +209,21 @@ group { name: "elm/check/base/default";
             if (get_int(check_disabled) == 1)
               {
                  set_state(PART:"bg", "disabled", 0.0);
+                 set_state(PART:"outline", "disabled", 0.0);
                  set_state(PART:"check", "disabled", 0.0);
                  set_state(PART:"sequence_clip", "visible", 0.0);
               }
             else if (get_int(check_visible) == 1)
               {
                  set_state(PART:"bg", "default", 0.0);
+                 set_state(PART:"outline", "default", 0.0);
                  run_program(PROGRAM:"check_show_effect");
                  run_program(PROGRAM:"check_draw_effect");
               }
             else if (get_int(check_visible) == 0)
               {
                  set_state(PART:"bg", "default", 0.0);
+                 set_state(PART:"outline", "default", 0.0);
                  set_state(PART:"check", "on", 0.0);
                  set_state(PART:"sequence_clip", "visible", 0.0);
               }
@@ -206,9 +235,15 @@ group { name: "elm/check/base/default";
          source: "elm";
          script {
             if (get_int(check_disabled) == 1)
-              set_state(PART:"bg", "disabled", 0.0);
+              {
+                 set_state(PART:"bg", "disabled", 0.0);
+                 set_state(PART:"outline", "disabled", 0.0);
+              }
             else
-              set_state(PART:"bg", "default", 0.0);
+              {
+                 set_state(PART:"bg", "default", 0.0);
+                 set_state(PART:"outline", "default", 0.0);
+              }
             set_state(PART:"check", "default", 0.0);
             set_state(PART:"sequence_clip", "default", 0.0);
             set_int(check_state, 0);
@@ -224,6 +259,18 @@ group { name: "elm/check/base/default";
          transition: LINEAR 0.267;
          target: "sequence_clip";
       }
+      program { name: "focus";
+         signal: "elm,action,focus_highlight,show";
+         source: "elm";
+         action: STATE_SET "focused" 0.0;
+         target: "outline";
+      }
+      program { name: "unfocus";
+         signal: "elm,action,focus_highlight,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "outline";
+      }
       program { name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
@@ -233,6 +280,7 @@ group { name: "elm/check/base/default";
             else
               set_state(PART:"check", "default", 0.0);
             set_state(PART:"bg", "disabled", 0.0);
+            set_state(PART:"outline", "disabled", 0.0);
             set_int(check_disabled, 1);
          }
       }
@@ -245,6 +293,7 @@ group { name: "elm/check/base/default";
             else
               set_state(PART:"check", "default", 0.0);
             set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"outline", "default", 0.0);
             set_int(check_disabled, 0);
          }
       }
@@ -257,6 +306,7 @@ group { name: "elm/check/base/list";
    images {
       image: "tw_btn_checkbox_holo_dark.png" COMP;
       image: "tw_btn_check_holo_dark.png" COMP;
+      image: "tw_btn_checkbox_line_holo_dark.png" COMP;
    }
    script {
       public check_state;
@@ -303,6 +353,27 @@ group { name: "elm/check/base/list";
          description { state: "disabled" 0.0;
             inherit: "on" 0.0;
             color_class: "W012L2D";
+         }
+      }
+      part { name: "outline";
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            image.normal: "tw_btn_checkbox_line_holo_dark.png";
+            color_class: "W231";
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W231P";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W231D";
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W201";
          }
       }
       part { name: "sequence_clip";
@@ -355,6 +426,7 @@ group { name: "elm/check/base/list";
             else
               set_state(PART:"check", "default", 0.0);
             set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"outline", "default", 0.0);
          }
       }
       program { name: "unpressed2";
@@ -367,6 +439,7 @@ group { name: "elm/check/base/list";
             else
               set_state(PART:"check", "default", 0.0);
             set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"outline", "default", 0.0);
          }
       }
       program { name: "pressed";
@@ -379,6 +452,7 @@ group { name: "elm/check/base/list";
             else
               set_state(PART:"check", "default", 0.0);
             set_state(PART:"bg", "pressed", 0.0);
+            set_state(PART:"outline", "pressed", 0.0);
          }
       }
       program { name: "pressed2";
@@ -391,6 +465,7 @@ group { name: "elm/check/base/list";
             else
               set_state(PART:"check", "default", 0.0);
             set_state(PART:"bg", "pressed", 0.0);
+            set_state(PART:"outline", "pressed", 0.0);
          }
       }
       program { name: "check_on";
@@ -400,18 +475,21 @@ group { name: "elm/check/base/list";
             if (get_int(check_disabled) == 1)
               {
                  set_state(PART:"bg", "disabled", 0.0);
+                 set_state(PART:"outline", "disabled", 0.0);
                  set_state(PART:"check", "disabled", 0.0);
                  set_state(PART:"sequence_clip", "visible", 0.0);
               }
             else if (get_int(check_visible) == 1)
               {
                  set_state(PART:"bg", "default", 0.0);
+                 set_state(PART:"outline", "default", 0.0);
                  run_program(PROGRAM:"check_show_effect");
                  run_program(PROGRAM:"check_draw_effect");
               }
             else if (get_int(check_visible) == 0)
               {
                  set_state(PART:"bg", "default", 0.0);
+                 set_state(PART:"outline", "default", 0.0);
                  set_state(PART:"check", "on", 0.0);
                  set_state(PART:"sequence_clip", "visible", 0.0);
               }
@@ -423,9 +501,15 @@ group { name: "elm/check/base/list";
          source: "elm";
          script {
             if (get_int(check_disabled) == 1)
-              set_state(PART:"bg", "disabled", 0.0);
+              {
+                 set_state(PART:"bg", "disabled", 0.0);
+                 set_state(PART:"outline", "disabled", 0.0);
+              }
             else
-              set_state(PART:"bg", "default", 0.0);
+              {
+                 set_state(PART:"bg", "default", 0.0);
+                 set_state(PART:"outline", "default", 0.0);
+              }
             set_state(PART:"check", "default", 0.0);
             set_state(PART:"sequence_clip", "default", 0.0);
             set_int(check_state, 0);
@@ -441,6 +525,18 @@ group { name: "elm/check/base/list";
          transition: LINEAR 0.267;
          target: "sequence_clip";
       }
+      program { name: "focus";
+         signal: "elm,action,focus_highlight,show";
+         source: "elm";
+         action: STATE_SET "focused" 0.0;
+         target: "outline";
+      }
+      program { name: "unfocus";
+         signal: "elm,action,focus_highlight,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "outline";
+      }
       program { name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
@@ -450,6 +546,7 @@ group { name: "elm/check/base/list";
             else
               set_state(PART:"check", "default", 0.0);
             set_state(PART:"bg", "disabled", 0.0);
+            set_state(PART:"outline", "disabled", 0.0);
             set_int(check_disabled, 1);
          }
       }
@@ -462,6 +559,7 @@ group { name: "elm/check/base/list";
             else
               set_state(PART:"check", "default", 0.0);
             set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"outline", "default", 0.0);
             set_int(check_disabled, 0);
          }
       }
