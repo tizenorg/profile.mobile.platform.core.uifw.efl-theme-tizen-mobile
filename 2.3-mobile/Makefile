@@ -4,13 +4,14 @@ THEME_DIR=$(DESTDIR)/$(prefix)/share/elementary/themes
 EDJE_FLAGS_VERBOSE_ =
 EDJE_FLAGS_VERBOSE_0 =
 EDJE_FLAGS_VERBOSE_1 = -v
+EDJE_FLAGS = -no-save
 SRC=tizen
 
 all:
 	for s in $(SIZE); do \
 		cp $(SRC).edc $(SRC)-$(TARGET)-$$s.edc; \
 		perl -pi -e "s/TIZEN_TMP_INC/\"$$s-inc.edc\"/g" $(SRC)-$(TARGET)-$$s.edc; \
-		edje_cc $(EDJE_FLAGS_$(V))\
+		edje_cc $(EDJE_FLAGS) $(EDJE_FLAGS_$(V))\
 		-id ./$$s/images/\
 		-id ./$$s/images/Content_views\
 		-id ./$$s/images/Controls\
