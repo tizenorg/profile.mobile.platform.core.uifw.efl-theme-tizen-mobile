@@ -26,7 +26,16 @@ export LDFLAGS+=" -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=/usr/lib"
         %if "%{?sec_product_feature_display_resolution}" == "480x800"
             export SIZE=WVGA
         %else
-            export SIZE=HVGA
+        #This feature is for supporting Tizen SDK
+            %if "%{?sec_product_feature_display_resolution}" == "HD"
+                export SIZE=HD
+            %else
+                %if "%{?sec_product_feature_display_resolution}" == "FHD"
+                   export SIZE=FHD
+                %else
+                   export SIZE=HVGA
+                %endif
+            %endif
         %endif
         export TARGET=2.3-mobile
     %else
@@ -45,7 +54,16 @@ make
         %if "%{?sec_product_feature_display_resolution}" == "480x800"
             export SIZE=WVGA
         %else
-            export SIZE=HVGA
+        #This feature is for supporting Tizen SDK
+            %if "%{?sec_product_feature_display_resolution}" == "HD"
+                export SIZE=HD
+            %else
+                %if "%{?sec_product_feature_display_resolution}" == "FHD"
+                   export SIZE=FHD
+                %else
+                   export SIZE=HVGA
+                %endif
+            %endif
         %endif
         export TARGET=2.3-mobile
     %else
