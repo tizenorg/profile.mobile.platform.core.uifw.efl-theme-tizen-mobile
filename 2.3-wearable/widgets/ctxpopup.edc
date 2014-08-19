@@ -54,6 +54,28 @@ group {
          }
       }
       part {
+         name:"bottom_padding";
+         type: SPACER;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 CTXPOPUP_MOVE_PAD_INC;
+            fixed: 0 1;
+            align: 0.5 1.0;
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 1.0;
+         }
+         description {
+            state: "show_down" 0.0;
+            inherit: "default" 0.0;
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            min: 0 0;
+         }
+      }
+      part {
          name: "swallow";
          type: SWALLOW;
          clip_to: "layout_clip";
@@ -64,9 +86,15 @@ group {
          }
          description {
             state: "show_up" 0.0;
-            rel1 {to_y:"top_padding"; relative: 1.0 1.0;}
-            rel2 {to_y:"top_padding"; relative: 0.0 1.0;}
+            rel1 {to_y:"top_padding"; relative: 0.0 1.0;}
+            rel2 {to_y:"top_padding"; relative: 1.0 1.0;}
             align: 0.5 0.0;
+         }
+         description {
+            state: "show_down" 0.0;
+            rel1 {to_y:"bottom_padding"; relative: 0.0 0.0;}
+            rel2 {to_y:"bottom_padding"; relative: 1.0 0.0;}
+            align: 0.5 1.0;
          }
       }
       part {
@@ -118,6 +146,21 @@ group {
          after: "showupend";
       }
       program {
+         name:   "showdown";
+         signal: "elm,state,show,down";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"swallow", st, 30, vl);
+            if (strcmp(st, "show_down")) {
+              set_state(PART:"swallow", "show_down", 0.0);
+              set_state(PART:"bottom_padding", "show_down", 0.0);
+            }
+         }
+         after: "showdownend";
+      }
+      program {
          name: "show_clip_blocker";
          signal: "elm,state,show,*";
          source: "elm";
@@ -131,6 +174,12 @@ group {
          action: STATE_SET "visible" 0.0;
          transition: SIN_FAC 0.25 1.7;
          target: "top_padding";
+      }
+      program {
+         name:   "showdownend";
+         action: STATE_SET "visible" 0.0;
+         transition: SIN_FAC 0.25 1.7;
+         target: "bottom_padding";
       }
       program {
          name:   "hideup";
@@ -595,6 +644,25 @@ group {
             }
          }
       }
+      part { name: "arrow_area_up";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: CTXPOPUP_ARROW_SIZE_INC;
+            fixed: 1 1;
+            align: 0.5 1;
+            rel1 {
+               relative: 1 1;
+               to_x: "ctxpopup_frame_left_top";
+               to_y: "arrow_left_top_padding";
+            }
+            rel2 {
+               relative: 0 1;
+               to_x: "ctxpopup_frame_right_bottom";
+               to_y: "arrow_left_top_padding";
+            }
+         }
+      }
       part { name: "elm.swallow.arrow_down";
          type: SWALLOW;
          mouse_events: 0;
@@ -603,6 +671,22 @@ group {
             x: 1 1 0;
             y: 1 1 0;
             confine: "arrow_area_down";
+         }
+         description {
+            state: "default" 0.0;
+            min: CTXPOPUP_ARROW_SIZE_INC;
+            fixed: 1 1;
+            visible: 1;
+         }
+      }
+      part { name: "elm.swallow.arrow_up";
+         type: SWALLOW;
+         mouse_events: 0;
+         scale: 1;
+         dragable {
+            x: 1 1 0;
+            y: 1 1 0;
+            confine: "arrow_area_up";
          }
          description {
             state: "default" 0.0;
@@ -936,8 +1020,10 @@ group {
 group {
    name: "elm/ctxpopup/arrow/default";
    images {
-      image: "b_list_option_popup_tail.png" COMP;
-      image: "b_list_option_popup_tail_line.png" COMP;
+      image: "b_list_option_popup_top_tail.png" COMP;
+      image: "b_list_option_popup_top_tail_line.png" COMP;
+      image: "b_list_option_popup_bottom_tail.png" COMP;
+      image: "b_list_option_popup_bottom_tail_line.png" COMP;
    }
    parts {
       part {
@@ -958,7 +1044,16 @@ group {
             max: CTXPOPUP_ARROW_SIZE_INC;
             fixed: 1 1;
             align: 0.5 0.0;
-            image.normal: "b_list_option_popup_tail.png";
+            image.normal: "b_list_option_popup_top_tail.png";
+            color_class: "B092L1";
+         }
+         description {
+            state: "top" 0.0;
+            min: CTXPOPUP_ARROW_SIZE_INC;
+            max: CTXPOPUP_ARROW_SIZE_INC;
+            fixed: 1 1;
+            align: 0.5 1.0;
+            image.normal: "b_list_option_popup_bottom_tail.png";
             color_class: "B092L1";
          }
       }
@@ -980,7 +1075,16 @@ group {
             max: CTXPOPUP_ARROW_SIZE_INC;
             fixed: 1 1;
             align: 0.5 0.0;
-            image.normal: "b_list_option_popup_tail_line.png";
+            image.normal: "b_list_option_popup_top_tail_line.png";
+            color_class: "B092L2";
+         }
+         description {
+            state: "top" 0.0;
+            min: CTXPOPUP_ARROW_SIZE_INC;
+            max: CTXPOPUP_ARROW_SIZE_INC;
+            fixed: 1 1;
+            align: 0.5 1.0;
+            image.normal: "b_list_option_popup_bottom_tail_line.png";
             color_class: "B092L2";
          }
       }
@@ -991,6 +1095,14 @@ group {
          signal: "elm,state,bottom";
          source: "elm";
          action: STATE_SET "bottom" 0.0;
+         target: "ctxpopup_arrow";
+         target: "ctxpopup_arrow_effect";
+      }
+      program {
+         name: "enable_top_arrow";
+         signal: "elm,state,top";
+         source: "elm";
+         action: STATE_SET "top" 0.0;
          target: "ctxpopup_arrow";
          target: "ctxpopup_arrow_effect";
       }
