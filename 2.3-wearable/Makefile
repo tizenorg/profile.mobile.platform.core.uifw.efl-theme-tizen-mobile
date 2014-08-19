@@ -14,6 +14,7 @@ all:
 		edje_cc $(EDJE_FLAGS_$(V))\
 		-id ./$$s/images/\
 		-id ./$$s/images/Action_bar\
+		-id ./$$s/images/Action_bar/Activity\
 		-id ./$$s/images/Body\
 		-id ./$$s/images/Controller_icon\
 		-id ./$$s/images/List\
