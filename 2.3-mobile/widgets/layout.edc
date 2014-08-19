@@ -774,3 +774,207 @@ group { name: "elm/layout/searchbar/cancel_button";
       }
    }
 }
+
+group { name: "elm/layout/editfield/singleline";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 EDITFIELD_BASE_HEIGHT_INC;
+            color_class: "F054";
+         }
+      }
+     part { name: "top_left_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: EDITFIELD_TOP_LEFT_PADDING_MIN_INC;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel2.relative: 0.0 0.0;
+         }
+      }
+      part { name: "bottom_right_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: EDITFIELD_BOTTOM_RIGHT_PADDING_MIN_INC;
+            fixed: 1 1;
+            align: 1.0 1.0;
+            rel1.to: "bg";
+            rel1.relative: 1.0 1.0;
+            rel2.to: "bg";
+         }
+      }
+      part { name: "line_bottom_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: EDITFIELD_LINE_BOTTOM_PADDING_MIN_INC;
+            fixed: 0 1;
+            align: 0.5 1.0;
+            rel1.to: "bg";
+            rel1.relative: 0.0 1.0;
+            rel2.to: "bg";
+         }
+      }
+      part { name: "line_rect";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: EDITFIELD_LINE_RECT_MIN_INC;
+            fixed: 1 1;
+            align: 0.5 1.0;
+            rel1 {
+               to_x: "top_left_padding";
+               to_y: "line_bottom_padding";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to_x: "bottom_right_padding";
+               to_y: "line_bottom_padding";
+               relative: 0.0 0.0;
+            }
+            color_class: "F059";
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color_class: "F057";
+         }
+      }
+      part { name: "button_field";
+         type: SPACER;
+         scale: 1;
+	 description { state: "default" 0.0;
+            min: EDITFIELD_BUTTON_FIELD_MIN_INC;
+            fixed: 1 1;
+            align: 1.0 0.5;
+            rel1 {
+               to_x: "bottom_right_padding";
+            }
+            rel2 {
+               to_x: "bottom_right_padding";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "focused_bottom_right_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: EDITFIELD_FOCUSED_BOTTOM_RIGHT_PADDING_MIN_INC;
+            fixed: 1 1;
+            align: 1.0 1.0;
+            rel1.to: "bg";
+            rel1.relative: 1.0 1.0;
+            rel2.to: "bg";
+         }
+      }
+      part { name: "entry_field";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: EDITFIELD_ENTRY_FIELD_MIN_INC;
+            rel1 {
+               to: "top_left_padding";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "bottom_right_padding";
+               relative: 0.0 0.0;
+            }
+         }
+         description { state: "show_button" 0.0;
+            inherit: "default" 0.0;
+            rel2 {
+               to: "focused_bottom_right_padding";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: EDITFIELD_ENTRY_SWALLOW_ALIGN;
+            rel1.to: "entry_field";
+            rel2.to: "entry_field";
+         }
+      }
+      part { name: "elm.swallow.button";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            rel1.to: "button_field";
+            rel2.to: "button_field";
+            visible: 0;
+         }
+         description { state: "show_button" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+   }
+   programs {
+      program { name: "focused";
+         signal: "elm,state,focused";
+         source: "";
+         action: STATE_SET "focused" 0.0;
+         target: "line_rect";
+      }
+      program { name: "unfocused";
+         signal: "elm,state,unfocused";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "line_rect";
+      }
+      program { name: "show_button";
+         signal: "elm,action,show,button";
+         source: "";
+         action: STATE_SET "show_button" 0.0;
+         target: "entry_field";
+         target: "elm.swallow.button";
+      }
+      program { name: "hide_button";
+         signal: "elm,action,hide,button";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "entry_field";
+         target: "elm.swallow.button";
+      }
+   }
+}
+
+group { name: "elm/layout/editfield/multiline";
+   inherit: "elm/layout/editfield/singleline";
+   parts {
+      part { name: "top_left_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: EDITFIELD_MULTILINE_TOP_LEFT_PADDING_MIN_INC;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            rel2.relative: 0.0 0.0;
+         }
+      }
+      part { name: "bottom_right_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: EDITFIELD_MULTILINE_BOTTOM_RIGHT_PADDING_MIN_INC;
+            fixed: 1 1;
+            align: 1.0 1.0;
+            rel1.to: "bg";
+            rel1.relative: 1.0 1.0;
+            rel2.to: "bg";
+         }
+      }
+   }
+}
