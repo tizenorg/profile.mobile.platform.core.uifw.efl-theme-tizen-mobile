@@ -33,6 +33,7 @@ all:
 		-id ./$$s/images/Focus\
 		-id ./$$s/images/temp\
 		-id ./$$s/images/temp/Copy_Paste\
+		-id ./$$s/images/Emoticon\
 		-id ./$$s/images/temp/swipe\
 		-sd ./$$s/sounds -fd ../objects \
 		$(SRC)-$(TARGET)-$$s.edc $(SRC)-$(TARGET)-$$s.edj; \
