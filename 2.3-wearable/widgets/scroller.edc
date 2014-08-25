@@ -47,7 +47,6 @@ group { name: "elm/scroller/base/default";
    script {
       public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
       public sh_v, sh_h;
-      public first_show;
       public top_down_x = 0, top_down_y = 0
       public top_move_x = 0, top_move_y = 0
       public top_diff = 0, top_prev_diff = 0
@@ -433,7 +432,6 @@ group { name: "elm/scroller/base/default";
             set_int(sbalways_v, 0);
             set_int(sbalways_h, 0);
             set_int(sbvis_timer, 0);
-            set_int(first_show, 0);
             emit("reload", "elm");
          }
       }
@@ -600,7 +598,7 @@ group { name: "elm/scroller/base/default";
             if (!v) {
               v = get_int(sbvis_timer);
               if (v > 0.0) cancel_timer(v);
-              v = timer(0.2, "timer0", 0);
+              v = timer(1.0, "timer0", 0);
               set_int(sbvis_timer, v);
             }
             emit("do-show-hbar", "");
@@ -609,15 +607,8 @@ group { name: "elm/scroller/base/default";
             if (!v) {
               v = get_int(sbvis_timer);
               if (v > 0.0) cancel_timer(v);
-              if (get_int(first_show) == 1) {
-                 v = timer(0.2, "timer0", 0);
-                 set_int(sbvis_timer, v);
-              }
-              else {
-                 v = timer(1.0, "timer0", 0);
-                 set_int(sbvis_timer, v);
-                 set_int(first_show, 1);
-              }
+              v = timer(1.0, "timer0", 0);
+              set_int(sbvis_timer, v);
             }
          }
       }

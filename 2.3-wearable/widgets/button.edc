@@ -1379,182 +1379,6 @@ group { name: "elm/button/base/rewind";
    }
 }
 
-group { name: "elm/button/base/bottom_left";
-   script {
-      public mouse_down = 0;
-      public multi_down = 0;
-   }
-   images {
-      image: "tw_timepicker_left_softbtn.png" COMP;
-   }
-   parts {
-      part { name: "bg";
-         type: RECT;
-         description { state: "default" 0.0;
-            min: BUTTON_BOTTOM_BG_SIZE_LEFT;
-            max: BUTTON_BOTTOM_BG_SIZE_LEFT;
-            fixed: 1 1;
-            color_class: "B0543";
-         }
-      }
-      part { name: "controller";
-         description { state: "default" 0.0;
-            min: BUTTON_BOTTOM_SIZE_LEFT;
-            max: BUTTON_BOTTOM_SIZE_LEFT;
-            rel1.to: "bg";
-            rel2.to: "bg";
-            fixed: 1 1;
-            image.normal: "tw_timepicker_left_softbtn.png";
-            color_class: "B052L4";
-         }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
-            color_class: "B052L4P";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            color_class: "B052L4D";
-         }
-      }
-      part { name: "event";
-         type: RECT;
-         scale: 1;
-         repeat_events: 0;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            color: 0 0 0 0;
-         }
-      }
-   }
-   programs {
-      program { name: "pressed";
-         signal: "mouse,down,1*";
-         source: "event";
-         script {
-            if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
-              {
-                  set_int(mouse_down, 1);
-                  run_program(PROGRAM:"button_press1");
-              }
-         }
-      }
-      program { name: "button_press1";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"event", st, 30, vl);
-            if (strcmp(st, "disabled")) {
-               set_state(PART:"controller", "pressed", 0.0);
-               emit("elm,action,press", "");
-            }
-         }
-      }
-      program { name: "unpressed";
-         signal: "mouse,up,1";
-         source: "event";
-         script {
-            new st[31];
-            new Float:vl;
-            if (get_int(mouse_down) == 1)
-              {
-                 set_int(mouse_down, 0);
-                 get_state(PART:"event", st, 30, vl);
-                 if (strcmp(st, "disabled")) {
-                    set_state(PART:"controller", "default", 0.0);
-                    emit("elm,action,unpress", "");
-                 }
-              }
-         }
-      }
-      program { name: "touch_snd";
-         signal: "mouse,clicked,1";
-         source: "event";
-         script {
-            new st[31];
-            new Float:vl;
-            if (get_int(multi_down) == 0) {
-               get_state(PART:"event", st, 30, vl);
-               if (strcmp(st, "disabled")) {
-                  run_program(PROGRAM:"play_sample");
-                  emit("elm,action,click", "");
-               }
-            }
-         }
-      }
-      program {
-         name: "play_sample";
-         action: RUN_PLUGIN "touch_sound";
-      }
-      program { name: "disable";
-         signal: "elm,state,disabled";
-         source: "elm";
-         action: STATE_SET "disabled" 0.0;
-         target: "event";
-         target: "controller";
-      }
-      program { name: "enable";
-         signal: "elm,state,enabled";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "event";
-         target: "controller";
-      }
-      program { name: "multi_down";
-         signal: "elm,action,multi,down";
-         source: "elm";
-         script {
-            set_int(multi_down, 1);
-         }
-      }
-      program { name: "multi_up";
-         signal: "elm,action,multi,up";
-         source: "elm";
-         script {
-            set_int(multi_down, 0);
-         }
-      }
-   }
-}
-
-group { name: "elm/button/base/bottom_right";
-   inherit: "elm/button/base/bottom_left";
-   images {
-      image: "tw_timepicker_right_softbtn.png" COMP;
-   }
-   parts {
-      part { name: "bg";
-         type: RECT;
-         description { state: "default" 0.0;
-            min: BUTTON_BOTTOM_BG_SIZE_RIGHT;
-            max: BUTTON_BOTTOM_BG_SIZE_RIGHT;
-            fixed: 1 1;
-            color_class: "B0543";
-         }
-      }
-      part { name: "controller";
-         description { state: "default" 0.0;
-            image.normal: "tw_timepicker_right_softbtn.png";
-            min: BUTTON_BOTTOM_SIZE_RIGHT;
-            max: BUTTON_BOTTOM_SIZE_RIGHT;
-            rel1.to: "bg";
-            rel2.to: "bg";
-            fixed: 1 1;
-         }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
-            color_class: "B052L4P";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            color_class: "B052L4D";
-         }
-      }
-   }
-}
-
 group { name: "elm/button/base/list_divider_btn";
    inherit: "elm/button/base/default";
    parts {
@@ -1709,191 +1533,6 @@ group { name: "elm/button/base/list_divider_btn";
          action: STATE_SET "default" 0.0;
          target: "event";
          target: "bg";
-      }
-   }
-}
-
-group { name: "elm/button/base/AM_PM";
-   images {
-      image: "tw_timepicker_num_btn.png" COMP;
-   }
-   styles{
-     style { name: "am_pm_normal_style";
-        base: "font=Tizen:style=Bold font_size="BUTTON_TIME_PICKER_AM_PM_TEXT_SIZE" align=center color=#FFFFFF color_class=T053 ellipsis=1.0 text_class=T053";
-        tag: "br" "\n";
-        tag: "ps" "ps";
-        tag: "tab" "\t";
-     }
-     style { name: "am_pm_pressed_style";
-        base: "font=Tizen:style=Bold font_size="BUTTON_TIME_PICKER_AM_PM_TEXT_SIZE" align=center color=#FFFFFF color_class=T053P ellipsis=1.0 text_class=T053P";
-        tag: "br" "\n";
-        tag: "ps" "ps";
-        tag: "tab" "\t";
-     }
-   }
-   script {
-      public mouse_down = 0;
-      public multi_down = 0;
-   }
-   parts {
-      part { name: "button_image";
-         scale: 1;
-         description { state: "default" 0.0;
-            min: BUTTON_TIME_PICKER_AM_PM_SIZE;
-            max: BUTTON_TIME_PICKER_AM_PM_SIZE;
-            fixed: 1 1;
-            image.normal: "tw_timepicker_num_btn.png";
-            color_class: "W085";
-         }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
-            color_class: "W085P";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-         }
-      }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
-            text {
-               min: 0 1;
-               style: "am_pm_normal_style";
-            }
-            rel1.to: "button_image";
-            rel2.to: "button_image";
-         }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
-            text {
-               style: "am_pm_pressed_style";
-            }
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-         }
-      }
-      part { name: "over1";
-         type: RECT;
-         ignore_flags: ON_HOLD;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-      }
-      part { name: "over2";
-         type: RECT;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-      }
-      part { name: "disabler";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            visible: 0;
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-   }
-   programs {
-      program { name: "pressed";
-         signal: "mouse,down,1";
-         source: "over1";
-         script {
-            if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) {
-               set_int(mouse_down, 1);
-               run_program(PROGRAM:"button_pressed1");
-            }
-         }
-      }
-      program { name: "button_pressed1";
-         action: SIGNAL_EMIT "elm,action,press" "";
-         after: "button_pressed_anim";
-      }
-      program { name: "button_pressed_anim";
-         action: STATE_SET "pressed" 0.0;
-         target: "button_image";
-         target: "elm.text";
-      }
-      program { name: "button_double_click";
-         signal: "mouse,down,1,double";
-         source: "over1";
-         script {
-            if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) {
-               set_int(mouse_down, 1);
-               run_program(PROGRAM:"button_pressed_anim");
-            }
-         }
-      }
-      program { name: "touch_snd";
-         signal: "mouse,clicked,1";
-         source: "over1";
-         script {
-            if (get_int(multi_down) == 0) {
-               run_program(PROGRAM:"play_sound");
-               run_program(PROGRAM:"button_clicked");
-            }
-         }
-      }
-      program { name: "play_sound";
-         action: RUN_PLUGIN "touch_sound";
-      }
-      program { name: "button_clicked";
-         action: SIGNAL_EMIT "elm,action,click" "";
-      }
-      program { name: "unpressed";
-         signal: "mouse,up,1";
-         source: "over2";
-         script {
-            if (get_int(mouse_down) == 1) {
-               set_int(mouse_down, 0);
-               run_program(PROGRAM:"button_unpressed1");
-               run_program(PROGRAM:"button_unpressed_anim");
-            }
-         }
-      }
-      program { name: "button_unpressed1";
-         action: SIGNAL_EMIT "elm,action,unpress" "";
-      }
-      program { name: "button_unpressed_anim";
-         action: STATE_SET "default" 0.0;
-         target: "button_image";
-         target: "elm.text";
-      }
-      program { name: "disable";
-         signal: "elm,state,disabled";
-         source: "elm";
-         action: STATE_SET "disabled" 0.0;
-         target: "disabler";
-         target: "button_image";
-         target: "elm.text";
-      }
-      program { name: "enable";
-         signal: "elm,state,enabled";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "disabler";
-         target: "button_image";
-         target: "elm.text";
-      }
-      program { name: "multi_down";
-         signal: "elm,action,multi,down";
-         source: "elm";
-         script {
-            set_int(multi_down, 1);
-         }
-      }
-      program { name: "multi_up";
-         signal: "elm,action,multi,up";
-         source: "elm";
-         script {
-            set_int(multi_down, 0);
-         }
       }
    }
 }
@@ -2102,6 +1741,7 @@ group { name: "elm/button/base/AM_PM";
             description { state: "default" 0.0; \
                visible: 0; \
                image.normal: image_normal; \
+               fill.smooth: 0; \
                color_class: "W201"; \
             } \
             description { state: "focused" 0.0; \
@@ -2193,57 +1833,39 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
    group { name: "elm/button/base/datetime/top_btn";
       images {
          image: "tw_timepicker_top.png" COMP;
+         image: "tw_timepicker_top_effect.png" COMP;
       }
       script {
          public mouse_down = 0;
          public multi_down = 0;
       }
       parts {
-         part { name: "bg";
-            type: SPACER;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: DATETIME_TOP_FOOT_BUTTON_SIZE;
-               max: DATETIME_TOP_FOOT_BUTTON_SIZE;
-            }
-         }
-         part { name: "button_image";
-            type: RECT;
-            scale: 1;
-            description { state: "default" 0.0;
-               visible: 0;
-            }
-            description { state: "pressed" 0.0;
-               inherit: "default" 0.0;
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-            }
-            description { state: "focused" 0.0;
-               inherit: "default" 0.0;
-            }
-         }
-         part { name: "top_button";
+         part { name: "top_button_normal";
             scale: 1;
             mouse_events: 0;
-            clip_to: "top_button.clipper";
             description { state: "default" 0.0;
                min: DATETIME_TOP_FOOT_BUTTON_SIZE;
                max: DATETIME_TOP_FOOT_BUTTON_SIZE;
-               align: 0.5 0.5;
                image.normal: "tw_timepicker_top.png";
-            }
-         }
-         part { name: "top_button.clipper";
-            type: RECT;
-            description { state: "default" 0.0;
                color_class: "W089";
             }
             description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
                color_class: "W089P";
             }
             description { state: "disabled" 0.0;
-               color_class: "W089";
+               inherit: "default" 0.0;
+               color_class: "W263D";
+            }
+         }
+         part { name: "top_button_effect";
+            scale: 1;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               image.normal: "tw_timepicker_top_effect.png";
+               color_class: "W211";
+               rel1.to: "top_button_normal";
+               rel2.to: "top_button_normal";
             }
          }
          part { name: "over2";
@@ -2286,12 +1908,12 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
          }
          program { name: "button_press2";
             action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_press_anim";
+            after: "button_press_state_set";
          }
-         program { name: "button_press_anim";
+         program { name: "button_press_state_set";
             action: STATE_SET "pressed" 0.0;
-            target: "button_image";
-            target: "top_button.clipper";
+            target: "top_button_normal";
+            target: "top_button_effect";
          }
          program { name: "button_unpress";
             signal: "mouse,up,1*";
@@ -2301,17 +1923,17 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
                  {
                      set_int(mouse_down, 0);
                      run_program(PROGRAM:"button_unpress2");
-                     run_program(PROGRAM:"button_unpress_anim");
-                  }
+                     run_program(PROGRAM:"button_unpress_state_set");
+                 }
             }
          }
          program { name: "button_unpress2";
             action: SIGNAL_EMIT "elm,action,unpress" "";
          }
-         program { name: "button_unpress_anim";
+         program { name: "button_unpress_state_set";
             action: STATE_SET "default" 0.0;
-            target: "button_image";
-            target: "top_button.clipper";
+            target: "top_button_normal";
+            target: "top_button_effect";
          }
          program { name: "button_click";
             signal: "mouse,clicked,1";
@@ -2326,7 +1948,7 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
          program { name: "action_unpressed";
             signal: "elm,action,unpressed";
             source: "elm";
-            after: "button_unpress_anim";
+            after: "button_unpress_state_set";
          }
          program { name: "play_sound";
             action: RUN_PLUGIN "touch_sound";
@@ -2334,21 +1956,33 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
          program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
          }
+         program { name: "access_pressed";
+            signal: "elm,action,anim,activate";
+            source: "elm";
+            action: STATE_SET "pressed" 0.0;
+            target: "top_button_normal";
+            after: "access_pressed_anim";
+         }
+         program { name: "access_pressed_anim";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.2;
+            target: "top_button_normal";
+         }
          program { name: "disable";
             signal: "elm,state,disabled";
             source: "elm";
             action: STATE_SET "disabled" 0.0;
-            target: "button_image";
+            target: "top_button_normal";
+            target: "top_button_effect";
             target: "disabler";
-            target: "top_button.clipper";
          }
          program { name: "enable";
             signal: "elm,state,enabled";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "button_image";
+            target: "top_button_normal";
+            target: "top_button_effect";
             target: "disabler";
-            target: "top_button.clipper";
          }
          program {
             name: "multi_down";
@@ -2373,28 +2007,53 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
       inherit: "elm/button/base/datetime/top_btn";
       images {
          image: "tw_timepicker_foot.png" COMP;
+         image: "tw_timepicker_foot_effect.png" COMP;
       }
       parts {
-         part { name: "top_button";
+          part { name: "top_button_normal";
+             scale: 1;
+             mouse_events: 0;
+             description { state: "default" 0.0;
+                min: DATETIME_TOP_FOOT_BUTTON_SIZE;
+                max: DATETIME_TOP_FOOT_BUTTON_SIZE;
+                image.normal: "tw_timepicker_foot.png";
+                color_class: "W089";
+              }
+             description { state: "pressed" 0.0;
+                inherit: "default" 0.0;
+                color_class: "W089P";
+             }
+             description { state: "disabled" 0.0;
+                inherit: "default" 0.0;
+                color_class: "W089";
+             }
+          }
+          part { name: "top_button_effect";
             scale: 1;
             mouse_events: 0;
-            clip_to: "top_button.clipper";
             description { state: "default" 0.0;
-               min: DATETIME_TOP_FOOT_BUTTON_SIZE;
-               max: DATETIME_TOP_FOOT_BUTTON_SIZE;
-               align: 0.5 0.5;
-               image.normal: "tw_timepicker_foot.png";
+               image.normal: "tw_timepicker_foot_effect.png";
+               rel1.to: "top_button_normal";
+               rel2.to: "top_button_normal";
+               color_class: "W211";
+            }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
             }
          }
       }
    }
-   
+
    /******************* SPINNER BUTTONS STYLES **********************/
 
    group { name: "elm/button/base/spinner/inc_button";
       data.item: "focus_highlight" "on";
       images {
          image: "tw_timepicker_top.png" COMP;
+         image: "tw_timepicker_top_effect.png" COMP;
       }
       script {
          public mouse_down = 0;
@@ -2424,6 +2083,21 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
             description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                color_class: "W089P";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W263D";
+            }
+         }
+         part { name: "arrow.effect";
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1.to: "arrow.image";
+               rel2.to: "arrow.image";
+               min: SPINNER_PICKERSTYLE_ARROW_BUTTON_SIZE;
+               max: SPINNER_PICKERSTYLE_ARROW_BUTTON_SIZE;
+               image.normal: "tw_timepicker_top_effect.png";
+               color_class: "W211";
             }
          }
          part { name: "over";
@@ -2488,9 +2162,13 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
             source: "over";
             script {
                if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
                  run_program(PROGRAM:"button_click2");
                }
             }
+         }
+         program { name: "play_sound";
+            action: RUN_PLUGIN "touch_sound";
          }
          program { name: "action_unpressed";
             signal: "elm,action,unpressed";
@@ -2540,6 +2218,7 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
       inherit: "elm/button/base/spinner/inc_button";
       images {
          image: "tw_timepicker_foot.png" COMP;
+         image: "tw_timepicker_foot_effect.png" COMP;
       }
       parts {
          part { name: "arrow.image";
@@ -2555,6 +2234,21 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
             description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                color_class: "W089P";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "W263D";
+            }
+         }
+         part { name: "arrow.effect";
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1.to: "arrow.image";
+               rel2.to: "arrow.image";
+               min: SPINNER_PICKERSTYLE_ARROW_BUTTON_SIZE;
+               max: SPINNER_PICKERSTYLE_ARROW_BUTTON_SIZE;
+               image.normal: "tw_timepicker_foot_effect.png";
+               color_class: "W211";
             }
          }
       }
@@ -2583,6 +2277,7 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
             }
             description { state: "disabled" 0.0;
                inherit: "default" 0.0;
+               color_class: "W262D";
             }
          }
          part { name: "elm.text";
@@ -2658,15 +2353,15 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
             target: "elm.text";
             target: "bg";
          }
-         program { name: "focus";
-            signal: "elm,action,focus";
+         program { name: "select";
+            signal: "elm,state,selected";
             source: "elm";
             action: STATE_SET "on" 0.0;
             target: "bg";
             target: "elm.text";
          }
-         program { name: "unfocus";
-            signal: "elm,action,unfocus";
+         program { name: "unselect";
+            signal: "elm,state,unselected";
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "bg";
@@ -2674,4 +2369,126 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus", "tw_focused_effect.#.png")
          }
       }
    }
-/***********************SPINNER BUTTONS STYLES******************************/
+
+   /* This transparent button style is used by applications which use webview. */
+   group{ name: "elm/button/base/transparent";
+       script {
+         public mouse_down = 0;
+         public multi_down = 0;
+       }
+       parts {
+         part { name: "bg";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+            }
+         }
+        part { name: "event";
+            type: RECT;
+            scale: 1;
+            /* Do not remove the following line.
+             * elm.swallow.content part should receive mouse events. */
+            repeat_events: 1;
+            description { state: "default" 0.0;
+              color: 0 0 0 0;
+            }
+         }
+      }
+      programs {
+         program { name: "pressed";
+            signal: "mouse,down,1*";
+            source: "event";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0))
+                 {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_press1");
+                 }
+            }
+         }
+         program { name: "button_press1";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"bg", st, 30, vl);
+               if (strcmp(st, "disabled")) {
+                  emit("elm,action,press", "");
+               }
+            }
+         }
+         program { name: "unpressed";
+            signal: "mouse,up,1";
+            source: "event";
+            script {
+               if (get_int(mouse_down) == 1) {
+                 set_int(mouse_down, 0);
+                 run_program(PROGRAM:"button_unpress1");
+               }
+            }
+         }
+         program { name: "button_unpress1";
+            script {
+               new st[31];
+               new Float:vl;
+               get_state(PART:"bg", st, 30, vl);
+               if (strcmp(st, "disabled")) {
+                  emit("elm,action,unpress", "");
+               }
+            }
+         }
+         program { name: "touch_snd";
+            signal: "mouse,clicked,1";
+            source: "event";
+            script {
+               new st[31];
+               new Float:vl;
+               if (get_int(multi_down) == 0) {
+                  get_state(PART:"bg", st, 30, vl);
+                  if (strcmp(st, "disabled")) {
+                     run_program(PROGRAM:"touch_sound");
+                     emit("elm,action,click", "");
+                  }
+               }
+            }
+         }
+         program { name: "touch_sound";
+            action: RUN_PLUGIN "touch_sound";
+         }
+         program { name: "disable";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "bg";
+         }
+         program { name: "enable";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "bg";
+         }
+         program { name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program { name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
+         }
+      }
+   }
+

@@ -229,8 +229,13 @@ group { name: "elm/toolbar/item/tabbar";
          description { state: "default" 0.0;
             min: 0 0;
             fixed: 0 1;
+            rel1 {
+               to_y: "padding_left_top";
+               relative: 0.0 1.0;
+            }
             rel2 {
-               relative: 1.0 0.0;
+               to_y: "padding_left_top";
+               relative: 1.0 1.0;
             }
             align: 0.5 0.0;
          }
@@ -777,10 +782,15 @@ group { name: "elm/toolbar/item/tabbar";
                      set_state(PART:"elm.text", "icon_text_land_pressed", 0.0);
                      set_state(PART:"elm.icon.clipper", "pressed", 0.0);
                    }
-                 else
+                 else if (get_int(item_state))
                    {
                      set_state(PART:"elm.text", "icon_text_land", 0.0);
                      set_state(PART:"elm.icon.clipper", "disabled", 0.0);
+                   }
+                 else
+                   {
+                     set_state(PART:"elm.text", "icon_text_land", 0.0);
+                     set_state(PART:"elm.icon.clipper", "default", 0.0);
                    }
                  }
             }
@@ -820,10 +830,15 @@ group { name: "elm/toolbar/item/tabbar";
                      set_state(PART:"elm.text", "icon_text_pressed", 0.0);
                      set_state(PART:"elm.icon.clipper", "pressed", 0.0);
                    }
-                 else
+                 else if (get_int(item_state))
                    {
                      set_state(PART:"elm.text", "icon_text", 0.0);
                      set_state(PART:"elm.icon.clipper", "disabled", 0.0);
+                   }
+                 else
+                   {
+                     set_state(PART:"elm.text", "icon_text", 0.0);
+                     set_state(PART:"elm.icon.clipper", "default", 0.0);
                    }
                }
             }
@@ -1046,9 +1061,32 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            min: TABBAR_ICON_SIZE_INC;
+            min: TABBAR_ICON_RECT_SIZE_INC;
          }
       }
+
+      part { name: "padding_icon_text";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 0;
+            fixed: 1 0;
+            align: 1.0 0.5;
+            rel1 {
+               to_x: "elm.text";
+               relative: 0.0 0.0;
+            }
+            rel2 {
+               to_x: "elm.text";
+               relative: 0.0 1.0;
+            }
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            min: TABBAR_ICON_TEXT_PAD_INC;
+         }
+      }
+
       part { name: "elm.swallow.icon";
          type: SWALLOW;
          scale: 1;
@@ -1065,11 +1103,11 @@ group { name: "elm/toolbar/item/tabbar_with_title";
             align: 1.0 0.5;
             fixed: 1 1;
             rel1 {
-               to_x: "elm.text";
+               to_x: "padding_icon_text";
                relative: 0.0 0.0;
             }
             rel2 {
-               to_x: "elm.text";
+               to_x: "padding_icon_text";
                relative: 0.0 1.0;
             }
          }
@@ -1370,6 +1408,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          script {
             set_int(icon_text, 1);
             set_state(PART:"elm.swallow.icon", "visible", 0.0);
+            set_state(PART:"padding_icon_text", "visible", 0.0);
             set_state(PART:"icon_rect", "visible", 0.0);
             set_state(PART:"elm.text", "icon_text", 0.0);
             set_state(PART:"padding_left_top", "icon_text", 0.0);
@@ -1382,6 +1421,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          script {
             set_int(icon_text, 0);
             set_state(PART:"elm.swallow.icon", "default", 0.0);
+            set_state(PART:"padding_icon_text", "default", 0.0);
             set_state(PART:"elm.text", "text", 0.0);
             set_state(PART:"padding_left_top", "text", 0.0);
             set_state(PART:"padding_right_bottom", "text", 0.0);
