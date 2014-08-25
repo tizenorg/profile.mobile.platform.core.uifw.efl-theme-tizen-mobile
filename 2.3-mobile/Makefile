@@ -22,17 +22,20 @@ all:
 		-sd ./$$s/sounds -fd ../objects \
 		$(SRC)-$(TARGET)-$$s.edc $(SRC)-$(TARGET)-$$s.edj; \
 	done
+	edje_cc $(EDJE_FLAGS_$(V)) -id default/images/tizen-hd -sd default/sounds -fd ../objects default.edc default.edj
 
 clean:
 	for s in $(SIZE); do \
 		rm -rf $(SRC)-$(TARGET)-$$s.*; \
 	done
+	rm -rf default.edj;\
 
 install:
 	mkdir -p $(THEME_DIR)
 	for s in $(SIZE); do \
 		$(INSTALL) $(SRC)-$(TARGET)-$$s.edj $(THEME_DIR); \
 	done
+	$(INSTALL) default.edj $(THEME_DIR); \
 
 uninstall:
 	rm -rf $(THEME_DIR)/
