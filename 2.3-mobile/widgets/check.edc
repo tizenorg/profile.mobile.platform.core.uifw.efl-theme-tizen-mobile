@@ -26,6 +26,7 @@
 group { name: "elm/check/base/default";
    images {
       image: "core_check_bg.png" COMP;
+      image: "core_check_bg_stroke.png" COMP;
       image: "core_check_icon.png" COMP;
    }
    script {
@@ -53,6 +54,25 @@ group { name: "elm/check/base/default";
             color_class: "W013L1D";
          }
       }
+      part { name: "bg_stroke";
+         scale: 1;
+         description { state: "default" 0.0;
+            min: CHECK_BG_STROKE_SIZE;
+            align: 0.0 0.5;
+            aspect: 1 1;
+            aspect_preference: BOTH;
+            image.normal: "core_check_bg_stroke.png";
+            color_class: "W013L2E1";
+         }
+         description { state: "on" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W013L2";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W013L2D";
+         }
+      }
       part { name: "check";
          scale: 1;
          description { state: "default" 0.0;
@@ -70,6 +90,10 @@ group { name: "elm/check/base/default";
          description { state: "on" 0.0;
             inherit: "default" 0.0;
             visible: 1;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class:"W013L1iD";
          }
       }
       part { name: "event";
@@ -115,10 +139,12 @@ group { name: "elm/check/base/default";
             if (get_int(check_state) == 1) {
               set_state(PART:"check", "on", 0.0);
               set_state(PART:"bg", "on", 0.0);
+              set_state(PART:"bg_stroke", "on", 0.0);
             }
             else {
               set_state(PART:"check", "default", 0.0);
               set_state(PART:"bg", "default", 0.0);
+              set_state(PART:"bg_stroke", "default", 0.0);
             }
          }
       }
@@ -130,10 +156,12 @@ group { name: "elm/check/base/default";
             if (get_int(check_state) == 1) {
               set_state(PART:"check", "on", 0.0);
               set_state(PART:"bg", "on", 0.0);
+              set_state(PART:"bg_stroke", "on", 0.0);
             }
             else {
               set_state(PART:"check", "default", 0.0);
               set_state(PART:"bg", "default", 0.0);
+              set_state(PART:"bg_stroke", "default", 0.0);
             }
          }
       }
@@ -142,10 +170,14 @@ group { name: "elm/check/base/default";
          signal: "elm,state,check,on";
          source: "elm";
          script {
-            if (get_int(check_disabled) == 1)
+            if (get_int(check_disabled) == 1) {
                set_state(PART:"bg", "disabled", 0.0);
-            else
+               set_state(PART:"bg_stroke", "disabled", 0.0);
+            }
+            else {
                set_state(PART:"bg", "on", 0.0);
+               set_state(PART:"bg_stroke", "on", 0.0);
+            }
             set_state(PART:"check", "on", 0.0);
             set_int(check_state, 1);
          }
@@ -154,10 +186,14 @@ group { name: "elm/check/base/default";
          signal: "elm,state,check,off";
          source: "elm";
          script {
-            if (get_int(check_disabled) == 1)
+            if (get_int(check_disabled) == 1) {
                set_state(PART:"bg", "disabled", 0.0);
-            else
+               set_state(PART:"bg_stroke", "disabled", 0.0);
+            }
+            else {
                set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"bg_stroke", "on", 0.0);
+            }
             set_state(PART:"check", "default", 0.0);
             set_int(check_state, 0);
          }
@@ -168,6 +204,8 @@ group { name: "elm/check/base/default";
          script {
             set_int(check_disabled, 1);
             set_state(PART:"bg", "disabled", 0.0);
+            set_state(PART:"bg_stroke", "disabled", 0.0);
+            set_state(PART:"check", "disabled", 0.0);
          }
       }
       program { name: "enable";
@@ -175,10 +213,16 @@ group { name: "elm/check/base/default";
          source: "elm";
          script {
             set_int(check_disabled, 0);
-            if (get_int(check_state) == 1)
+            if (get_int(check_state) == 1) {
               set_state(PART:"bg", "on", 0.0);
-            else
+              set_state(PART:"bg_stroke", "on", 0.0);
+              set_state(PART:"check", "on", 0.0);
+            }
+            else {
               set_state(PART:"bg", "default", 0.0);
+              set_state(PART:"bg_stroke", "default", 0.0);
+              set_state(PART:"check", "default", 0.0);
+            }
          }
       }
    }
