@@ -6075,6 +6075,7 @@ group { name: "elm/scroller/entry/editfield/searchbar/default";
 group { name: "elm/entry/base-single/datetime/style1";
    alias: "elm/entry/base-single/datetime";
    alias: "elm/entry/base-single/datetime/style3";
+   alias: "elm/entry/base-single/spinner/default";
    data.item: "default_font_size" "52";
    data.item: "min_font_size" "35";
    data.item: "max_font_size" "52";
@@ -6329,6 +6330,17 @@ group { name: "elm/entry/base-single/datetime/style2";
             visible: 1;
          }
       }
+      part { name: "text_bg";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: DATETIME_DATE_MONTH_FIELD_WIDTH 60;  // Here 60 pixal is adjusted to make UI look simiar to radio one.
+            max: DATETIME_DATE_MONTH_FIELD_WIDTH 60;
+            fixed: 1 1;
+            rel1.to: "base";
+            rel2.to: "base";
+         }
+      }
       part { name: "elm.text";
          type: TEXTBLOCK;
          mouse_events: 1;
@@ -6350,10 +6362,14 @@ group { name: "elm/entry/base-single/datetime/style2";
          //source10: ""; // start edge selection
          //source11: ""; // end edge selection
          description { state: "default" 0.0;
-            fixed: 1 0;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            rel1.to: "text_bg";
+            rel2.to: "text_bg";
             text {
                style: "entry_datetime_textblock_style2";
-               min: 0 1;
+               min: 1 1;
+               fit: 1 1;
                align: 0.0 0.5;
             }
          }
@@ -6382,6 +6398,172 @@ group { name: "elm/entry/base-single/datetime/style2";
       program { name: "action_unfocus";
          signal: "elm,action,unfocus";
          source: "*";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "elm.text";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+      program { name: "touch_snd";
+         signal: "mouse,clicked,1";
+         source: "elm.text";
+         action: RUN_PLUGIN "touch_sound";
+      }
+   }
+}
+
+group { name: "elm/entry/base-single/datetime/AM_PM";
+   data.item: "default_font_size" "47";
+   data.item: "min_font_size" "35";
+   data.item: "max_font_size" "47";
+   images {
+      image: "tw_timepicker_focus_line.#.png" COMP;
+      image: "tw_timepicker_num_bg_new.#.png" COMP;
+   }
+   styles {
+      style { name: "entry_datetime_textblock_AM_PM";
+         base: "font=Tizen:style=Roman font_size="DATETIME_ENTRY_TEXT_SIZE" color=#ffffff align=center left_margin=1 right_margin=2 color_class=T052 wrap=none text_class=T052";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font_style=Oblique";
+         tag:  "b" "+ font_weight=Bold";
+         tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+         tag:  "hilight" "+ font_weight=Bold";
+         tag:  "preedit" "+ underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR;
+         tag:  "preedit_sel" "+ backing=on backing_color="ENTRY_PREEDIT_BACKGROUND_COLOR" color="ENTRY_PREEDIT_TEXT_COLOR" underline=on underline_color="ENTRY_PREEDIT_TEXT_COLOR;
+         tag:  "preedit_sub1" "+ backing=on backing_color="ENTRY_PREEDIT_SUB1_COLOR" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR;
+         tag:  "preedit_sub2" "+ backing=on backing_color="ENTRY_PREEDIT_SUB2_COLOR" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR;
+         tag:  "preedit_sub3" "+ backing=on backing_color="ENTRY_PREEDIT_SUB3_COLOR" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR;
+         tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR;
+      }
+      style { name: "entry_datetime_textblock_disabled_AM_PM";
+         base: "font=Tizen:style=Roman font_size="DATETIME_ENTRY_TEXT_SIZE" color=#ffffff align=center left_margin=1 right_margin=2 color_class=T052D wrap=none text_class=T052D";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "tab" "\t";
+         tag:  "em" "+ font_style=Oblique";
+         tag:  "b" "+ font_weight=Bold";
+         tag:  "link" "+ color=#00000080 underline=on underline_color=#00000080";
+         tag:  "hilight" "+ font_weight=Bold";
+         tag:  "preedit" "+ underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR;
+         tag:  "preedit_sel" "+ backing=on backing_color="ENTRY_PREEDIT_BACKGROUND_COLOR" color="ENTRY_PREEDIT_TEXT_COLOR" underline=on underline_color="ENTRY_PREEDIT_TEXT_COLOR;
+         tag:  "preedit_sub1" "+ backing=on backing_color="ENTRY_PREEDIT_SUB1_COLOR" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR;
+         tag:  "preedit_sub2" "+ backing=on backing_color="ENTRY_PREEDIT_SUB2_COLOR" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR;
+         tag:  "preedit_sub3" "+ backing=on backing_color="ENTRY_PREEDIT_SUB3_COLOR" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR;
+         tag:  "preedit_sub4" "+ backing=on backing_color="ENTRY_PREEDIT_SUB4_COLOR" underline=on underline_color="ENTRY_PREEDIT_UNDERLINE_COLOR;
+      }
+   }
+   data {
+      item: context_menu_orientation "none";
+   }
+   parts {
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 DATETIME_FIELD_HEIGHT;
+            max: -1 DATETIME_FIELD_HEIGHT;
+            fixed: 0 1;
+         }
+      }
+      part { name: "bg_base";
+         scale: 1;
+         description { state: "default" 0.0;
+            image.normal: "tw_timepicker_num_bg_new.#.png";
+            color_class: "W0811";
+            min: 0 DATETIME_FIELD_HEIGHT;
+            max: -1 DATETIME_FIELD_HEIGHT;
+            fixed: 0 1;
+            rel1.to: "base";
+            rel2.to: "base";
+         }
+      }
+      part { name: "bg";
+         scale: 1;
+         description { state: "default" 0.0;
+            image.normal: "tw_timepicker_focus_line.#.png";
+            color_class: "W201";
+            min: 0 DATETIME_FIELD_HEIGHT;
+            max: -1 DATETIME_FIELD_HEIGHT;
+            fixed: 0 1;
+            rel1 {
+               to: "base";
+               offset: -3 -3;
+            }
+            rel2 {
+               to: "base";
+               offset: 2 2;
+            }
+            visible: 0;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         mouse_events: 1;
+         repeat_events: 1;
+         scale: 1;
+         entry_mode: EDITABLE;
+         select_mode: BLOCK_HANDLE;
+         //cursor_mode: BEFORE;
+         multiline: 0;
+         //source: "elm/entry/selection/default"; // selection under
+         //source2: "X"; // selection over
+         //source3: "X"; // cursor under
+         //source4: "elm/entry/cursor/default"; // cursorover
+         source5: "elm/entry/anchor/default"; // anchor under
+         //source6: "X"; // anchor over
+         //source7: ENTRY_BLOCK_HANDLE_SOURCE7; // start selection handler
+        // source8: ENTRY_BLOCK_HANDLE_SOURCE8; // end selection handler
+         source9: ENTRY_CURSOR_HANDLE_SOURCE9; // cursor handler
+         //source10: ""; // start edge selection
+         //source11: ""; // end edge selection
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            text {
+               style: "entry_datetime_textblock_AM_PM";
+               min: 1 0;
+               align: 0.0 0.5;
+            }
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text {
+               style: "entry_datetime_textblock_disabled_AM_PM";
+               min: 0 1;
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "focus";
+         signal: "load";
+         source: "";
+         action: FOCUS_SET;
+         target: "elm.text";
+      }
+      program { name: "action_focus";
+         signal: "mouse,down,1";
+         source: "elm.text";
+         action: STATE_SET "focused" 0.0;
+         target: "bg";
+      }
+      program { name: "action_unfocus";
+         signal: "mouse,up,1";
+         source: "elm.text";
          action: STATE_SET "default" 0.0;
          target: "bg";
       }
