@@ -92,6 +92,7 @@ group { name: "elm/toolbar/item/tabbar";
       public mouse_down = 0;
       public multi_down = 0;
       public landscape = 0;
+      public item_text = 0;
    }
    parts {
       part { name: "bg";
@@ -274,6 +275,20 @@ group { name: "elm/toolbar/item/tabbar";
             rel2 {
                to_y: "elm.text";
                relative: 1.0 0.0;
+            }
+         }
+         description { state: "visible_icon_only" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            align: 0.5 0.5;
+            fixed: 1 1;
+            rel1 {
+               to: "padding_left_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding_right_bottom";
+               relative: 0.0 0.0;
             }
          }
          description { state: "visible_land" 0.0;
@@ -611,18 +626,28 @@ group { name: "elm/toolbar/item/tabbar";
          signal: "elm,state,text,visible";
          source: "elm";
          script {
+            set_int(item_text, 1);
             if (!get_int(icon_text))
-            {
-               set_state(PART:"elm.text", "text", 0.0);
-               set_state(PART:"padding_left_top", "text", 0.0);
-               set_state(PART:"padding_right_bottom", "text", 0.0);
-            }
+              {
+                set_state(PART:"elm.text", "text", 0.0);
+                set_state(PART:"padding_left_top", "text", 0.0);
+                set_state(PART:"padding_right_bottom", "text", 0.0);
+              }
+            else
+              {
+                set_state(PART:"elm.swallow.icon", "visible", 0.0);
+                set_state(PART:"icon_rect", "visible", 0.0);
+                set_state(PART:"elm.text", "icon_text", 0.0);
+                set_state(PART:"padding_left_top", "icon_text", 0.0);
+                set_state(PART:"padding_right_bottom", "icon_text", 0.0);
+              }
          }
       }
       program { name: "text_hide";
          signal: "elm,state,text,hidden";
          source: "elm";
          script {
+            set_int(item_text, 0);
             set_state(PART:"elm.text", "default", 0.0);
          }
       }
@@ -633,17 +658,27 @@ group { name: "elm/toolbar/item/tabbar";
             set_int(icon_text, 1);
             if (!get_int(landscape))
               {
-                set_state(PART:"elm.swallow.icon", "visible", 0.0);
-                set_state(PART:"icon_rect", "visible", 0.0);
-                set_state(PART:"elm.text", "icon_text", 0.0);
+                if (get_int(item_text))
+                  {
+                    set_state(PART:"elm.swallow.icon", "visible", 0.0);
+                    set_state(PART:"icon_rect", "visible", 0.0);
+                    set_state(PART:"elm.text", "icon_text", 0.0);
+                  }
+                else
+                  set_state(PART:"elm.swallow.icon", "visible_icon_only", 0.0);
                 set_state(PART:"padding_left_top", "icon_text", 0.0);
                 set_state(PART:"padding_right_bottom", "icon_text", 0.0);
               }
             else
               {
-                set_state(PART:"elm.swallow.icon", "visible_land", 0.0);
-                set_state(PART:"icon_rect", "visible_land", 0.0);
-                set_state(PART:"elm.text", "icon_text_land", 0.0);
+                if (get_int(item_text))
+                  {
+                    set_state(PART:"elm.swallow.icon", "visible_land", 0.0);
+                    set_state(PART:"icon_rect", "visible_land", 0.0);
+                    set_state(PART:"elm.text", "icon_text_land", 0.0);
+                  }
+                else
+                  set_state(PART:"elm.swallow.icon", "visible_icon_only", 0.0);
                 set_state(PART:"padding_left_top", "icon_text_land", 0.0);
                 set_state(PART:"padding_right_bottom", "icon_text_land", 0.0);
               }
@@ -929,6 +964,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
       public mouse_down = 0;
       public multi_down = 0;
       public landscape = 0;
+      public item_text = 0;
    }
    parts {
       part { name: "bg";
@@ -1109,6 +1145,20 @@ group { name: "elm/toolbar/item/tabbar_with_title";
             rel2 {
                to_x: "padding_icon_text";
                relative: 0.0 1.0;
+            }
+         }
+         description { state: "visible_icon_only" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            align: 0.5 0.5;
+            fixed: 1 1;
+            rel1 {
+               to: "padding_left_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding_right_bottom";
+               relative: 0.0 0.0;
             }
          }
       }
@@ -1387,18 +1437,28 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          signal: "elm,state,text,visible";
          source: "elm";
          script {
+            set_int(item_text, 1);
             if (!get_int(icon_text))
-            {
-               set_state(PART:"elm.text", "text", 0.0);
-               set_state(PART:"padding_left_top", "text", 0.0);
-               set_state(PART:"padding_right_bottom", "text", 0.0);
-            }
+              {
+                set_state(PART:"elm.text", "text", 0.0);
+                set_state(PART:"padding_left_top", "text", 0.0);
+                set_state(PART:"padding_right_bottom", "text", 0.0);
+              }
+            else
+              {
+                set_state(PART:"elm.swallow.icon", "visible", 0.0);
+                set_state(PART:"icon_rect", "visible", 0.0);
+                set_state(PART:"elm.text", "icon_text", 0.0);
+                set_state(PART:"padding_left_top", "icon_text", 0.0);
+                set_state(PART:"padding_right_bottom", "icon_text", 0.0);
+              }
          }
       }
       program { name: "text_hide";
          signal: "elm,state,text,hidden";
          source: "elm";
          script {
+            set_int(item_text, 0);
             set_state(PART:"elm.text", "default", 0.0);
          }
       }
@@ -1407,10 +1467,15 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          source: "elm";
          script {
             set_int(icon_text, 1);
-            set_state(PART:"elm.swallow.icon", "visible", 0.0);
-            set_state(PART:"padding_icon_text", "visible", 0.0);
-            set_state(PART:"icon_rect", "visible", 0.0);
-            set_state(PART:"elm.text", "icon_text", 0.0);
+            if (get_int(item_text))
+              {
+                set_state(PART:"elm.swallow.icon", "visible", 0.0);
+                set_state(PART:"padding_icon_text", "visible", 0.0);
+                set_state(PART:"icon_rect", "visible", 0.0);
+                set_state(PART:"elm.text", "icon_text", 0.0);
+              }
+            else
+              set_state(PART:"elm.swallow.icon", "visible_icon_only", 0.0);
             set_state(PART:"padding_left_top", "icon_text", 0.0);
             set_state(PART:"padding_right_bottom", "icon_text", 0.0);
          }
