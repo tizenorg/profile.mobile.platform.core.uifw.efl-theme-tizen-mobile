@@ -592,6 +592,19 @@ group { name: "elm/radio/base/list";
                   set_int(radio_show,0);
                }
          }
+         program { name: "click";
+            signal: "mouse,clicked,1";
+            source: "event";
+            script {
+               if (get_int(radio_disabled) == 1) return;
+               emit("elm,action,radio,toggle", "");
+               run_program(PROGRAM:"play_sample");
+            }
+         }
+         program {
+            name: "play_sample";
+            action: RUN_PLUGIN "touch_sound";
+         }
          program { name: "unpressed";
             signal: "mouse,up,1";
             source: "event";
