@@ -127,6 +127,7 @@ group { name: "elm/slider/horizontal/default";
       script {
          public invert_on = 0;
          public popup_show = 1;
+         public show = 0;
          public set_popup_show() {
             set_int(popup_show, 1);
          }
@@ -551,34 +552,42 @@ group { name: "elm/slider/horizontal/default";
          program { name: "center_point_enable";
             signal: "slider,center,point,show";
             source: "elm";
-            action:  STATE_SET "visible" 0.0;
-            target: "center_point";
+            script {
+               set_state(PART:"center_point", "visible", 0.0);
+               set_int(show, 1);
+            }
          }
          program { name: "center_point_disable";
             signal: "slider,center,point,hide";
             source: "elm";
-            action:  STATE_SET "default" 0.0;
-            target: "center_point";
+            script {
+               set_state(PART:"center_point", "default", 0.0);
+               set_int(show, 0);
+            }
          }
          program { name: "slider_disable";
             signal: "elm,state,disabled";
             source: "elm";
-            action:  STATE_SET "disabled" 0.0;
-            target: "disabler";
-            target: "icon_clipper";
-            target: "clipper";
-            target: "center_point";
-            target: "base";
+            script {
+               if (get_int(show))
+                  set_state(PART:"center_point", "disabled", 0.0);
+               set_state(PART:"disabler", "disabled", 0.0);
+               set_state(PART:"icon_clipper", "disabled", 0.0);
+               set_state(PART:"clipper", "disabled", 0.0);
+               set_state(PART:"base", "disabled", 0.0);
+            }
          }
          program { name: "slider_enable";
             signal: "elm,state,enabled";
             source: "elm";
-            action:  STATE_SET "default" 0.0;
-            target: "disabler";
-            target: "icon_clipper";
-            target: "clipper";
-            target: "center_point";
-            target: "base";
+            script {
+               if (get_int(show))
+                  set_state(PART:"center_point", "default", 0.0);
+               set_state(PART:"disabler", "default", 0.0);
+               set_state(PART:"icon_clipper", "default", 0.0);
+               set_state(PART:"clipper", "default", 0.0);
+               set_state(PART:"base", "default", 0.0);
+            }
          }
       }
    }
