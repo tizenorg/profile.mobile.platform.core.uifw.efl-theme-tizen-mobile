@@ -228,6 +228,199 @@ group { name: "elm/check/base/default";
    }
 }
 
+group { name: "elm/check/base/list";
+   images {
+      image: "core_check_bg.png" COMP;
+      image: "core_check_bg_stroke.png" COMP;
+      image: "core_check_icon.png" COMP;
+   }
+   script {
+      public check_state;
+      public check_disabled;
+      public check_visible;
+   }
+   parts {
+      part { name: "bg";
+         scale: 1;
+         description { state: "default" 0.0;
+            min: CHECK_BG_SIZE;
+            align: 0.0 0.5;
+            aspect: 1 1;
+            aspect_preference: BOTH;
+            image.normal: "core_check_bg.png";
+            color_class: "W013L1E1";
+         }
+         description { state: "on" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W013L1";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W013L1D";
+         }
+      }
+      part { name: "bg_stroke";
+         scale: 1;
+         description { state: "default" 0.0;
+            min: CHECK_BG_STROKE_SIZE;
+            align: 0.0 0.5;
+            aspect: 1 1;
+            aspect_preference: BOTH;
+            image.normal: "core_check_bg_stroke.png";
+            color_class: "W013L2E1";
+         }
+         description { state: "on" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W013L2";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W013L2D";
+         }
+      }
+      part { name: "check";
+         scale: 1;
+         description { state: "default" 0.0;
+            min: CHECK_ICON_SIZE;
+            rel1.to: "bg";
+            rel1.relative: 0.125 0.125;
+            rel2.to: "bg";
+            rel2.relative: 0.875 0.875;
+            aspect: 1 1;
+            aspect_preference: BOTH;
+            image.normal: "core_check_icon.png";
+            color_class:"W013L1i";
+            visible:0;
+         }
+         description { state: "on" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class:"W013L1iD";
+         }
+      }
+      part { name: "event";
+         scale: 1;
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      program { name: "show";
+         signal: "show";
+         script {
+            set_int(check_visible, 1);
+         }
+      }
+      program { name: "hide";
+         signal: "hide";
+         script {
+            set_int(check_visible, 0);
+         }
+      }
+      program { name: "unpressed";
+         signal: "mouse,up,1";
+         source: "event";
+         script {
+            if (get_int(check_disabled) == 1) return;
+            if (get_int(check_state) == 1) {
+              set_state(PART:"check", "on", 0.0);
+              set_state(PART:"bg", "on", 0.0);
+              set_state(PART:"bg_stroke", "on", 0.0);
+            }
+            else {
+              set_state(PART:"check", "default", 0.0);
+              set_state(PART:"bg", "default", 0.0);
+              set_state(PART:"bg_stroke", "default", 0.0);
+            }
+         }
+      }
+      program { name: "unpressed2";
+         signal: "elm,state,mouse,up";
+         source: "elm";
+         script {
+            if (get_int(check_disabled) == 1) return;
+            if (get_int(check_state) == 1) {
+              set_state(PART:"check", "on", 0.0);
+              set_state(PART:"bg", "on", 0.0);
+              set_state(PART:"bg_stroke", "on", 0.0);
+            }
+            else {
+              set_state(PART:"check", "default", 0.0);
+              set_state(PART:"bg", "default", 0.0);
+              set_state(PART:"bg_stroke", "default", 0.0);
+            }
+         }
+      }
+
+      program { name: "check_on";
+         signal: "elm,state,check,on";
+         source: "elm";
+         script {
+            if (get_int(check_disabled) == 1) {
+               set_state(PART:"bg", "disabled", 0.0);
+               set_state(PART:"bg_stroke", "disabled", 0.0);
+            }
+            else {
+               set_state(PART:"bg", "on", 0.0);
+               set_state(PART:"bg_stroke", "on", 0.0);
+            }
+            set_state(PART:"check", "on", 0.0);
+            set_int(check_state, 1);
+         }
+      }
+      program { name: "check_off";
+         signal: "elm,state,check,off";
+         source: "elm";
+         script {
+            if (get_int(check_disabled) == 1) {
+               set_state(PART:"bg", "disabled", 0.0);
+               set_state(PART:"bg_stroke", "disabled", 0.0);
+            }
+            else {
+               set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"bg_stroke", "on", 0.0);
+            }
+            set_state(PART:"check", "default", 0.0);
+            set_int(check_state, 0);
+         }
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         script {
+            set_int(check_disabled, 1);
+            set_state(PART:"bg", "disabled", 0.0);
+            set_state(PART:"bg_stroke", "disabled", 0.0);
+            set_state(PART:"check", "disabled", 0.0);
+         }
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         script {
+            set_int(check_disabled, 0);
+            if (get_int(check_state) == 1) {
+              set_state(PART:"bg", "on", 0.0);
+              set_state(PART:"bg_stroke", "on", 0.0);
+              set_state(PART:"check", "on", 0.0);
+            }
+            else {
+              set_state(PART:"bg", "default", 0.0);
+              set_state(PART:"bg_stroke", "default", 0.0);
+              set_state(PART:"check", "default", 0.0);
+            }
+         }
+      }
+   }
+}
+
 group { name: "elm/check/base/favorite";
    images {
       image: "core_icon_favorite.png" COMP;
