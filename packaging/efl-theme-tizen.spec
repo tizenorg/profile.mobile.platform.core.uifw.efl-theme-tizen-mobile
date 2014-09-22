@@ -24,7 +24,7 @@ export LDFLAGS+=" -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=/usr/lib"
 %else
     %if 0%{?sec_product_feature_profile_lite}
         %if "%{?sec_product_feature_display_resolution}" == "480x800"
-            export SIZE=WVGA
+            export SIZE="WVGA HD FHD"
         %else
             export SIZE=HVGA
         %endif
@@ -44,7 +44,7 @@ make
 %else
     %if 0%{?sec_product_feature_profile_lite}
         %if "%{?sec_product_feature_display_resolution}" == "480x800"
-            export SIZE=WVGA
+            export SIZE="WVGA HD FHD"
         %else
             export SIZE=HVGA
         %endif
