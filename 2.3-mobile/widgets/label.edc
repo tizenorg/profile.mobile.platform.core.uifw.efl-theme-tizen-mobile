@@ -26,6 +26,8 @@
 
 #define SLIDE_SPEED_WEIGHT 0.5
 #define SLIDE_TEXT_GAP 60
+#define SLIDE_TEXT_CHAR_GAP "      " //60 (6 spaces)
+#define SLIDE_TEXT_MAX_LENGTH (2*(1024+6))
 
       styles {
          style { name: "textblock_style";
@@ -349,8 +351,7 @@ base: "font=Tizen:style=Regular font_size="LABEL_FONT_SIZE_INC" color=#ffffff co
             }
             public slide_to_end_anim(val, Float:pos) {
                if (get_int(g_stopslide)) return;
-               set_tween_state(PART:"elm.text.slide", pos, "slide_begin", 0.0, "slide_end", 0.0);
-               set_tween_state(PART:"elm.text.slide2", pos, "slide_begin", 0.0, "slide_end", 0.0);
+               set_tween_state(PART:"elm.text.slide", pos*0.5, "slide_begin", 0.0, "slide_end", 0.0);
                if (pos >= 1.0) {
                   set_int(g_timer_id, timer(1.5, "start_slide", 0));
                }
@@ -361,19 +362,15 @@ base: "font=Tizen:style=Regular font_size="LABEL_FONT_SIZE_INC" color=#ffffff co
             }
             public start_slide(val) {
                new Float:len;
-               new buf[1024];
                set_int(g_stopslide, 0);
                get_tb_width();
                if (!get_float(g_duration)) {
-                  len = get_int(g_tb_w) + SLIDE_TEXT_GAP;
+                  len = get_int(g_tb_w);
                   set_float(g_duration, len / get_int(g_tb_h) * SLIDE_SPEED_WEIGHT);
                }
                if(get_int(g_tb_w) > get_int(org_text)) {
+                  run_program(PROGRAM:"slide_text_set");
                   set_state(PART:"elm.text.slide", "slide_begin", 0.0);
-                  set_state(PART:"elm.text.slide2", "slide_begin", 0.0);
-                  get_text(PART:"elm.text", buf, 1024);
-                  set_text(PART:"elm.text.slide", buf);
-                  set_text(PART:"elm.text.slide2", buf);
                   set_state(PART:"text_clip", "hide", 0.0);
                   set_state(PART:"slide_text_clip", "show", 0.0);
                   slide_to_end();
@@ -395,10 +392,8 @@ base: "font=Tizen:style=Regular font_size="LABEL_FONT_SIZE_INC" color=#ffffff co
                   set_int(g_anim_id, 0);
                }
                set_text(PART:"elm.text.slide", "");
-               set_text(PART:"elm.text.slide2", "");
                set_state(PART:"elm.text", "default", 0.0);
                set_state(PART:"elm.text.slide", "default", 0.0);
-               set_state(PART:"elm.text.slide2", "default", 0.0);
                set_state(PART:"text_clip", "default", 0.0);
                set_state(PART:"slide_text_clip", "default", 0.0);
             }
@@ -483,45 +478,23 @@ base: "font=Tizen:style=Regular font_size="LABEL_FONT_SIZE_INC" color=#ffffff co
                   text.min: 1 1;
                   text.align: 1.0 0.5;
                   rel1 { relative: 0.0 0.0; to: "slide_text_gap"; }
-                  rel2 { relative: 0.0 1.0; to: "slide_text_gap"; }
-               }
-            }
-            part { name: "slide_text_gap2";
-               type: SPACER;
-               scale: 1;
-               description { state: "default" 0.0;
-                  fixed: 1 0;
-                  min: SLIDE_TEXT_GAP 0;
-                  max: SLIDE_TEXT_GAP -1;
-                  align: 0.0 0.5;
-                  rel1 { relative: 1.0 0.0; to: "elm.text"; }
-                  rel2 { relative: 1.0 1.0; to: "elm.text"; }
-               }
-            }
-            part { name: "elm.text.slide2";
-               type: TEXTBLOCK;
-               scale: 1;
-               clip_to: "slide_text_clip";
-               description { state: "default" 0.0;
-                  align: 0.0 0.5;
-                  text {
-                     style: "textblock_style";
-                     min: 1 1;
-                  }
-               }
-               description { state: "slide_begin" 0.0;
-                  inherit: "default" 0.0;
-                  rel1 { relative: 1.0 0.0; to: "slide_text_gap2"; }
-                  rel2 { relative: 1.0 1.0; to: "slide_text_gap2"; }
-               }
-               description { state: "slide_end" 0.0;
-                  inherit: "default" 0.0;
-                  rel1.relative: 0.0 0.0;
-                  rel2.relative: 0.0 1.0;
+                  rel2 { relative: 1.0 1.0; to: "slide_text_gap"; }
                }
             }
          }
          programs {
+            program { name: "slide_text_set";
+               script {
+                  new buf[1024];
+                  new buffer[SLIDE_TEXT_MAX_LENGTH];
+                  get_text(PART:"elm.text", buf, 1024);
+                  snprintf(buffer, SLIDE_TEXT_MAX_LENGTH, "%s", buf);
+                  strcat(buffer, SLIDE_TEXT_CHAR_GAP);
+                  strcat(buffer, buf);
+                  strcat(buffer, SLIDE_TEXT_CHAR_GAP);
+                  set_text(PART:"elm.text.slide", buffer);
+               }
+            }
             program { name: "start_slide";
                source: "elm";
                signal: "elm,state,slide,start";
