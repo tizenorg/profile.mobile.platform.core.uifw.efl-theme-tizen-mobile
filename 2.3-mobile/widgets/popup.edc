@@ -26,7 +26,6 @@
 
 /*popup widget specific notify style*/
 group { name: "elm/notify/bottom/popup";
-   alias: "elm/notify/bottom/toast";
    alias: "elm/notify/bottom/transparent";
    parts {
       part { name: "base";
@@ -93,6 +92,74 @@ group { name: "elm/notify/bottom/popup";
          action: STATE_SET "end" 0.0;
          transition: SIN_FAC 0.5 1.7;
          target: "elm.swallow.content";
+         target: "block";
+         after: "showfinished";
+      }
+      program { name: "showfinished";
+         action: SIGNAL_EMIT "elm,action,show,finished" "";
+      }
+      program { name: "hide";
+         signal: "elm,action,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.content";
+      }
+   }
+}
+
+group { name: "elm/notify/bottom/toast";
+   parts {
+      part { name: "base";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+     part { name: "elm.swallow.content";
+        type: SWALLOW;
+        scale: 1;
+        description { state: "default" 0.0;
+           rel1.to: "base";
+           rel2.to: "base";
+           align: 0.5 1.0;
+           fixed: 1 1;
+        }
+     }
+     part { name: "block";
+        scale: 1;
+        type: RECT;
+        description { state: "default" 0.0;
+           rel1.to: "elm.swallow.content";
+           rel2.to: "elm.swallow.content";
+           fixed: 1 1;
+           visible: 1;
+           color: 0 0 0 0;
+        }
+        description { state: "end" 0.0;
+           inherit: "default" 0.0;
+           visible: 0;
+        }
+     }
+   }
+   programs {
+      program { name: "load";
+         signal: "load";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.content";
+      }
+      program { name: "show";
+         signal: "elm,action,show";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.content";
+      }
+      program { name: "show_1";
+         signal: "show";
+         action: STATE_SET "end" 0.0;
          target: "block";
          after: "showfinished";
       }
@@ -953,7 +1020,7 @@ group { name: "elm/popup/base/toast";
    images {
       image: "core_popup_noti_bg.#.png" COMP;
       image: "core_popup_noti_bg_ef.#.png" COMP;
-      image: "core_popup_noti_bg_outer.#.png" COMP;
+      image: "core_popup_noti_bg_stroke.#.png" COMP;
    }
    data {
       item: "default_orient" "2"; //top, center:1 bottom:2
@@ -989,7 +1056,7 @@ group { name: "elm/popup/base/toast";
               to_x: "title_right_padding";
               to_y: "bottom_padding";
             }
-            image.normal: "core_popup_noti_bg_outer.#.png";
+            image.normal: "core_popup_noti_bg_stroke.#.png";
             color_class: "B011";
             max: POPUP_TOAST_BG_MAX_WIDTH_INC POPUP_TOAST_BG_MAX_HEIGHT_INC;
          }
