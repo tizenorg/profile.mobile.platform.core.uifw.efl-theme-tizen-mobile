@@ -43,8 +43,8 @@ group { name: "elm/notify/bottom/popup";
         description { state: "default" 0.0;
            rel1.to: "base";
            rel2.to: "base";
-           fixed: 1 1;
            align: 0.5 0.0;
+           fixed: 1 1;
         }
         description { state: "end" 0.0;
            rel1.to: "base";
@@ -59,7 +59,6 @@ group { name: "elm/notify/bottom/popup";
         description { state: "default" 0.0;
            rel1.to: "elm.swallow.content";
            rel2.to: "elm.swallow.content";
-           fixed: 1 1;
            visible: 1;
            color: 0 0 0 0;
         }
@@ -745,7 +744,44 @@ group { name: "elm/popup/content/default";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
+            min: POPUP_CONTENT_AREA_DEFAULT_MIN_INC;
          }
+         description { state: "landscape" 0.0;
+            min: POPUP_CONTENT_AREA_LANDSCAPE_MIN_INC;
+         }
+      }
+   }
+   programs {
+      program { name: "orientation_change";
+         action: SIGNAL_EMIT "elm,state,orientation,changed" "";
+      }
+      program { name: "landscape_mode";
+         source: "elm";
+         signal: "elm,state,orient,90";
+         action: STATE_SET "landscape" 0.0;
+         target: "elm.swallow.content";
+         after: "orientation_change";
+      }
+      program { name: "landscape_mode2";
+         source: "elm";
+         signal: "elm,state,orient,270";
+         action: STATE_SET "landscape" 0.0;
+         target: "elm.swallow.content";
+         after: "orientation_change";
+      }
+      program { name: "portrait_mode";
+         source: "elm";
+         signal: "elm,state,orient,0";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.content";
+         after: "orientation_change";
+      }
+      program { name: "portrait_mode2";
+         source: "elm";
+         signal: "elm,state,orient,180";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.content";
+         after: "orientation_change";
       }
    }
 }
