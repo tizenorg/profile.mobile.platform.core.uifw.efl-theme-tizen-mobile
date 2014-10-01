@@ -22,26 +22,8 @@ export LDFLAGS+=" -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=/usr/lib"
 %if 0%{?sec_product_feature_uifw_efl_b3_theme}
     export TARGET=2.3-wearable
 %else
-    %if 0%{?sec_product_feature_profile_lite}
-        %if "%{?sec_product_feature_display_resolution}" == "480x800"
-            export SIZE=WVGA
-        %else
-        #This feature is for supporting Tizen SDK
-            %if "%{?sec_product_feature_display_resolution}" == "HD"
-                export SIZE=HD
-            %else
-                %if "%{?sec_product_feature_display_resolution}" == "FHD"
-                   export SIZE=FHD
-                %else
-                   export SIZE=HVGA
-                %endif
-            %endif
-        %endif
-        export TARGET=2.3-mobile
-    %else
-        export TARGET=2.3-mobile
-        export SIZE=HD
-    %endif
+    export TARGET=2.3-mobile
+    export SIZE=WVGA
 %endif
 
 make
@@ -51,26 +33,8 @@ make
 %if 0%{?sec_product_feature_uifw_efl_b3_theme}
     export TARGET=2.3-wearable
 %else
-    %if 0%{?sec_product_feature_profile_lite}
-        %if "%{?sec_product_feature_display_resolution}" == "480x800"
-            export SIZE=WVGA
-        %else
-        #This feature is for supporting Tizen SDK
-            %if "%{?sec_product_feature_display_resolution}" == "HD"
-                export SIZE=HD
-            %else
-                %if "%{?sec_product_feature_display_resolution}" == "FHD"
-                   export SIZE=FHD
-                %else
-                   export SIZE=HVGA
-                %endif
-            %endif
-        %endif
-        export TARGET=2.3-mobile
-    %else
-        export TARGET=2.3-mobile
-        export SIZE=HD
-    %endif
+    export TARGET=2.3-mobile
+    export SIZE=WVGA
 %endif
 
 make install prefix=%{_prefix} DESTDIR=%{buildroot}
