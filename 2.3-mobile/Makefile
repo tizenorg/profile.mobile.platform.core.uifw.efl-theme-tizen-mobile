@@ -13,6 +13,10 @@ all:
 		perl -pi -e "s/TIZEN_TMP_INC/\"$$s-inc.edc\"/g" $(SRC)-$(TARGET)-$$s.edc; \
 		edje_cc $(EDJE_FLAGS) $(EDJE_FLAGS_$(V))\
 		-id ./$$s/images/\
+		-id ./$$s/images/Activity_indicator/\
+		-id ./$$s/images/Activity_indicator/large\
+		-id ./$$s/images/Activity_indicator/medium\
+		-id ./$$s/images/Activity_indicator/small\
 		-id ./$$s/images/Content_views\
 		-id ./$$s/images/Controls\
 		-id ./$$s/images/Copy_Paste\
