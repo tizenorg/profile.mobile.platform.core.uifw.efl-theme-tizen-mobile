@@ -404,7 +404,7 @@ group { name: "elm/scroller/panel/bottom/default";
    }
 }
 
-group { name: "elm/panel/bottom/default";
+group { name: "elm/panel/top/default";
    images.image: "core_icon_picker_arrow_up.png" COMP;
    images.image: "core_icon_picker_arrow_down.png" COMP;
    data.item: "focus_highlight" "off";
@@ -415,9 +415,9 @@ group { name: "elm/panel/bottom/default";
       }
       part { name: "base"; type: RECT;
          description { state: "default" 0.0;
-            rel1.to_y: "elm.swallow.event";
-            rel1.relative: 0.0 1.0;
-            rel2.to_y: "all";
+            rel1.to_y: "all";
+            rel2.to_y: "elm.swallow.event";
+            rel2.relative: 1.0 0.0;
             color: 255 255 255 255;
          }
       }
@@ -432,18 +432,17 @@ group { name: "elm/panel/bottom/default";
       part { name: "elm.swallow.event"; type: SWALLOW;
          description { state: "default" 0.0;
             fixed: 1 1;
-            min: 20 20;
-            max: 99999 20;
-            align: 0.5 1.0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 0.0;
+            min: 50 50;
+            max: 99999 50;
+            align: 0.5 0.0;
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 1.0;
             color: 0 0 0 0;
          }
          description { state: "hidden" 0.0;
             inherit: "default" 0.0;
-            align: 0.5 1.0;
-            rel1.relative: 0.0 1.0;
-            rel2.relative: 1.0 1.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
          }
       }
       part { name: "btn"; type: RECT;
@@ -457,15 +456,15 @@ group { name: "elm/panel/bottom/default";
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
-            min: 20 20;
-            max: 20 20;
+            min: 50 50;
+            max: 50 50;
             rel1.to: "btn";
             rel2.to: "btn";
-            image.normal: "core_icon_picker_arrow_down.png";
+            image.normal: "core_icon_picker_arrow_up.png";
          }
          description { state: "hidden" 0.0;
             inherit: "default" 0.0;
-            image.normal: "core_icon_picker_arrow_up.png";
+            image.normal: "core_icon_picker_arrow_down.png";
          }
       }
    }
@@ -492,14 +491,9 @@ group { name: "elm/panel/bottom/default";
       program { name: "hide1";
          signal: "elm,action,hide"; source: "elm";
          script {
-            new x, y, w, h;
-
             custom_state(PART:"base", "default", 0.0);
-            set_state_val(PART:"base", STATE_REL1, 0.0, 2.0);
-            set_state_val(PART:"base", STATE_REL2, 1.0, 3.0);
-            get_geometry(PART:"elm.swallow.event", x, y, w, h);
-            set_state_val(PART:"base", STATE_REL1_OFFSET, 0, -h);
-            set_state_val(PART:"base", STATE_REL2_OFFSET, 0, -h);
+            set_state_val(PART:"base", STATE_REL1, 0.0, -1.0);
+            set_state_val(PART:"base", STATE_REL2, 1.0, 0.0);
          }
          after: "hide2";
       }
@@ -507,6 +501,54 @@ group { name: "elm/panel/bottom/default";
          action: STATE_SET "custom" 0.0;
          transition: ACCELERATE 0.3;
          target: "base";
+      }
+   }
+}
+
+group { name: "elm/panel/bottom/default";
+   inherit: "elm/panel/top/default";
+   parts {
+      part { name: "base"; type: RECT;
+         description { state: "default" 0.0;
+            rel1.to_y: "elm.swallow.event";
+            rel1.relative: 0.0 1.0;
+            rel2.to_y: "all";
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      part { name: "elm.swallow.event"; type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+         }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            align: 0.5 1.0;
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      part { name: "icn"; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            image.normal: "core_icon_picker_arrow_down.png";
+         }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "core_icon_picker_arrow_up.png";
+         }
+      }
+   }
+   programs {
+      program { name: "hide1";
+         signal: "elm,action,hide"; source: "elm";
+         script {
+            custom_state(PART:"base", "default", 0.0);
+            set_state_val(PART:"base", STATE_REL1, 0.0, 1.0);
+            set_state_val(PART:"base", STATE_REL2, 1.0, 2.0);
+         }
+         after: "hide2";
       }
    }
 }
