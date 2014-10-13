@@ -281,7 +281,7 @@ group { name: "elm/radio/base/default";
 group { name: "elm/radio/base/datetime/style1";
       alias: "elm/radio/base/datetime";
       images {
-         image: "tw_timepicker_num_bg_new.#.png" COMP;
+         image: "tw_timepicker_num_bg_new_transparent.#.png" COMP;
       }
       script {
          public radio_state;
@@ -300,7 +300,7 @@ group { name: "elm/radio/base/datetime/style1";
          part { name: "bg";
             scale: 1;
             description { state: "default" 0.0;
-               image.normal: "tw_timepicker_num_bg_new.#.png";
+               image.normal: "tw_timepicker_num_bg_new_transparent.#.png";
                color_class: "W0811";
                min: 0 DATETIME_FIELD_HEIGHT;
                max: -1 DATETIME_FIELD_HEIGHT;
@@ -308,7 +308,7 @@ group { name: "elm/radio/base/datetime/style1";
                rel1.to: "base";
                rel2.to: "base";
             }
-            description { state: "on" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                color_class: "W0812";
             }
@@ -332,10 +332,10 @@ group { name: "elm/radio/base/datetime/style1";
                }
                color_class: "T051";
             }
-            description { state: "on" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
-               text.text_class: "T051P";
-               color_class: "T051P";
+               text.text_class: "T051";
+               color_class: "T051";
             }
             description { state: "disabled" 0.0;
                inherit: "default" 0.0;
@@ -363,19 +363,9 @@ group { name: "elm/radio/base/datetime/style1";
             signal: "mouse,up,1";
             source: "bg";
             script {
-               if (get_int(radio_state) == 1 && get_int(radio_disabled) == 1) {
-                  set_state(PART:"bg", "on", 0.0);
-                  set_state(PART:"elm.text", "disabled", 0.0);
-               } else if (get_int(radio_state) == 1 && get_int(radio_disabled) == 0) {
-                  set_state(PART:"bg", "on", 0.0);
-                  set_state(PART:"elm.text", "on", 0.0);
-               } else if (get_int(radio_state) == 0 && get_int(radio_disabled) == 1) {
-                  set_state(PART:"bg", "disabled", 0.0);
-                  set_state(PART:"elm.text", "disabled", 0.0);
-               } else if (get_int(radio_state) == 0 && get_int(radio_disabled) == 0) {
-                  set_state(PART:"bg", "default", 0.0);
-                  set_state(PART:"elm.text", "default", 0.0);
-               }
+               if (get_int(radio_disabled) == 1) return;
+               set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"elm.text", "default", 0.0);
             }
          }
          program { name: "pressed";
@@ -383,54 +373,16 @@ group { name: "elm/radio/base/datetime/style1";
             source: "bg";
             script {
                if (get_int(radio_disabled) == 1) return;
-               if (get_int(radio_state) == 1) {
-                  set_state(PART:"bg", "on", 0.0);
-                  set_state(PART:"elm.text", "on", 0.0);
-               } else {
-                  set_state(PART:"bg", "on", 0.0);
-                  set_state(PART:"elm.text", "default", 0.0);
-               }
-            }
-         }
-         program { name: "radio_on";
-            signal: "elm,state,radio,on";
-            source: "elm";
-            script {
-               if (get_int(radio_disabled) == 1) {
-                  set_state(PART:"bg", "on", 0.0);
-                  set_state(PART:"elm.text", "default", 0.0);
-               } else {
-                    set_state(PART:"elm.text", "on", 0.0);
-                    set_state(PART:"bg", "on", 0.0);
-               }
-               set_int(radio_state, 1);
-            }
-         }
-         program { name: "radio_off";
-            signal: "elm,state,radio,off";
-            source: "elm";
-            script {
-               if (get_int(radio_disabled) == 1) {
-                  set_state(PART:"bg", "disabled", 0.0);
-                  set_state(PART:"elm.text", "disabled", 0.0);
-               } else {
-                  set_state(PART:"bg", "default", 0.0);
-                  set_state(PART:"elm.text", "default", 0.0);
-               }
-               set_int(radio_state, 0);
+               set_state(PART:"bg", "pressed", 0.0);
+               set_state(PART:"elm.text", "pressed", 0.0);
             }
          }
          program { name: "disable";
             signal: "elm,state,disabled";
             source: "elm";
             script {
-               if (get_int(radio_state) == 1) {
-                  set_state(PART:"bg", "on", 0.0);
-                  set_state(PART:"elm.text", "disabled", 0.0);
-               } else {
-                  set_state(PART:"bg", "default", 0.0);
-                  set_state(PART:"elm.text", "disabled", 0.0);
-               }
+               set_state(PART:"bg", "disabled", 0.0);
+               set_state(PART:"elm.text", "disabled", 0.0);
                set_int(radio_disabled, 1);
             }
          }
@@ -438,13 +390,8 @@ group { name: "elm/radio/base/datetime/style1";
             signal: "elm,state,enabled";
             source: "elm";
             script {
-               if (get_int(radio_state) == 1) {
-                  set_state(PART:"bg", "on", 0.0);
-                  set_state(PART:"elm.text", "on", 0.0);
-               } else {
-                  set_state(PART:"bg", "default", 0.0);
-                  set_state(PART:"elm.text", "default", 0.0);
-               }
+               set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"elm.text", "default", 0.0);
                set_int(radio_disabled, 0);
             }
          }
@@ -452,7 +399,6 @@ group { name: "elm/radio/base/datetime/style1";
    }
 
 group { name: "elm/radio/base/datetime/style2";
-   alias: "elm/radio/base/datetime/style3";
    inherit: "elm/radio/base/datetime/style1";
    parts {
       part { name: "elm.text";
@@ -468,10 +414,10 @@ group { name: "elm/radio/base/datetime/style2";
             }
             color_class: "T052";
          }
-         description { state: "on" 0.0;
+         description { state: "pressed" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T052P";
-            color_class: "T052P";
+            text.text_class: "T052";
+            color_class: "T052";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -482,6 +428,34 @@ group { name: "elm/radio/base/datetime/style2";
    }
 }
 
+group { name: "elm/radio/base/datetime/style3";
+   inherit: "elm/radio/base/datetime/style2";
+   images {
+         image: "tw_timepicker_num_bg_new.#.png" COMP;
+      }
+   parts {
+      part { name: "bg";
+         scale: 1;
+         description { state: "default" 0.0;
+            image.normal: "tw_timepicker_num_bg_new.#.png";
+            color_class: "W0811";
+            min: 0 DATETIME_FIELD_HEIGHT;
+            max: -1 DATETIME_FIELD_HEIGHT;
+            fixed: 0 1;
+            rel1.to: "base";
+            rel2.to: "base";
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W0812";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "W262D";
+         }
+      }
+   }
+}
 // List Radio Style
 
 group { name: "elm/radio/base/list";
