@@ -26,7 +26,20 @@ all:
 		-sd ./$$s/sounds -fd ../objects \
 		$(SRC)-$(TARGET)-$$s.edc $(SRC)-$(TARGET)-$$s.edj; \
 	done
-	edje_cc $(EDJE_FLAGS_$(V)) -id default/images/tizen-hd -sd default/sounds -fd ../objects default.edc default.edj
+	edje_cc $(EDJE_FLAGS_$(V)) -id default/images/tizen-hd \
+		-id ./WVGA/images/\
+		-id ./WVGA/images/Activity_indicator/\
+		-id ./WVGA/images/Activity_indicator/large\
+		-id ./WVGA/images/Activity_indicator/medium\
+		-id ./WVGA/images/Activity_indicator/small\
+		-id ./WVGA/images/Content_views\
+		-id ./WVGA/images/Controls\
+		-id ./WVGA/images/Copy_Paste\
+		-id ./WVGA/images/Emoticon\
+		-id ./WVGA/images/Navigation_elements\
+		-id ./WVGA/images/Popups\
+        -sd ./WVGA/sounds -fd ../objects \
+	-sd default/sounds -fd ../objects default.edc default.edj
 
 clean:
 	for s in $(SIZE); do \
