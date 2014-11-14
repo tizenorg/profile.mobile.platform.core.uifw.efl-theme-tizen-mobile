@@ -31,6 +31,9 @@ group { name: "elm/genlist/item/default/default";
    alias: "elm/list/item_odd/default";
    alias: "elm/list/item_compress/default";
    alias: "elm/list/item_compress_odd/default";
+   alias: "elm/genlist/item_compress/default";
+   alias: "elm/genlist/item/default_style/default";
+   alias: "elm/genlist/item_compress/default_style";
 
    data.item: "treesize" GENLIST_TREESIZE_DEFAULT;
    data.item: "texts" "elm.text";
@@ -54,27 +57,52 @@ group { name: "elm/genlist/item/default/default";
             max: -1 LIST_PADDING_BOTTOM_SIZE;
          )
       )
-      PART(SWALLOW, "elm.swallow.icon",
+      PART(SWALLOW, "elm.padding.left",
          DSC_L("default" 0.0,
             "elm.swallow.pad",
+            min: LIST_LEFT_PADDING_SIZE 0;
+            max: LIST_LEFT_PADDING_SIZE -1;
+         )
+      )
+      PART(SWALLOW, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: LIST_RIGHT_PADDING_SIZE 0;
+            max: LIST_RIGHT_PADDING_SIZE -1;
+         )
+      )
+      PART(SWALLOW, "elm.swallow.icon",
+         DSC_L("default" 0.0,
+            "elm.padding.left",
          )
       )
       PART(SWALLOW, "elm.swallow.end",
-         DSC_FROM_R("default" 0.0, )
+         DSC_R("default" 0.0,
+            "elm.padding.right",
+         )
       )
       PART(SPACER, "elm.padding.center.left",
          DSC_L("default" 0.0,
             "elm.swallow.icon",
+            min: 0 -0;
+            max: 0 -1;
+         )
+         description { state: "enabled" 0.0;
+            inherit: "default" 0.0;
             min: LIST_PADDING_CENTER_LEFT_SIZE -0;
             max: LIST_PADDING_CENTER_LEFT_SIZE -1;
-         )
+         }
       )
       PART(SPACER, "elm.padding.center.right",
          DSC_R("default" 0.0,
             "elm.swallow.end",
+            min: 0 0;
+            max: 0 -1;
+         )
+         description { state: "enabled" 0.0;
+            inherit: "default" 0.0;
             min: LIST_PADDING_CENTER_RIGHT_SIZE 0;
             max: LIST_PADDING_CENTER_RIGHT_SIZE -1;
-         )
+         }
       )
       PART(TEXTBLOCK, "elm.text",
          DSC_LRTB("default" 0.0,
@@ -102,6 +130,9 @@ group { name: "elm/genlist/item/default/default";
       )
    }
    LIST_PROGRAMS( target: "elm.text"; )
+   programs {
+      LIST_PROGRAM_PAD
+   }
 }
 
 group { name: "elm/genlist/item/group_index/default";
@@ -180,81 +211,6 @@ group { name: "elm/genlist/item/group_index/default";
    }
 }
 
-group { name: "elm/genlist/item/default_style/default";
-   alias: "elm/genlist/item_compress/default_style";
-
-   data.item: "treesize" GENLIST_TREESIZE_DEFAULT;
-   data.item: "texts" "elm.text";
-   data.item: "contents" "elm.swallow.icon elm.swallow.end";
-
-   parts {
-      LIST_PART_BG_NOCLASS
-      PART(SWALLOW, "elm.swallow.pad",
-         DSC_FROM_L("default" 0.0, );
-         mouse_events: 0;
-      )
-      PART(SPACER, "elm.padding.top",
-         DSC_FROM_T("default" 0.0,
-            min: 0 LIST_TOP_PADDING_SIZE;
-            max: -1 LIST_TOP_PADDING_SIZE;
-         )
-      )
-      PART(SPACER, "elm.padding.bottom",
-         DSC_FROM_B("default" 0.0,
-            min: 0 LIST_BOTTOM_PADDING_SIZE;
-            max: -1 LIST_BOTTOM_PADDING_SIZE;
-         )
-      )
-      PART(SPACER, "elm.padding.left",
-         DSC_FROM_L("default" 0.0,
-            min: LIST_LEFT_PADDING_SIZE 0;
-            max: LIST_LEFT_PADDING_SIZE -1;
-         )
-      )
-      PART(SWALLOW, "elm.swallow.icon",
-         DSC_L("default" 0.0,
-            "elm.padding.left",
-         )
-      )
-      PART(SPACER, "elm.padding.right",
-         DSC_FROM_R("default" 0.0,
-            min: LIST_RIGHT_PADDING_SIZE 0;
-            max: LIST_RIGHT_PADDING_SIZE -1;
-         )
-      )
-      PART(SWALLOW, "elm.swallow.end",
-         DSC_R("default" 0.0,
-            "elm.padding.right",
-         )
-      )
-      PART(TEXTBLOCK, "elm.text",
-         DSC_LRTB("default" 0.0,
-            "elm.swallow.icon", "elm.swallow.end", "elm.padding.top", "elm.padding.bottom",
-            min: 0 LIST_TEXT_MAIN_HEIGHT;
-            text.min: 0 1;
-            text.style: "list_text_main";
-            fixed: 1 0;;
-         )
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
-            text.style: "list_text_main_press";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            text.style: "list_text_main_dim";
-         }
-      )
-      PART(RECT, "elm.bottomline",
-         DSC_FROM_B("default" 0.0,
-            min: 0 LIST_BOTTOMLINE_HEIGHT;
-            max: -1 LIST_BOTTOMLINE_HEIGHT;
-            color: 192 213 222 255;
-         )
-      )
-   }
-   LIST_PROGRAMS( target: "elm.text"; )
-}
-
 group { name: "elm/genlist/item/double_label/default";
    alias: "elm/genlist/item_compress/double_label";
 
@@ -302,6 +258,30 @@ group { name: "elm/genlist/item/double_label/default";
             "elm.padding.right",
          )
       )
+      PART(SPACER, "elm.padding.center.left",
+         DSC_L("default" 0.0,
+            "elm.swallow.icon",
+            min: 0 -0;
+            max: 0 -1;
+         )
+         description { state: "enabled" 0.0;
+            inherit: "default" 0.0;
+            min: LIST_PADDING_CENTER_LEFT_SIZE -0;
+            max: LIST_PADDING_CENTER_LEFT_SIZE -1;
+         }
+      )
+      PART(SPACER, "elm.padding.center.right",
+         DSC_R("default" 0.0,
+            "elm.swallow.end",
+            min: 0 0;
+            max: 0 -1;
+         )
+         description { state: "enabled" 0.0;
+            inherit: "default" 0.0;
+            min: LIST_PADDING_CENTER_RIGHT_SIZE 0;
+            max: LIST_PADDING_CENTER_RIGHT_SIZE -1;
+         }
+      )
       PART(TEXTBLOCK, "elm.text",
          DSC_LRT("default" 0.0,
             "elm.swallow.icon", "elm.swallow.end", "elm.padding.top",
@@ -345,6 +325,9 @@ group { name: "elm/genlist/item/double_label/default";
       )
    }
    LIST_PROGRAMS( target: "elm.text"; target: "elm.text.sub"; )
+   programs {
+      LIST_PROGRAM_PAD
+   }
 }
 
 group { name: "elm/genlist/item/full/default";
