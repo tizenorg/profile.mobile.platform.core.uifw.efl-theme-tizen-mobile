@@ -3,7 +3,7 @@ Summary:       Tizen theme files
 Version:       1.1.51
 Release:       1
 Group:         TO_BE/FILLED_IN
-License:       TO_BE/FILLED_IN
+License:       BSD 2-Clause
 Source0:       %{name}-%{version}.tar.gz
 #BuildRequires: sec-product-features
 BuildRequires: edje-bin
