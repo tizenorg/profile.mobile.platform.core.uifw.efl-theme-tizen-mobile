@@ -19,9 +19,10 @@ Tizen heme for EFL
 export CFLAGS+=" --fPIC"
 export LDFLAGS+=" -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=/usr/lib"
 
-%if 0%{?sec_product_feature_uifw_efl_b3_theme}
+%if "%{?tizen_profile_name}" == "wearable"
     export TARGET=2.3-wearable
-%else
+    export SIZE=HVGA
+%elseif "%{?tizen_profile_name}" == "mobile"
     export TARGET=2.3-mobile
     export SIZE=WVGA
 %endif
@@ -30,9 +31,10 @@ make
 
 %install
 
-%if 0%{?sec_product_feature_uifw_efl_b3_theme}
+%if "%{?tizen_profile_name}" == "wearable"
     export TARGET=2.3-wearable
-%else
+    export SIZE=HVGA
+%elseif "%{?tizen_profile_name}" == "mobile"
     export TARGET=2.3-mobile
     export SIZE=WVGA
 %endif
