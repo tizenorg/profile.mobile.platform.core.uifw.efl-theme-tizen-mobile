@@ -23,10 +23,23 @@ all:
 		-id ./$$s/images/Emoticon\
 		-id ./$$s/images/Navigation_elements\
 		-id ./$$s/images/Popups\
+		-id ./$$s/images/Indicator\
 		-sd ./$$s/sounds -fd ../objects \
+		-id ./HD/images/\
+		-id ./HD/images/Activity_indicator/\
+		-id ./HD/images/Activity_indicator/large\
+		-id ./HD/images/Activity_indicator/medium\
+		-id ./HD/images/Activity_indicator/small\
+		-id ./HD/images/Content_views\
+		-id ./HD/images/Controls\
+		-id ./HD/images/Copy_Paste\
+		-id ./HD/images/Emoticon\
+		-id ./HD/images/Navigation_elements\
+		-id ./HD/images/Popups\
+		-sd ./HD/sounds -fd ../objects \
 		$(SRC)-$(TARGET)-$$s.edc $(SRC)-$(TARGET)-$$s.edj; \
 	done
-	edje_cc $(EDJE_FLAGS_$(V)) -id default/images/tizen-hd \
+	edje_cc $(EDJE_FLAGS_$(V)) -id default/images/tizen-hd -sd default/sounds -fd ../objects \
 		-id ./WVGA/images/\
 		-id ./WVGA/images/Activity_indicator/\
 		-id ./WVGA/images/Activity_indicator/large\
@@ -38,8 +51,7 @@ all:
 		-id ./WVGA/images/Emoticon\
 		-id ./WVGA/images/Navigation_elements\
 		-id ./WVGA/images/Popups\
-        -sd ./WVGA/sounds -fd ../objects \
-	-sd default/sounds -fd ../objects default.edc default.edj
+		default.edc default.edj
 
 clean:
 	for s in $(SIZE); do \
