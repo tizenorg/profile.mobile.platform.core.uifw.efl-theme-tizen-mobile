@@ -396,6 +396,29 @@ group { name: "elm/label/base/popup/default";
    }
 }
 
+group { name: "elm/label/base/popup/toast";
+   styles {
+      style { name: "popup_toast_style";
+         base: "font=Tizen:style=Regular font_size="POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC" color=#FFFFFF align=center color_class=T1221 wrap=mixed text_class=T1221";
+         tag:  "br" "\n";
+         tag:  "tab" "\t";
+      }
+   }
+   parts {
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         scale: 1;
+         description { state: "default" 0.0;
+            text {
+               style: "popup_toast_style";
+               min: 0 1;
+               max: 0 1;
+            }
+         }
+      }
+   }
+}
+
 group { name: "elm/popup/base/default";
    alias: "elm/popup/base/transparent";
    data {
@@ -786,6 +809,18 @@ group { name: "elm/popup/content/default";
    }
 }
 
+group { name: "elm/popup/content/toast";
+   parts{
+      part { name:"elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: POPUP_TOAST_TEXT_MAX_WIDTH_INC 0;
+         }
+      }
+   }
+}
+
 group { name: "elm/popup/buttons1/default";
    alias: "elm/popup/buttons1/transparent";
    data.item: "action_area_height" POPUP_BUTTON_DEFAULT_ACTION_AREA_HEIGHT;
@@ -1063,13 +1098,6 @@ group { name: "elm/popup/base/toast";
       item: "title_height" POPUP_TITLE_AREA_HEIGHT;
       item: "popup_outside_pad" POPUP_OUTSIDE_PADDING;
    }
-   styles {
-      style { name: "popup_toast_style";
-         base: "font=Tizen:style=Regular font_size="POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC" color=#FFFFFF align=center color_class=T1221 wrap=mixed text_class=T1221";
-         tag:  "br" "\n";
-         tag:  "tab" "\t";
-      }
-   }
    parts {
       part { name: "bg";
          scale: 1;
@@ -1116,11 +1144,11 @@ group { name: "elm/popup/base/toast";
             fixed: 0 1;
             rel1 {
                relative: 0.0 0.0;
-               to_y: "elm.text";
+               to_y: "elm.swallow.content";
             }
             rel2 {
                relative: 1.0 0.0;
-               to_y: "elm.text";
+               to_y: "elm.swallow.content";
             }
          }
       }
@@ -1174,13 +1202,11 @@ group { name: "elm/popup/base/toast";
             }
          }
       }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         mouse_events: 0;
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
             min: 0 POPUP_TOAST_TEXT_MIN_HEIGHT_INC;
-            max: POPUP_TOAST_TEXT_MAX_WIDTH_INC POPUP_TOAST_TEXT_MAX_HEIGHT_INC;
             align: 0.5 1.0;
             rel1 {
               to_x: "title_left_padding";
@@ -1192,48 +1218,6 @@ group { name: "elm/popup/base/toast";
               to_y: "title_bottom_padding";
               relative: 0.0 0.0;
             }
-            text {
-               style: "popup_toast_style";
-               min: 1 1;
-               max: 0 1;
-            }
-         }
-         description { state: "multiline" 0.0;
-            inherit: "default" 0.0;
-            min: POPUP_TOAST_TEXT_MAX_WIDTH_INC POPUP_TOAST_TEXT_MIN_HEIGHT_INC;
-            text.min: 0 1;
-         }
-      }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 POPUP_TOAST_CONTENT_HEIGHT_MIN_INC;
-            align: 0.5 1.0;
-            rel1 {
-              to_x: "title_left_padding";
-              to_y: "title_bottom_padding";
-              relative: 1.0 1.0;
-            }
-            rel2 {
-              to_x: "title_right_padding";
-              to_y: "title_bottom_padding";
-              relative: 0.0 1.0;
-            }
-         }
-      }
-   }
-   programs {
-      program { name: "multiline";
-         signal: "show";
-         script {
-            new tx, ty, tw, th, w;
-            get_geometry(PART:"elm.text", tx, ty, tw, th);
-            w = POPUP_TOAST_TEXT_MAX_WIDTH_INC;
-            if (tw >= w)
-               set_state(PART:"elm.text", "multiline", 0.0);
-            else
-               set_state(PART:"elm.text", "default", 0.0);
          }
       }
    }
