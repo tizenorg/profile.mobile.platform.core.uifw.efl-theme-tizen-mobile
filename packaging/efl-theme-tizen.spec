@@ -22,9 +22,11 @@ export LDFLAGS+=" -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=/usr/lib"
 %if "%{?tizen_profile_name}" == "wearable"
     export TARGET=2.3-wearable
     export SIZE=HVGA
-%elseif "%{?tizen_profile_name}" == "mobile"
+%else
+  %if "%{?tizen_profile_name}" == "mobile"
     export TARGET=2.3-mobile
     export SIZE=WVGA
+  %endif
 %endif
 
 make
@@ -34,9 +36,11 @@ make
 %if "%{?tizen_profile_name}" == "wearable"
     export TARGET=2.3-wearable
     export SIZE=HVGA
-%elseif "%{?tizen_profile_name}" == "mobile"
+%else
+  %if "%{?tizen_profile_name}" == "mobile"
     export TARGET=2.3-mobile
     export SIZE=WVGA
+  %endif
 %endif
 
 make install prefix=%{_prefix} DESTDIR=%{buildroot}
