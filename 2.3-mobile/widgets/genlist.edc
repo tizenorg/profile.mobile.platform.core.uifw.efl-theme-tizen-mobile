@@ -36,7 +36,7 @@
 */
 
 #include "genlist_macro.edc"
-/* not use
+
 // elm_list default style
 // ------------------------------------------------
 // | elm.swallow.icon | elm.text | elm.swallow.end |
@@ -46,14 +46,16 @@ group { name: "elm/genlist/item/default/default";
    alias: "elm/list/item_odd/default";
    alias: "elm/list/item_compress/default";
    alias: "elm/list/item_compress_odd/default";
+   alias: "elm/genlist/item_compress/default";
+   alias: "elm/genlist/item/default_style/default";
+   alias: "elm/genlist/item_compress/default_style";
 
    data.item: "treesize" GENLIST_TREESIZE_DEFAULT;
    data.item: "texts" "elm.text";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";
-   data.item: "bg_color" "B0211";
 
    parts {
-      LIST_PART_BG
+      LIST_PART_BG_NOCLASS
       PART(SWALLOW, "elm.swallow.pad",
          DSC_FROM_L("default" 0.0, );
          mouse_events: 0;
@@ -70,27 +72,52 @@ group { name: "elm/genlist/item/default/default";
             max: -1 LIST_PADDING_BOTTOM_SIZE;
          )
       )
-      PART(SWALLOW, "elm.swallow.icon",
+      PART(SWALLOW, "elm.padding.left",
          DSC_L("default" 0.0,
             "elm.swallow.pad",
+            min: LIST_LEFT_PADDING_SIZE 0;
+            max: LIST_LEFT_PADDING_SIZE -1;
+         )
+      )
+      PART(SWALLOW, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: LIST_RIGHT_PADDING_SIZE 0;
+            max: LIST_RIGHT_PADDING_SIZE -1;
+         )
+      )
+      PART(SWALLOW, "elm.swallow.icon",
+         DSC_L("default" 0.0,
+            "elm.padding.left",
          )
       )
       PART(SWALLOW, "elm.swallow.end",
-         DSC_FROM_R("default" 0.0, )
+         DSC_R("default" 0.0,
+            "elm.padding.right",
+         )
       )
       PART(SPACER, "elm.padding.center.left",
          DSC_L("default" 0.0,
             "elm.swallow.icon",
+            min: 0 -0;
+            max: 0 -1;
+         )
+         description { state: "enabled" 0.0;
+            inherit: "default" 0.0;
             min: LIST_PADDING_CENTER_LEFT_SIZE -0;
             max: LIST_PADDING_CENTER_LEFT_SIZE -1;
-         )
+         }
       )
       PART(SPACER, "elm.padding.center.right",
          DSC_R("default" 0.0,
             "elm.swallow.end",
+            min: 0 0;
+            max: 0 -1;
+         )
+         description { state: "enabled" 0.0;
+            inherit: "default" 0.0;
             min: LIST_PADDING_CENTER_RIGHT_SIZE 0;
             max: LIST_PADDING_CENTER_RIGHT_SIZE -1;
-         )
+         }
       )
       PART(TEXTBLOCK, "elm.text",
          DSC_LRTB("default" 0.0,
@@ -109,10 +136,20 @@ group { name: "elm/genlist/item/default/default";
             text.style: "list_text_main_dim";
          }
       )
+      PART(RECT, "elm.bottomline",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_BOTTOMLINE_HEIGHT;
+            max: -1  LIST_BOTTOMLINE_HEIGHT;
+            color: 192 213 222 255;
+         )
+      )
    }
    LIST_PROGRAMS( target: "elm.text"; )
+   programs {
+      LIST_PROGRAM_PAD
+   }
 }
-*/
+
 group { name: "elm/genlist/item/1icon/default";
 
    data.item: "contents" "elm.icon";
@@ -231,7 +268,7 @@ group { name: "elm/genlist/item/groupindex/default";
             min: 0 LIST_INDEX_HEIGHT;
             text.min: 0 1;
             text.style: "list_text_index_main";
-            // This limits text growing. 
+            // This limits text growing.
             rel1.offset: -LIST_INDEX_TEXT_SUB_WIDTH_MAX 0;
             text.max: 1 0;
             align: 1.0 0.5;
