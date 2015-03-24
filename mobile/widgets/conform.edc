@@ -54,29 +54,25 @@ group { name: "elm/conformant/base/default";
             min: 0 LAYOUT_INDICATOR_HEIGHT_INC;
             rel2.relative: 1.0 0.0;
          }
-         description { state: "hide" 0.0;
-            inherit: "default" 0.0;
-            min: 0 0;
-         }
       }
-      part { name: "indicator_overlap_base";
-         type: SPACER;
-         description { state: "default" 0.0; //nooverlap
+      part { name: "indicator_clipper";
+         type: RECT;
+         description { state: "default" 0.0;
             rel1 { relative: 0.0 0.0; to: "indicator_base"; }
             rel2 { relative: 1.0 1.0; to: "indicator_base"; }
          }
-         description { state: "overlap" 0.0; //content start (0,0)
-            inherit: "default" 0.0;
-            rel2 { relative: 1.0 0.0; to: "indicator_base"; }
+         //just in case: transparent/hide
+         description { state: "hide" 0.0;
+            rel1 { relative: 0.0 -1.0; to: "indicator_base"; }
+            rel2 { relative: 1.0  0.0; to: "indicator_base"; }
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          scale: 1;
-         description { state: "default" 0.0; //sip: enable
-            align: 0.5 0.5;
+         description { state: "default" 0.0;
             rel1.relative: 0.0 1.0;
-            rel1.to: "indicator_overlap_base";
+            rel1.to: "indicator_bg";
             rel2.relative: 1.0 0.0;
             rel2.to: "sip_area";
          }
@@ -90,9 +86,8 @@ group { name: "elm/conformant/base/default";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0.5 0.5;
             rel1.relative: 0.0 1.0;
-            rel1.to: "indicator_overlap_base";
+            rel1.to: "indicator_base";
             rel2.relative: 1.0 0.0;
             rel2.to: "sip_area";
          }
@@ -102,50 +97,26 @@ group { name: "elm/conformant/base/default";
             rel2.to: "base";
          }
       }
-      part { name: "indicator_clipper";
-         type: RECT;
-         description { state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "indicator_base"; }
-            rel2 { relative: 1.0 1.0; to: "indicator_base"; }
-         }
-         description { state: "hide" 0.0;
-            inherit: "default" 0.0;
-            rel1 { relative: 0.0 -1.0; to: "indicator_base"; }
-            rel2 { relative: 1.0  0.0; to: "indicator_base"; }
-         }
-      }
       part { name: "indicator_bg";
          type: RECT;
-         clip_to: "indicator_clipper";
          description { state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "indicator_clipper"; }
-            rel2 { relative: 1.0 1.0; to: "indicator_clipper"; }
+            rel1 { relative: 0 0; to: "indicator_base"; }
+            rel2 { relative: 1 1; to: "indicator_base"; }
             color: 7 7 7 255; /*(Changeable UI) color_class: "B031";*/
          }
-         description { state: "hidden" 0.0;
+         //just in case: overlap/transparent/hide
+         description { state: "hide" 0.0;
             inherit: "default" 0.0;
-            visible: 0;
-         }
-      }
-      part { name: "elm.swallow.indicator_bg";
-         type: SWALLOW;
-         clip_to: "indicator_clipper";
-         description { state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "indicator_clipper"; }
-            rel2 { relative: 1.0 1.0; to: "indicator_clipper"; }
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
+            rel1 { relative: 0 0; to: "indicator_base"; }
+            rel2 { relative: 1 0; to: "indicator_base"; }
          }
       }
       part { name: "elm.swallow.indicator";
          type: SWALLOW;
          scale: 1;
-         clip_to: "indicator_clipper";
          description { state: "default" 0.0;
-            rel1 { relative: 0.0 0.0; to: "indicator_clipper"; }
-            rel2 { relative: 1.0 1.0; to: "indicator_clipper"; }
+            rel1.to: "indicator_clipper";
+            rel2.to: "indicator_clipper";
          }
       }
       part { name: "sip_area";
@@ -183,21 +154,20 @@ group { name: "elm/conformant/base/default";
    }
    programs {
       program {
-          name: "show_indicator"; //show indicator using effect
+          name: "show_indicator";
           signal: "elm,state,indicator,show";
           source: "elm";
           script {
              set_int(indicator_visible, 1);
              set_state(PART:"indicator_base", "default", 0.0);
-             //it is possible app call show after opacity call
-             /////Portrait
+             //Portrait
              if (get_int(landscape) == 0) {
                if (get_int(indicator_opacity) == 0)
                  run_program(PROGRAM:"opaque_state");
-               if (get_int(indicator_opacity) == 1)
+               else
                  run_program(PROGRAM:"transparent_state");
              }
-             /////Landscape
+             //Landscape
              else
                run_program(PROGRAM:"transparent_state");
           }
@@ -211,29 +181,25 @@ group { name: "elm/conformant/base/default";
              set_state(PART:"indicator_base", "hide", 0.0);
           }
       }
-      program {
-          name: "show_indicator_transition"; //show indicator using effect
+      program { name: "show_indicator_transition";
           action: STATE_SET "default" 0.0;
           target: "indicator_clipper";
           transition: DECELERATE 0.2;
       }
-      program {
-          name: "hide_indicator_transition"; //show indicator using effect
+      program { name: "hide_indicator_transition";
           action: STATE_SET "hide" 0.0;
           target: "indicator_clipper";
           transition: DECELERATE 0.2;
       }
-      program {
-          name: "show_indicator_effect"; //show indicator using effect
+      program { name: "show_indicator_effect"; //show indicator using effect
           signal: "indicator,show,effect";
           source: "elm";
           script {
-             if (get_int(indicator_visible) == 1)
+             if (get_int(indicator_visible) == 0)
                run_program(PROGRAM:"show_indicator_transition");
           }
       }
-      program {
-          name: "hide_indicator_effect"; //show indicator using effect
+      program { name: "hide_indicator_effect"; //show indicator using effect
           signal: "indicator,hide,effect";
           source: "elm";
           script {
@@ -241,35 +207,22 @@ group { name: "elm/conformant/base/default";
                run_program(PROGRAM:"hide_indicator_transition");
           }
       }
-      program {
-          name: "opaque_state";
+      program { name: "opaque_state";
           script {
-             set_state(PART:"elm.swallow.indicator_bg", "default", 0.0);
              set_state(PART:"indicator_clipper", "default", 0.0);
-             if (get_int(indicator_overlap) == 0)
-               {
-                 set_state(PART:"indicator_overlap_base", "default", 0.0);
-                 set_state(PART:"indicator_bg", "default", 0.0);
-               }
+             if (get_int(indicator_overlap) == 1)
+                set_state(PART:"indicator_bg", "hide", 0.0);
              else
-               {
-                 set_state(PART:"indicator_overlap_base", "overlap", 0.0);
-                 set_state(PART:"indicator_bg", "hidden", 0.0);
-               }
+                set_state(PART:"indicator_bg", "default", 0.0);
           }
       }
-      program {
-          name: "transparent_state";
+      program { name: "transparent_state";
           script {
-             set_state(PART:"indicator_bg", "default", 0.0);
-             set_state(PART:"elm.swallow.indicator_bg", "hidden", 0.0);
              set_state(PART:"indicator_clipper", "hide", 0.0);
-             set_state(PART:"indicator_overlap_base", "overlap", 0.0);
+             set_state(PART:"indicator_base", "hide", 0.0);
           }
       }
-
-      program {
-          name: "opaque_indicator";
+      program { name: "opaque_indicator";
           signal: "elm,state,indicator,opaque";
           source: "elm";
           script {
@@ -278,8 +231,7 @@ group { name: "elm/conformant/base/default";
               run_program(PROGRAM:"opaque_state");
           }
       }
-      program {
-          name: "transparent_indicator";
+      program { name: "transparent_indicator";
           signal: "elm,state,indicator,transparent";
           source: "elm";
           script {
@@ -288,18 +240,15 @@ group { name: "elm/conformant/base/default";
                run_program(PROGRAM:"transparent_state");
           }
       }
-      program {
-         name: "overlap_indicator";
+      program { name: "overlap_indicator";
          signal: "elm,state,indicator,overlap";
          source: "elm";
          script {
             set_int(indicator_overlap, 1);
-            set_state(PART:"indicator_overlap_base", "overlap", 0.0);
-            set_state(PART:"indicator_bg", "hidden", 0.0);
+            set_state(PART:"indicator_bg", "hide", 0.0);
         }
       }
-      program {
-         name: "nooverlap_indicator";
+      program { name: "nooverlap_indicator";
          signal: "elm,state,indicator,nooverlap";
          source: "elm";
          script {
@@ -308,7 +257,6 @@ group { name: "elm/conformant/base/default";
             if (get_int(indicator_visible) == 1)
               if (get_int(indicator_opacity) == 0) { //only opaque can be nooverlap
                 if (get_int(landscape) == 0) { //landscape should be overlap
-                  set_state(PART:"indicator_overlap_base", "default", 0.0);
                   set_state(PART:"indicator_bg", "default", 0.0);
                 }
               }
