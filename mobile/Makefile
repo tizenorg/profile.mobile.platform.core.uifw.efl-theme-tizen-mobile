@@ -6,6 +6,7 @@ EDJE_FLAGS_VERBOSE_0 =
 EDJE_FLAGS_VERBOSE_1 = -v
 EDJE_FLAGS = -no-save
 SRC=tizen
+DST=tizen-$(TIZEN_VER)
 
 all:
 	for s in $(SIZE); do \
@@ -37,7 +38,7 @@ all:
 		-id ./HD/images/Navigation_elements\
 		-id ./HD/images/Popups\
 		-sd ./HD/sounds -fd ../objects \
-		$(SRC)-$(TARGET)-$$s.edc $(SRC)-$(TARGET)-$$s.edj; \
+		$(SRC)-$(TARGET)-$$s.edc $(DST)-$(TARGET)-$$s.edj; \
 	done
 	edje_cc $(EDJE_FLAGS_$(V)) -id default/images/tizen-hd -sd default/sounds -fd ../objects \
 		-id ./WVGA/images/\
@@ -55,14 +56,14 @@ all:
 
 clean:
 	for s in $(SIZE); do \
-		rm -rf $(SRC)-$(TARGET)-$$s.*; \
+		rm -rf $(DST)-$(TARGET)-$$s.*; \
 	done
 	rm -rf default.edj;\
 
 install:
 	mkdir -p $(THEME_DIR)
 	for s in $(SIZE); do \
-		$(INSTALL) $(SRC)-$(TARGET)-$$s.edj $(THEME_DIR); \
+		$(INSTALL) $(DST)-$(TARGET)-$$s.edj $(THEME_DIR); \
 	done
 	$(INSTALL) default.edj $(THEME_DIR); \
 

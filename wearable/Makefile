@@ -5,6 +5,7 @@ EDJE_FLAGS_VERBOSE_ =
 EDJE_FLAGS_VERBOSE_0 =
 EDJE_FLAGS_VERBOSE_1 = -v
 SRC=tizen
+DST=tizen-$(TIZEN_VER)
 
 all:
 	for s in $(SIZE); do \
@@ -36,18 +37,18 @@ all:
 		-id ./$$s/images/Emoticon\
 		-id ./$$s/images/temp/swipe\
 		-sd ./$$s/sounds -fd ../objects \
-		$(SRC)-$(TARGET)-$$s.edc $(SRC)-$(TARGET)-$$s.edj; \
+		$(SRC)-$(TARGET)-$$s.edc $(DST)-$(TARGET)-$$s.edj; \
 	done
 
 clean:
 	for s in $(SIZE); do \
-		rm -rf $(SRC)-$(TARGET)-$$s.*; \
+		rm -rf $(DST)-$(TARGET)-$$s.*; \
 	done
 
 install:
 	mkdir -p $(THEME_DIR)
 	for s in $(SIZE); do \
-		$(INSTALL) $(SRC)-$(TARGET)-$$s.edj $(THEME_DIR); \
+		$(INSTALL) $(DST)-$(TARGET)-$$s.edj $(THEME_DIR); \
 	done
 
 uninstall:
