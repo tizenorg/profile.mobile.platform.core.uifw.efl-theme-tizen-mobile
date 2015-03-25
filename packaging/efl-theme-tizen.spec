@@ -18,6 +18,7 @@ Tizen heme for EFL
 %build
 export CFLAGS+=" --fPIC"
 export LDFLAGS+=" -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=/usr/lib"
+export TIZEN_VER=2.4
 
 %if "%{?tizen_profile_name}" == "wearable"
     export TARGET=wearable
@@ -32,6 +33,7 @@ export LDFLAGS+=" -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=/usr/lib"
 make
 
 %install
+export TIZEN_VER=2.4
 
 %if "%{?tizen_profile_name}" == "wearable"
     export TARGET=wearable
