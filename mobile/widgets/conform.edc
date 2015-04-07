@@ -24,20 +24,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// FIXME: scroller UX is not defined yet
-// Ho Sang, do it!
-
 group { name: "elm/conformant/base/default";
    script {
-      public indicator_effect = 0;     //Indicator need effect
       public indicator_visible = 0;     //Indicator visible check
-      public indicator_opacity = 0;     //0=opaque, 1=transparent
+      public indicator_transparent = 0; //0=opaque, 1=transparent
       public indicator_overlap = 0;     //check indicator overlap/nooverlap
-      public clipboard_disable  = 0;     //check clipboard enable/disable
-      public keypad_disable = 0;  //check virtualkeypad enable/disable
-      public landscape = 0; //Landscape mode status
-      public portrait_overlap = 0; //save portrait_overlap mode
-      public portrait_opacity = 0; //save portrait_opacity
+      public clipboard_disable = 0;     //check clipboard enable/disable
+      public keypad_disable = 0;        //check virtualkeypad enable/disable
+      public landscape_mode = 0;        //Landscape mode status
    }
    parts {
       part { name: "base";
@@ -76,22 +70,7 @@ group { name: "elm/conformant/base/default";
             rel2.relative: 1.0 0.0;
             rel2.to: "sip_area";
          }
-         description { state: "disable_sip" 0.0; //sip: disable
-            inherit: "default" 0.0;
-            rel2.relative: 1.0 1.0;
-            rel2.to: "base";
-         }
-      }
-      part { name: "elm.swallow.ug";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            rel1.relative: 0.0 1.0;
-            rel1.to: "indicator_base";
-            rel2.relative: 1.0 0.0;
-            rel2.to: "sip_area";
-         }
-         description { state: "disable_sip" 0.0; //sip: disable
+         description { state: "disable_sip" 0.0;
             inherit: "default" 0.0;
             rel2.relative: 1.0 1.0;
             rel2.to: "base";
@@ -124,9 +103,7 @@ group { name: "elm/conformant/base/default";
          description { state: "default" 0.0;
             fixed: 0 1;
             min: 0 0;
-            rel1.relative: 0.0 0.0;
             rel1.to_y: "elm.swallow.virtualkeypad";
-            rel2.relative: 1.0 1.0;
             rel2.to_y: "elm.swallow.virtualkeypad";
          }
          description { state: "clipboard_on" 0.0;
@@ -153,16 +130,15 @@ group { name: "elm/conformant/base/default";
       }
    }
    programs {
-      program {
-          name: "show_indicator";
+      program { name: "show_indicator";
           signal: "elm,state,indicator,show";
           source: "elm";
           script {
              set_int(indicator_visible, 1);
              set_state(PART:"indicator_base", "default", 0.0);
              //Portrait
-             if (get_int(landscape) == 0) {
-               if (get_int(indicator_opacity) == 0)
+             if (get_int(landscape_mode) == 0) {
+               if (get_int(indicator_transparent) == 0)
                  run_program(PROGRAM:"opaque_state");
                else
                  run_program(PROGRAM:"transparent_state");
@@ -172,8 +148,7 @@ group { name: "elm/conformant/base/default";
                run_program(PROGRAM:"transparent_state");
           }
       }
-      program {
-          name: "hide_indicator";
+      program { name: "hide_indicator";
           signal: "elm,state,indicator,hide";
           source: "elm";
           script {
@@ -226,8 +201,9 @@ group { name: "elm/conformant/base/default";
           signal: "elm,state,indicator,opaque";
           source: "elm";
           script {
-            set_int(indicator_opacity, 0);
-            if ((get_int(indicator_visible) == 1) && (get_int(landscape) == 0))
+            set_int(indicator_transparent, 0);
+            if ((get_int(indicator_visible) == 1) &&
+                (get_int(landscape_mode) == 0))
               run_program(PROGRAM:"opaque_state");
           }
       }
@@ -235,7 +211,7 @@ group { name: "elm/conformant/base/default";
           signal: "elm,state,indicator,transparent";
           source: "elm";
           script {
-             set_int(indicator_opacity, 1);
+             set_int(indicator_transparent, 1);
              if (get_int(indicator_visible) == 1)
                run_program(PROGRAM:"transparent_state");
           }
@@ -254,12 +230,15 @@ group { name: "elm/conformant/base/default";
          script {
             //Only portrait state get nooverlap mode
             set_int(indicator_overlap, 0);
-            if (get_int(indicator_visible) == 1)
-              if (get_int(indicator_opacity) == 0) { //only opaque can be nooverlap
-                if (get_int(landscape) == 0) { //landscape should be overlap
-                  set_state(PART:"indicator_bg", "default", 0.0);
-                }
-              }
+            if (get_int(indicator_visible) == 1) {
+               //only opaque can be nooverlap
+               if (get_int(indicator_transparent) == 0) {
+                  //landscape should be overlap
+                  if (get_int(landscape_mode) == 0) {
+                     set_state(PART:"indicator_bg", "default", 0.0);
+                  }
+               }
+            }
          }
       }
       program { name: "enable_clipboard";
@@ -305,49 +284,47 @@ group { name: "elm/conformant/base/default";
               set_state(PART:"elm.swallow.content", "default", 0.0);
          }
       }
-      program {
-          name: "change_to_landscape";
+      program { name: "change_to_landscape";
           script {
-             if (get_int(landscape) == 0) {
-               set_int(landscape, 1);
+             if (get_int(landscape_mode) == 0) {
+               set_int(landscape_mode, 1);
                if (get_int(indicator_visible) == 1)
                  run_program(PROGRAM:"transparent_state");
              }
           }
-       }
-       program {
-          name: "change_to_portrait";
-          script {
-             if (get_int(landscape) == 1) {  //content start (0, indicator height)
-                set_int(landscape, 0);
-                if (get_int(indicator_visible) == 1) {
-                  if (get_int(indicator_opacity) == 1)
-                    run_program(PROGRAM:"transparent_state");
-                  else
-                    run_program(PROGRAM:"opaque_state");
-                }
-             }
-          }
-       }
-       program { name: "landscape_mode";
-          source: "elm";
-          signal: "elm,state,orient,90";
-          after: "change_to_landscape";
-       }
-       program { name: "landscape_mode2";
-          source: "elm";
-          signal: "elm,state,orient,270";
-          after: "change_to_landscape";
-       }
-       program { name: "portrait_mode";
-          source: "elm";
-          signal: "elm,state,orient,0";
-          after: "change_to_portrait";
-       }
-       program { name: "portrait_mode2";
-          source: "elm";
-          signal: "elm,state,orient,180";
-          after: "change_to_portrait";
+      }
+      program { name: "change_to_portrait";
+         script {
+            if (get_int(landscape_mode) == 1) {
+              set_int(landscape_mode, 0);
+              if (get_int(indicator_visible) == 1) {
+                if (get_int(indicator_transparent) == 1)
+                  run_program(PROGRAM:"transparent_state");
+                else
+                  run_program(PROGRAM:"opaque_state");
+               }
+            }
+         }
+      }
+      program { name: "landscape_mode";
+         source: "elm";
+         signal: "elm,state,orient,90";
+         after: "change_to_landscape";
+      }
+      program { name: "landscape_mode2";
+         source: "elm";
+         signal: "elm,state,orient,270";
+         after: "change_to_landscape";
+      }
+      program { name: "portrait_mode";
+         source: "elm";
+         signal: "elm,state,orient,0";
+         after: "change_to_portrait";
+      }
+      program { name: "portrait_mode2";
+         source: "elm";
+         signal: "elm,state,orient,180";
+         after: "change_to_portrait";
       }
    }
 }
