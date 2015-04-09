@@ -27,7 +27,7 @@
 group { name: "elm/conformant/base/default";
    script {
       public indicator_visible = 0;     //Indicator visible check
-      public indicator_transparent = 0; //0=opaque, 1=transparent
+      public indicator_opacity_mode = 0; //0=opaque, 1=transparent, 2=translucent
       public clipboard_disable = 0;     //check clipboard enable/disable
       public keypad_disable = 0;        //check virtualkeypad enable/disable
       public landscape_mode = 0;        //Landscape mode status
@@ -48,12 +48,11 @@ group { name: "elm/conformant/base/default";
             rel2.relative: 1.0 0.0;
          }
       }
-      part { name: "indicator_clipper";
-         type: RECT;
+      part { name: "indicator_adapter";
+         type: SPACER;
          description { state: "default" 0.0;
             rel1 { relative: 0.0 0.0; to: "indicator_base"; }
             rel2 { relative: 1.0 1.0; to: "indicator_base"; }
-            color: 2 61 132 255; /*(Changeable UI) color_class: "B011";*/
          }
          //just in case: transparent/hide
          description { state: "hide" 0.0;
@@ -80,12 +79,18 @@ group { name: "elm/conformant/base/default";
       part { name: "indicator_bg";
          type: RECT;
          description { state: "default" 0.0;
-            rel1 { to: "indicator_clipper"; }
-            rel2 { to: "indicator_clipper"; }
+            rel1 { to: "indicator_adapter"; }
+            rel2 { to: "indicator_adapter"; }
             color: 7 7 7 255; /*(Changeable UI) color_class: "B031";*/
          }
-         description { state: "hide" 0.0;
+         description { state: "transparent" 0.0;
             inherit: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "translucent" 0.0;
+            rel1.relative: 0 0;
+            rel2.relative: 1 0;
+            fixed: 0 1;
             visible: 0;
          }
       }
@@ -93,8 +98,8 @@ group { name: "elm/conformant/base/default";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            rel1.to: "indicator_clipper";
-            rel2.to: "indicator_clipper";
+            rel1.to: "indicator_adapter";
+            rel2.to: "indicator_adapter";
          }
       }
       part { name: "sip_area";
@@ -137,10 +142,12 @@ group { name: "elm/conformant/base/default";
              set_state(PART:"indicator_base", "default", 0.0);
              //Portrait
              if (get_int(landscape_mode) == 0) {
-               if (get_int(indicator_transparent) == 0)
+               if (get_int(indicator_opacity_mode) == 0)
                  run_program(PROGRAM:"opaque_state");
-               else
+               else if (get_int(indicator_opacity_mode) == 1)
                  run_program(PROGRAM:"transparent_state");
+               else
+                 run_program(PROGRAM:"translucent_state");
              }
              //Landscape
              else
@@ -152,17 +159,17 @@ group { name: "elm/conformant/base/default";
           source: "elm";
           script {
              set_int(indicator_visible, 0);
-             set_state(PART:"indicator_clipper", "hide", 0.0);
+             set_state(PART:"indicator_adapter", "hide", 0.0);
           }
       }
       program { name: "show_indicator_transition";
           action: STATE_SET "default" 0.0;
-          target: "indicator_clipper";
+          target: "indicator_adapter";
           transition: DECELERATE 0.2;
       }
       program { name: "hide_indicator_transition";
           action: STATE_SET "hide" 0.0;
-          target: "indicator_clipper";
+          target: "indicator_adapter";
           transition: DECELERATE 0.2;
       }
       program { name: "show_indicator_effect"; //show indicator using effect
@@ -184,26 +191,35 @@ group { name: "elm/conformant/base/default";
       program { name: "opaque_state";
           script {
             if (get_int(landscape_mode) == 1)
-              set_state(PART:"indicator_clipper", "hide", 0.0);
+              set_state(PART:"indicator_adapter", "hide", 0.0);
             else
-              set_state(PART:"indicator_clipper", "default", 0.0);
+              set_state(PART:"indicator_adapter", "default", 0.0);
             set_state(PART:"indicator_bg", "default", 0.0);
           }
       }
       program { name: "transparent_state";
          script {
             if (get_int(landscape_mode) == 1)
-              set_state(PART:"indicator_clipper", "hide", 0.0);
+              set_state(PART:"indicator_adapter", "hide", 0.0);
             else
-              set_state(PART:"indicator_clipper", "default", 0.0);
-            set_state(PART:"indicator_bg", "hide", 0.0);
+              set_state(PART:"indicator_adapter", "default", 0.0);
+            set_state(PART:"indicator_bg", "transparent", 0.0);
+         }
+      }
+      program { name: "translucent_state";
+         script {
+            if (get_int(landscape_mode) == 1)
+              set_state(PART:"indicator_adapter", "hide", 0.0);
+            else
+              set_state(PART:"indicator_adapter", "default", 0.0);
+            set_state(PART:"indicator_bg", "translucent", 0.0);
          }
       }
       program { name: "opaque_indicator";
           signal: "elm,state,indicator,opaque";
           source: "elm";
           script {
-            set_int(indicator_transparent, 0);
+            set_int(indicator_opacity_mode, 0);
             if ((get_int(indicator_visible) == 1) &&
                 (get_int(landscape_mode) == 0))
               run_program(PROGRAM:"opaque_state");
@@ -213,9 +229,18 @@ group { name: "elm/conformant/base/default";
           signal: "elm,state,indicator,transparent";
           source: "elm";
           script {
-             set_int(indicator_transparent, 1);
+             set_int(indicator_opacity_mode, 1);
              if (get_int(indicator_visible) == 1)
                run_program(PROGRAM:"transparent_state");
+          }
+      }
+      program { name: "translucent_indicator";
+          signal: "elm,state,indicator,translucent";
+          source: "elm";
+          script {
+             set_int(indicator_opacity_mode, 2);
+             if (get_int(indicator_visible) == 1)
+               run_program(PROGRAM:"translucent_state");
           }
       }
       program { name: "enable_clipboard";
@@ -272,10 +297,12 @@ group { name: "elm/conformant/base/default";
          script {
             set_int(landscape_mode, 0);
             if (get_int(indicator_visible) == 1) {
-               if (get_int(indicator_transparent) == 1)
+               if (get_int(indicator_opacity_mode) == 0)
+                 run_program(PROGRAM:"opaque_state");
+               else if (get_int(indicator_opacity_mode) == 1)
                  run_program(PROGRAM:"transparent_state");
                else
-                 run_program(PROGRAM:"opaque_state");
+                 run_program(PROGRAM:"translucent_state");
             }
          }
       }
