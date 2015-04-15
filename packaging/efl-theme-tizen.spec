@@ -20,14 +20,21 @@ export CFLAGS+=" --fPIC"
 export LDFLAGS+=" -Wl,--hash-style=both -Wl,--as-needed -Wl,--rpath=/usr/lib"
 export TIZEN_VER=2.4
 
+
 %if "%{?tizen_profile_name}" == "wearable"
     export TARGET=wearable
     export SIZE=HVGA
 %else
-  %if "%{?tizen_profile_name}" == "mobile"
+ %if "%{?tizen_profile_name}" == "mobile"
     export TARGET=mobile
     export SIZE=WVGA
-  %endif
+ %else
+   %if "%{?tizen_profile_name}" == "tv"
+    #FIXME: JUST FIX Build ERROR. HAVE TO CHANGE TV-PROFILE.
+    export TARGET=mobile
+    export SIZE=WVGA
+    %endif
+ %endif
 %endif
 
 make
@@ -39,10 +46,15 @@ export TIZEN_VER=2.4
     export TARGET=wearable
     export SIZE=HVGA
 %else
-  %if "%{?tizen_profile_name}" == "mobile"
+ %if "%{?tizen_profile_name}" == "mobile"
     export TARGET=mobile
     export SIZE=WVGA
-  %endif
+ %else
+   %if "%{?tizen_profile_name}" == "tv"
+    export TARGET=mobile
+    export SIZE=WVGA
+    %endif
+ %endif
 %endif
 
 make install prefix=%{_prefix} DESTDIR=%{buildroot}
