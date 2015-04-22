@@ -24,12 +24,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#define ATTACH_PANEL_TRANS_TIME 0.5
+#define ATTACH_PANEL_STATE_HIDE 0
+#define ATTACH_PANEL_STATE_HALF 1
+#define ATTACH_PANEL_STATE_FULL 2
+
 group { name: "elm/conformant/base/default";
    script {
       public indicator_visible = 0;     //Indicator visible check
       public indicator_opacity_mode = 0; //0=opaque, 1=transparent, 2=translucent
       public clipboard_disable = 0;     //check clipboard enable/disable
       public keypad_disable = 0;        //check virtualkeypad enable/disable
+      public attach_panel_state = ATTACH_PANEL_STATE_HIDE;  //check attach_panel state
       public landscape_mode = 0;        //Landscape mode status
    }
    parts {
@@ -75,6 +81,10 @@ group { name: "elm/conformant/base/default";
             rel2.relative: 1.0 1.0;
             rel2.to: "base";
          }
+         description { state: "show_attach_panel" 0.0; //attach_panel: visible
+            inherit: "default" 0.0;
+            rel2.to: "elm.swallow.attach_panel_base";
+         }
       }
       part { name: "elm.swallow.ug";
          type: SWALLOW;
@@ -108,6 +118,33 @@ group { name: "elm/conformant/base/default";
          description { state: "default" 0.0;
             rel1.to: "indicator_adapter";
             rel2.to: "indicator_adapter";
+         }
+      }
+      part { name: "elm.swallow.attach_panel_base";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 0 1;
+            align: 0.0 1.0;
+            rel1.relative: 0.0 1.0;
+         }
+      }
+      part { name: "elm.swallow.attach_panel";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 0 1;
+            rel1.to_y: "elm.swallow.attach_panel_base";
+            rel2.to_y: "elm.swallow.attach_panel_base";
+            visible: 0;
+         }
+         description { state: "half" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state: "full" 0.0;
+            inherit: "default" 0.0;
+            rel1.to_y: "indicator_bg";
+            rel1.relative: 0.0 1.0;
+            visible: 1;
          }
       }
       part { name: "sip_area";
@@ -248,6 +285,57 @@ group { name: "elm/conformant/base/default";
                run_program(PROGRAM:"translucent_state");
           }
       }
+      program { name: "show_full_attach_panel";
+         signal: "elm,state,attach_panel,show,full";
+         source: "";
+         script {
+            set_int(attach_panel_state, ATTACH_PANEL_STATE_FULL);
+         }
+         after: "show_full_attach_panel2";
+      }
+      program { name: "show_full_attach_panel2";
+         action: STATE_SET "full" 0.0;
+         target: "elm.swallow.attach_panel";
+         transition: DECELERATE ATTACH_PANEL_TRANS_TIME;
+      }
+      program { name: "show_half_attach_panel";
+         signal: "elm,state,attach_panel,show,half";
+         source: "";
+         script {
+            set_int(attach_panel_state, ATTACH_PANEL_STATE_HALF);
+         }
+         after: "show_half_attach_panel2";
+      }
+      program { name: "show_half_attach_panel2";
+         action: STATE_SET "half" 0.0;
+         target: "elm.swallow.attach_panel";
+         transition: DECELERATE ATTACH_PANEL_TRANS_TIME;
+      }
+      program { name: "show_attach_panel_started";
+         signal: "elm,state,attach_panel,show,started";
+         source: "";
+         script {
+            set_int(attach_panel_state, ATTACH_PANEL_STATE_HALF);
+            //set attach_panel state
+            set_state(PART:"elm.swallow.attach_panel", "half", 0.0);
+            //set content state
+            set_state(PART:"elm.swallow.content", "show_attach_panel", 0.0);
+         }
+      }
+      program { name: "hide_attach_panel_finished";
+         signal: "elm,state,attach_panel,hide,finished";
+         source: "";
+         script {
+            set_int(attach_panel_state, ATTACH_PANEL_STATE_HIDE);
+            //set attach_panel state
+            set_state(PART:"elm.swallow.attach_panel", "default", 0.0);
+            //set content state
+            if (get_int(keypad_disable) == 1 && get_int(clipboard_disable) == 1)
+              set_state(PART:"elm.swallow.content", "disable_sip", 0.0);
+            else
+              set_state(PART:"elm.swallow.content", "default", 0.0);
+         }
+      }
       program { name: "enable_clipboard";
          signal: "elm,state,clipboard,enable";
          source: "";
@@ -263,10 +351,15 @@ group { name: "elm/conformant/base/default";
          script {
             set_int(clipboard_disable, 1);
             set_state(PART:"sip_area", "default", 0.0);
-            if (get_int(keypad_disable) == 1)
-              set_state(PART:"elm.swallow.content", "disable_sip", 0.0);
-            else
-              set_state(PART:"elm.swallow.content", "default", 0.0);
+            if (get_int(attach_panel_state) != ATTACH_PANEL_STATE_HIDE) {
+               set_state(PART:"elm.swallow.content", "show_attach_panel", 0.0);
+            }
+            else {
+               if (get_int(keypad_disable) == 1)
+                 set_state(PART:"elm.swallow.content", "disable_sip", 0.0);
+               else
+                 set_state(PART:"elm.swallow.content", "default", 0.0);
+            }
          }
       }
       program { name: "enable_virtualkeypad";
@@ -282,13 +375,18 @@ group { name: "elm/conformant/base/default";
          source: "";
          script {
             set_int(keypad_disable, 1);
-            if (get_int(clipboard_disable) == 1)
-              {
-                 set_state(PART:"sip_area", "clipboard_on", 0.0);
-                 set_state(PART:"elm.swallow.content", "disable_sip", 0.0);
-              }
-            else
-              set_state(PART:"elm.swallow.content", "default", 0.0);
+            if (get_int(attach_panel_state) != ATTACH_PANEL_STATE_HIDE) {
+               set_state(PART:"elm.swallow.content", "show_attach_panel", 0.0);
+            }
+            else {
+               if (get_int(clipboard_disable) == 1)
+                 {
+                    set_state(PART:"sip_area", "clipboard_on", 0.0);
+                    set_state(PART:"elm.swallow.content", "disable_sip", 0.0);
+                 }
+               else
+                 set_state(PART:"elm.swallow.content", "default", 0.0);
+            }
          }
       }
       program { name: "change_to_landscape";
