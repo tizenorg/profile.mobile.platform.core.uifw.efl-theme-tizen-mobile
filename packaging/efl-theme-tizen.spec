@@ -27,7 +27,7 @@ export TIZEN_VER=2.4
 %else
  %if "%{?tizen_profile_name}" == "mobile"
     export TARGET=mobile
-    export SIZE=WVGA
+    export SIZE=qHD
  %else
    %if "%{?tizen_profile_name}" == "tv"
     #FIXME: JUST FIX Build ERROR. HAVE TO CHANGE TV-PROFILE.
@@ -48,7 +48,7 @@ export TIZEN_VER=2.4
 %else
  %if "%{?tizen_profile_name}" == "mobile"
     export TARGET=mobile
-    export SIZE=WVGA
+    export SIZE=qHD
  %else
    %if "%{?tizen_profile_name}" == "tv"
     export TARGET=tv
