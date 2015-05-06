@@ -42,6 +42,7 @@
                min: BUTTON_MIN_WIDTH BUTTON_MIN_HEIGHT;
             }
          }
+         //Base Shape Part
          part { name: "tizen_vg_shape";
             type: SWALLOW;
             clip_to: "tizen_vg_shape_clipper";
@@ -53,11 +54,36 @@
             description { state: "default" 0.0;
                color: 82 198 216 255;
             }
-            description { state: "pressed" 0.0;
-               color: 48 139 153 255;
-            }
             description { state: "disabled" 0.0;
                color: 138 195 204 255;
+            }
+         }
+         //Effect Shape Part
+         part { name: "tizen_vg_shape2";
+            type: SWALLOW;
+            clip_to: "tizen_vg_shape_clipper2";
+            description { state: "default" 0.0;
+               rel1.relative: 0.15 0.15;
+               rel2.relative: 0.85 0.85;
+            }
+            description { state: "ready" 0.0;
+               inherit: "default" 0.0;
+            }
+            description { state: "pressed" 0.0;
+            }
+         }
+         part { name: "tizen_vg_shape_clipper2";
+            type: RECT;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 48 139 153 0;
+            }
+            description { state: "ready" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+            description { state: "pressed" 0.0;
+               color: 48 139 153 255;
             }
          }
          part { name: "padding_left_top";
@@ -183,6 +209,40 @@
          }
       }
       programs {
+         program { name: "tizen_vg_pressed_effect";
+            action: STATE_SET "ready" 0.0;
+            target: "tizen_vg_shape2";
+            target: "tizen_vg_shape_clipper2";
+            after: "tizen_vg_pressed_effect2";
+         }
+         program { name: "tizen_vg_pressed_effect2";
+            script {
+               run_program(PROGRAM:"tizen_vg_pressed_effect3");
+               run_program(PROGRAM:"tizen_vg_pressed_effect4");
+            }
+         }
+         program { name: "tizen_vg_pressed_effect3";
+            action: STATE_SET "pressed" 0.0;
+            target: "tizen_vg_shape2";
+            transition: DECELERATE 0.3;
+         }
+         program { name: "tizen_vg_pressed_effect4";
+            action: STATE_SET "pressed" 0.0;
+            target: "tizen_vg_shape_clipper2";
+            transition: DECELERATE 0.225;
+            after: "tizen_vg_pressed_effect5";
+         }
+         program { name: "tizen_vg_pressed_effect5";
+            action: STATE_SET "ready" 0.0;
+            target: "tizen_vg_shape_clipper2";
+            transition: LINEAR 0.45;
+            after: "tizen_vg_pressed_effect6";
+         }
+         program { name: "tizen_vg_pressed_effect6";
+            action: STATE_SET "default" 0.0;
+            target: "tizen_vg_shape2";
+            target: "tizen_vg_shape_clipper2";
+         }
          program { name: "pressed";
             signal: "mouse,down,1*";
             source: "event";
@@ -191,7 +251,7 @@
                   set_int(mouse_down, 1);
                   if (get_int(disabled) == 0) {
                      emit("elm,action,press", "");
-                     set_state(PART:"tizen_vg_shape_clipper", "pressed", 0.0);
+                     run_program(PROGRAM:"tizen_vg_pressed_effect");
                   }
                }
             }
@@ -204,7 +264,6 @@
                   set_int(mouse_down, 0);
                   if (get_int(disabled) == 0) {
                      emit("elm,action,unpress", "");
-                     set_state(PART:"tizen_vg_shape_clipper", "default", 0.0);
                   }
                }
             }
@@ -316,11 +375,22 @@
             description { state: "default" 0.0;
                color: 76 103 211 255;
             }
-            description { state: "pressed" 0.0;
-               color: 57 78 160 255;
-            }
             description { state: "disabled" 0.0;
                color: 134 155 239 255;
+            }
+         }
+         part { name: "tizen_vg_shape_clipper2";
+            type: RECT;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 57 78 160 0;
+            }
+            description { state: "ready" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+            description { state: "pressed" 0.0;
+               color: 57 78 160 255;
             }
          }
       }
@@ -335,11 +405,22 @@
             description { state: "default" 0.0;
                color: 61 184 204 255;
             }
-            description { state: "pressed" 0.0;
-               color: 73 142 153 255;
-            }
             description { state: "disabled" 0.0;
                color: 147 207 216 255;
+            }
+         }
+         part { name: "tizen_vg_shape_clipper2";
+            type: RECT;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 73 142 153 0;
+            }
+            description { state: "ready" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+            description { state: "pressed" 0.0;
+               color: 73 142 153 255;
             }
          }
       }
@@ -354,11 +435,22 @@
             description { state: "default" 0.0;
                color: 0 0 0 89;
             }
-            description { state: "pressed" 0.0;
-               color: 0 0 0 140;
-            }
             description { state: "disabled" 0.0;
                color: 0 0 0 43;
+            }
+         }
+         part { name: "tizen_vg_shape_clipper2";
+            type: RECT;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 0 0 0 0;
+            }
+            description { state: "ready" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+            description { state: "pressed" 0.0;
+               color: 0 0 0 140;
             }
          }
       }
