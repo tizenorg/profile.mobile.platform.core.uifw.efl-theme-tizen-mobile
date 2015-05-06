@@ -14,18 +14,24 @@ all:
 		perl -pi -e "s/TIZEN_TMP_INC/\"$$s-inc.edc\"/g" $(SRC)-$(TARGET)-$$s.edc; \
 		edje_cc $(EDJE_FLAGS) $(EDJE_FLAGS_$(V))\
 		-id ./$$s/images/\
-		-id ./$$s/images/Activity_indicator/\
-		-id ./$$s/images/Activity_indicator/large\
-		-id ./$$s/images/Activity_indicator/medium\
-		-id ./$$s/images/Activity_indicator/small\
 		-id ./$$s/images/Content_views\
 		-id ./$$s/images/Controls\
-		-id ./$$s/images/Copy_Paste\
-		-id ./$$s/images/Emoticon\
 		-id ./$$s/images/Navigation_elements\
 		-id ./$$s/images/Popups\
-		-id ./$$s/images/Indicator\
 		-sd ./$$s/sounds -fd ../objects \
+		-id ./WVGA/images/\
+		-id ./WVGA/images/Activity_indicator/\
+		-id ./WVGA/images/Activity_indicator/large\
+		-id ./WVGA/images/Activity_indicator/medium\
+		-id ./WVGA/images/Activity_indicator/small\
+		-id ./WVGA/images/Content_views\
+		-id ./WVGA/images/Controls\
+		-id ./WVGA/images/Copy_Paste\
+		-id ./WVGA/images/Emoticon\
+		-id ./WVGA/images/Navigation_elements\
+		-id ./WVGA/images/Popups\
+		-id ./WVGA/images/Indicator\
+		-sd ./WVGA/sounds -fd ../objects \
 		-id ./HD/images/\
 		-id ./HD/images/Activity_indicator/\
 		-id ./HD/images/Activity_indicator/large\
