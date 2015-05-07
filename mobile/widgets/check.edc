@@ -24,8 +24,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 group { name: "elm/check/base/default";
-   alias: "elm/check/base/favorite";
-   alias: "elm/check/base/on&off";
    data.item: "vector_ux" "on";
    script {
       public check_state;
@@ -39,7 +37,7 @@ group { name: "elm/check/base/default";
             min: CHECK_DEFAULT_SIZE;
          }
       }
-      //Base Shape Part
+      //Outline + Rectangle Fill
       part { name: "tizen_vg_shape";
          type: SWALLOW;
          clip_to: "tizen_vg_shape_clipper";
@@ -55,7 +53,14 @@ group { name: "elm/check/base/default";
             color: 61 184 204 77;
          }
       }
+      //Check Line
+      part { name: "tizen_vg_shape2";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+         }
+      }
       part { name: "event";
+         type: RECT;
          scale: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
@@ -104,6 +109,246 @@ group { name: "elm/check/base/default";
          script {
             set_int(disabled, 0);
             set_state(PART:"tizen_vg_shape_clipper", "default", 0.0);
+         }
+      }
+   }
+}
+
+group { name: "elm/check/base/favorite";
+   inherit: "elm/check/base/default";
+   data.item: "vector_ux" "on";
+   parts {
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: CHECK_FAVORITE_SIZE;
+         }
+      }
+      //Outline Star
+      part { name: "tizen_vg_shape";
+         type: SWALLOW;
+         clip_to: "tizen_vg_shape_clipper";
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "tizen_vg_shape_clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 178 0 255;
+         }
+         description { state: "disabled" 0.0;
+            color: 0 0 0 38;
+         }
+      }
+      //Inner Star Body
+      part { name: "tizen_vg_shape2";
+         clip_to: "tizen_vg_shape_clipper2";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "tizen_vg_shape_clipper2";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 178 0 0;
+         }
+         description { state: "on" 0.0;
+            color: 255 178 0 255;
+         }
+         description { state: "disabled" 0.0;
+            color: 0 0 0 38;
+         }
+      }
+  }
+   programs {
+      program { name: "toggle_on_effect";
+         action: STATE_SET "on" 0.0;
+         target: "tizen_vg_shape_clipper2";
+         transition: DECELERATE 0.5;
+      }
+      program { name: "check_on";
+         signal: "elm,state,check,on";
+         source: "elm";
+         script {
+            set_int(check_state, 1);
+            if (!get_int(disabled)) {
+               run_program(PROGRAM:"toggle_on_effect");
+            }
+         }
+      }
+      program { name: "toggle_off_effect";
+         action: STATE_SET "default" 0.0;
+         target: "tizen_vg_shape_clipper2";
+         transition: DECELERATE 0.3;
+      }
+      program { name: "check_off";
+         signal: "elm,state,check,off";
+         source: "elm";
+         script {
+            set_int(check_state, 0);
+            if (!get_int(disabled)) {
+               run_program(PROGRAM:"toggle_off_effect");
+            }
+         }
+      }
+      program { name: "disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         script {
+            set_int(disabled, 1);
+            set_state(PART:"tizen_vg_shape_clipper", "disabled", 0.0);
+            set_state(PART:"tizen_vg_shape_clipper2", "disabled", 0.0);
+         }
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         script {
+            set_int(disabled, 0);
+            set_state(PART:"tizen_vg_shape_clipper", "default", 0.0);
+            if (get_int(check_state) == 0) {
+              set_state(PART:"tizen_vg_shape_clipper2", "default", 0.0);
+            } else {
+              set_state(PART:"tizen_vg_shape_clipper2", "on", 0.0);
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/check/base/on&off";
+   inherit: "elm/check/base/default";
+   data.item: "vector_ux" "on";
+   parts {
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: CHECK_ONOFF_SIZE;
+         }
+      }
+      //Circle BG
+      part { name: "tizen_vg_shape";
+         type: SWALLOW;
+         clip_to: "tizen_vg_shape_clipper";
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "tizen_vg_shape_clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 102;
+         }
+         description { state: "on" 0.0;
+           color: 0 0 0 0;
+         }
+         description { state: "disabled" 0.0;
+            color: 0 0 0 40;
+         }
+      }
+      //Overlapped Circle
+      part { name: "tizen_vg_shape2";
+         type: SWALLOW;
+         clip_to: "tizen_vg_shape_clipper2";
+         description { state: "default" 0.0;
+            rel1.relative: 0.15 0.15;
+            rel2.relative: 0.85 0.85;
+         }
+         description { state: "on" 0.0;
+         }
+      }
+      part { name: "tizen_vg_shape_clipper2";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 42 183 65 0;
+         }
+         description { state: "on" 0.0;
+            color: 42 183 65 255;
+         }
+         description { state: "disabled" 0.0;
+            visible: 0;
+         }
+      }
+      //Line <-> Circle
+      part { name: "tizen_vg_shape3";
+         type: SWALLOW;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: CHECK_ONOFF_ICON_SIZE;
+            fixed: 1 1;
+            align: 0.5 0.5;
+            rel1.relative: 0.5 0.5;
+            rel2.relative: 0.5 0.5;
+         }
+      }
+   }
+   programs {
+      program { name: "toggle_on_effect";
+         action: STATE_SET "on" 0.0;
+         target: "tizen_vg_shape2";
+         transition: DECELERATE 0.3;
+      }
+      program { name: "toggle_on_effect2";
+         action: STATE_SET "on" 0.0;
+         target: "tizen_vg_shape_clipper2";
+         transition: DECELERATE 0.45;
+      }
+      program { name: "check_on";
+         signal: "elm,state,check,on";
+         source: "elm";
+         script {
+            set_int(check_state, 1);
+            if (!get_int(disabled)) {
+               run_program(PROGRAM:"toggle_on_effect");
+               run_program(PROGRAM:"toggle_on_effect2");
+            }
+         }
+      }
+      program { name: "toggle_off_effect";
+         action: STATE_SET "default" 0.0;
+         target: "tizen_vg_shape2";
+         transition: DECELERATE 0.3;
+      }
+      program { name: "toggle_off_effect2";
+         action: STATE_SET "default" 0.0;
+         target: "tizen_vg_shape_clipper2";
+         transition: DECELERATE 0.45;
+      }
+      program { name: "check_off";
+         signal: "elm,state,check,off";
+         source: "elm";
+         script {
+            set_int(check_state, 0);
+            if (!get_int(disabled)) {
+               run_program(PROGRAM:"toggle_off_effect");
+               run_program(PROGRAM:"toggle_off_effect2");
+            }
+         }
+      }
+      program { name: "disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         script {
+            set_int(disabled, 1);
+            set_state(PART:"tizen_vg_shape_clipper", "disabled", 0.0);
+            set_state(PART:"tizen_vg_shape_clipper2", "disabled", 0.0);
+         }
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         script {
+            set_int(disabled, 0);
+            if (get_int(check_state) == 0) {
+               set_state(PART:"tizen_vg_shape2", "default", 0.0);
+               set_state(PART:"tizen_vg_shape_clipper", "default", 0.0);
+               set_state(PART:"tizen_vg_shape_clipper2", "default", 0.0);
+            } else {
+               set_state(PART:"tizen_vg_shape2", "on", 0.0);
+               set_state(PART:"tizen_vg_shape_clipper", "on", 0.0);
+               set_state(PART:"tizen_vg_shape_clipper2", "on", 0.0);
+            }
          }
       }
    }
