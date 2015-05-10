@@ -28,8 +28,8 @@ group {
    name: "elm/ctxpopup/layout/default";
    alias: "elm/ctxpopup/layout/copypaste";
 
-   data.item: "visible_maxw" CTXPOPUP_WIDTH;
-   data.item: "visible_maxh" (CTXPOPUP_ITEM_HEIGHT_MIN*6);
+   data.item: "visible_maxw" CTXPOPUP_WIDTH_INC;
+   data.item: "visible_maxh" (CTXPOPUP_ITEM_HEIGHT_MIN_INC*6);
    parts {
       part {
          name:"top_padding";
@@ -356,8 +356,8 @@ group {
    name: "elm/ctxpopup/layout/landscape/default";
    inherit: "elm/ctxpopup/layout/default";
 
-   data.item: "visible_maxw" CTXPOPUP_WIDTH;
-   data.item: "visible_maxh" (CTXPOPUP_ITEM_HEIGHT_MIN*4);
+   data.item: "visible_maxw" CTXPOPUP_WIDTH_INC;
+   data.item: "visible_maxh" (CTXPOPUP_ITEM_HEIGHT_MIN_INC*4);
 }
 ///////////////////////////////////////////////////////////////////////////////
 group {
@@ -370,8 +370,8 @@ group {
 group {
    name: "elm/ctxpopup/layout/more/default";
 
-   data.item: "visible_maxw" CTXPOPUP_WIDTH;
-   data.item: "visible_maxh" (CTXPOPUP_MORE_ITEM_HEIGHT_MIN*7);
+   data.item: "visible_maxw" CTXPOPUP_WIDTH_INC;
+   data.item: "visible_maxh" (CTXPOPUP_MORE_ITEM_HEIGHT_MIN_INC*7);
 
    parts {
       part {
@@ -474,7 +474,7 @@ group {
    name: "elm/ctxpopup/layout/landscape/more/default";
    inherit: "elm/ctxpopup/layout/more/default";
 
-   data.item: "visible_maxw" CTXPOPUP_WIDTH;
+   data.item: "visible_maxw" CTXPOPUP_WIDTH_INC;
    data.item: "visible_maxh" (CTXPOPUP_MORE_ITEM_HEIGHT_MIN_INC*5);
 
 }
@@ -805,7 +805,7 @@ group {
          mouse_events: 0;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_WIDTH 0;
+            min: CTXPOPUP_WIDTH_INC 0;
             color: 244 244 242 255; /*(Changeable UI) color_class: "B061L41";*/
          }
       }
@@ -1209,7 +1209,7 @@ group {
       public multi_down = 0;
    }
 
-   data.item: "item_max_size" CTXPOPUP_TEXT_MAX;
+   data.item: "item_max_size" CTXPOPUP_TEXT_MAX_INC;
    parts {
       part {
          name: "event_blocker";
@@ -1227,27 +1227,27 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_WIDTH 1;
-            max: CTXPOPUP_WIDTH CTXPOPUP_ITEM_HEIGHT_MAX;
-            color: 244 244 242 255; /*(Changeable UI) color_class: "B061L41";*/
+            min: CTXPOPUP_WIDTH_INC CTXPOPUP_ITEM_HEIGHT_MAX_INC;
+            max: CTXPOPUP_WIDTH_INC (CTXPOPUP_ITEM_HEIGHT_MAX_INC-CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC*2);
+            color: 255 255 255 255;
          }
          description {
             state: "clicked" 0.0;
             inherit: "default" 0.0;
-            color: 2 61 132 76; /*(Changeable UI) color_class: "B061L41P";*/
+            color: 61 185 204 77;
          }
       }
       part {
-         name: "left_top_padding";
+         name: "left_padding";
          type: SPACER;
          scale: 1;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_ITEM_TEXT_LR_PADDING CTXPOPUP_ITEM_TEXT_TB_PADDING;
-            max: CTXPOPUP_ITEM_TEXT_LR_PADDING CTXPOPUP_ITEM_TEXT_TB_PADDING;
+            min: CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC 1;
+            max: CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC 1;
             rel1.to: "bg";
             rel2.to: "bg";
-            align: 0 0;
+            align: 0 0.5;
             fixed: 1 1;
          }
       }
@@ -1258,16 +1258,22 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: 1 CTXPOPUP_ITEM_TEXT_HEIGHT_MIN;
-            max: CTXPOPUP_TEXT_MAX (CTXPOPUP_ITEM_HEIGHT_MAX-CTXPOPUP_ITEM_TEXT_TB_PADDING*2);
+            min: 1 CTXPOPUP_ITEM_TEXT_HEIGHT_MIN_INC;
+            max: CTXPOPUP_TEXT_MAX_INC (CTXPOPUP_ITEM_HEIGHT_MAX_INC-CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC*2);
             align: 0.5 0.5;
-            rel1 {relative: 1.0 1.0; to: "left_top_padding";}
-            rel2 {relative: 0.0 0.0; to: "right_bottom_padding";}
-            color: 7 7 7 255; /*(Changeable UI) color_class: "T126";*/
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "left_padding";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "right_padding";
+            }
+            color: 0 0 0 255;
             text {
-               font: "Tizen:style=Regular"; size: "30"; /*(Changeable UI) text_class: "T126";*/
+               font: "Tizen:style=Regular"; size: "27";
                text_class: "tizen";
-               size_range: CTXPOPUP_ITEM_TEXT_SIZE CTXPOPUP_ITEM_TEXT_MAX_SIZE;
+               size_range: CTXPOPUP_ITEM_TEXT_SIZE_INC CTXPOPUP_ITEM_TEXT_MAX_SIZE_INC;
                align: 0 0.5;
                min: 1 1;
             }
@@ -1275,46 +1281,46 @@ group {
          description {
             state: "clicked" 0.0;
             inherit: "default" 0.0;
-            text.font: "Tizen:style=Regular"; text.size: "30"; /*(Changeable UI) text.text_class: "T126P";*/
+            text.font: "Tizen:style=Regular"; text.size: "27";
             text.text_class: "tizen";
-            color: 7 7 7 255; /*(Changeable UI) color_class: "T126P";*/
+            color: 0 0 0 255;
          }
          description {
             state: "disabled" 0.0;
             inherit: "default" 0.0;
-            text.font: "Tizen:style=Regular"; text.size: "30"; /*(Changeable UI) text.text_class: "T126D";*/
+            text.font: "Tizen:style=Regular"; text.size: "27";
             text.text_class: "tizen";
-            color: 7 7 7 127; /*(Changeable UI) color_class: "T126D";*/
+            color: 0 0 0 115;
          }
          description {
             state: "ellipsis" 0.0;
             inherit: "default" 0.0;
-            min: CTXPOPUP_TEXT_MAX CTXPOPUP_ITEM_TEXT_HEIGHT_MIN;
+            min: CTXPOPUP_TEXT_MAX_INC CTXPOPUP_ITEM_TEXT_HEIGHT_MIN_INC;
             text.min: 0 1;
          }
          description {
             state: "ellipsis_clicked" 0.0;
             inherit: "ellipsis" 0.0;
-            text.font: "Tizen:style=Regular"; text.size: "30"; /*(Changeable UI) text.text_class: "T126P";*/
+            text.font: "Tizen:style=Regular"; text.size: "27";
             text.text_class: "tizen";
-            color: 7 7 7 255; /*(Changeable UI) color_class: "T126P";*/
+            color: 0 0 0 255;
          }
          description {
             state: "ellipsis_disabled" 0.0;
             inherit: "ellipsis" 0.0;
-            text.font: "Tizen:style=Regular"; text.size: "30"; /*(Changeable UI) text.text_class: "T126D";*/
+            text.font: "Tizen:style=Regular"; text.size: "27";
             text.text_class: "tizen";
-            color: 7 7 7 127; /*(Changeable UI) color_class: "T126D";*/
+            color: 0 0 0 115;
          }
       }
       part {
-         name: "right_bottom_padding";
+         name: "right_padding";
          type: SPACER;
          scale: 1;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_ITEM_TEXT_LR_PADDING CTXPOPUP_ITEM_TEXT_TB_PADDING;
-            max: CTXPOPUP_ITEM_TEXT_LR_PADDING CTXPOPUP_ITEM_TEXT_TB_PADDING;
+            min: CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC 1;
+            max: CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC 1;
             fixed: 1 1;
             align: 1.0 1.0;
          }
@@ -1347,11 +1353,11 @@ group {
          type: RECT;
          description {
             state: "default" 0.0;
-            min: 1 1;
-            max: -1 1;
+            min: 1 2;
+            max: -1 2;
             fixed: 0 1;
             align: 0.5 1.0;
-            color: 192 213 222 255;
+            color: 61 185 204 77;
             rel1.relative: 0.0 1.0;
          }
       }
@@ -1514,8 +1520,8 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_WIDTH CTXPOPUP_MORE_ITEM_HEIGHT_MIN_INC;
-            max: CTXPOPUP_WIDTH CTXPOPUP_MORE_ITEM_HEIGHT_MAX_INC;
+            min: CTXPOPUP_WIDTH_INC CTXPOPUP_MORE_ITEM_HEIGHT_MIN_INC;
+            max: CTXPOPUP_WIDTH_INC CTXPOPUP_MORE_ITEM_HEIGHT_MAX_INC;
             color: 255 255 255 255;
             fixed: 1 0;
          }
@@ -2221,15 +2227,15 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            visible: 0;
-            min: (CTXPOPUP_ITEM_HORIZONTAL_WIDTH_MIN_INC-1) CTXPOPUP_ITEM_HORIZONTAL_HEIGHT_INC;
-            rel1 {to: "separator"; relative: 1.0 0.0;}
+            min: (CTXPOPUP_ITEM_ICON_LEFT_PADDING_INC+CTXPOPUP_ICON_WIDTH_INC+CTXPOPUP_ITEM_ICON_RIGHT_PADDING_INC+CTXPOPUP_ITEM_TEXT_HORIZONTAL_PADDING_INC) CTXPOPUP_ITEM_HEIGHT_MAX_INC;
+            max: CTXPOPUP_WIDTH_INC CTXPOPUP_ITEM_HEIGHT_MAX_INC;
+            rel1 {to_y: "separator"; relative: 0.0 1.0;}
+            color: 255 255 255 255;
          }
          description {
             state: "clicked" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
-            color: 2 61 132 76; /*(Changeable UI) color_class: "B066P";*/
+            color: 61 185 204 77;
          }
       }
       part {
@@ -2239,29 +2245,27 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            color: 7 7 7 51; /*(Changeable UI) color_class: "B069";*/
-            align: 0 0.5;
-            min: 0 0;
-            max: 0 -1;
+            color: 61 185 204 77;
+            rel2.relative: 1.0 0.0;
+            min: 0 2;
+            align: 0.5 0.0;
             visible: 0;
          }
          description {
             state: "visible" 0.0;
             inherit: "default" 0.0;
-            min: CTXPOPUP_SEPARATOR_MIN_SIZE_INC;
-            max: CTXPOPUP_SEPARATOR_MAX_SIZE_INC;
             visible: 1;
          }
       }
       part {
-         name: "icon_top_padding";
+         name: "icon_left_padding";
          scale: 1;
          type: SPACER;
          description {
             state: "default" 0.0;
-            min: 1 CTXPOPUP_ITEM_TOP_PADDING_INC;
-            max: 1 CTXPOPUP_ITEM_TOP_PADDING_INC;
-            align: 0.5 0.0;
+            min: CTXPOPUP_ITEM_ICON_LEFT_PADDING_INC 1;
+            max: CTXPOPUP_ITEM_ICON_LEFT_PADDING_INC 1;
+            align: 0.0 0.5;
          }
       }
       part {
@@ -2273,9 +2277,10 @@ group {
             state: "default" 0.0;
             min: CTXPOPUP_ICON_WIDTH_INC CTXPOPUP_ICON_HEIGHT_INC;
             max: CTXPOPUP_ICON_WIDTH_INC CTXPOPUP_ICON_HEIGHT_INC;
-            align: 0.5 0.0;
+            align: 0.0 0.5;
             aspect: 1.0 1.0;
-            rel1 { relative: 0.0 1.0; to_y:"icon_top_padding"; }
+            rel1 { relative: 1.0 0.0; to_x:"icon_left_padding"; }
+            rel2 { relative: 1.0 1.0; to_x:"icon_left_padding"; }
          }
       }
       part {
@@ -2286,19 +2291,20 @@ group {
             state: "default" 0.0;
             rel1.to: "elm.swallow.icon";
             rel2.to: "elm.swallow.icon";
-            color: 7 7 7 204; /*(Changeable UI) color_class: "B068";*/
+            color: 51 51 51 255;
          }
       }
       part {
-         name: "icon_bottom_padding";
+         name: "icon_right_padding";
          scale: 1;
          type: SPACER;
          description {
             state: "default" 0.0;
-            min: 1 CTXPOPUP_ITEM_ICON_BOTTOM_PADDING_INC;
-            max: 1 CTXPOPUP_ITEM_ICON_BOTTOM_PADDING_INC;
-            align: 0.5 0.0;
-            rel1 { relative: 0.0 1.0; to_y:"elm.swallow.icon"; }
+            min: CTXPOPUP_ITEM_ICON_RIGHT_PADDING_INC 10;
+            max: CTXPOPUP_ITEM_ICON_RIGHT_PADDING_INC 10;
+            align: 0.0 0.5;
+            rel1 { relative: 1.0 0.0; to_x:"elm.swallow.icon"; }
+            rel2 { relative: 1.0 1.0; to_x:"elm.swallow.icon"; }
          }
       }
       part {
@@ -2308,27 +2314,25 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: (CTXPOPUP_ITEM_HORIZONTAL_WIDTH_MIN_INC-CTXPOPUP_ITEM_TEXT_HORIZONTAL_PADDING_INC*2) (CTXPOPUP_ITEM_HEIGHT_INC-CTXPOPUP_ICON_HEIGHT_INC-CTXPOPUP_ITEM_TOP_PADDING_INC-CTXPOPUP_ITEM_ICON_BOTTOM_PADDING_INC-CTXPOPUP_ITEM_BOTTOM_PADDING_INC);
-            align: 0.5 0.0;
-            rel1 {relative: 1.0 1.0; to_x: "text_left_padding"; to_y: "icon_bottom_padding";}
-            rel2 {relative: 0.0 0.0; to_x: "text_right_padding"; to_y:"text_bottom_padding";}
-            color: 7 7 7 255; /*(Changeable UI) color_class: "T130";*/
+            min: (CTXPOPUP_ITEM_HORIZONTAL_WIDTH_MIN_INC-CTXPOPUP_ITEM_TEXT_HORIZONTAL_PADDING_INC*2) CTXPOPUP_ITEM_TEXT_HEIGHT_MIN_INC;
+            max: -1 CTXPOPUP_ITEM_TEXT_HEIGHT_MIN_INC;
+            align: 0.0 0.5;
+            rel1 {relative: 1.0 0.0; to_x: "icon_right_padding";}
+            rel2 {relative: 0.0 1.0; to_x: "text_right_padding";}
+            color: 0 0 0 255;
             text {
-               font: "Tizen:style=Regular"; size: "24"; /*(Changeable UI) text_class: "T130";*/
+               font: "Tizen:style=Regular"; size: "27";
                text_class: "tizen";
+               align: 0 0.5;
                min: 1 1;
             }
          }
-      }
-      part {
-         name: "text_left_padding";
-         type: SPACER;
-         scale: 1;
          description {
-            state: "default" 0.0;
-            min: CTXPOPUP_ITEM_TEXT_HORIZONTAL_PADDING_INC 1;
-            max: CTXPOPUP_ITEM_TEXT_HORIZONTAL_PADDING_INC 1;
-            align: 0.0 0.5;
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 115;
+            text.font: "Tizen:style=Regular"; text.size: "27";
+            text.text_class: "tizen";
          }
       }
       part {
@@ -2340,17 +2344,6 @@ group {
             min: CTXPOPUP_ITEM_TEXT_HORIZONTAL_PADDING_INC 1;
             max: CTXPOPUP_ITEM_TEXT_HORIZONTAL_PADDING_INC 1;
             align: 1.0 0.5;
-         }
-      }
-      part {
-         name: "text_bottom_padding";
-         type: SPACER;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: CTXPOPUP_ICON_WIDTH_INC CTXPOPUP_ITEM_BOTTOM_PADDING_INC;
-            max: CTXPOPUP_ICON_WIDTH_INC CTXPOPUP_ITEM_BOTTOM_PADDING_INC;
-            align: 0.5 1.0;
          }
       }
       part {
@@ -2376,19 +2369,6 @@ group {
             color: CTXPOPUP_ITEM_DISABLED_COLOR;
          }
       }
-      part {
-         name: "bottom_line";
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            min: 1 1;
-            max: -1 1;
-            fixed: 0 1;
-            align: 0.5 1.0;
-            color: 192 213 222 255;
-            rel1.relative: 0.0 1.0;
-         }
-      }
    }
    programs {
       program {
@@ -2412,6 +2392,7 @@ group {
          source: "elm";
          action: STATE_SET "disabled" 0.0;
          target: "disclip";
+         target: "elm.text";
       }
       program {
          name: "enable";
@@ -2419,6 +2400,7 @@ group {
          source: "elm";
          action: STATE_SET "default" 0.0;
          target: "disclip";
+         target: "elm.text";
       }
       program {
          name: "hide_separator";
