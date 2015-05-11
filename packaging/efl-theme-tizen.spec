@@ -22,7 +22,11 @@ export TIZEN_VER=2.4
 
 
 %if "%{?tizen_profile_name}" == "wearable"
-    export TARGET=wearable
+    %if "%{?model_build_feature_formfactor}" == "circle"
+     export TARGET=wearable-circle
+    %else
+     export TARGET=wearable
+    %endif
     export SIZE=HVGA
 %else
  %if "%{?tizen_profile_name}" == "mobile"
@@ -43,7 +47,11 @@ make
 export TIZEN_VER=2.4
 
 %if "%{?tizen_profile_name}" == "wearable"
-    export TARGET=wearable
+    %if "%{?model_build_feature_formfactor}" == "circle"
+     export TARGET=wearable-circle
+    %else
+     export TARGET=wearable
+    %endif
     export SIZE=HVGA
 %else
  %if "%{?tizen_profile_name}" == "mobile"

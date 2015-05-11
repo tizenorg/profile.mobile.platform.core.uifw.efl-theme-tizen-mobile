@@ -54,20 +54,23 @@ group { name: "elm/genlist/item/default/default";
             min: 0 0;
             text {
                min: 0 1;
-               text_class: "T0211";
+               font: "Tizen:style=Regular"; size: "40"; /*(Changeable UI) text_class: "T0211";*/
+               text_class: "tizen";
                align: 0 0.5;
             }
-            color_class: "T0211";
+            color: 249 249 249 255; /*(Changeable UI) color_class: "T0211";*/
          )
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T0211D";
-            color_class: "T0211D";
+            text.font: "Tizen:style=Regular"; text.size: "40"; /*(Changeable UI) text_class: "T0211D";*/
+            text.text_class: "tizen";
+            color: 249 249 249 102; /*(Changeable UI) color_class: "T0211D";*/
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T0211P";
-            color_class: "T0211P";
+            text.font: "Tizen:style=Regular"; text.size: "40"; /*(Changeable UI) text_class: "T0211P";*/
+            text.text_class: "tizen";
+            color: 249 249 249 255; /*(Changeable UI) color_class: "T0211P";*/
          }
       )
       PART(SWALLOW, "elm.swallow.end",
@@ -86,10 +89,10 @@ group { name: "elm/genlist/item/groupindex/default";
    parts {
       PART(RECT, "bg",
          description { state: "default" 0.0;
-            color_class: "B012";
+            color: 40 68 91 255; /*(Changeable UI) color_class: "B012";*/
          }
          description { state: "selected" 0.0;
-            color_class: "B012P";
+            color: 41 124 160 255; /*(Changeable UI) color_class: "B012P";*/
          }
       )
       PART_LIST_PADDINGS(
@@ -132,6 +135,31 @@ group { name: "elm/genlist/item/groupindex/default";
       )
       PROGRAM_LIST_SELECT(
          target: "bg";
+      )
+   }
+}
+
+group { name: "elm/genlist/item/title/default";
+
+   PROLOG_LIST
+   data.item: "texts" "elm.text";
+
+   parts {
+      PART_LIST_BG
+      PART_LIST_PADDINGS(
+         LIST_PADDING_LEFT_SIZE, LIST_PADDING_RIGHT_SIZE,
+         LIST_TITLE_PADDING_TOP_SIZE, LIST_TITLE_PADDING_BOTTOM_SIZE
+      )
+      PART(RECT, "clipper",
+         DESC_LR("elm.padding.left", "elm.padding.right",
+         )
+      )
+      PART(TEXTBLOCK, "elm.text",
+         clip_to: "clipper";
+         DESC_LRTB("elm.padding.left", "elm.padding.right", "elm.padding.top", "elm.padding.bottom",
+            min: 0 LIST_TEXT_TITLE_HEIGHT;
+            PARAM_TEXT("list_text_title_normal",)
+         )
       )
    }
 }
@@ -200,7 +228,7 @@ group { name: "elm/genlist/item/1text/swipe_right/default";
 group { name: "elm/genlist/item/2text/default";
 
    PROLOG_LIST
-   data.item: "texts" "elm.text.1 elm.text.2 elm.text.noti";
+   data.item: "texts" "elm.text elm.text.1 elm.text.noti";
    data.item: "contents" "elm.swallow.colorbar elm.icon.noti";
 
    parts {
@@ -210,15 +238,15 @@ group { name: "elm/genlist/item/2text/default";
          LIST_2LINE_PADDING_TOP_SIZE, LIST_2LINE_PADDING_BOTTOM_SIZE
       )
       PART_LIST_BOTTOMLINE
-      PART(TEXTBLOCK, "elm.text.1",
-         DESC_LRTB("elm.padding.left", "elm.icon.noti", "elm.padding.top", "elm.text.2",
+      PART(TEXTBLOCK, "elm.text",
+         DESC_LRTB("elm.padding.left", "elm.icon.noti", "elm.padding.top", "elm.text.1",
             fixed: 1 0;
             min: 0 0;
             PARAM_TEXT("list_text_main_normal",)
          ) DESCRIPIONS_TEXT("list_text_main_dim", "list_text_main_press")
       )
       PART(SWALLOW, "elm.icon.noti",
-         DESC_RTB("elm.padding.right", "elm.padding.top", "elm.text.2",
+         DESC_RTB("elm.padding.right", "elm.padding.top", "elm.text.1",
             min: 0 LIST_NOTI_NUMBER_ICON_HEIGHT;
          )
       )
@@ -229,7 +257,7 @@ group { name: "elm/genlist/item/2text/default";
             PARAM_TEXT("list_noti_style", min: 1 1;)
          )
       )
-      PART(TEXTBLOCK, "elm.text.2",
+      PART(TEXTBLOCK, "elm.text.1",
          DESC_LRB("elm.padding.left", "elm.padding.right", "elm.padding.bottom",
             fixed: 1 0;
             min: 0 0;
@@ -237,7 +265,7 @@ group { name: "elm/genlist/item/2text/default";
          ) DESCRIPIONS_TEXT("list_text_sub_dim", "list_text_sub_normal")
       )
    }
-   PROGRAMS_LIST( target: "elm.text.1"; target: "elm.text.2";
+   PROGRAMS_LIST( target: "elm.text"; target: "elm.text.1";
                  target: "elm.text.noti"; target: "elm.icon.noti";)
 }
 
@@ -247,7 +275,7 @@ group { name: "elm/genlist/item/2text/swipe/default";
    SCRIPTS_LIST_SWIPE
    IMAGES_LIST_SWIPE
 
-   data.item: "texts" "elm.text.1 elm.text.2 elm.text.noti elm.text.swipe.left elm.text.swipe.right";
+   data.item: "texts" "elm.text elm.text.1 elm.text.noti elm.text.swipe.left elm.text.swipe.right";
    data.item: "contents" "elm.swallow.colorbar elm.icon.noti elm.icon.swipe.left elm.icon.swipe.right";
 
    parts {
@@ -259,7 +287,7 @@ group { name: "elm/genlist/item/2text/swipe/default";
 group { name: "elm/genlist/item/2text/swipe_left/default";
    inherit: "elm/genlist/item/2text/swipe/default";
 
-   data.item: "texts" "elm.text.1 elm.text.2 elm.text.noti elm.text.swipe.left";
+   data.item: "texts" "elm.text elm.text.1 elm.text.noti elm.text.swipe.left";
    data.item: "contents" "elm.swallow.colorbar elm.icon.noti elm.icon.swipe.left";
 
    parts {
@@ -271,7 +299,7 @@ group { name: "elm/genlist/item/2text/swipe_left/default";
 group { name: "elm/genlist/item/2text/swipe_right/default";
    inherit: "elm/genlist/item/2text/swipe/default";
 
-   data.item: "texts" "elm.text.1 elm.text.2 elm.text.noti elm.text.swipe.right";
+   data.item: "texts" "elm.text elm.text.1 elm.text.noti elm.text.swipe.right";
    data.item: "contents" "elm.swallow.colorbar elm.icon.noti elm.icon.swipe.right";
 
    parts {
@@ -282,7 +310,7 @@ group { name: "elm/genlist/item/2text/swipe_right/default";
 
 group { name: "elm/genlist/item/2text.1/default";
    PROLOG_LIST
-   data.item: "texts" "elm.text.1 elm.text.2";
+   data.item: "texts" "elm.text elm.text.1";
    data.item: "contents" "elm.swallow.colorbar";
 
    parts {
@@ -292,20 +320,20 @@ group { name: "elm/genlist/item/2text.1/default";
          LIST_2LINE_PADDING_TOP_SIZE, LIST_2LINE_PADDING_BOTTOM_SIZE
       )
       PART_LIST_BOTTOMLINE
-      PART(TEXTBLOCK, "elm.text.2",
+      PART(TEXTBLOCK, "elm.text.1",
          DESC_LRT("elm.padding.left", "elm.padding.right", "elm.padding.top",
             min: 0 0;
             PARAM_TEXT("list_text_sub_normal",)
          ) DESCRIPIONS_TEXT("list_text_sub_dim", "list_text_sub_press")
       )
-      PART(TEXTBLOCK, "elm.text.1",
-         DESC_LRTB("elm.padding.left", "elm.padding.right","elm.text.2", "elm.padding.bottom",
+      PART(TEXTBLOCK, "elm.text",
+         DESC_LRTB("elm.padding.left", "elm.padding.right","elm.text.1", "elm.padding.bottom",
             min: 0 0;
             PARAM_TEXT("list_text_main_normal",)
          ) DESCRIPIONS_TEXT("list_text_main_dim", "list_text_main_press")
       )
    }
-   PROGRAMS_LIST( target: "elm.text.1"; target: "elm.text.2"; )
+   PROGRAMS_LIST( target: "elm.text"; target: "elm.text.1"; )
 }
 
 group { name: "elm/genlist/item/2text.1/swipe/default";
@@ -314,7 +342,7 @@ group { name: "elm/genlist/item/2text.1/swipe/default";
    SCRIPTS_LIST_SWIPE
    IMAGES_LIST_SWIPE
 
-   data.item: "texts" "elm.text.1 elm.text.2 elm.text.swipe.left elm.text.swipe.right";
+   data.item: "texts" "elm.text elm.text.1 elm.text.swipe.left elm.text.swipe.right";
    data.item: "contents" "elm.icon.swipe.left elm.icon.swipe.right elm.swallow.colorbar";
 
    parts {
@@ -326,7 +354,7 @@ group { name: "elm/genlist/item/2text.1/swipe/default";
 group { name: "elm/genlist/item/2text.1/swipe_left/default";
    inherit: "elm/genlist/item/2text.1/swipe/default";
 
-   data.item: "texts" "elm.text.1 elm.text.2 elm.text.swipe.left";
+   data.item: "texts" "elm.text elm.text.1 elm.text.swipe.left";
    data.item: "contents" "elm.icon.swipe.left elm.swallow.colorbar";
 
    parts {
@@ -338,13 +366,64 @@ group { name: "elm/genlist/item/2text.1/swipe_left/default";
 group { name: "elm/genlist/item/2text.1/swipe_right/default";
    inherit: "elm/genlist/item/2text.1/swipe/default";
 
-   data.item: "texts" "elm.text.1 elm.text.2 elm.text.swipe.right";
+   data.item: "texts" "elm.text elm.text.1 elm.text.swipe.right";
    data.item: "contents" "elm.icon.swipe.right elm.swallow.colorbar";
 
    parts {
       PARTS_LIST_SWIPE_RIGHT
    }
    PROGRAMS_LIST_SWIPE_RIGHT
+}
+
+group { name: "elm/genlist/item/3text/default";
+
+   PROLOG_LIST
+   data.item: "texts" "elm.text elm.text.1 elm.text.2 elm.text.noti";
+   data.item: "contents" "elm.swallow.colorbar elm.icon.noti";
+
+   parts {
+      PART_LIST_BG
+      PART_LIST_PADDINGS(
+         LIST_PADDING_LEFT_SIZE, LIST_PADDING_RIGHT_SIZE,
+         LIST_3LINE_PADDING_TOP_SIZE, LIST_3LINE_PADDING_BOTTOM_SIZE
+      )
+      PART_LIST_BOTTOMLINE
+      PART(TEXTBLOCK, "elm.text",
+         DESC_LRTB("elm.padding.left", "elm.icon.noti", "elm.padding.top", "elm.text.1",
+            fixed: 1 0;
+            min: 0 0;
+            PARAM_TEXT("list_text_main_normal",)
+         ) DESCRIPIONS_TEXT("list_text_main_dim", "list_text_main_press")
+      )
+      PART(SWALLOW, "elm.icon.noti",
+         DESC_RTB("elm.padding.right", "elm.padding.top", "elm.text.1",
+            min: 0 LIST_NOTI_NUMBER_ICON_HEIGHT;
+         )
+      )
+      PART(TEXTBLOCK, "elm.text.noti",
+         mouse_events: 0;
+         DESC_TO("elm.icon.noti",
+            min: 0 LIST_NOTI_NUMBER_ICON_HEIGHT;
+            PARAM_TEXT("list_noti_style", min: 1 1;)
+         )
+      )
+      PART(TEXTBLOCK, "elm.text.1",
+         DESC_LRB("elm.padding.left", "elm.padding.right", "elm.text.2",
+            fixed: 1 0;
+            min: 0 0;
+            PARAM_TEXT("list_text_sub_normal",)
+         ) DESCRIPIONS_TEXT("list_text_sub_dim", "list_text_sub_normal")
+      )
+      PART(TEXTBLOCK, "elm.text.2",
+         DESC_LRB("elm.padding.left", "elm.padding.right", "elm.padding.bottom",
+            fixed: 1 0;
+            min: 0 0;
+            PARAM_TEXT("list_text_sub_normal",)
+         ) DESCRIPIONS_TEXT("list_text_sub_dim", "list_text_sub_normal")
+      )
+   }
+   PROGRAMS_LIST( target: "elm.text"; target: "elm.text.1";
+                 target: "elm.text.2"; target: "elm.text.noti"; target: "elm.icon.noti";)
 }
 
 group { name: "elm/genlist/item/1icon/default";
@@ -485,7 +564,7 @@ group { name: "elm/genlist/item/1text.1icon.1/default";
 group { name: "elm/genlist/item/1text.1icon.divider/default";
 
    PROLOG_LIST
-   data.item: "texts" "elm.text.1";
+   data.item: "texts" "elm.text";
    data.item: "contents" "elm.swallow.colorbar elm.icon";
 
    parts {
@@ -495,7 +574,7 @@ group { name: "elm/genlist/item/1text.1icon.divider/default";
          LIST_1LINE_PADDING_TOP_SIZE, LIST_1LINE_PADDING_BOTTOM_SIZE
       )
       PART_LIST_BOTTOMLINE
-      PART(TEXTBLOCK, "elm.text.1",
+      PART(TEXTBLOCK, "elm.text",
          DESC_LRTB("elm.padding.left", "elm.padding.divider.left", "elm.padding.top", "elm.padding.bottom",
             PARAM_TEXT("list_text_main_normal",)
          ) DESCRIPIONS_TEXT("list_text_main_dim", "list_text_main_press")
@@ -518,18 +597,18 @@ group { name: "elm/genlist/item/1text.1icon.divider/default";
             align: 0 0.5;
             min: 2 LIST_DIVIDER_HEIGHT;
             max: 2 LIST_DIVIDER_HEIGHT;
-            color_class: "B0221L1";
+            color: 48 48 48 255; /*(Changeable UI) color_class: "B0221L1";*/
          )
       )
    }
-   PROGRAMS_LIST( target: "elm.text.1";
+   PROGRAMS_LIST( target: "elm.text";
       target: "elm.icon"; )
 }
 
 group { name: "elm/genlist/item/1text.1icon.divider/sweep/default";
    inherit: "elm/genlist/item/1text.1icon.divider/default";
 
-   data.item: "texts" "elm.text.1 elm.text.sweep";
+   data.item: "texts" "elm.text elm.text.sweep";
    data.item: "contents" "elm.icon elm.icon.sweep";
    SCRIPTS_LIST_SWEEP
 
@@ -544,7 +623,7 @@ group { name: "elm/genlist/item/1text.1icon.divider/sweep/default";
 group { name: "elm/genlist/item/2text.1icon/default";
 
    PROLOG_LIST
-   data.item: "texts" "elm.text.1 elm.text.2";
+   data.item: "texts" "elm.text elm.text.1";
    data.item: "contents" "elm.icon";
 
    parts {
@@ -561,20 +640,20 @@ group { name: "elm/genlist/item/2text.1icon/default";
       PART(SPACER, "elm.padding.icon.right",
          DESC_L("elm.icon", min: LIST_PADDING_DEFAULT_SIZE 0; max: LIST_PADDING_DEFAULT_SIZE -1; )
       )
-      PART(TEXTBLOCK, "elm.text.1",
-         DESC_LRTB("elm.padding.icon.right", "elm.padding.right", "elm.padding.top", "elm.text.2",
+      PART(TEXTBLOCK, "elm.text",
+         DESC_LRTB("elm.padding.icon.right", "elm.padding.right", "elm.padding.top", "elm.text.1",
             min: 0 0;
             PARAM_TEXT("list_text_main_normal",)
          ) DESCRIPIONS_TEXT("list_text_main_dim", "list_text_main_press")
       )
-      PART(TEXTBLOCK, "elm.text.2",
+      PART(TEXTBLOCK, "elm.text.1",
          DESC_LRB( "elm.padding.icon.right", "elm.padding.right", "elm.padding.bottom",
             min: 0 0;
             PARAM_TEXT("list_text_sub_normal",)
          ) DESCRIPIONS_TEXT("list_text_sub_dim", "list_text_sub_press")
       )
    }
-   PROGRAMS_LIST( target: "elm.text.1"; target: "elm.text.2";
+   PROGRAMS_LIST( target: "elm.text"; target: "elm.text.1";
       target: "elm.icon"; )
 }
 
@@ -584,7 +663,7 @@ group { name: "elm/genlist/item/2text.1icon/swipe/default";
    SCRIPTS_LIST_SWIPE
    IMAGES_LIST_SWIPE
 
-   data.item: "texts" "elm.text.1 elm.text.2 elm.text.swipe.left elm.text.swipe.right";
+   data.item: "texts" "elm.text elm.text.1 elm.text.swipe.left elm.text.swipe.right";
    data.item: "contents" "elm.icon elm.icon.swipe.left elm.icon.swipe.right";
 
    parts {
@@ -596,7 +675,7 @@ group { name: "elm/genlist/item/2text.1icon/swipe/default";
 group { name: "elm/genlist/item/2text.1icon/swipe_left/default";
    inherit: "elm/genlist/item/2text.1icon/swipe/default";
 
-   data.item: "texts" "elm.text.1 elm.text.2 elm.text.swipe.left";
+   data.item: "texts" "elm.text elm.text.1 elm.text.swipe.left";
    data.item: "contents" "elm.icon elm.icon.swipe.left";
 
    parts {
@@ -608,7 +687,7 @@ group { name: "elm/genlist/item/2text.1icon/swipe_left/default";
 group { name: "elm/genlist/item/2text.1icon/swipe_right/default";
    inherit: "elm/genlist/item/2text.1icon/swipe/default";
 
-   data.item: "texts" "elm.text.1 elm.text.2 elm.text.swipe.right";
+   data.item: "texts" "elm.text elm.text.1 elm.text.swipe.right";
    data.item: "contents" "elm.icon elm.icon.swipe.right";
 
    parts {
@@ -620,7 +699,7 @@ group { name: "elm/genlist/item/2text.1icon/swipe_right/default";
 group { name: "elm/genlist/item/2text.1icon.1/default";
 
    PROLOG_LIST
-   data.item: "texts" "elm.text.1 elm.text.2";
+   data.item: "texts" "elm.text elm.text.1";
    data.item: "contents" "elm.swallow.colorbar elm.icon";
 
    parts {
@@ -630,14 +709,14 @@ group { name: "elm/genlist/item/2text.1icon.1/default";
          LIST_2LINE_PADDING_TOP_SIZE, LIST_2LINE_PADDING_BOTTOM_SIZE
       )
       PART_LIST_BOTTOMLINE
-      PART(TEXTBLOCK, "elm.text.1",
-         DESC_LRTB("elm.padding.left", "elm.padding.icon.left", "elm.padding.top", "elm.text.2",
+      PART(TEXTBLOCK, "elm.text",
+         DESC_LRTB("elm.padding.left", "elm.padding.icon.left", "elm.padding.top", "elm.text.1",
             min: 0 0;
             fixed: 1 0;
             PARAM_TEXT("list_text_main_normal",)
          ) DESCRIPIONS_TEXT("list_text_main_dim", "list_text_main_press")
       )
-      PART(TEXTBLOCK, "elm.text.2",
+      PART(TEXTBLOCK, "elm.text.1",
          DESC_LRB("elm.padding.left", "elm.padding.icon.left", "elm.padding.bottom",
             min: 0 0;
             fixed: 1 0;
@@ -654,14 +733,14 @@ group { name: "elm/genlist/item/2text.1icon.1/default";
          )
       )
    }
-   PROGRAMS_LIST( target: "elm.text.1"; target: "elm.text.2";
+   PROGRAMS_LIST( target: "elm.text"; target: "elm.text.1";
       target: "elm.icon"; )
 }
 
 group { name: "elm/genlist/item/2text.1icon.divider/default";
 
    PROLOG_LIST
-   data.item: "texts" "elm.text.1 elm.text.2";
+   data.item: "texts" "elm.text elm.text.1";
    data.item: "contents" "elm.swallow.colorbar elm.icon";
 
    parts {
@@ -671,13 +750,13 @@ group { name: "elm/genlist/item/2text.1icon.divider/default";
          LIST_2LINE_PADDING_TOP_SIZE, LIST_2LINE_PADDING_BOTTOM_SIZE
       )
       PART_LIST_BOTTOMLINE
-      PART(TEXTBLOCK, "elm.text.1",
-         DESC_LRTB("elm.padding.left", "elm.padding.divider.left", "elm.padding.top", "elm.text.2",
+      PART(TEXTBLOCK, "elm.text",
+         DESC_LRTB("elm.padding.left", "elm.padding.divider.left", "elm.padding.top", "elm.text.1",
             min: 0 0;
             PARAM_TEXT("list_text_main_normal",)
          ) DESCRIPIONS_TEXT("list_text_main_dim", "list_text_main_press")
       )
-      PART(TEXTBLOCK, "elm.text.2",
+      PART(TEXTBLOCK, "elm.text.1",
          DESC_LRB("elm.padding.left", "elm.padding.divider.left", "elm.padding.bottom",
             min: 0 0;
             PARAM_TEXT("list_text_sub_normal",)
@@ -701,18 +780,18 @@ group { name: "elm/genlist/item/2text.1icon.divider/default";
             align: 0 0.5;
             min: 2 LIST_DIVIDER_HEIGHT;
             max: 2 LIST_DIVIDER_HEIGHT;
-            color_class: "B0221L1";
+            color: 48 48 48 255; /*(Changeable UI) color_class: "B0221L1";*/
          )
       )
    }
-   PROGRAMS_LIST( target: "elm.text.1"; target: "elm.text.2";
+   PROGRAMS_LIST( target: "elm.text"; target: "elm.text.1";
       target: "elm.icon"; )
 }
 
 group { name: "elm/genlist/item/multiline/2text/default";
 
    PROLOG_LIST
-   data.item: "texts" "elm.text.1 elm.text.2";
+   data.item: "texts" "elm.text elm.text.1";
 
    parts {
       PART_LIST_BG
@@ -722,18 +801,18 @@ group { name: "elm/genlist/item/multiline/2text/default";
       )
       PART_LIST_BOTTOMLINE
 
-      PART(TEXTBLOCK, "elm.text.1",
+      PART(TEXTBLOCK, "elm.text",
          DESC_LRT("elm.padding.left", "elm.padding.right", "elm.padding.top",
             min: 0 0;
             PARAM_TEXT("list_text_main_normal",)
          ) DESCRIPIONS_TEXT("list_text_main_dim", "list_text_main_press")
       )
       PART(SPACER, "elm.padding.text1.bottom",
-         DESC_T("elm.text.1",
+         DESC_T("elm.text",
             min: 0 4;  max: -1 4;
          )
        )
-      PART(TEXTBLOCK, "elm.text.2",
+      PART(TEXTBLOCK, "elm.text.1",
          DESC_LRTB("elm.padding.left", "elm.padding.right", "elm.padding.text1.bottom", "elm.padding.bottom",
             min: 0 0;
             PARAM_TEXT("list_text_sub_multiline_normal",)
@@ -741,7 +820,7 @@ group { name: "elm/genlist/item/multiline/2text/default";
          DESCRIPIONS_TEXT("list_text_sub_multiline_dim", "list_text_sub_multiline_selected")
       )
    }
-   PROGRAMS_LIST( target: "elm.text.1"; target: "elm.text.2"; )
+   PROGRAMS_LIST( target: "elm.text"; target: "elm.text.1"; )
 }
 
 group { name: "elm/genlist/item/multiline/1text/default";
