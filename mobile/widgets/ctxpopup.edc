@@ -1227,14 +1227,34 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_WIDTH_INC CTXPOPUP_ITEM_HEIGHT_MAX_INC;
+            min: (CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC*2) CTXPOPUP_ITEM_HEIGHT_MAX_INC;
             max: CTXPOPUP_WIDTH_INC (CTXPOPUP_ITEM_HEIGHT_MAX_INC-CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC*2);
+            rel1 {to_y: "separator"; relative: 0.0 1.0;}
             color: 255 255 255 255;
          }
          description {
             state: "clicked" 0.0;
             inherit: "default" 0.0;
             color: 61 185 204 77;
+         }
+      }
+      part {
+         name: "separator";
+         mouse_events: 0;
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 61 185 204 77;
+            rel2.relative: 1.0 0.0;
+            min: 0 2;
+            align: 0.5 0.0;
+            visible: 0;
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
       part {
@@ -1245,8 +1265,6 @@ group {
             state: "default" 0.0;
             min: CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC 1;
             max: CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC 1;
-            rel1.to: "bg";
-            rel2.to: "bg";
             align: 0 0.5;
             fixed: 1 1;
          }
@@ -1273,7 +1291,6 @@ group {
             text {
                font: "Tizen:style=Regular"; size: "27";
                text_class: "tizen";
-               size_range: CTXPOPUP_ITEM_TEXT_SIZE_INC CTXPOPUP_ITEM_TEXT_MAX_SIZE_INC;
                align: 0 0.5;
                min: 1 1;
             }
@@ -1322,7 +1339,7 @@ group {
             min: CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC 1;
             max: CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC 1;
             fixed: 1 1;
-            align: 1.0 1.0;
+            align: 1.0 0.5;
          }
       }
       part {
@@ -1346,19 +1363,6 @@ group {
             state: "disabled" 0.0;
             visible: 1;
             color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "bottom_line";
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            min: 1 2;
-            max: -1 2;
-            fixed: 0 1;
-            align: 0.5 1.0;
-            color: 61 185 204 77;
-            rel1.relative: 0.0 1.0;
          }
       }
    }
@@ -1390,6 +1394,20 @@ group {
             else
               set_state(PART:"elm.text", "ellipsis", 0.0);
          }
+      }
+      program {
+         name: "hide_separator";
+         signal: "elm,state,default";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "separator";
+      }
+      program {
+         name: "show_separator";
+         signal: "elm,state,separator";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         target: "separator";
       }
       program {
          name: "item_clicked";
@@ -2300,8 +2318,8 @@ group {
          type: SPACER;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_ITEM_ICON_RIGHT_PADDING_INC 10;
-            max: CTXPOPUP_ITEM_ICON_RIGHT_PADDING_INC 10;
+            min: CTXPOPUP_ITEM_ICON_RIGHT_PADDING_INC 1;
+            max: CTXPOPUP_ITEM_ICON_RIGHT_PADDING_INC 1;
             align: 0.0 0.5;
             rel1 { relative: 1.0 0.0; to_x:"elm.swallow.icon"; }
             rel2 { relative: 1.0 1.0; to_x:"elm.swallow.icon"; }
