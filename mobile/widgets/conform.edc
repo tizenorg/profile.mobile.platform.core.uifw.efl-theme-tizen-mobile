@@ -60,7 +60,7 @@ group { name: "elm/conformant/base/default";
             rel1 { relative: 0.0 0.0; to: "indicator_base"; }
             rel2 { relative: 1.0 1.0; to: "indicator_base"; }
          }
-         //just in case: transparent/hide
+         //just in case: hide
          description { state: "hide" 0.0;
             inherit: "default" 0.0;
             rel1 { relative: 0.0 -1.0; to: "indicator_base"; }
@@ -120,6 +120,12 @@ group { name: "elm/conformant/base/default";
          }
          description { state: "transparent" 0.0;
             inherit: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "translucent" 0.0;
+            rel1.relative: 0 0;
+            rel2.relative: 1 0;
+            fixed: 0 1;
             visible: 0;
          }
       }
@@ -195,19 +201,13 @@ group { name: "elm/conformant/base/default";
           source: "elm";
           script {
              set_int(indicator_visible, 1);
-             set_state(PART:"indicator_base", "default", 0.0);
              //Portrait
              if (get_int(landscape_mode) == 0) {
-               if (get_int(indicator_opacity_mode) == 0)
-                 run_program(PROGRAM:"opaque_state");
-               else if (get_int(indicator_opacity_mode) == 1)
-                 run_program(PROGRAM:"transparent_state");
-               else
-                 run_program(PROGRAM:"translucent_state");
+                set_state(PART:"indicator_adapter", "default", 0.0);
              }
              //Landscape
              else
-               run_program(PROGRAM:"transparent_state");
+                set_state(PART:"indicator_adapter", "hide", 0.0);
           }
       }
       program { name: "hide_indicator";
@@ -246,10 +246,6 @@ group { name: "elm/conformant/base/default";
       }
       program { name: "opaque_state";
           script {
-            if (get_int(landscape_mode) == 1)
-              set_state(PART:"indicator_adapter", "hide", 0.0);
-            else
-              set_state(PART:"indicator_adapter", "default", 0.0);
             set_state(PART:"indicator_bg", "default", 0.0);
             set_state(PART:"elm.swallow.indicator_bg", "default", 0.0);
           }
@@ -262,11 +258,8 @@ group { name: "elm/conformant/base/default";
       }
       program { name: "translucent_state";
          script {
-            if (get_int(landscape_mode) == 1)
-              set_state(PART:"indicator_adapter", "hide", 0.0);
-            else
-              set_state(PART:"indicator_adapter", "default", 0.0);
             set_state(PART:"indicator_bg", "translucent", 0.0);
+            set_state(PART:"elm.swallow.indicator_bg", "translucent", 0.0);
          }
       }
       program { name: "opaque_indicator";
@@ -274,9 +267,7 @@ group { name: "elm/conformant/base/default";
           source: "elm";
           script {
             set_int(indicator_opacity_mode, 0);
-            if ((get_int(indicator_visible) == 1) &&
-                (get_int(landscape_mode) == 0))
-              run_program(PROGRAM:"opaque_state");
+            run_program(PROGRAM:"opaque_state");
           }
       }
       program { name: "transparent_indicator";
@@ -284,8 +275,7 @@ group { name: "elm/conformant/base/default";
           source: "elm";
           script {
              set_int(indicator_opacity_mode, 1);
-             if (get_int(indicator_visible) == 1)
-               run_program(PROGRAM:"transparent_state");
+             run_program(PROGRAM:"transparent_state");
           }
       }
       program { name: "translucent_indicator";
@@ -293,8 +283,7 @@ group { name: "elm/conformant/base/default";
           source: "elm";
           script {
              set_int(indicator_opacity_mode, 2);
-             if (get_int(indicator_visible) == 1)
-               run_program(PROGRAM:"translucent_state");
+             run_program(PROGRAM:"translucent_state");
           }
       }
       program { name: "show_full_attach_panel";
@@ -404,20 +393,14 @@ group { name: "elm/conformant/base/default";
       program { name: "change_to_landscape";
           script {
              set_int(landscape_mode, 1);
-             if (get_int(indicator_visible) == 1)
-               run_program(PROGRAM:"transparent_state");
+             set_state(PART:"indicator_adapter", "hide", 0.0);
           }
       }
       program { name: "change_to_portrait";
          script {
             set_int(landscape_mode, 0);
             if (get_int(indicator_visible) == 1) {
-               if (get_int(indicator_opacity_mode) == 0)
-                 run_program(PROGRAM:"opaque_state");
-               else if (get_int(indicator_opacity_mode) == 1)
-                 run_program(PROGRAM:"transparent_state");
-               else
-                 run_program(PROGRAM:"translucent_state");
+                set_state(PART:"indicator_adapter", "default", 0.0);
             }
          }
       }
