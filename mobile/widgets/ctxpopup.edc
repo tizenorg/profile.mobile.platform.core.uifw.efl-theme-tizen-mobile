@@ -29,7 +29,6 @@ group {
    alias: "elm/ctxpopup/layout/copypaste";
 
    data.item: "visible_maxw" CTXPOPUP_WIDTH_INC;
-   data.item: "visible_maxh" (CTXPOPUP_ITEM_HEIGHT_MIN_INC*6);
    parts {
       part {
          name:"top_padding";
@@ -357,7 +356,6 @@ group {
    inherit: "elm/ctxpopup/layout/default";
 
    data.item: "visible_maxw" CTXPOPUP_WIDTH_INC;
-   data.item: "visible_maxh" (CTXPOPUP_ITEM_HEIGHT_MIN_INC*4);
 }
 ///////////////////////////////////////////////////////////////////////////////
 group {
@@ -1822,32 +1820,29 @@ group {
 
    parts {
       part {
-         name: "bg";
-         scale: 1;
-         mouse_events: 0;
+         name: "event_blocker";
          type: RECT;
+         mouse_events: 1;
          description {
             state: "default" 0.0;
-            visible: 0;
-            min: (CTXPOPUP_ITEM_ICON_HORIZONTAL_WIDTH_INC-1) CTXPOPUP_ITEM_HORIZONTAL_HEIGHT_INC;
-            rel1 {to: "separator"; relative: 1.0 0.0;}
+            color: 0 0 0 0;
+         }
+      }
+      part {
+         name: "bg";
+         mouse_events: 0;
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: (CTXPOPUP_ITEM_ICON_STYLE_LR_PADDING_INC*2+CTXPOPUP_ICON_WIDTH_INC) CTXPOPUP_ITEM_HEIGHT_MAX_INC;
+            rel1 {to_y: "separator"; relative: 0.0 1.0;}
+            color: 255 255 255 255;
          }
          description {
             state: "clicked" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
-            color: 2 61 132 76; /*(Changeable UI) color_class: "B066P";*/
-         }
-      }
-      part {
-         name: "top_padding";
-         type: SPACER;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: 0 CTXPOPUP_ITEM_TEXT_TOP_PADDING_INC;
-            max: 0 CTXPOPUP_ITEM_TEXT_TOP_PADDING_INC;
-            align: 0.5 0.0;
+            color: 61 185 204 77;
          }
       }
       part {
@@ -1857,18 +1852,28 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            color: 7 7 7 51; /*(Changeable UI) color_class: "B069";*/
-            align: 0 0.5;
-            min: 0 0;
-            max: 0 -1;
+            color: 61 185 204 77;
+            rel2.relative: 1.0 0.0;
+            min: 0 2;
+            align: 0.5 0.0;
             visible: 0;
          }
          description {
             state: "visible" 0.0;
             inherit: "default" 0.0;
-            min: CTXPOPUP_SEPARATOR_MIN_SIZE_INC;
-            max: CTXPOPUP_SEPARATOR_MAX_SIZE_INC;
             visible: 1;
+         }
+      }
+      part {
+         name: "left_padding";
+         type: SPACER;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: CTXPOPUP_ITEM_ICON_STYLE_LR_PADDING_INC 1;
+            max: CTXPOPUP_ITEM_ICON_STYLE_LR_PADDING_INC 1;
+            align: 0 0.5;
+            fixed: 1 1;
          }
       }
       part {
@@ -1880,9 +1885,10 @@ group {
             state: "default" 0.0;
             min: CTXPOPUP_ICON_WIDTH_INC CTXPOPUP_ICON_HEIGHT_INC;
             max: CTXPOPUP_ICON_WIDTH_INC CTXPOPUP_ICON_HEIGHT_INC;
+            fixed: 1 1;
             aspect: 1.0 1.0;
-            rel1 { relative: 1 1; to: "top_padding"; }
-            rel2 { relative: 0 0; to: "bottom_padding"; }
+            rel1 { relative: 1.0 0.0; to_x:"left_padding"; }
+            rel2 { relative: 0.0 1.0; to_x:"right_padding"; }
          }
       }
       part {
@@ -1893,18 +1899,19 @@ group {
             state: "default" 0.0;
             rel1.to: "elm.swallow.icon";
             rel2.to: "elm.swallow.icon";
-            color: 7 7 7 204; /*(Changeable UI) color_class: "B068";*/
+            color: 51 51 51 255;
          }
       }
       part {
-         name: "bottom_padding";
+         name: "right_padding";
          type: SPACER;
          scale: 1;
          description {
             state: "default" 0.0;
-            min: 0 CTXPOPUP_ITEM_BOTTOM_PADDING_INC;
-            max: 0 CTXPOPUP_ITEM_BOTTOM_PADDING_INC;
-            align: 0.5 1.0;
+            min: CTXPOPUP_ITEM_ICON_STYLE_LR_PADDING_INC 1;
+            max: CTXPOPUP_ITEM_ICON_STYLE_LR_PADDING_INC 1;
+            fixed: 1 1;
+            align: 1.0 0.5;
          }
       }
       part {
@@ -1927,20 +1934,7 @@ group {
          description {
             state: "disabled" 0.0;
             visible: 1;
-            color: CTXPOPUP_ITEM_DISABLED_COLOR;
-         }
-      }
-      part {
-         name: "bottom_line";
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            min: 1 1;
-            max: -1 1;
-            fixed: 0 1;
-            align: 0.5 1.0;
-            color: 192 213 222 255;
-            rel1.relative: 0.0 1.0;
+            color: 0 0 0 0;
          }
       }
    }
@@ -1960,18 +1954,17 @@ group {
          target: "separator";
       }
       program {
-         name: "item_click";
+         name: "item_clicked";
          signal: "mouse,clicked,1";
          source: "events";
          script {
             if (get_int(multi_down) == 0) {
                emit("elm,action,click", "");
-               run_program(PROGRAM:"touch_snd");
+               run_program(PROGRAM:"touch_sound");
             }
          }
       }
-      program {
-         name: "touch_snd";
+      program { name: "touch_sound";
          action: RUN_PLUGIN "touch_sound";
       }
       program {
