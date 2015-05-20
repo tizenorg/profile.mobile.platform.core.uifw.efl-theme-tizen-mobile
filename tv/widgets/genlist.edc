@@ -24,109 +24,119 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
-*********************** WARNING *********************
-
-* STYLES IN THIS FILE ARE SUPPORTED ONLY IN TIZEN 2.3.
-* THESE STYLES WILL BE DEPRECATED IN THE NEXT RELEASE.
-* WE ARE NOT RESPONSIBLE FOR ANY USE OF THESE STYLES
-* IN OTHER THAN TIZEN 2.3.
-
-*****************************************************
-*/
-
 #include "genlist_macro.edc"
 
 // elm_list default style
 // ------------------------------------------------
 // | elm.swallow.icon | elm.text | elm.swallow.end |
 // ------------------------------------------------
-group { name: "elm/genlist/item/default/default";
-   alias: "elm/list/item/default";
-   alias: "elm/list/item_odd/default";
-   alias: "elm/list/item_compress/default";
-   alias: "elm/list/item_compress_odd/default";
-   alias: "elm/genlist/item_compress/default";
-   alias: "elm/genlist/item/default_style/default";
-   alias: "elm/genlist/item_compress/default_style";
+group { name: "elm/genlist/item/type1/default";
+   alias: "elm/genlist/item_compress/type1/default";
 
-   data.item: "treesize" GENLIST_TREESIZE_DEFAULT;
-   data.item: "texts" "elm.text";
+   data.item: "texts" "elm.text elm.text.end elm.text.sub elm.text.sub.end";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";
+
+   script {
+      public main_end_text_visible = 0;
+      public sub_end_text_visible = 0;
+      public end_icon_visible = 0;
+   }
 
    parts {
       LIST_PART_BG_NOCLASS
-      PART(SWALLOW, "elm.swallow.pad",
-         DSC_FROM_L("default" 0.0, );
-         mouse_events: 0;
-      )
-      PART(SPACER, "elm.padding.top",
-         DSC_FROM_T("default" 0.0,
-            min: 0 LIST_PADDING_TOP_SIZE;
-            max: -1 LIST_PADDING_TOP_SIZE;
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: LIST_ITEM_LR_PADDING_INC LIST_ITEM_WITH_1LINE_HEIGHT_INC;
+            max: LIST_ITEM_LR_PADDING_INC LIST_ITEM_WITH_1LINE_HEIGHT_INC;
+         )
+         DSC_FROM_L("subtext_visible",
+            inherit: "default" 0.0;
+            min: LIST_ITEM_LR_PADDING_INC LIST_ITEM_WITH_2LINE_HEIGHT_INC;
+            max: LIST_ITEM_LR_PADDING_INC LIST_ITEM_WITH_2LINE_HEIGHT_INC;
          )
       )
-      PART(SPACER, "elm.padding.bottom",
-         DSC_FROM_B("default" 0.0,
-            min: 0 LIST_PADDING_BOTTOM_SIZE;
-            max: -1 LIST_PADDING_BOTTOM_SIZE;
-         )
-      )
-      PART(SWALLOW, "elm.padding.left",
-         DSC_L("default" 0.0,
-            "elm.swallow.pad",
-            min: LIST_LEFT_PADDING_SIZE 0;
-            max: LIST_LEFT_PADDING_SIZE -1;
-         )
-      )
-      PART(SWALLOW, "elm.padding.right",
+      PART(SPACER, "elm.padding.right",
          DSC_FROM_R("default" 0.0,
-            min: LIST_RIGHT_PADDING_SIZE 0;
-            max: LIST_RIGHT_PADDING_SIZE -1;
+            min: LIST_ITEM_LR_PADDING_INC LIST_ITEM_WITH_1LINE_HEIGHT_INC;
+            max: LIST_ITEM_LR_PADDING_INC LIST_ITEM_WITH_1LINE_HEIGHT_INC;
          )
+         DSC_FROM_R("subtext_visible",
+            inherit: "default" 0.0;
+            min: LIST_ITEM_LR_PADDING_INC LIST_ITEM_WITH_2LINE_HEIGHT_INC;
+            max: LIST_ITEM_LR_PADDING_INC LIST_ITEM_WITH_2LINE_HEIGHT_INC;
+         )
+      )
+      PART(SPACER, "content_bg",
+         DSC_LR("default" 0.0, "elm.padding.left", "elm.padding.right",
+            min: 0 LIST_ITEM_MAIN_LINE_HEIGHT_INC;
+            max: -1 LIST_ITEM_MAIN_LINE_HEIGHT_INC;
+         )
+         DSC_LR("subtext_visible" 0.0, "elm.padding.left", "elm.padding.right",
+            min: 0 (LIST_ITEM_MAIN_LINE_HEIGHT_INC+LIST_ITEM_SUB_LINE_HEIGHT_INC);
+            max: -1 (LIST_ITEM_MAIN_LINE_HEIGHT_INC+LIST_ITEM_SUB_LINE_HEIGHT_INC);
+         )
+      )
+      PART(SPACER, "sub_content_bg",
+         description { state: "default" 0.0;
+            min: 0 0;
+            align: 0.0 0.0;
+            rel1 { to: "main_content_bg"; relative: 0.0 1.0; }
+            rel2 { to: "main_content_bg"; relative: 1.0 1.0; }
+         }
+         description { state: "subtext_visible" 0.0;
+            inherit: "default" 0.0;
+            min: 0 LIST_ITEM_SUB_LINE_HEIGHT_INC;
+         }
+      )
+      PART(SPACER, "main_content_bg",
+         description { state: "default" 0.0;
+            min: 0 LIST_ITEM_MAIN_LINE_HEIGHT_INC;
+            fixed: 0 1;
+            align: 0.0 0.0;
+            rel1 { to: "content_bg"; relative: 0.0 0.0; }
+            rel2 { to: "content_bg"; relative: 1.0 0.0; }
+         }
       )
       PART(SWALLOW, "elm.swallow.icon",
-         DSC_L("default" 0.0,
-            "elm.padding.left",
-         )
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1 { to: "main_content_bg"; relative: 0.0 0.0; }
+            rel2 { to: "main_content_bg"; relative: 0.0 1.0; }
+         }
       )
       PART(SWALLOW, "elm.swallow.end",
-         DSC_R("default" 0.0,
-            "elm.padding.right",
-         )
-      )
-      PART(SPACER, "elm.padding.center.left",
-         DSC_L("default" 0.0,
-            "elm.swallow.icon",
-            min: 0 -0;
-            max: 0 -1;
-         )
-         description { state: "enabled" 0.0;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            rel1 { to: "content_bg"; relative: 1.0 0.0; }
+            rel2 { to: "content_bg"; relative: 1.0 1.0; }
+         }
+         description { state: "end_text_visible" 0.0;
             inherit: "default" 0.0;
-            min: LIST_PADDING_CENTER_LEFT_SIZE -0;
-            max: LIST_PADDING_CENTER_LEFT_SIZE -1;
+            rel1 { to: "main_content_bg"; relative: 1.0 0.0; }
+            rel2 { to: "main_content_bg"; relative: 1.0 1.0; }
          }
       )
-      PART(SPACER, "elm.padding.center.right",
-         DSC_R("default" 0.0,
-            "elm.swallow.end",
-            min: 0 0;
-            max: 0 -1;
-         )
-         description { state: "enabled" 0.0;
+      PART(SPACER, "main_icon_text_padding",
+         description { state: "default" 0.0;
+            min: 0 LIST_ITEM_MAIN_LINE_HEIGHT_INC;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            rel1 { to: "elm.swallow.icon"; relative: 1.0 0.0; }
+            rel2 { to: "elm.swallow.icon"; relative: 1.0 1.0; }
+         }
+         description { state: "icon_visible" 0.0;
             inherit: "default" 0.0;
-            min: LIST_PADDING_CENTER_RIGHT_SIZE 0;
-            max: LIST_PADDING_CENTER_RIGHT_SIZE -1;
+            min: LIST_ITEM_MAIN_LINE_ICON_TEXT_PADDING_WIDTH_INC LIST_ITEM_MAIN_LINE_HEIGHT_INC;
          }
       )
-      PART(TEXTBLOCK, "elm.text",
-         DSC_LRTB("default" 0.0,
-            "elm.padding.center.left", "elm.padding.center.right", "elm.padding.top", "elm.padding.bottom",
-            min: 0 LIST_TEXT_MAIN_HEIGHT;
-            text.min: 0 1;
+      PART (TEXTBLOCK, "elm.text",
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1 { to_x: "main_icon_text_padding"; to_y: "main_content_bg"; relative: 1.0 0.0; }
+            rel2 { to_x: "main_end_text_bg"; to_y: "main_content_bg"; relative: 0.0 1.0; }
             text.style: "list_text_main";
-            fixed: 1 0;;
-         )
+         }
          description { state: "pressed" 0.0;
             inherit: "default" 0.0;
             text.style: "list_text_main_press";
@@ -134,6 +144,324 @@ group { name: "elm/genlist/item/default/default";
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
             text.style: "list_text_main_dim";
+         }
+      )
+      PART (SPACER, "main_end_text_bg",
+         description { state: "default" 0.0;
+            min: 0 LIST_ITEM_MAIN_LINE_HEIGHT_INC;
+            align: 1.0 0.5;
+            rel1 { to: "main_content_bg"; relative: 1.0 0.0; }
+            rel2 { to: "main_content_bg"; relative: 1.0 1.0; }
+         }
+         description { state: "end_icon_visible" 0.0;
+            inherit: "default" 0.0;
+            min: LIST_ITEM_END_ICON_BG_WIDTH_INC LIST_ITEM_MAIN_LINE_HEIGHT_INC;
+         }
+         description { state: "end_text_visible" 0.0;
+            inherit: "default" 0.0;
+            min: LIST_ITEM_END_TEXT_BG_WIDTH_INC LIST_ITEM_MAIN_LINE_HEIGHT_INC;
+         }
+      )
+      part { name: "elm.text.end";
+         type: TEXTBLOCK;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: LIST_ITEM_END_TEXT_WIDTH_INC 0;
+            max: LIST_ITEM_END_TEXT_WIDTH_INC -1;
+            align: 1.0 0.5;
+            rel1.to: "main_end_text_bg";
+            rel2.to: "main_end_text_bg";
+            text.style: "list_text_sub_01";
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_sub_01_press";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_sub_01_dim";
+         }
+      }
+      part { name: "elm.text.sub";
+         type: TEXTBLOCK;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1.to: "sub_content_bg";
+            rel2 { to_x: "sub_end_text_bg"; to_y: "sub_content_bg"; relative: 0.0 1.0; }
+            text.style: "list_text_sub_01";
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_sub_01_press";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_sub_01_dim";
+         }
+      }
+      PART (SPACER, "sub_end_text_bg",
+         description { state: "default" 0.0;
+            min: 0 LIST_ITEM_SUB_LINE_HEIGHT_INC;
+            align: 1.0 0.5;
+            rel1 { to: "sub_content_bg"; relative: 1.0 0.0; }
+            rel2 { to: "sub_content_bg"; relative: 1.0 1.0; }
+         }
+         description { state: "end_icon_visible" 0.0;
+            inherit: "default" 0.0;
+            min: LIST_ITEM_END_ICON_BG_WIDTH_INC LIST_ITEM_SUB_LINE_HEIGHT_INC;
+         }
+         description { state: "end_text_visible" 0.0;
+            inherit: "default" 0.0;
+            min: LIST_ITEM_END_TEXT_BG_WIDTH_INC LIST_ITEM_SUB_LINE_HEIGHT_INC;
+         }
+      )
+      part { name: "elm.text.sub.end";
+         type: TEXTBLOCK;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: LIST_ITEM_END_TEXT_WIDTH_INC 0;
+            max: LIST_ITEM_END_TEXT_WIDTH_INC -1;
+            align: 1.0 0.5;
+            rel1.to: "sub_end_text_bg";
+            rel2.to: "sub_end_text_bg";
+            text.style: "list_text_sub_01";
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_sub_01_press";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_sub_01_dim";
+         }
+      }
+      PART(RECT, "elm.bottomline",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_BOTTOMLINE_HEIGHT;
+            max: -1  LIST_BOTTOMLINE_HEIGHT;
+            color: 192 213 222 255;
+         )
+      )
+   }
+   LIST_PROGRAMS( target: "elm.text"; )
+   programs {
+      program { name: "subtext_visible";
+         signal: "elm,state,elm.text.sub,visible";
+         source: "elm";
+         action: STATE_SET "subtext_visible" 0.0;
+         target: "elm.padding.left";
+         target: "elm.padding.right";
+         target: "content_bg";
+         target: "sub_content_bg";
+      }
+      program { name: "icon_visible";
+         signal: "elm,state,elm.swallow.icon,visible";
+         source: "elm";
+         action: STATE_SET "icon_visible" 0.0;
+         target: "main_icon_text_padding";
+      }
+      program { name: "end_icon_visible";
+         signal: "elm,state,elm.swallow.end,visible";
+         source: "elm";
+         script {
+            if (get_int(sub_end_text_visible) == 0) {
+               set_state(PART:"main_end_text_bg", "end_icon_visible", 0.0);
+               set_state(PART:"sub_end_text_bg", "end_icon_visible", 0.0);
+               set_state(PART:"elm.swallow.end", "default", 0.0);
+            }
+            else
+               set_state(PART:"main_end_text_bg", "end_text_visible", 0.0);
+            set_int(end_icon_visible, 1);
+         }
+      }
+      program { name: "main_end_text_visible";
+         signal: "elm,state,elm.text.end,visible";
+         source: "elm";
+         script {
+            set_state(PART:"main_end_text_bg", "end_text_visible", 0.0);
+            set_int(main_end_text_visible, 1);
+         }
+      }
+      program { name: "sub_end_text_visible";
+         signal: "elm,state,elm.text.sub.end,visible";
+         source: "elm";
+         script {
+            if (get_int(end_icon_visible)) {
+               set_state(PART:"main_end_text_bg", "end_text_visible", 0.0);
+            }
+            set_state(PART:"sub_end_text_bg", "end_text_visible", 0.0);
+            set_state(PART:"elm.swallow.end", "end_text_visible", 0.0);
+            set_int(sub_end_text_visible, 1);
+         }
+      }
+      program { name: "restore_default";
+         signal: "elm,state,default";
+         source: "elm";
+         script {
+            set_state(PART:"elm.padding.left", "default", 0.0);
+            set_state(PART:"elm.padding.right", "default", 0.0);
+            set_state(PART:"content_bg", "default", 0.0);
+            set_state(PART:"sub_content_bg", "default", 0.0);
+            set_state(PART:"main_icon_text_padding", "default", 0.0);
+            set_state(PART:"main_end_text_bg", "default", 0.0);
+            set_state(PART:"sub_end_text_bg", "default", 0.0);
+            set_state(PART:"elm.swallow.end", "default", 0.0);
+            set_int(main_end_text_visible, 0);
+            set_int(sub_end_text_visible, 0);
+            set_int(end_icon_visible, 0);
+         }
+      }
+   }
+}
+
+group { name: "elm/genlist/item/default/default";
+   alias: "elm/list/item/default";
+   alias: "elm/list/item_odd/default";
+   alias: "elm/list/item_compress/default";
+   alias: "elm/list/item_compress_odd/default";
+   alias: "elm/genlist/item_compress/default/default";
+   alias: "elm/genlist/item/default_style/default";
+   alias: "elm/genlist/item_compress/default_style/default";
+   inherit: "elm/genlist/item/type1/default";
+   data.item: "texts" "elm.text";
+   data.item: "contents" "elm.swallow.icon elm.swallow.end";
+}
+
+group { name: "elm/genlist/item/double_label/default";
+   alias: "elm/genlist/item_compress/double_label/default";
+   inherit: "elm/genlist/item/type1/default";
+   data.item: "texts" "elm.text elm.text.sub";
+   data.item: "contents" "elm.swallow.icon elm.swallow.end";
+}
+
+group { name: "elm/genlist/item/one_icon/default";
+   alias: "elm/genlist/item_compress/one_icon/default";
+   inherit: "elm/genlist/item/type1/default";
+   data.item: "texts" "elm.text";
+   data.item: "contents" "elm.swallow.icon";
+}
+
+group { name: "elm/genlist/item/end_icon/default";
+   alias: "elm/genlist/item_compress/end_icon/default";
+   inherit: "elm/genlist/item/type1/default";
+   data.item: "texts" "elm.text";
+   data.item: "contents" "elm.swallow.end";
+}
+
+group { name: "elm/genlist/item/type2/default";
+   alias: "elm/genlist/item_compress/type2/default";
+   inherit: "elm/genlist/item/type1/default";
+   data.item: "texts" "elm.text elm.text.end elm.text.sub elm.text.sub.end";
+   data.item: "contents" "elm.swallow.icon elm.swallow.end";
+
+   parts {
+      PART(SPACER, "sub_content_bg",
+         description { state: "default" 0.0;
+            min: 0 0;
+            align: 0.0 1.0;
+            rel1 { to: "main_content_bg"; relative: 0.0 0.0; }
+            rel2 { to: "main_content_bg"; relative: 1.0 0.0; }
+         }
+         description { state: "subtext_visible" 0.0;
+            inherit: "default" 0.0;
+            min: 0 LIST_ITEM_SUB_LINE_HEIGHT_INC;
+         }
+      )
+      PART(SPACER, "main_content_bg",
+         description { state: "default" 0.0;
+            min: 0 LIST_ITEM_MAIN_LINE_HEIGHT_INC;
+            fixed: 0 1;
+            align: 0.0 1.0;
+            rel1 { to: "content_bg"; relative: 0.0 1.0; }
+            rel2 { to: "content_bg"; relative: 1.0 1.0; }
+         }
+      )
+   }
+}
+
+group { name: "elm/genlist/item/multiline/default";
+   alias: "elm/genlist/item_compress/multiline/default";
+
+   data.item: "texts" "elm.text elm.text.multiline";
+
+   parts {
+      LIST_PART_BG_NOCLASS
+      PART(SPACER, "elm.padding.left",
+         DSC_FROM_L("default" 0.0,
+            min: LIST_ITEM_LR_PADDING_INC (LIST_ITEM_MAIN_LINE_HEIGHT_INC+LIST_ITEM_SUB_LINE_HEIGHT_INC*2+LIST_ITEM_TB_PADDING_INC*2);
+            max: LIST_ITEM_LR_PADDING_INC (LIST_ITEM_MAIN_LINE_HEIGHT_INC+LIST_ITEM_SUB_LINE_HEIGHT_INC*2+LIST_ITEM_TB_PADDING_INC*2);
+         )
+      )
+      PART(SPACER, "elm.padding.right",
+         DSC_FROM_R("default" 0.0,
+            min: LIST_ITEM_LR_PADDING_INC (LIST_ITEM_MAIN_LINE_HEIGHT_INC+LIST_ITEM_SUB_LINE_HEIGHT_INC*2+LIST_ITEM_TB_PADDING_INC*2);
+            max: LIST_ITEM_LR_PADDING_INC (LIST_ITEM_MAIN_LINE_HEIGHT_INC+LIST_ITEM_SUB_LINE_HEIGHT_INC*2+LIST_ITEM_TB_PADDING_INC*2);
+         )
+      )
+      PART(SPACER, "content_bg",
+         DSC_LR("default" 0.0, "elm.padding.left", "elm.padding.right",
+            min: 0 (LIST_ITEM_MAIN_LINE_HEIGHT_INC+LIST_ITEM_SUB_LINE_HEIGHT_INC*2);
+            max: -1 (LIST_ITEM_MAIN_LINE_HEIGHT_INC+LIST_ITEM_SUB_LINE_HEIGHT_INC*2);
+         )
+      )
+      PART(SPACER, "maintext_bg",
+         description { state: "default" 0.0;
+            min: 0 0;
+            align: 0.0 0.0;
+            rel1 { to: "content_bg"; relative: 0.0 0.0; }
+            rel2 { to: "content_bg"; relative: 1.0 0.0; }
+         }
+         description { state: "maintext_visible" 0.0;
+            inherit: "default" 0.0;
+            min: 0 LIST_ITEM_MAIN_LINE_HEIGHT_INC;
+         }
+
+      )
+      PART(TEXTBLOCK, "elm.text",
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1.to: "maintext_bg";
+            rel2.to: "maintext_bg";
+            text.style: "list_text_main";
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_main_press";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_main_dim";
+         }
+      )
+      PART(SPACER, "multiline_bg",
+         description { state: "default" 0.0;
+            min: 0 LIST_ITEM_SUB_LINE_HEIGHT_INC*2;
+            align: 0.0 0.0;
+            rel1 { to: "maintext_bg"; relative: 0.0 1.0; }
+            rel2 { to_x: "maintext_bg"; to_y: "content_bg"; relative: 1.0 1.0; }
+         }
+      )
+      PART (TEXTBLOCK, "elm.text.multiline",
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1.to: "multiline_bg";
+            rel2.to: "multiline_bg";
+            text.style: "list_text_multiline";
+            text.align: 0.0 0.0;
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_multiline_press";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text.style: "list_text_multiline_dim";
          }
       )
       PART(RECT, "elm.bottomline",
@@ -146,9 +474,64 @@ group { name: "elm/genlist/item/default/default";
    }
    LIST_PROGRAMS( target: "elm.text"; )
    programs {
-      LIST_PROGRAM_PAD
+      program { name: "maintext_visible";
+         signal: "elm,state,elm.text,visible";
+         source: "elm";
+         action: STATE_SET "maintext_visible" 0.0;
+         target: "maintext_bg";
+      }
+      program { name: "restore_defaults";
+         signal: "elm,state,default";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "maintext_bg";
+      }
    }
 }
+
+group { name: "elm/genlist/item/full/default";
+   alias: "elm/genlist/item_compress/full";
+
+   data.item: "contents" "elm.swallow.content";
+
+   parts {
+      LIST_PART_BG_NOCLASS
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 LIST_ITEM_FULL_HEIGHT_INC;
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         scale:1 ;
+         description { state: "default" 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
+         }
+      }
+      PART(RECT, "elm.bottomline",
+         DSC_FROM_B("default" 0.0,
+            min: 0 LIST_BOTTOMLINE_HEIGHT;
+            max: -1 LIST_BOTTOMLINE_HEIGHT;
+            color: 192 213 222 255;
+         )
+      )
+   }
+   LIST_PROGRAMS( ; )
+}
+
+/*
+*********************** WARNING *********************
+
+* STYLES BELOW THIS LINE ARE SUPPORTED ONLY IN TIZEN 2.3.
+* THESE STYLES WILL BE DEPRECATED IN THE NEXT RELEASE.
+* WE ARE NOT RESPONSIBLE FOR ANY USE OF THESE STYLES
+* IN OTHER THAN TIZEN 2.3.
+
+*****************************************************
+*/
 
 group { name: "elm/genlist/item/1icon/default";
 
@@ -2157,7 +2540,7 @@ group { name: "elm/genlist/item/entry/default";
    parts {
       PART(RECT, "bg",
          description { state: "default" 0.0;
-            color_class: "B0211";
+            color: 255 255 255 255; /*(Changeable UI) color_class: "B0211";*/
          }
       )
       PART(SWALLOW, "elm.icon.1",
@@ -2212,7 +2595,7 @@ group { name: "elm/genlist/item/entry.sub/default";
    parts {
       PART(RECT, "bg",
          description { state: "default" 0.0;
-            color_class: "B0211";
+            color: 255 255 255 255; /*(Changeable UI) color_class: "B0211";*/
          }
       )
       PART(SWALLOW, "elm.icon.1",
@@ -2286,7 +2669,7 @@ group { name: "elm/genlist/item/entry.icon/default";
    parts {
       PART(RECT, "bg",
          description { state: "default" 0.0;
-            color_class: "B0211";
+            color: 255 255 255 255; /*(Changeable UI) color_class: "B0211";*/
          }
       )
       PART(SWALLOW, "elm.icon.1",
@@ -2356,7 +2739,7 @@ group { name: "elm/genlist/item/entry.main/default";
    parts {
       PART(RECT, "bg",
          description { state: "default" 0.0;
-            color_class: "B0211";
+            color: 255 255 255 255; /*(Changeable UI) color_class: "B0211";*/
          }
       )
       PART(SWALLOW, "elm.icon.1",
