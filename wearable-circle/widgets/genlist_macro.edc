@@ -527,7 +527,13 @@
       description { state: "highlighted" 0.0; \
          inherit: "highlighting" 0.0; \
       } \
+      description { state: "long_text_highlighted" 0.0; \
+         inherit: "highlighting" 0.0; \
+      } \
       description { state: "highlighted_disabled" 0.0; \
+         inherit: "highlighting_disabled" 0.0; \
+      } \
+      description { state: "long_text_highlighted_disabled" 0.0; \
          inherit: "highlighting_disabled" 0.0; \
       } \
    ) \
@@ -536,6 +542,9 @@
          min: 0 BOTTOM_SIZE; \
          max: -1 BOTTOM_SIZE; \
       ) \
+      description { state: "long_text_default" 0.0; \
+         inherit: "default" 0.0; \
+      } \
       description { state: "highlighting" 0.0; \
          inherit: "default" 0.0; \
          min: 0 CHANGE_BOTTOM_SIZE; \
@@ -549,7 +558,13 @@
       description { state: "highlighted" 0.0; \
          inherit: "highlighting" 0.0; \
       } \
+      description { state: "long_text_highlighted" 0.0; \
+         inherit: "highlighting" 0.0; \
+      } \
       description { state: "highlighted_disabled" 0.0; \
+         inherit: "highlighting_disabled" 0.0; \
+      } \
+      description { state: "long_text_highlighted_disabled" 0.0; \
          inherit: "highlighting_disabled" 0.0; \
       } \
    )
@@ -719,6 +734,11 @@ script { \
    public sliding_start; \
    public is_disabled; \
    public is_highlighted; \
+   public is_show; \
+   public is_pre_highlighted; \
+   public sub1_is_sliding; \
+   public sub2_is_sliding; \
+   public sub3_is_sliding; \
    \
    public set_disabled(val) { \
       set_int(is_disabled, val); \
@@ -726,11 +746,23 @@ script { \
    public set_highlighted(val) { \
       set_int(is_highlighted, val); \
    } \
+   public set_show(val) { \
+      set_int(is_show, val); \
+   } \
+   public set_pre_highlighted(val) { \
+      set_int(is_pre_highlighted, val); \
+   } \
    public get_disabled() { \
       return get_int(is_disabled); \
    } \
    public get_highlighted() { \
       return get_int(is_highlighted); \
+   } \
+   public get_show() { \
+      return get_int(is_show); \
+   } \
+   public get_pre_highlighted() { \
+      return get_int(is_pre_highlighted); \
    } \
    public refresh() { \
       ender(1); \
@@ -742,6 +774,8 @@ script { \
       set_int(sliding_start, 0); \
       set_int(is_disabled, 0); \
       set_int(is_highlighted, 0); \
+      set_int(is_show, 0); \
+      set_int(is_pre_highlighted, 0); \
    } \
    public get_width() { \
       new x, y, w, h; \
@@ -762,10 +796,17 @@ script { \
          cancel_timer(get_int(end_timer)); \
       set_int(end_timer, 0); \
       if (!val) { \
-         if (get_int(is_disabled)) \
-            set_state(PART:"elm.text", "highlighted_disabled", 0.0); \
-         else \
-            set_state(PART:"elm.text", "highlighted", 0.0); \
+         if (get_int(is_disabled)) { \
+            if (get_int(sliding_start)) \
+               set_state(PART:"elm.text", "long_text_highlighted_disabled", 0.0); \
+            else \
+               set_state(PART:"elm.text", "highlighted_disabled", 0.0); \
+         } else { \
+            if (get_int(sliding_start)) \
+               set_state(PART:"elm.text", "long_text_highlighted", 0.0); \
+            else \
+               set_state(PART:"elm.text", "highlighted", 0.0); \
+         } \
       } \
    } \
    public sliding(val) { \
@@ -787,7 +828,6 @@ script { \
    } \
    public slide_start(val) { \
      if (get_int(sliding_timer)) { \
-        get_size_over(); \
         if (get_int(sliding_start)) { \
            get_width(); \
            if (get_int(text_w) < get_int(org_text_w)) { \
@@ -815,6 +855,51 @@ script { \
    } \
 } \
 
+#define SCRIPT_SLIDE_SUB1_SIZE_CHECK \
+   public get_sub1_size_over() { \
+      new x, y, w, w1, w2, w3, h; \
+      get_geometry(PART:"elm.text.1", x, y, w, h); \
+      get_geometry(PART:"bg", x, y, w1, h); \
+      get_geometry(PART:"elm.padding.left", x, y, w2, h); \
+      get_geometry(PART:"elm.padding.right", x, y, w3, h); \
+      set_int(sliding_w, w1 - (w2 + w3)); \
+      if (w >= get_int(sliding_w)) { \
+         set_int(sub1_is_sliding, 1); \
+      } else { \
+         set_int(sub1_is_sliding, 0); \
+       } \
+   } \
+
+#define SCRIPT_SLIDE_SUB2_SIZE_CHECK \
+   public get_sub2_size_over() { \
+      new x, y, w, w1, w2, w3, h; \
+      get_geometry(PART:"elm.text.2", x, y, w, h); \
+      get_geometry(PART:"bg", x, y, w1, h); \
+      get_geometry(PART:"elm.padding.left", x, y, w2, h); \
+      get_geometry(PART:"elm.padding.right", x, y, w3, h); \
+      set_int(sliding_w, w1 - (w2 + w3)); \
+      if (w >= get_int(sliding_w)) { \
+         set_int(sub2_is_sliding, 1); \
+      } else { \
+         set_int(sub2_is_sliding, 0); \
+       } \
+   } \
+
+#define SCRIPT_SLIDE_SUB3_SIZE_CHECK \
+   public get_sub3_size_over() { \
+      new x, y, w, w1, w2, w3, h; \
+      get_geometry(PART:"elm.text.3", x, y, w, h); \
+      get_geometry(PART:"bg", x, y, w1, h); \
+      get_geometry(PART:"elm.padding.left", x, y, w2, h); \
+      get_geometry(PART:"elm.padding.right", x, y, w3, h); \
+      set_int(sliding_w, w1 - (w2 + w3)); \
+      if (w >= get_int(sliding_w)) { \
+         set_int(sub3_is_sliding, 1); \
+      } else { \
+         set_int(sub3_is_sliding, 0); \
+       } \
+   } \
+
 #define SCRIPT_SLIDE_SIZE_CHECK_1ICON \
    public get_size_over() { \
       new x, y, w, w1, w2, w3, w4, w5, h; \
@@ -833,6 +918,40 @@ script { \
    } \
 } \
 
+#define SCRIPT_SLIDE_SUB1_SIZE_CHECK_1ICON \
+   public get_sub1_size_over() { \
+      new x, y, w, w1, w2, w3, w4, w5, h; \
+      get_geometry(PART:"elm.text.1", x, y, w, h); \
+      get_geometry(PART:"bg", x, y, w1, h); \
+      get_geometry(PART:"elm.padding.left", x, y, w2, h); \
+      get_geometry(PART:"elm.padding.right", x, y, w3, h); \
+      get_geometry(PART:"elm.icon", x, y, w4, h); \
+      get_geometry(PART:"elm.padding.icon", x, y, w5, h); \
+      set_int(sliding_w, w1 - (w2 + w3 + w4 + w5)); \
+      if (w >= get_int(sliding_w)) { \
+         set_int(sub1_is_sliding, 1); \
+      } else { \
+         set_int(sub1_is_sliding, 0); \
+       } \
+   } \
+
+#define SCRIPT_SLIDE_SUB2_SIZE_CHECK_1ICON \
+   public get_sub2_size_over() { \
+      new x, y, w, w1, w2, w3, w4, w5, h; \
+      get_geometry(PART:"elm.text.2", x, y, w, h); \
+      get_geometry(PART:"bg", x, y, w1, h); \
+      get_geometry(PART:"elm.padding.left", x, y, w2, h); \
+      get_geometry(PART:"elm.padding.right", x, y, w3, h); \
+      get_geometry(PART:"elm.icon", x, y, w4, h); \
+      get_geometry(PART:"elm.padding.icon", x, y, w5, h); \
+      set_int(sliding_w, w1 - (w2 + w3 + w4 + w5)); \
+      if (w >= get_int(sliding_w)) { \
+         set_int(sub2_is_sliding, 1); \
+      } else { \
+         set_int(sub2_is_sliding, 0); \
+       } \
+   } \
+
 #define SCRIPT_SLIDE_SIZE_CHECK_1ICON_DIVIDER \
    public get_size_over() { \
       new x, y, w, w1, w2, w3, w4, w5, h; \
@@ -850,6 +969,23 @@ script { \
       } \
    } \
 } \
+
+#define SCRIPT_SLIDE_SUB1_SIZE_CHECK_1ICON_DIVIDER \
+   public get_sub1_size_over() { \
+      new x, y, w, w1, w2, w3, w4, w5, h; \
+      get_geometry(PART:"elm.text.1", x, y, w, h); \
+      get_geometry(PART:"bg", x, y, w1, h); \
+      get_geometry(PART:"elm.padding.left", x, y, w2, h); \
+      get_geometry(PART:"elm.padding.right", x, y, w3, h); \
+      get_geometry(PART:"elm.icon", x, y, w4, h); \
+      get_geometry(PART:"elm.padding.icon", x, y, w5, h); \
+      set_int(sliding_w, w1 - (w2 + w3 + w4 + w5 + LIST_DIVIDER_WIDTH_INC)); \
+      if (w >= get_int(sliding_w)) { \
+         set_int(sub1_is_sliding, 1); \
+      } else { \
+         set_int(sub1_is_sliding, 0); \
+      } \
+   } \
 
 #define SCRIPT_SLIDE_SIZE_EDITFIELD_CHECK \
    public get_size_over() { \
@@ -939,9 +1075,24 @@ script { \
       signal: "elm,state,highlighted"; \
       source: "elm"; \
       script { \
-         if (!get_highlighted()) { \
-            set_highlighted(1); \
-            run_program(PROGRAM:"text_highlight"); \
+         if (get_show()) { \
+            if (!get_highlighted()) { \
+               set_highlighted(1); \
+               if (get_disabled()) { \
+                  if (get_int(sliding_start)) \
+                  run_program(PROGRAM:"long_text_highlight_disabled"); \
+                  else \
+                  run_program(PROGRAM:"text_highlight_disabled"); \
+               } else { \
+                  if (get_int(sliding_start)) \
+                  run_program(PROGRAM:"long_text_highlight"); \
+                  else \
+                  run_program(PROGRAM:"text_highlight"); \
+               } \
+            } \
+         } \
+         else { \
+            set_pre_highlighted(1); \
          } \
       } \
    } \
@@ -952,6 +1103,25 @@ script { \
       target: "opacity_clipper"; \
       after: "slide_start"; \
    } \
+   program { name: "long_text_highlight"; \
+      transition: CUBIC_BEZIER 0.3 0 0 1 1; \
+      action: STATE_SET "long_text_highlighted" 0.0; \
+      target: "elm.text"; \
+      target: "opacity_clipper"; \
+      after: "slide_start"; \
+   } \
+   program { name: "text_highlight_disabled"; \
+      transition: CUBIC_BEZIER 0.3 0 0 1 1; \
+      action: STATE_SET "highlighted" 0.0; \
+      target: "elm.text"; \
+      after: "slide_start"; \
+   } \
+   program { name: "long_text_highlight_disabled"; \
+      transition: CUBIC_BEZIER 0.3 0 0 1 1; \
+      action: STATE_SET "long_text_highlighted" 0.0; \
+      target: "elm.text"; \
+      after: "slide_start"; \
+   } \
    program { name: "1text_unhighlighted"; \
       signal: "elm,state,unhighlighted"; \
       source: "elm"; \
@@ -960,9 +1130,15 @@ script { \
             set_highlighted(0); \
             ender(1); \
             if (get_disabled()) { \
-               run_program(PROGRAM:"1text_hide_unhighlighted_disabled"); \
+               if (get_int(sliding_start)) \
+                  run_program(PROGRAM:"long_1text_hide_unhighlighted_disabled"); \
+               else \
+                  run_program(PROGRAM:"1text_hide_unhighlighted_disabled"); \
             } else { \
-               run_program(PROGRAM:"1text_hide_unhighlighted"); \
+               if (get_int(sliding_start)) \
+                  run_program(PROGRAM:"long_1text_hide_unhighlighted"); \
+               else \
+                  run_program(PROGRAM:"1text_hide_unhighlighted"); \
             } \
          } \
       } \
@@ -977,6 +1153,17 @@ script { \
       transition: CUBIC_BEZIER 0.3 0 0 1 1; \
       action: STATE_SET "disabled" 0.0; \
       target: "elm.text"; \
+   } \
+   program { name: "long_1text_hide_unhighlighted"; \
+      transition: CUBIC_BEZIER 0.3 0 0 1 1; \
+      action: STATE_SET "long_text_default" 0.0; \
+      target: "elm.text"; \
+      target: "opacity_clipper"; \
+   } \
+   program { name: "long_1text_hide_unhighlighted_disabled"; \
+      transition: CUBIC_BEZIER 0.3 0 0 1 1; \
+      action: STATE_SET "disabled" 0.0; \
+      target: "elm.text"; \
    }
 
 #define PROGRAM_LIST_2TEXT_HIGHLIGHT \
@@ -984,13 +1171,24 @@ script { \
       signal: "elm,state,highlighted"; \
       source: "elm"; \
       script { \
-         if (!get_highlighted()) { \
-            set_highlighted(1); \
-            if (get_disabled()) { \
-               run_program(PROGRAM:"2text_hide_highlighted_disabled"); \
-            } else { \
-               run_program(PROGRAM:"2text_hide_highlighted"); \
+         if (get_show()) { \
+            if (!get_highlighted()) { \
+               set_highlighted(1); \
+               if (get_disabled()) { \
+                  if (get_int(sliding_start)) \
+                  run_program(PROGRAM:"long_2text_hide_highlighted_disabled"); \
+                  else \
+                  run_program(PROGRAM:"2text_hide_highlighted_disabled"); \
+               } else { \
+                  if (get_int(sliding_start)) \
+                  run_program(PROGRAM:"long_2text_hide_highlighted"); \
+                  else \
+                  run_program(PROGRAM:"2text_hide_highlighted"); \
+               } \
             } \
+         } \
+         else { \
+            set_pre_highlighted(1); \
          } \
       } \
    } \
@@ -1011,6 +1209,23 @@ script { \
       target: "elm.padding.bottom"; \
       after: "slide_start"; \
    } \
+   program { name: "long_2text_hide_highlighted"; \
+      transition: CUBIC_BEZIER 0.4 0 0 1 1; \
+      action: STATE_SET "long_text_highlighted" 0.0; \
+      target: "elm.text"; \
+      target: "elm.padding.top"; \
+      target: "elm.padding.bottom"; \
+      target: "opacity_clipper"; \
+      after: "slide_start"; \
+   } \
+   program { name: "long_2text_hide_highlighted_disabled"; \
+      transition: CUBIC_BEZIER 0.4 0 0 1 1; \
+      action: STATE_SET "long_text_highlighted_disabled" 0.0; \
+      target: "elm.text"; \
+      target: "elm.padding.top"; \
+      target: "elm.padding.bottom"; \
+      after: "slide_start"; \
+   } \
    program { name: "2text_unhighlighted"; \
       signal: "elm,state,unhighlighted"; \
       source: "elm"; \
@@ -1019,9 +1234,15 @@ script { \
             set_highlighted(0); \
             ender(1); \
             if (get_disabled()) { \
-               run_program(PROGRAM:"2text_hide_unhighlighted_disabled"); \
+               if (get_int(sliding_start)) \
+                  run_program(PROGRAM:"long_2text_hide_unhighlighted_disabled"); \
+               else \
+                  run_program(PROGRAM:"2text_hide_unhighlighted_disabled"); \
             } else { \
-               run_program(PROGRAM:"2text_hide_unhighlighted"); \
+               if (get_int(sliding_start)) \
+                  run_program(PROGRAM:"long_2text_hide_unhighlighted"); \
+               else \
+                  run_program(PROGRAM:"2text_hide_unhighlighted"); \
             } \
          } \
       } \
@@ -1041,11 +1262,36 @@ script { \
       target: "elm.padding.top"; \
       target: "elm.padding.bottom"; \
    } \
+   program { name: "long_2text_hide_unhighlighted"; \
+      transition: CUBIC_BEZIER 0.3 0 0 1 1; \
+      action: STATE_SET "long_text_default" 0.0; \
+      target: "elm.text"; \
+      target: "elm.padding.top"; \
+      target: "elm.padding.bottom"; \
+      target: "opacity_clipper"; \
+   } \
+   program { name: "long_2text_hide_unhighlighted_disabled"; \
+      transition: CUBIC_BEZIER 0.3 0 0 1 1; \
+      action: STATE_SET "long_text_disabled" 0.0; \
+      target: "elm.text"; \
+      target: "elm.padding.top"; \
+      target: "elm.padding.bottom"; \
+   } \
 
 #define PROGRAM_LIST_SUBTEXT_HIGHLIGHT \
-   program { name: "subtext_highlighted"; \
+   program { name: "subtext_highlight"; \
       signal: "elm,state,highlighted"; \
       source: "elm"; \
+      script { \
+         if (get_show()) { \
+            run_program(PROGRAM:"subtext_highlighted"); \
+         } \
+         else { \
+            set_pre_highlighted(1); \
+         } \
+      } \
+   } \
+   program { name: "subtext_highlighted"; \
       transition: CUBIC_BEZIER 0.6 0 0 1 1; \
       action: STATE_SET "highlighted" 0.0; \
       target: "clipper1"; \
@@ -1274,6 +1520,142 @@ script { \
    program { name: "slide_stop"; \
       script { \
          ender(0); \
+      } \
+   } \
+
+#define PROGRAM_LIST_TITLE_FADEOUT_SET \
+   program { name: "text_fadeout_set"; \
+      signal: "show"; \
+      source: ""; \
+      script { \
+         get_size_over(); \
+         if (get_int(sliding_start)) { \
+            set_state(PART:"fade_out", "default", 0.0); \
+            set_state(PART:"elm.text", "long_text_default", 0.0); \
+         } else { \
+            set_state(PART:"fade_out", "short_text", 0.0); \
+            set_state(PART:"elm.text", "default", 0.0); \
+         } \
+      } \
+   } \
+
+#define PROGRAM_LIST_1TEXT_FADEOUT_SET \
+   program { name: "text_fadeout_set"; \
+      signal: "show"; \
+      source: ""; \
+      script { \
+         set_show(1); \
+         get_size_over(); \
+         if (get_int(sliding_start)) { \
+            set_state(PART:"fade_out", "default", 0.0); \
+            set_state(PART:"elm.text", "long_text_default", 0.0); \
+         } else { \
+            set_state(PART:"fade_out", "short_text", 0.0); \
+            set_state(PART:"elm.text", "default", 0.0); \
+         } \
+         if (get_pre_highlighted()) { \
+            emit("elm,state,highlighted", "elm"); \
+            set_pre_highlighted(0); \
+         } \
+      } \
+   } \
+
+#define PROGRAM_LIST_2TEXT_FADEOUT_SET \
+   program { name: "text_fadeout_set"; \
+      signal: "show"; \
+      source: ""; \
+      script { \
+         set_show(1); \
+         get_size_over(); \
+         if (get_int(sliding_start)) { \
+            set_state(PART:"fade_out", "default", 0.0); \
+            set_state(PART:"elm.text", "long_text_default", 0.0); \
+         } else { \
+            set_state(PART:"fade_out", "short_text", 0.0); \
+            set_state(PART:"elm.text", "default", 0.0); \
+         } \
+         get_sub1_size_over(); \
+         if (get_int(sub1_is_sliding)) { \
+            set_state(PART:"sub_fade_out", "default", 0.0); \
+         } else { \
+            set_state(PART:"sub_fade_out", "short_text", 0.0); \
+         } \
+         if (get_pre_highlighted()) { \
+            emit("elm,state,highlighted", "elm"); \
+            set_pre_highlighted(0); \
+         } \
+      } \
+   } \
+
+#define PROGRAM_LIST_3TEXT_FADEOUT_SET \
+   program { name: "text_fadeout_set"; \
+      signal: "show"; \
+      source: ""; \
+      script { \
+         set_show(1); \
+         get_size_over(); \
+         if (get_int(sliding_start)) { \
+            set_state(PART:"fade_out", "default", 0.0); \
+            set_state(PART:"elm.text", "long_text_default", 0.0); \
+         } else { \
+            set_state(PART:"fade_out", "short_text", 0.0); \
+            set_state(PART:"elm.text", "default", 0.0); \
+         } \
+         get_sub1_size_over(); \
+         if (get_int(sub1_is_sliding)) { \
+            set_state(PART:"sub_fade_out", "default", 0.0); \
+         } else { \
+            set_state(PART:"sub_fade_out", "short_text", 0.0); \
+         } \
+         get_sub2_size_over(); \
+         if (get_int(sub2_is_sliding)) { \
+            set_state(PART:"sub1_fade_out", "default", 0.0); \
+         } else { \
+            set_state(PART:"sub1_fade_out", "short_text", 0.0); \
+         } \
+         if (get_pre_highlighted()) { \
+            emit("elm,state,highlighted", "elm"); \
+            set_pre_highlighted(0); \
+         } \
+      } \
+   } \
+
+#define PROGRAM_LIST_4TEXT_FADEOUT_SET \
+   program { name: "text_fadeout_set"; \
+      signal: "show"; \
+      source: ""; \
+      script { \
+         set_show(1); \
+         get_size_over(); \
+         if (get_int(sliding_start)) { \
+            set_state(PART:"fade_out", "default", 0.0); \
+            set_state(PART:"elm.text", "long_text_default", 0.0); \
+         } else { \
+            set_state(PART:"fade_out", "short_text", 0.0); \
+            set_state(PART:"elm.text", "default", 0.0); \
+         } \
+         get_sub1_size_over(); \
+         if (get_int(sub1_is_sliding)) { \
+            set_state(PART:"sub_fade_out", "default", 0.0); \
+         } else { \
+            set_state(PART:"sub_fade_out", "short_text", 0.0); \
+         } \
+         get_sub2_size_over(); \
+         if (get_int(sub2_is_sliding)) { \
+            set_state(PART:"sub1_fade_out", "default", 0.0); \
+         } else { \
+            set_state(PART:"sub1_fade_out", "short_text", 0.0); \
+         } \
+         get_sub3_size_over(); \
+         if (get_int(sub3_is_sliding)) { \
+            set_state(PART:"sub2_fade_out", "default", 0.0); \
+         } else { \
+            set_state(PART:"sub2_fade_out", "short_text", 0.0); \
+         } \
+         if (get_pre_highlighted()) { \
+            emit("elm,state,highlighted", "elm"); \
+            set_pre_highlighted(0); \
+         } \
       } \
    } \
 

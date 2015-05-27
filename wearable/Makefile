@@ -36,6 +36,8 @@ all:
 		-id ./$$s/images/temp/Copy_Paste\
 		-id ./$$s/images/Emoticon\
 		-id ./$$s/images/temp/swipe\
+		-id ./$$s/images/MoreOption\
+		-id ./$$s/images/Map\
 		-sd ./$$s/sounds -fd ../objects \
 		$(SRC)-$(TARGET)-$$s.edc $(DST)-$(TARGET)-$$s.edj; \
 	done

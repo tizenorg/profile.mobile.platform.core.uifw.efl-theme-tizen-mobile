@@ -40,6 +40,7 @@ all:
 		-id ./$$s/images/Time_picker\
 		-id ./$$s/images/Title_bar\
 		-id ./$$s/images/No_items\
+		-id ./$$s/images/Map\
 		-sd ./$$s/sounds -fd ../objects \
 		$(SRC)-$(TARGET)-$$s.edc $(DST)-$(TARGET)-$$s.edj; \
 	done
