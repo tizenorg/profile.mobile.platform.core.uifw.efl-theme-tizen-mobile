@@ -134,7 +134,7 @@ group { name: "elm/genlist/item/type1/default";
          description { state: "default" 0.0;
             align: 0.0 0.5;
             rel1 { to_x: "main_icon_text_padding"; to_y: "main_content_bg"; relative: 1.0 0.0; }
-            rel2 { to_x: "main_text_end_padding"; to_y: "main_content_bg"; relative: 0.0 1.0; }
+            rel2 { to_x: "main_end_text_bg"; to_y: "main_content_bg"; relative: 0.0 1.0; }
             text.style: "list_text_main";
          }
          description { state: "pressed" 0.0;
@@ -146,21 +146,6 @@ group { name: "elm/genlist/item/type1/default";
             text.style: "list_text_main_dim";
          }
       )
-      PART(SPACER, "main_text_end_padding",
-         description { state: "default" 0.0;
-            min: 0 0;
-            fixed: 1 1;
-            align: 1.0 0.5;
-            rel1 { to: "main_end_text_bg"; relative: 0.0 0.0; }
-            rel2 { to: "main_end_text_bg"; relative: 0.0 1.0; }
-         }
-         description { state: "end_icon_visible" 0.0;
-            inherit: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC LIST_ITEM_MAIN_LINE_HEIGHT_INC;
-            rel1 { to: "elm.swallow.end"; relative: 0.0 0.0; }
-            rel2 { to: "elm.swallow.end"; relative: 0.0 1.0; }
-         }
-      )
       PART (SPACER, "main_end_text_bg",
          description { state: "default" 0.0;
             min: 0 LIST_ITEM_MAIN_LINE_HEIGHT_INC;
@@ -170,8 +155,7 @@ group { name: "elm/genlist/item/type1/default";
          }
          description { state: "end_icon_visible" 0.0;
             inherit: "default" 0.0;
-            rel1.to: "elm.swallow.end";
-            rel2.to: "main_content_bg";
+            min: LIST_ITEM_END_ICON_BG_WIDTH_INC LIST_ITEM_MAIN_LINE_HEIGHT_INC;
          }
          description { state: "end_text_visible" 0.0;
             inherit: "default" 0.0;
@@ -188,15 +172,15 @@ group { name: "elm/genlist/item/type1/default";
             align: 1.0 0.5;
             rel1.to: "main_end_text_bg";
             rel2.to: "main_end_text_bg";
-            text.style: "list_text_end";
+            text.style: "list_text_sub_01";
          }
          description { state: "pressed" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_end_press";
+            text.style: "list_text_sub_01_press";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_end_dim";
+            text.style: "list_text_sub_01_dim";
          }
       }
       part { name: "elm.text.sub";
@@ -244,15 +228,15 @@ group { name: "elm/genlist/item/type1/default";
             align: 1.0 0.5;
             rel1.to: "sub_end_text_bg";
             rel2.to: "sub_end_text_bg";
-            text.style: "list_text_end";
+            text.style: "list_text_sub_01";
          }
          description { state: "pressed" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_end_press";
+            text.style: "list_text_sub_01_press";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_end_dim";
+            text.style: "list_text_sub_01_dim";
          }
       }
       PART(RECT, "elm.bottomline",
@@ -285,7 +269,6 @@ group { name: "elm/genlist/item/type1/default";
          source: "elm";
          script {
             if (get_int(sub_end_text_visible) == 0) {
-               set_state(PART:"main_text_end_padding", "end_icon_visible", 0.0);
                set_state(PART:"main_end_text_bg", "end_icon_visible", 0.0);
                set_state(PART:"sub_end_text_bg", "end_icon_visible", 0.0);
                set_state(PART:"elm.swallow.end", "default", 0.0);
@@ -308,7 +291,6 @@ group { name: "elm/genlist/item/type1/default";
          source: "elm";
          script {
             if (get_int(end_icon_visible)) {
-               set_state(PART:"main_text_end_padding", "default", 0.0);
                set_state(PART:"main_end_text_bg", "end_text_visible", 0.0);
             }
             set_state(PART:"sub_end_text_bg", "end_text_visible", 0.0);
@@ -325,7 +307,6 @@ group { name: "elm/genlist/item/type1/default";
             set_state(PART:"content_bg", "default", 0.0);
             set_state(PART:"sub_content_bg", "default", 0.0);
             set_state(PART:"main_icon_text_padding", "default", 0.0);
-            set_state(PART:"main_text_end_padding", "default", 0.0);
             set_state(PART:"main_end_text_bg", "default", 0.0);
             set_state(PART:"sub_end_text_bg", "default", 0.0);
             set_state(PART:"elm.swallow.end", "default", 0.0);
@@ -539,173 +520,6 @@ group { name: "elm/genlist/item/full/default";
       )
    }
    LIST_PROGRAMS( ; )
-}
-
-group { name: "elm/genlist/item/group_index/default";
-   alias: "elm/genlist/item_compress/group_index/default";
-
-   data.item: "texts" "elm.text elm.text.end";
-   data.item: "contents" "elm.swallow.end";
-
-   script {
-      public main_end_text_visible = 0;
-      public end_icon_visible = 0;
-   }
-
-   parts {
-      LIST_PART_BG_NOCLASS
-      PART(SPACER, "elm.padding.left",
-         DSC_FROM_L("default" 0.0,
-            min: LIST_ITEM_LR_PADDING_INC LIST_ITEM_GROUP_INDEX_HEIGHT_INC;
-            max: LIST_ITEM_LR_PADDING_INC LIST_ITEM_GROUP_INDEX_HEIGHT_INC;
-         )
-      )
-      PART(SPACER, "elm.padding.right",
-         DSC_FROM_R("default" 0.0,
-            min: LIST_ITEM_LR_PADDING_INC LIST_ITEM_GROUP_INDEX_HEIGHT_INC;
-            max: LIST_ITEM_LR_PADDING_INC LIST_ITEM_GROUP_INDEX_HEIGHT_INC;
-         )
-      )
-      PART(SPACER, "content_bg",
-         DSC_LR("default" 0.0, "elm.padding.left", "elm.padding.right",
-            min: 0 LIST_ITEM_GROUP_INDEX_CONTENT_HEIGHT_INC;
-            max: -1 LIST_ITEM_GROUP_INDEX_CONTENT_HEIGHT_INC;
-         )
-      )
-      PART(SPACER, "main_content_bg",
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_GROUP_INDEX_CONTENT_HEIGHT_INC;
-            fixed: 0 1;
-            align: 0.0 0.0;
-            rel1 { to: "content_bg"; relative: 0.0 0.0; }
-            rel2 { to: "content_bg"; relative: 1.0 0.0; }
-         }
-      )
-      PART(SWALLOW, "elm.swallow.end",
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            rel1 { to: "main_content_bg"; relative: 1.0 0.0; }
-            rel2 { to: "main_content_bg"; relative: 1.0 1.0; }
-         }
-         description { state: "end_text_visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
-         }
-      )
-      PART (TEXTBLOCK, "elm.text",
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            rel1 { to_x: "main_content_bg"; to_y: "main_content_bg"; relative: 0.0 0.0; }
-            rel2 { to_x: "main_text_end_padding"; to_y: "main_content_bg"; relative: 0.0 1.0; }
-            text.style: "list_text_group_index_main";
-         }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
-            text.style: "list_text_group_index_main_press";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            text.style: "list_text_group_index_main_dim";
-         }
-      )
-      PART(SPACER, "main_text_end_padding",
-         description { state: "default" 0.0;
-            min: 0 0;
-            fixed: 1 1;
-            align: 1.0 0.5;
-            rel1 { to: "main_end_text_bg"; relative: 0.0 0.0; }
-            rel2 { to: "main_end_text_bg"; relative: 0.0 1.0; }
-         }
-         description { state: "end_icon_visible" 0.0;
-            inherit: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC LIST_ITEM_GROUP_INDEX_CONTENT_HEIGHT_INC;
-            rel1 { to: "elm.swallow.end"; relative: 0.0 0.0; }
-            rel2 { to: "elm.swallow.end"; relative: 0.0 1.0; }
-         }
-      )
-      PART (SPACER, "main_end_text_bg",
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_GROUP_INDEX_CONTENT_HEIGHT_INC;
-            align: 1.0 0.5;
-            rel1 { to: "main_content_bg"; relative: 1.0 0.0; }
-            rel2 { to: "main_content_bg"; relative: 1.0 1.0; }
-         }
-         description { state: "end_icon_visible" 0.0;
-            inherit: "default" 0.0;
-            rel1.to: "elm.swallow.end";
-            rel2.to: "main_content_bg";
-         }
-         description { state: "end_text_visible" 0.0;
-            inherit: "default" 0.0;
-            min: LIST_ITEM_END_TEXT_BG_WIDTH_INC LIST_ITEM_GROUP_INDEX_CONTENT_HEIGHT_INC;
-         }
-      )
-      part { name: "elm.text.end";
-         type: TEXTBLOCK;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            min: LIST_ITEM_END_TEXT_WIDTH_INC 0;
-            max: LIST_ITEM_END_TEXT_WIDTH_INC -1;
-            align: 1.0 0.5;
-            rel1.to: "main_end_text_bg";
-            rel2.to: "main_end_text_bg";
-            text.style: "list_text_group_index_sub";
-         }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
-            text.style: "list_text_group_index_sub_press";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            text.style: "list_text_group_index_sub_dim";
-         }
-      }
-      PART(RECT, "elm.bottomline",
-         DSC_FROM_T("default" 0.0,
-            min: 0 LIST_BOTTOMLINE_HEIGHT;
-            max: -1  LIST_BOTTOMLINE_HEIGHT;
-            color: 61 185 204 38;
-         )
-      )
-   }
-   LIST_PROGRAMS( target: "elm.text"; )
-   programs {
-      program { name: "end_icon_visible";
-         signal: "elm,state,elm.swallow.end,visible";
-         source: "elm";
-         script {
-            if (get_int(main_end_text_visible) == 0) {
-               set_state(PART:"main_text_end_padding", "end_icon_visible", 0.0);
-               set_state(PART:"main_end_text_bg", "end_icon_visible", 0.0);
-               set_state(PART:"elm.swallow.end", "default", 0.0);
-               set_int(end_icon_visible, 1);
-            }
-         }
-      }
-      program { name: "main_end_text_visible";
-         signal: "elm,state,elm.text.end,visible";
-         source: "elm";
-         script {
-            set_state(PART:"main_text_end_padding", "default", 0.0);
-            set_state(PART:"main_end_text_bg", "end_text_visible", 0.0);
-            set_state(PART:"elm.swallow.end", "end_text_visible", 0.0);
-            set_int(main_end_text_visible, 1);
-         }
-      }
-      program { name: "restore_default";
-         signal: "elm,state,default";
-         source: "elm";
-         script {
-            set_state(PART:"main_text_end_padding", "default", 0.0);
-            set_state(PART:"main_end_text_bg", "default", 0.0);
-            set_state(PART:"elm.swallow.end", "default", 0.0);
-            set_int(main_end_text_visible, 0);
-            set_int(end_icon_visible, 0);
-         }
-      }
-   }
 }
 
 /*
