@@ -1,178 +1,18 @@
-/*
- * Copyright (c) 2010 Samsung Electronics Co., Ltd All Rights Reserved
- *
- * BSD 2-Clause License (http://www.opensource.org/licenses/bsd-license.php)
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- *   1. Redistributions of source code must retain the above copyright notice, this
- *      list of conditions and the following disclaimer.
- *   2. Redistributions in binary form must reproduce the above copyright notice,
- *      this list of conditions and the following disclaimer in the documentation
- *      and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// MACRO
+#define POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC 30
+#define POPUP_DESCRIPTION_DEFAULT_TEXT_FONT_SIZE_INC 28
 
-/*popup widget specific notify style*/
-group { name: "elm/notify/bottom/popup";
-   alias: "elm/notify/bottom/transparent";
-   parts {
-      part { name: "base";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
-         }
-      }
-     part { name: "elm.swallow.content";
-        type: SWALLOW;
-        scale: 1;
-        description { state: "default" 0.0;
-           rel1.to: "base";
-           rel2.to: "base";
-           align: 0.5 0.0;
-           fixed: 1 1;
-        }
-        description { state: "end" 0.0;
-           rel1.to: "base";
-           rel2.to: "base";
-           align: 0.5 1.0;
-           fixed: 1 1;
-        }
-     }
-     part { name: "block";
-        scale: 1;
-        type: RECT;
-        description { state: "default" 0.0;
-           rel1.to: "elm.swallow.content";
-           rel2.to: "elm.swallow.content";
-           visible: 1;
-           color: 0 0 0 0;
-        }
-        description { state: "end" 0.0;
-           inherit: "default" 0.0;
-           visible: 0;
-        }
-     }
-   }
-   programs {
-      program { name: "load";
-         signal: "load";
-         source: "";
-         action: STATE_SET "end" 0.0;
-         target: "elm.swallow.content";
-      }
-      program { name: "show";
-         signal: "elm,action,show";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.content";
-      }
-      program { name: "show_1";
-         signal: "show";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.content";
-         after: "end2";
-      }
-      program { name: "end2";
-         action: STATE_SET "end" 0.0;
-         transition: SIN_FAC 0.33 1.7;
-         target: "elm.swallow.content";
-         target: "block";
-         after: "showfinished";
-      }
-      program { name: "showfinished";
-         action: SIGNAL_EMIT "elm,action,show,finished" "";
-      }
-      program { name: "hide";
-         signal: "elm,action,hide";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.content";
-      }
-   }
-}
+#define POPUP_BASE_DEFAULT_BASE_DEFAULT_MIN_INC 688 378
+#define POPUP_BASE_DEFAULT_BASE_DEFAULT_MAX_INC 688 378
+#define POPUP_BASE_DEFAULT_BASE_LANDSCAPE_MIN_INC 720 0
+#define POPUP_BASE_DEFAULT_BASE_LANDSCAPE_MAX_INC 720 648
+#define POPUP_BASE_DEFAULT_TITLE_DEFAULT_MIN_INC 670 84
+#define POPUP_BASE_DEFAULT_BUTTON_BG_DEFAULT_MIN_INC 688 146
 
-group { name: "elm/notify/bottom/toast";
-   parts {
-      part { name: "base";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
-         }
-      }
-     part { name: "elm.swallow.content";
-        type: SWALLOW;
-        scale: 1;
-        description { state: "default" 0.0;
-           rel1.to: "base";
-           rel2.to: "base";
-           align: 0.5 1.0;
-           fixed: 1 1;
-        }
-     }
-     part { name: "block";
-        scale: 1;
-        type: RECT;
-        description { state: "default" 0.0;
-           rel1.to: "elm.swallow.content";
-           rel2.to: "elm.swallow.content";
-           fixed: 1 1;
-           visible: 1;
-           color: 0 0 0 0;
-        }
-        description { state: "end" 0.0;
-           inherit: "default" 0.0;
-           visible: 0;
-        }
-     }
-   }
-   programs {
-      program { name: "load";
-         signal: "load";
-         source: "";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.content";
-      }
-      program { name: "show";
-         signal: "elm,action,show";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.content";
-      }
-      program { name: "show_1";
-         signal: "show";
-         action: STATE_SET "end" 0.0;
-         target: "block";
-         after: "showfinished";
-      }
-      program { name: "showfinished";
-         action: SIGNAL_EMIT "elm,action,show,finished" "";
-      }
-      program { name: "hide";
-         signal: "elm,action,hide";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.content";
-      }
-   }
-}
+#define POPUP_BUTTON_DEFAULT_ACTION_AREA_HEIGHT "146"
+
+#define POPUP_BUTTON_MIN_SIZE 196 70
+#define POPUP_BUTTON_PADDING_SIZE 20 70
 
 group { name: "elm/notify/block_events/popup";
    images {
@@ -231,260 +71,45 @@ group { name: "elm/notify/block_events/popup";
    }
 }
 
-group { name: "elm/notify/block_events/transparent";
-   alias: "elm/notify/block_events/toast";
+// notify
+group { name: "elm/notify/center/popup/default";
    parts {
-      part { name: "block_events";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-      }
-   }
-   programs {
-      program { name: "block_clicked";
-         signal: "mouse,clicked,1";
-         source: "block_events";
-         action: SIGNAL_EMIT "elm,action,click" "elm";
-      }
-   }
-}
-
-group { name: "elm/notify/block_events/center_popup";
-   parts {
-      part { name: "block_events_color";
-         type: RECT;
+      part { name: "base";
+         type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            color_class: "transparent";
+            min: POPUP_BASE_DEFAULT_BASE_DEFAULT_MIN_INC;
+            max: POPUP_BASE_DEFAULT_BASE_DEFAULT_MAX_INC;
          }
-         description { state: "show" 0.0;
-            inherit: "default" 0.0;
-            color: 7 7 7 102; /*(Changeable UI) color_class: "B015";*/
-         }
-         description { state: "clicked" 0.0;
-            inherit: "default" 0.0;
-            color: 7 7 7 102; /*(Changeable UI) color_class: "B015";*/
+         description { state: "landscape" 0.0;
+            min: POPUP_BASE_DEFAULT_BASE_LANDSCAPE_MIN_INC;
+            max: POPUP_BASE_DEFAULT_BASE_LANDSCAPE_MAX_INC;
          }
       }
-   }
-   programs {
-      program { name: "show";
-         signal: "elm,action,show";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "block_events_color";
-       }
-      program { name: "show1";
-         signal: "show";
-         action: STATE_SET "show" 0.0;
-         transition: SIN_FAC 0.166 0.5;
-         target: "block_events_color";
-      }
-      program { name: "block_clicked";
-         signal: "mouse,clicked,1";
-         source: "block_events_color";
-         action: SIGNAL_EMIT "elm,action,click" "elm";
-         after: "deeper_block_color";
-      }
-      program {
-         name: "deeper_block_color";
-         action: STATE_SET "clicked" 0.0;
-         target: "block_events_color";
-         transition: LINEAR 0.2;
-         after: "default_block_color";
-      }
-      program {
-         name: "default_block_color";
-         action: STATE_SET "show" 0.0;
-         target: "block_events_color";
-         transition: LINEAR 0.2;
-      }
-   }
-}
-
-group { name: "elm/label/base/popup/default";
-   alias: "elm/label/base/popup/center_popup";
-   alias: "elm/label/base/popup/transparent";
-   styles {
-      style { name: "popup_desc_style";
-         base: "font=Tizen:style=Regular font_size=30 align=left color=#070707FF wrap=mixed text_class=label";
-         //(Changeable UI) base: "font=Tizen:style=Regular font_size="POPUP_DESCRIPTION_DEFAULT_TEXT_FONT_SIZE_INC" align=left color=#FFFFFF color_class=T123 wrap=mixed text_class=T123";
-         tag: "br" "\n";
-         tag: "ps" "ps";
-         tag: "whitecolor" "+ color=#ffffff";
-         tag: "tab" "\t";
-      }
-   }
-   parts {
-      part { name: "pad_t";
-         type: RECT;
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0.5 0.0;
-            min: 0 POPUP_CONTENT_DEFAULT_PADDING_TOP_MIN_INC;
-            max: 0 POPUP_CONTENT_DEFAULT_PADDING_TOP_MIN_INC;
-            fixed: 0 1;
-            visible: 0;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "pad_l";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "pad_r";
-            }
-         }
-      }
-      part { name: "pad_l";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: POPUP_CONTENT_DEFAULT_PADDING_LEFT_MIN_INC 0;
-            max: POPUP_CONTENT_DEFAULT_PADDING_LEFT_MIN_INC 0;
-            fixed: 1 0;
-            visible: 0;
-            rel2.relative: 0.0 1.0;
-            align: 0.0 0.0;
-         }
-      }
-      part { name: "pad_r";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: POPUP_CONTENT_DEFAULT_PADDING_RIGHT_MIN_INC 0;
-            max: POPUP_CONTENT_DEFAULT_PADDING_RIGHT_MIN_INC 0;
-            fixed: 1 0;
-            visible: 0;
-            rel1.relative: 1.0 0.0;
-            align: 1.0 0.0;
-         }
-      }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
-            fixed: 1 0;
-            rel1 {
-               relative: 1.0 1.0;
-               to_x: "pad_l";
-               to_y: "pad_t";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "pad_r";
-               to_y: "pad_b";
-            }
-            text {
-               style: "popup_desc_style";
-               min: 0 1;
-               max: 0 1;
-            }
-         }
-      }
-      part { name: "pad_b";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: 0 POPUP_CONTENT_DEFAULT_PADDING_BOTTOM_MIN_INC;
-            max: 0 POPUP_CONTENT_DEFAULT_PADDING_BOTTOM_MIN_INC;
-            fixed: 0 1;
-            visible: 0;
-            rel1 {
-               relative: 0.0 1.0;
-               to_x: "pad_l";
-            }
-            rel2.to_x: "pad_r";
+            rel1.to: "base";
+            rel2.to: "base";
          }
       }
    }
 }
 
-group { name: "elm/label/base/popup/toast";
-   styles {
-      style { name: "popup_toast_style";
-         base: "font=Tizen:style=Regular font_size=27 align=center color=#070707FF wrap=mixed text_class=label";
-         //(Changeable UI) base: "font=Tizen:style=Regular font_size="POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC" color=#FFFFFF align=center color_class=T1221 wrap=mixed text_class=T1221";
-         tag:  "br" "\n";
-         tag:  "tab" "\t";
-      }
-   }
-   parts {
-      part { name: "pad_l";
-        type: SPACER;
-        scale: 1;
-        description { state: "default" 0.0;
-            min: POPUP_TOAST_TITLE_LEFT_RIGHT_PAD_INC 0;
-            max: POPUP_TOAST_TITLE_LEFT_RIGHT_PAD_INC -1;
-            fixed: 1 0;
-            align: 0.0 0.0;
-            rel2 {
-               relative: 0.0 1.0;
-            }
-         }
-      }
-      part { name: "pad_r";
-        type: SPACER;
-        scale: 1;
-        description { state: "default" 0.0;
-            min: POPUP_TOAST_TITLE_LEFT_RIGHT_PAD_INC 0;
-            max: POPUP_TOAST_TITLE_LEFT_RIGHT_PAD_INC -1;
-            fixed: 1 0;
-            align: 1.0 1.0;
-            rel1 {
-               relative: 1.0 0.0;
-            }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
-            fixed: 1 0;
-            rel1 {
-               to_x: "pad_l";
-               relative: 1.0 0.0;
-            }
-            rel2 {
-               to_x: "pad_r";
-               relative: 0.0 1.0;
-            }
-            text {
-               style: "popup_toast_style";
-               min: 0 1;
-               max: 0 1;
-            }
-         }
-      }
-   }
-}
-
+// popup
 group { name: "elm/popup/base/default";
-   alias: "elm/popup/base/transparent";
+   images {
+      image: "modal_dialogs_bg.png" COMP;
+      image: "round_rectangle_8X8_top.png" COMP;
+   }
    data {
       item: "focus_highlight" "on";
       item: "default_orient" "2"; //top, center:1 bottom:2
-      item: "title_height" POPUP_TITLE_AREA_HEIGHT;
-      item: "popup_outside_pad" POPUP_OUTSIDE_PADDING;
-      item: "max_height" POPUP_SCROLLER_MAX_HEIGHT;
    }
    styles {
       style { name: "popup_title_style";
-         base: "font=Tizen:style=Regular align=center font_size=38 color=#3DB9CCFF wrap=mixed ellipsis=1.0 text_class=label";
-         // (Changeable UI) base: "font=Tizen:style=Regular align=center font_size="POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC" color=#FFFFFF color_class=T121 wrap=mixed ellipsis=1.0 text_class=T121 style=far_shadow,bottom shadow_color="POPUP_BASE_DEFAULT_TEXT_SHADOW_COLOR_INC"";
-         tag:  "br" "\n";
-         tag:  "tab" "\t";
-      }
-      style { name: "popup_title_sub_style";
-         base: "font=Tizen:style=Regular align=center font_size=32 color=#3DB9CCFF wrap=mixed ellipsis=1.0 text_class=label";
-         // (Changeable UI) base: "font=Tizen:style=Regular align=center font_size="POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC" color=#FFFFFF color_class=T121 wrap=mixed ellipsis=1.0 text_class=T121 style=far_shadow,bottom shadow_color="POPUP_BASE_DEFAULT_TEXT_SHADOW_COLOR_INC"";
-         tag:  "br" "\n";
-         tag:  "tab" "\t";
-      }
-      style { name: "popup_subtitle_style";
-         base: "font=Tizen:style=Regular align=center font_size=22 color=#3DB9CCFF wrap=mixed ellipsis=1.0 text_class=label";
-         // (Changeable UI) base: "font=Tizen:style=Regular align=center font_size="POPUP_SUBTITLE_TEXT_FONT_SIZE_INC" color=#FFFFFF color_class=T1211 wrap=mixed ellipsis=1.0 text_class=T1211 style=far_shadow,bottom shadow_color="POPUP_SUBTITLE_TEXT_SHADOW_COLOR_INC"";
+         base: "font=Tizen:style=Regular align=center font_size="POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC" color=#FFFFFF wrap=mixed ellipsis=1.0";
          tag:  "br" "\n";
          tag:  "tab" "\t";
       }
@@ -492,11 +117,10 @@ group { name: "elm/popup/base/default";
    parts {
       part { name: "base";
          scale: 1;
-         type: RECT;
+         type: SPACER;
          description { state: "default" 0.0;
             min: POPUP_BASE_DEFAULT_BASE_DEFAULT_MIN_INC;
             max: POPUP_BASE_DEFAULT_BASE_DEFAULT_MAX_INC;
-            fixed: 1 0;
          }
          description { state: "landscape" 0.0;
             inherit: "default" 0.0;
@@ -505,11 +129,15 @@ group { name: "elm/popup/base/default";
          }
       }
       part { name: "bg";
-         type: RECT;
          scale: 1;
-         description { state: "default" 0.0;
+         type: IMAGE;
+         description {
             rel1.to: "base";
             rel2.to: "base";
+            image {
+               normal: "modal_dialogs_bg.png";
+               border: 18 18 15 21;
+            }
          }
       }
       part { name: "access.outline";
@@ -523,50 +151,32 @@ group { name: "elm/popup/base/default";
          }
       }
       part { name: "elm.bg.title";
-         type: RECT;
+         type: IMAGE;
          scale: 1;
          description { state: "default" 0.0;
-            min: 0 0;
             fixed: 1 1;
+            color: 42 76 130 255;
             align: 0.5 0.0;
-            rel1.to: "base";
-            rel2.to: "base";
-            rel2.relative: 1.0 0.0;
+            min: 0 84;
+            rel1 {
+               relative: 0.0 0.0;
+               to: "base";
+               offset: 9 6;
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to: "base";
+               offset: -10 6;
+            }
+            image {
+               normal: "round_rectangle_8X8_top.png";
+               border: 8 8 8 0;
+            }
+            visible: 0;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            min: POPUP_BASE_DEFAULT_TITLE_DEFAULT_MIN_INC;
-         }
-         description { state: "subtitle_visible" 0.0;
-            inherit: "default" 0.0;
-            min: POPUP_BASE_DEFAULT_TITLE_SUB_DEFAULT_MIN_INC;
-         }
-      }
-      part { name: "title_left_top_padding";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1.to: "elm.bg.title";
-            fixed: 1 1;
-            min: POPUP_TITLE_LEFT_PADDING POPUP_TITLE_TOP_PADDING;
-            max: POPUP_TITLE_LEFT_PADDING POPUP_TITLE_TOP_PADDING;
-         }
-         description { state: "subtitle_visible" 0.0;
-            inherit: "default" 0.0;
-            min: POPUP_TITLE_LEFT_PADDING POPUP_TITLE_TOP_SUB_PADDING;
-            max: POPUP_TITLE_LEFT_PADDING POPUP_TITLE_TOP_SUB_PADDING;
-         }
-      }
-      part { name: "title_right_bottom_padding";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            rel2.to: "elm.bg.title";
-            fixed: 1 1;
-            min: POPUP_TITLE_RIGHT_PADDING POPUP_TITLE_BOTTOM_PADDING;
-            max: POPUP_TITLE_RIGHT_PADDING POPUP_TITLE_BOTTOM_PADDING;
+            visible: 1;
          }
       }
       part { name: "elm.text.title";
@@ -578,46 +188,8 @@ group { name: "elm/popup/base/default";
               style: "popup_title_style";
               size: POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC;
             }
-            rel1 {
-               relative: 1.0 1.0;
-               to: "title_left_top_padding";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to: "title_right_bottom_padding";
-            }
-         }
-         description { state: "subtitle_visible" 0.0;
-            inherit: "default" 0.0;
-            rel2 {
-               relative: 1.0 0.0;
-               to: "elm.text.subtitle";
-            }
-         }
-      }
-      part { name: "elm.text.subtitle";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 POPUP_SUBTITLE_HEIGHT;
-            max: -1 POPUP_SUBTITLE_HEIGHT;
-            text.style: "popup_subtitle_style";
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "title_left_top_padding";
-               to_y: "title_right_bottom_padding";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to: "title_right_bottom_padding";
-            }
-            align: 0.5 1.0;
-            fixed: 1 1;
-            visible: 0;
-         }
-         description { state: "subtitle_visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
+            rel1.to: "elm.bg.title";
+            rel2.to: "elm.bg.title";
          }
       }
       part { name: "access.title";
@@ -633,7 +205,7 @@ group { name: "elm/popup/base/default";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            fixed: 1 0;
+            fixed: 1 1;
             rel1.to: "base";
             rel2.to: "base";
          }
@@ -673,7 +245,6 @@ group { name: "elm/popup/base/default";
          type: RECT;
          repeat_events: 1;
          description { state: "default" 0.0;
-            fixed: 1 1;
             rel1.to: "elm.swallow.content";
             rel2.to: "elm.swallow.content";
             color: 0 0 0 0;
@@ -695,7 +266,6 @@ group { name: "elm/popup/base/default";
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             min: POPUP_BASE_DEFAULT_BUTTON_BG_DEFAULT_MIN_INC;
-            visible: 1;
          }
       }
       part { name: "elm.swallow.action_area";
@@ -708,22 +278,6 @@ group { name: "elm/popup/base/default";
       }
    }
    programs {
-      program { name: "show_subtitle";
-         signal: "elm,state,subtitle,text,visible";
-         source: "elm";
-         action: STATE_SET "subtitle_visible" 0.0;
-         target: "title_left_top_padding";
-         target: "elm.bg.title";
-         target: "elm.text.title";
-         target: "elm.text.subtitle";
-      }
-      program { name: "hide_subtitle";
-         signal: "elm,state,subtitle,text,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.title";
-         target: "elm.text.subtitle";
-      }
       program { name: show_title_area;
          signal: "elm,state,title_area,visible";
          source: "elm";
@@ -815,256 +369,149 @@ group { name: "elm/popup/base/default";
          signal: "elm,state,orient,180";
          after: "change_to_portrait";
       }
-   } /* end of programs */
+   }
 }
 
+// content
 group { name: "elm/popup/content/default";
-   alias: "elm/popup/content/transparent";
-   data.item: "content_area_width" POPUP_CONTENT_AREA_LANDSCAPE_WIDTH_INC;
    parts{
       part { name:"elm.swallow.content";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            min: POPUP_CONTENT_AREA_DEFAULT_MIN_INC;
          }
-         description { state: "landscape" 0.0;
-            min: POPUP_CONTENT_AREA_LANDSCAPE_MIN_INC;
-         }
-      }
-   }
-   programs {
-      program { name: "orientation_change";
-         action: SIGNAL_EMIT "elm,state,orientation,changed" "";
-      }
-      program { name: "landscape_mode";
-         source: "elm";
-         signal: "elm,state,orient,90";
-         action: STATE_SET "landscape" 0.0;
-         target: "elm.swallow.content";
-         after: "orientation_change";
-      }
-      program { name: "landscape_mode2";
-         source: "elm";
-         signal: "elm,state,orient,270";
-         action: STATE_SET "landscape" 0.0;
-         target: "elm.swallow.content";
-         after: "orientation_change";
-      }
-      program { name: "portrait_mode";
-         source: "elm";
-         signal: "elm,state,orient,0";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.content";
-         after: "orientation_change";
-      }
-      program { name: "portrait_mode2";
-         source: "elm";
-         signal: "elm,state,orient,180";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.content";
-         after: "orientation_change";
       }
    }
 }
 
-group { name: "elm/popup/content/toast";
-   data.item: "content_area_width" POPUP_TOAST_TEXT_MAX_WIDTH_INC;
-   parts{
-      part { name:"elm.swallow.content";
-         type: SWALLOW;
+// label
+group { name: "elm/label/base/popup/default";
+   styles {
+      style { name: "textblock_popupstyle";
+         base: "font=Tizen:style=Regular font_size="POPUP_DESCRIPTION_DEFAULT_TEXT_FONT_SIZE_INC" align=center color=#000000 wrap=mixed";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "hilight" "+ font_weight=Bold";
+         tag:  "b" "+ font_weight=Bold";
+         tag:  "tab" "\t";
+      }
+   }
+   parts {
+      part { name: "elm.text";
+         type: TEXTBLOCK;
          scale: 1;
          description { state: "default" 0.0;
-            min: POPUP_TOAST_TEXT_MAX_WIDTH_INC 0;
+            text {
+               style: "textblock_popupstyle";
+               min: 0 1;
+            }
          }
       }
    }
 }
 
+// button
 group { name: "elm/popup/buttons1/default";
-   alias: "elm/popup/buttons1/transparent";
    data.item: "action_area_height" POPUP_BUTTON_DEFAULT_ACTION_AREA_HEIGHT;
    parts{
-      part { name: "left_pad_btn";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTON1_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC POPUP_BUTTON1_DEFAULT_HEIGHT_INC;
-            max: POPUP_BUTTON1_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC POPUP_BUTTON1_DEFAULT_HEIGHT_INC;
-            fixed: 1 1;
-            align: 0 0.5;
-            rel1.relative: 0.0 0.0;
-         }
-      }
-      part { name: "right_pad_btn";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTON1_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC POPUP_BUTTON1_DEFAULT_HEIGHT_INC;
-            max: POPUP_BUTTON1_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC POPUP_BUTTON1_DEFAULT_HEIGHT_INC;
-            fixed: 1 1;
-            align: 1 0.5;
-            rel2.relative: 1.0 1.0;
-         }
-      }
       part{ name:"actionbtn1";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel1 {
-               relative: 1.0 0.0;
-               to: "left_pad_btn";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "right_pad_btn";
-            }
+            rel1.relative: 0.5 0.5;
+            rel2.relative: 0.5 0.5;
+            min: POPUP_BUTTON_MIN_SIZE;
          }
       }
    }
 }
 
 group { name: "elm/popup/buttons2/default";
-   alias: "elm/popup/buttons2/transparent";
    data.item: "action_area_height" POPUP_BUTTON_DEFAULT_ACTION_AREA_HEIGHT;
    parts{
-      part { name: "left_pad_btn";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTON2_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC POPUP_BUTTON2_DEFAULT_HEIGHT_INC;
-            max: POPUP_BUTTON2_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC POPUP_BUTTON2_DEFAULT_HEIGHT_INC;
-            fixed: 1 1;
-            align: 0 0.5;
-            rel1.relative: 0.0 0.0;
-         }
-      }
-      part { name: "right_pad_btn";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTON2_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC POPUP_BUTTON2_DEFAULT_HEIGHT_INC;
-            max: POPUP_BUTTON2_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC POPUP_BUTTON2_DEFAULT_HEIGHT_INC;
-            fixed: 1 1;
-            align: 1 0.5;
-            rel2.relative: 1.0 1.0;
-         }
-      }
       part { name:"actionbtn1";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            fixed: 1 1;
-            align: 1.0 0.5;
+            fixed: 0 1;
             rel1 {
-               relative: 1.0 0.0;
-               to: "left_pad_btn";
+               relative: 0.0 0.5;
+               to: "pad";
             }
             rel2 {
-               relative: 0.0 1.0;
-               to: "elm.rect.pad_btn";
+               relative: 0.0 0.5;
+               to: "pad";
             }
+            align: 1.0 0.5;
+            min: POPUP_BUTTON_MIN_SIZE;
          }
       }
-      part { name: "elm.rect.pad_btn";
-         scale: 1;
+      part { name: "pad";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
-            min: POPUP_BUTTON2_DEFAULT_PADDING_BUTTON_MIN_MAX_INC;
-            max: POPUP_BUTTON2_DEFAULT_PADDING_BUTTON_MIN_MAX_INC;
             fixed: 1 1;
-            rel1.relative: 0.5 0.0;
-            rel2.relative: 0.5 1.0;
+            rel1.relative: 0.5 0.5;
+            rel2.relative: 0.5 0.5;
+            min: POPUP_BUTTON_PADDING_SIZE;
          }
       }
-      part { name:"actionbtn2";
+      part{ name:"actionbtn2";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            fixed: 1 1;
-            align: 0.0 0.5;
+            fixed: 0 1;
             rel1 {
-               relative: 1.0 0.0;
-               to: "elm.rect.pad_btn";
+               relative: 1.0 0.5;
+               to: "pad";
             }
             rel2 {
-               relative: 0.0 1.0;
-               to: "right_pad_btn";
+               relative: 1.0 0.5;
+               to: "pad";
             }
+            align: 0.0 0.5;
+            min: POPUP_BUTTON_MIN_SIZE;
          }
       }
    }
 }
 
 group { name: "elm/popup/buttons3/default";
-   alias: "elm/popup/buttons3/transparent";
    data.item: "action_area_height" POPUP_BUTTON_DEFAULT_ACTION_AREA_HEIGHT;
    parts{
-      part { name: "left_pad_btn";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTON3_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC POPUP_BUTTON3_DEFAULT_HEIGHT_INC;
-            max: POPUP_BUTTON3_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC POPUP_BUTTON3_DEFAULT_HEIGHT_INC;
-            fixed: 1 1;
-            align: 0 0.5;
-            rel1.relative: 0.0 0.0;
-         }
-      }
-      part { name: "right_pad_btn";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: POPUP_BUTTON3_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC POPUP_BUTTON3_DEFAULT_HEIGHT_INC;
-            max: POPUP_BUTTON3_DEFAULT_PADDING_LEFT_RIGHT_WIDTH_INC POPUP_BUTTON3_DEFAULT_HEIGHT_INC;
-            fixed: 1 1;
-            align: 1 0.5;
-            rel2.relative: 1.0 1.0;
-         }
-      }
-      part { name: "btn_area";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            fixed: 1 1;
-            rel1 {
-               relative: 1.0 0.0;
-               to: "left_pad_btn";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "right_pad_btn";
-            }
-         }
-      }
-      part{ name:"actionbtn1";
+      part { name:"actionbtn1";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
-            align: 1.0 0.5;
             rel1 {
-               relative: 1.0 0.0;
-               to: "left_pad_btn";
+               relative: 0.0 0.5;
+               to: "pad.left";
             }
             rel2 {
-               relative: 0.0 1.0;
-               to: "elm.rect.pad_btn";
+               relative: 0.0 0.5;
+               to: "pad.left";
             }
+            align: 1.0 0.5;
+            min: POPUP_BUTTON_MIN_SIZE;
          }
       }
-      part { name: "elm.rect.pad_btn";
-         scale: 1;
+      part { name: "pad.left";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
-            min: POPUP_BUTTON3_DEFAULT_PADDING_BUTTON_MIN_MAX_INC;
-            max: POPUP_BUTTON3_DEFAULT_PADDING_BUTTON_MIN_MAX_INC;
             fixed: 1 1;
-            rel1.relative: 0.33 0.0;
-            rel1.to: "btn_area";
-            rel2.relative: 0.33 1.0;
-            rel2.to: "btn_area";
+            rel1 {
+               relative: 0.0 0.5;
+               to: "actionbtn2";
+            }
+            rel2 {
+               relative: 0.0 0.5;
+               to: "actionbtn2";
+            }
+            align: 1.0 0.5;
+            min: POPUP_BUTTON_PADDING_SIZE;
          }
       }
       part{ name:"actionbtn2";
@@ -1072,27 +519,26 @@ group { name: "elm/popup/buttons3/default";
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel1 {
-               relative: 1.0 0.0;
-               to: "elm.rect.pad_btn";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "elm.rect.pad_btn2";
-            }
+            rel1.relative: 0.5 0.5;
+            rel2.relative: 0.5 0.5;
+            min: POPUP_BUTTON_MIN_SIZE;
          }
       }
-      part { name: "elm.rect.pad_btn2";
-         scale: 1;
+      part { name: "pad.right";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
-            min: POPUP_BUTTON3_DEFAULT_PADDING_BUTTON_MIN_MAX_INC;
-            max: POPUP_BUTTON3_DEFAULT_PADDING_BUTTON_MIN_MAX_INC;
             fixed: 1 1;
-            rel1.relative: 0.67 0.0;
-            rel1.to: "btn_area";
-            rel2.relative: 0.67 1.0;
-            rel2.to: "btn_area";
+            rel1 {
+               relative: 1.0 0.5;
+               to: "actionbtn2";
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               to: "actionbtn2";
+            }
+            align: 0.0 0.5;
+            min: POPUP_BUTTON_PADDING_SIZE;
          }
       }
       part{ name:"actionbtn3";
@@ -1100,152 +546,16 @@ group { name: "elm/popup/buttons3/default";
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
+            rel1 {
+               relative: 1.0 0.5;
+               to: "pad.right";
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               to: "pad.right";
+            }
             align: 0.0 0.5;
-            rel1 {
-               relative: 1.0 0.0;
-               to: "elm.rect.pad_btn2";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "right_pad_btn";
-            }
-         }
-      }
-   }
-}
-
-group { name: "elm/notify/center/center_popup";
-   parts {
-      part { name: "base";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
-            min: POPUP_BASE_DEFAULT_BASE_DEFAULT_MIN_INC;
-            max: POPUP_BASE_DEFAULT_BASE_DEFAULT_MAX_INC;
-            fixed: 1 0;
-         }
-         description { state: "landscape" 0.0;
-            inherit: "default" 0.0;
-            min: POPUP_BASE_DEFAULT_BASE_LANDSCAPE_MIN_INC;
-            max: POPUP_BASE_DEFAULT_BASE_LANDSCAPE_MAX_INC;
-            fixed: 1 0;
-         }
-      }
-     part { name: "elm.swallow.content";
-        type: SWALLOW;
-        scale: 1;
-        description { state: "default" 0.0;
-           rel1.to: "base";
-           rel2.to: "base";
-           align: 0.5 1.0;
-           fixed: 1 1;
-        }
-     }
-   }
-}
-
-group { name: "elm/popup/base/toast";
-   images {
-      set {
-         name: "core_popup_noti_bg.#";
-         image {
-            image: SMALL"images/Popups/core_popup_noti_bg.#.png" COMP;
-         }
-         image {
-            image: MEDIUM"images/Popups/core_popup_noti_bg.#.png" COMP;
-         }
-      }
-      set {
-         name: "core_popup_noti_bg_stroke.#";
-         image {
-            image: SMALL"images/Popups/core_popup_noti_bg_stroke.#.png" COMP;
-         }
-         image {
-            image: MEDIUM"images/Popups/core_popup_noti_bg_stroke.#.png" COMP;
-         }
-      }
-   }
-   data {
-      item: "default_orient" "2"; //top, center:1 bottom:2
-      item: "title_height" POPUP_TITLE_AREA_HEIGHT;
-      item: "popup_outside_pad" POPUP_OUTSIDE_PADDING;
-   }
-   parts {
-      part { name: "bg";
-         scale: 1;
-         description { state: "default" 0.0;
-            rel1.to: "bg_outer";
-            rel2.to: "bg_outer";
-            image.normal: "core_popup_noti_bg.#";
-         }
-      }
-      part { name: "bg_outer";
-         scale: 1;
-         description { state: "default" 0.0;
-            image.normal: "core_popup_noti_bg_stroke.#";
-            color: 61 185 204 255;
-            min: POPUP_TOAST_TEXT_MAX_WIDTH_INC 0;
-            max: POPUP_TOAST_BG_MAX_WIDTH_INC POPUP_TOAST_BG_MAX_HEIGHT_INC;
-            rel2.to: "bottom_padding";
-            rel2.relative: 1.0 0.0;
-         }
-      }
-      part { name: "bottom_padding";
-        type: SPACER;
-        scale: 1;
-        description { state: "default" 0.0;
-            min: 0 POPUP_TOAST_BOTTOM_PAD_INC;
-            max: -1 POPUP_TOAST_BOTTOM_PAD_INC;
-            fixed: 0 1;
-            align: 0.5 1.0;
-         }
-      }
-      part { name: "title_top_padding";
-        type: SPACER;
-        scale: 1;
-        description { state: "default" 0.0;
-            align: 0.5 0.0;
-            min: 0 POPUP_TOAST_TITLE_TOP_PAD_INC;
-            max: -1 POPUP_TOAST_TITLE_TOP_PAD_INC;
-            fixed: 0 1;
-            rel1.to: "bg";
-            rel2 {
-               to: "bg";
-               relative: 1.0 0.0;
-            }
-         }
-      }
-      part { name: "title_bottom_padding";
-        type: SPACER;
-        scale: 1;
-        description { state: "default" 0.0;
-            min: 0 POPUP_TOAST_TITLE_BOTTOM_PAD_INC;
-            max: -1 POPUP_TOAST_TITLE_BOTTOM_PAD_INC;
-            fixed: 0 1;
-            align: 0.5 1.0;
-            rel1 {
-               to: "bg";
-               relative: 0.0 1.0;
-            }
-            rel2.to: "bg";
-         }
-      }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 POPUP_TOAST_TEXT_MIN_HEIGHT_INC;
-            rel1 {
-              to_y: "title_top_padding";
-              relative: 0.0 1.0;
-            }
-            rel2 {
-              to_y: "title_bottom_padding";
-              relative: 1.0 0.0;
-            }
+            min: POPUP_BUTTON_MIN_SIZE;
          }
       }
    }

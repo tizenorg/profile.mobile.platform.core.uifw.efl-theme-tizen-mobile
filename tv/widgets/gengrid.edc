@@ -1,602 +1,1118 @@
+/*****************************************************************************
+Tizen TV_General Guide_GUI Guideline_v1.1_140709.ppt  38
+******************************************************************************/
 
-/*
- * Copyright (c) 2010 Samsung Electronics Co., Ltd All Rights Reserved
- *
- * BSD 2-Clause License (http://www.opensource.org/licenses/bsd-license.php)
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- *   1. Redistributions of source code must retain the above copyright notice, this
- *      list of conditions and the following disclaimer.
- *   2. Redistributions in binary form must reproduce the above copyright notice,
- *      this list of conditions and the following disclaimer in the documentation
- *      and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/********************************************************************************/
-/******************************* Gengrid Macros *********************************/
-/********************************************************************************/
-
-#define GRID_DEFAULT_BG_COLOR 0 0 0 0
-#define GRID_ICON_PRESSED_COLOR 255 255 255 178
-#define GRID_POPUP_TEXT_FONT_SIZE 24
-
-#define GENGRID_PROGRAM_DEFAULT( TARGET ) \
-         program { name: "default"; \
-            signal: "elm,state,default"; \
-            source: "elm"; \
-            action: STATE_SET "default" 0.0; \
-            target: "focus_bg"; \
-            TARGET \
-         } \
-
-styles {
-   style { name: "grid_popup_style";
-      base: "font=Tizen:style=Regular font_size=24 color=#070707FF text_class=tizen align=center wrap=mixed ellipsis=1.0 linegap=-3";
-      tag: "br" "\n";
-      tag: "ps" "ps";
-      tag: "tab" "\t";
-      tag: "b" "+ font_weight=Bold";
+group { name: "elm/gengrid/item/default/default";
+   data.item: "texts" "elm.text";
+   data.item: "contents" "elm.swallow.icon";
+   data.item: "focus_highlight" "on";
+   images {
+      image: "content_innershadow.png" COMP;
+   }
+   parts {
+      part { name: "base"; type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 179;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "top.left.pad";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "bottom.right.pad";
+            }
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color: 147 170 0 255;
+         }
       }
-   style { name: "grid_out_text_style";
-      base: "font=Tizen:style=Regular font_size=22 color=#000000FF align=center wrap=mixed ellipsis=1.0";
-      tag: "br" "\n";
-      tag: "ps" "ps";
-      tag: "tab" "\t";
-      tag: "b" "+ font_weight=Bold";
+      part { name: "top.left.pad"; type: SPACER;
+         scale:1 ;
+         description { state: "default" 0.0;
+            rel2.relative: 0.0 0.0;
+            align: 0.0 0.0;
+            min: 20 20;
+         }
       }
-   style { name: "grid_in_text_style";
-      base: "font=Tizen:style=Regular font_size=22 color=#FFFFFFFF align=center wrap=mixed ellipsis=1.0";
-      tag: "br" "\n";
-      tag: "ps" "ps";
-      tag: "tab" "\t";
-      tag: "b" "+ font_weight=Bold";
+      part { name: "bottom.right.pad"; type: SPACER;
+         scale:1 ;
+         description { state: "default" 0.0;
+            rel1.relative: 1.0 1.0;
+            align: 1.0 1.0;
+            min: 20 20;
+         }
+      }
+      part { name: "top.pad"; type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "base";
+            rel2 {
+               relative: 0.0 0.0;
+               to: "base";
+            }
+            align: 0.0 0.0;
+            min: 0 8;
+         }
+      }
+      part { name: "left.pad"; type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "base";
+            rel2 {
+               relative: 0.0 0.0;
+               to: "base";
+            }
+            align: 0.0 0.0;
+            min: 8 0;
+         }
+      }
+      part { name: "right.pad"; type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "base";
+            }
+            rel2.to: "base";
+            align: 1.0 1.0;
+            min: 8 0;
+         }
+      }
+      part { name: "text.base"; type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 60;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "base";
+            }
+            rel2.to: "base";
+            align: 0.5 1.0;
+         }
+      }
+      part { name: "elm.text"; type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 211 211 211 255;
+            text {
+               font: "Tizen Sans";
+               size: 26;
+               min: 1 1;
+               ellipsis: -1;
+            }
+            rel1.to: "text.base";
+            rel2.to: "text.base";
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.swallow.icon"; type: SWALLOW;
+         scale: 1;
+         clip_to: "clip";
+         description { state: "default" 0.0;
+            rel1.to: "base";
+            rel2 {
+               relative: 1.0 0.0;
+               to_x: "base";
+               to_y: "text.base";
+            }
+         }
+      }
+      part { name: "icon.shadow";
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "clip";
+            rel2.to: "clip";
+            image {
+               normal: "content_innershadow.png";
+               border: 5 5 5 5;
+            }
+            visible: 0;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+      part { name: "clip"; type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
+         }
+         description { state: "focused" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left.pad";
+               to_y: "top.pad";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to_x: "right.pad";
+               to_y: "text.base";
+            }
+         }
       }
    }
+   programs {
+      program { name: "focus";
+         signal: "elm,state,focused";
+         source: "elm";
+         action: STATE_SET "focused" 0.0;
+         target: "clip";
+         target: "elm.text";
+         target: "base";
+         target: "icon.shadow";
+         transition: LINEAR 0.1;
+      }
+      program { name: "unfocus";
+         signal: "elm,state,unfocused";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "clip";
+         target: "elm.text";
+         target: "base";
+         target: "icon.shadow";
+         transition: LINEAR 0.1;
+      }
+   }
+}
 
+/*****************************************************************************
+Tizen TV_General Guide_GUI Guideline_v1.1_140709.ppt  39
+******************************************************************************/
 
-/********************************************************************************/
-/******************************* Gengrid Groups *********************************/
-/********************************************************************************/
+group { name: "elm/gengrid/item/video_preview/default";
+   inherit: "elm/gengrid/item/default/default";
+   data.item: "texts" "elm.text elm.text.time";
+   data.item: "contents" "elm.swallow.icon";
+   images {
+      image: "round_rectangle_4X4.png" COMP;
+      image: "ico_default_video_180.png" COMP;
+   }
+   parts {
+      part { name: "rect";
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 120 120;
+            rel1 {
+               relative: 0.5 0.5;
+               to: "elm.swallow.icon";
+            }
+            rel2 {
+               relative: 0.5 0.5;
+               to: "elm.swallow.icon";
+            }
+            color: 100 100 100 100;
+            image {
+               normal: "round_rectangle_4X4.png";
+               border: 4 4 4 4;
+            }
+         }
+      }
+      part { name: "video.icon";
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "rect";
+            rel2.to: "rect";
+            image.normal: "ico_default_video_180.png";
+         }
+      }
+      part { name: "time.pad"; type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "base";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to: "base";
+            }
+            align: 1.0 0.0;
+            min: 21 21;
+         }
+      }
+      part { name: "time.bg"; type: RECT;
+         scale: 1;
+         clip_to: "clip";
+         description { state: "default" 0.0;
+            rel1.to: "base";
+            rel2 {
+               relative: 1.0 0.0;
+               to: "base";
+            }
+            align: 0.5 0.0;
+            min: 0 54;
+            color: 127 127 127 127;
+         }
+      }
+      part { name: "elm.text.time"; type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            text {
+               font: "Tizen Sans";
+               size: 22;
+               min: 1 1;
+               ellipsis: -1;
+            }
+            rel1 {
+               relative: 0.0 1.0;
+               to: "time.pad";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to: "time.pad";
+            }
+            align: 1.0 0.0;
+            color: 200 200 200 200;
+         }
+      }
+   }
+}
 
+/*****************************************************************************
+Tizen TV_General Guide_GUI Guideline_v1.1_140709.ppt  40
+******************************************************************************/
 
-   group { name: "elm/gengrid/item/default/default";
-      alias: "elm/gengrid/item/type1/default";
-      data.item: "contents" "elm.swallow.icon elm.swallow.end";
-      data.item: "focus_highlight" "on";
-      data.item: "texts" "elm.text";
+group { name: "elm/gengrid/item/folder/default";
+   inherit: "elm/gengrid/item/default/default";
+   data.item: "texts" "elm.text elm.text2";
+   data.item: "contents" "";
+   images {
+      image: "ico_folder.png" COMP;
+   }
+   parts {
+      part { name: "base"; type: RECT;
+         scale: 1;
+         description { state: "focused" 0.0;
+            color: 126 128 255 255;
+         }
+      }
+      part { name: "icon.bg"; type: RECT;
+         scale: 1;
+         clip_to: "clip";
+         description { state: "default" 0.0;
+            color: 0 0 0 255;
+            rel1.to: "elm.swallow.icon";
+            rel2.to: "elm.swallow.icon";
+         }
+      }
+      part { name: "folder.icon";
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 200 200;
+            max: 200 200;
+            rel1 {
+               relative: 0.5 0.5;
+               to: "icon.bg";
+            }
+            rel2 {
+               relative: 0.5 0.5;
+               to: "icon.bg";
+            }
+            image {
+               normal: "ico_folder.png";
+            }
+         }
+      }
+      part { name: "text.base"; type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 80;
+         }
+      }
+      part { name: "elm.text"; type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 211 211 211 255;
+            text {
+               font: "Tizen Sans";
+               size: 26;
+               min: 1 1;
+               ellipsis: -1;
+            }
+            rel1 {
+               relative: 0.5 0.5;
+               to: "text.base";
+            }
+            rel2 {
+               relative: 0.5 0.5;
+               to: "text.base";
+            }
+            align: 0.5 1.0;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.text2"; type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 128 128 128 255;
+            text {
+               font: "Tizen Sans";
+               size: 22;
+               min: 1 1;
+               ellipsis: -1;
+            }
+            rel1 {
+               relative: 0.5 0.5;
+               to: "text.base";
+            }
+            rel2 {
+               relative: 0.5 0.5;
+               to: "text.base";
+            }
+            align: 0.5 0.0;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+   }
+   programs {
+      program { name: "focus2";
+         signal: "elm,state,focused";
+         source: "elm";
+         action: STATE_SET "focused" 0.0;
+         target: "elm.text2";
+      }
+      program { name: "unfocus2";
+         signal: "elm,state,unfocused";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text2";
+      }
+   }
+}
 
-      parts {
-         part { name: "bg";
-            type: RECT;
-            description { state: "default" 0.0;
-               color: GRID_DEFAULT_BG_COLOR;
+/*****************************************************************************
+Tizen TV_General Guide_GUI Guideline_v1.1_140709.ppt  41
+******************************************************************************/
+
+group { name: "elm/gengrid/item/default_2text/default";
+   inherit: "elm/gengrid/item/default/default";
+   data.item: "texts" "elm.text elm.text2";
+   data.item: "contents" "elm.swallow.icon";
+   parts {
+      part { name: "base"; type: RECT;
+         scale: 1;
+         description { state: "focused" 0.0;
+            color: 255 168 0 255;
+         }
+      }
+      part { name: "text.base"; type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 100;
+         }
+      }
+      part { name: "elm.text"; type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 211 211 211 255;
+            text {
+               font: "Tizen Sans";
+               size: 30;
+               min: 1 1;
+               ellipsis: -1;
+            }
+            rel1 {
+               relative: 0.5 0.5;
+               to: "text.base";
+            }
+            rel2 {
+               relative: 0.5 0.5;
+               to: "text.base";
+            }
+            align: 0.5 1.0;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.text2"; type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 128 128 128 255;
+            text {
+               font: "Tizen Sans";
+               size: 22;
+               min: 1 1;
+               ellipsis: -1;
+            }
+            rel1 {
+               relative: 0.5 0.5;
+               to: "text.base";
+            }
+            rel2 {
+               relative: 0.5 0.5;
+               to: "text.base";
+            }
+            align: 0.5 0.0;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+   }
+   programs {
+      program { name: "focus2";
+         signal: "elm,state,focused";
+         source: "elm";
+         action: STATE_SET "focused" 0.0;
+         target: "elm.text2";
+      }
+      program { name: "unfocus2";
+         signal: "elm,state,unfocused";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text2";
+      }
+   }
+}
+
+#define DEFAULT 1
+#define SELECTED 2
+#define FOCUSED 3
+#define DISABLED 4
+/*****************************************************************************
+Document: Tizen TV_General Guide_GUI Guideline_v1.0_140508_1.ppt : 36 and 11
+Description: Gengrid for single line text
+******************************************************************************/
+group { name: "elm/gengrid/item/1text.1icon.bg/default";
+   data.item: "texts" "elm.text elm.text.1";
+   data.item: "contents" "elm.swallow.icon elm.swallow.icon_foc elm.swallow.end";
+   images {
+      image: "bt_bases.png" COMP;
+      image: "elipse_114.png" COMP;
+   }
+   script {
+      public is_selected, is_enabled, is_focused, is_init, cur_state;
+
+      public init_values() {
+         if(get_int(is_init)==0)
+         {
+            set_int(is_enabled, 1);
+            set_int(is_focused, 1);
+            set_int(is_init, 1);
+            set_int(cur_state, -1);
+         }
+      }
+      public set_states() {
+         new enab;
+         new foc;
+         new sel;
+         new c_state;
+         enab = get_int(is_enabled);
+         foc = get_int(is_focused);
+         sel = get_int(is_selected);
+         c_state = get_int(cur_state);
+         if(enab == 0)
+         {
+            if(c_state!=DISABLED)
+               run_program(PROGRAM:"do_disable");
+         }
+         else
+         {
+            if(foc == 1)
+            {
+               if(c_state!=FOCUSED)
+                  run_program(PROGRAM:"do_focus");
+            }
+            else if(sel == 1)
+            {
+               if(c_state!=SELECTED)
+                  run_program(PROGRAM:"do_select");
+            }
+            else
+            {
+               if(c_state!=DEFAULT)
+                  run_program(PROGRAM:"do_default");
             }
          }
-         part { name: "left_top_padding";
-            type: SPACER;
-            scale : 1;
-            description { state: "default" 0.0;
-               min: GRID_PADDING_LEFT_TOP_SIZE;
-               align: 0.0 0.0;
-               fixed: 1 1;
-               rel1.to: "bg";
-               rel2 {
-                  relative: 0.0 0.0;
-                  to: "bg";
-               }
+      }
+   }
+   parts {
+      part { name: "event"; type: RECT;
+         repeat_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "reorder_bg"; mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            image {
+               normal: "bt_bases.png";
+               border: 6 6 6 6;
             }
          }
-         part { name: "right_bottom_padding";
-            type: SPACER;
+         description { state: "enabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "base"; type: RECT; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 77;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 77;
+         }
+      }
+      part { name: "base_colored"; type: RECT; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            visible: 0;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            color_class: "open_ux_theme";
+            visible: 1;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            color_class: "open_ux_theme_alpha";
+            visible: 1;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+         }
+      }
+      part { name: "bg"; type: RECT; mouse_events: 0;
+         clip_to: "base";
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "bg_color_clipped"; type: RECT; mouse_events: 0;
+         clip_to: "base_colored";
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "elm.swallow.pad"; type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            min: 25 25;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 0.0  1.0;
+            }
+            rel2 {
+               to_y: "elm.text";
+               relative: 0.0  0.0;
+            }
+         }
+      }
+      part { name: "pad.top"; type: SPACER; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 30;
+            max: 9999 30;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            align: 0.5 0.0;
+         }
+      }
+      part { name: "pad.bottom"; type: SPACER; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 25;
+            max: 9999 25;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            align: 0.5 1.0;
+         }
+      }
+      part { name: "pad.left"; type: SPACER; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 20 0;
+            max: 20 9999;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            align: 0.0 0.5;
+         }
+      }
+      part { name: "pad.right"; type: SPACER; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 20 0;
+            max: 20 9999;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            align: 1.0 0.5;
+         }
+      }
+      part { name: "pad.middle"; type: SPACER; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 3;
+            max: 9999 3;
+            rel1.to_x: "pad.left";
+            rel1.to_y: "elm.text";
+            rel1.relative: 1.0 0.0;
+            rel2.to_x: "pad.right";
+            rel2.to_y: "elm.text";
+            rel2.relative: 0.0 0.0;
+            align: 0.5 1.0;
+         }
+      }
+      part { name: "elm.shadow.icon.bg"; type: PROXY;
+         description { state: "default" 0.0;
+            source: "elm.swallow.icon";
+            rel1.to: "elm.swallow.icon";
+            rel1.offset: 0 3;
+            rel2.to: "elm.swallow.icon";
+            rel2.offset: 0 3;
+            color: 0 0 0 64;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            source: "elm.swallow.icon_foc";
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            source: "elm.swallow.icon_foc";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+         }
+      }
+      part { name: "elm.image.icon.bg"; type: IMAGE;
+         clip_to: "disclip";
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            aspect: 1.0 1.0;
+            aspect_preference: BOTH;
+            rel1.to: "elm.swallow.icon";
+            rel2.to: "elm.swallow.icon";
+            color_class: "open_ux_theme";
+            image.normal: "elipse_114.png";
+            visible: 0;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color_class: "open_ux_theme_white";
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color_class: "open_ux_theme_white";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "open_ux_theme_alpha20";
+         }
+      }
+      part { name: "elm.swallow.icon"; type: SWALLOW;
+         clip_to: "disclip";
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            aspect: 1.0 1.0;
+            aspect_preference: BOTH;
+            rel1.to_x: "pad.left";
+            rel1.to_y: "pad.top";
+            rel1.relative: 1.0 1.0;
+            rel2.to_x: "pad.right";
+            rel2.to_y: "pad.middle";
+            rel2.relative: 0.0 0.0;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "open_ux_theme_alpha20";
+         }
+      }
+      part { name: "elm.swallow.icon_foc"; type: SWALLOW;
+         clip_to: "disclip";
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            aspect: 1.0 1.0;
+            aspect_preference: BOTH;
+            rel1.to: "elm.swallow.icon";
+            rel2.to: "elm.swallow.icon";
+            visible: 0;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "elm.swallow.end";
+         clip_to: "disclip"; type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 1.0 0.0;
+            aspect: 1.0 1.0;
+            aspect_preference: HORIZONTAL;
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      part { name: "area_for_text"; type: RECT; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to_x: "pad.left";
+            rel1.to_y: "pad.top";
+            rel1.relative: 1.0 1.0;
+            rel2.to_x: "pad.right";
+            rel2.to_y: "pad.bottom";
+            rel2.relative: 0.0 0.0;
+            align: 0.5 0.5;
+            color: 255 255 255 0;
+         }
+         part { name: "elm.text"; type: TEXT; mouse_events: 0;
+            effect: SOFT_SHADOW;
             scale: 1;
             description { state: "default" 0.0;
-               min: GRID_PADDING_RIGHT_BOTTOM_SIZE;
-               align: 1.0 1.0;
-               fixed: 1 1;
-               rel1 {
-                  relative: 1.0 1.0;
-                  to: "bg";
-               }
-               rel2.to: "bg";
-            }
-         }
-         part { name: "item_bg";
-            type: IMAGE;
-            description { state: "default" 0.0;
-               visible: 0;
-               rel1 {
-                  relative: 1.0 1.0;
-                  to: "left_top_padding";
-               }
-               rel2 {
-                  relative: 0.0 0.0;
-                  to: "right_bottom_padding";
-               }
-               color: 2 61 132 255;
-            }
-         }
-         part { name: "elm.swallow.icon";
-            type: SWALLOW;
-            description { state: "default" 0.0;
-               rel1.to: "item_bg";
-               rel2.to: "item_bg";
-            }
-         }
-         part { name: "end_top_right_padding";
-            type: SPACER;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: GRID_PADDING_END_TOP_RIGHT_SIZE;
-               align: 1.0 0.0;
-               fixed: 1 1;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to: "item_bg";
-               }
-               rel2 {
-                  relative: 1.0 0.0;
-                  to: "item_bg";
-               }
-            }
-         }
-         part { name: "elm.swallow.end";
-            type: SWALLOW;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: GRID_END_SIZE;
-               align: 1.0 0.0;
-               fixed: 1 1;
-               rel1 {
-                  relative: 0.0 1.0;
-                  to: "end_top_right_padding";
-               }
-               rel2 {
-                  relative: 0.0 1.0;
-                  to: "end_top_right_padding";
-               }
-            }
-         }
-         part { name: "select_bg";
-            type: RECT;
-            description { state: "default" 0.0;
-               visible: 0;
-               rel1.to: "item_bg";
-               rel2.to: "item_bg";
-               color: 2 61 132 255;
-            }
-            description { state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               color: GRID_ICON_PRESSED_COLOR;
-            }
-         }
-         part { name: "reorder_bg";
-            type: RECT;
-            repeat_events: 1;
-            description { state: "default" 0.0;
-               rel1.to: "item_bg";
-               rel2.to: "item_bg";
-               color: 0 0 0 0;
-            }
-         }
-         part { name: "focus_bg";
-            type: IMAGE;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               visible: 0;
-               rel1.to: "item_bg";
-               rel2.to: "item_bg";
-               color: 0 0 0 0;
-            }
-            description { state: "enabled" 0.0;
-               inherit: "default" 0.0;
-            }
-         }
-         part { name: "text_bottom_left_padding";
-            type: SPACER;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: GRID_PADDING_IN_TEXT_LEFT_RIGHT_SIZE;
-               align: 0.0 1.0;
-               fixed: 1 1;
-               rel1 {
-                  relative: 0.0 1.0;
-                  to: "item_bg";
-               }
-               rel2 {
-                  relative: 0.0 1.0;
-                  to: "item_bg";
-               }
-            }
-         }
-         part { name: "text_bottom_right_padding";
-            type: SPACER;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: GRID_PADDING_IN_TEXT_LEFT_RIGHT_SIZE;
-               align: 1.0 1.0;
-               fixed: 1 1;
-               rel1 {
-                  relative: 1.0 1.0;
-                  to: "item_bg";
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  to: "item_bg";
-               }
-            }
-         }
-         part { name: "elm.text";
-            type: TEXTBLOCK;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: GRID_IN_OUT_TEXT_ONE_LINE_HEIGHT;
-               fixed: 0 1;
+               color: 211 211 211 255;
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 1.0;
                align: 0.5 1.0;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to: "text_bottom_left_padding";
-               }
-               rel2 {
-                  relative: 0.0 0.0;
-                  to: "text_bottom_right_padding";
-               }
                text {
-                  style: "grid_in_text_style";
-                  align: 0.5 1.0;
+                  font: "Sans";
+                  size: 23;
                   min: 0 1;
+                  text_class: "grid_item";
                }
             }
-         }
-      }
-      programs {
-         program { name: "touch_sound";
-            signal: "mouse,clicked,1";
-            source: "reorder_bg";
-            action: RUN_PLUGIN "touch_sound";
-         }
-         program { name: "selected";
-            signal: "elm,state,selected";
-            source: "elm";
-            action: STATE_SET "pressed" 0.0;
-            target: "select_bg";
-         }
-         program { name: "unselected";
-            signal: "elm,state,unselected";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "select_bg";
-         }
-         program { name: "action_focus";
-            signal: "elm,action,focus_highlight,show";
-            source: "elm";
-            action: STATE_SET "enabled" 0.0;
-            target: "focus_bg";
-         }
-         program { name: "action_unfocus";
-            signal: "elm,action,focus_highlight,hide";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "focus_bg";
-         }
-         GENGRID_PROGRAM_DEFAULT(
-            target: "elm.swallow.icon";
-            target: "elm.swallow.end";
-            target: "select_bg";
-            target: "elm.text";
-         )
-      }
-   }
-
-   group { name: "elm/gengrid/item/type2/default";
-      inherit: "elm/gengrid/item/default/default";
-      parts {
-         part { name: "right_bottom_padding";
-            description { state: "default" 0.0;
-               min: GRID_PADDING_OUT_TEXT_BOTTOM_RIGHT_SIZE;
-            }
-         }
-         part { name: "text_left_padding";
-            type: SPACER;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: GRID_PADDING_OUT_TEXT_LEFT_RIGHT_SIZE;
-               align: 0.0 0.5;
-               rel1 {
-                  relative: 0.0 0.0;
-                  to_x: "item_bg";
-                  to_y: "bg";
-               }
-               rel2 {
-                  relative: 0.0 1.0;
-                  to_x: "item_bg";
-                  to_y: "bg";
-              }
-           }
-         }
-         part { name: "text_right_padding";
-            type: SPACER;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: GRID_PADDING_OUT_TEXT_LEFT_RIGHT_SIZE;
-               align: 1.0 0.5;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to_x: "item_bg";
-                  to_y: "bg";
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  to_x: "item_bg";
-                  to_y: "bg";
-               }
-            }
-         }
-         part { name: "elm.text";
-            type: TEXTBLOCK;
-            mouse_events: 0;
-            scale: 1;
-            multiline : 1;
-            description { state: "default" 0.0;
-               min: GRID_IN_OUT_TEXT_ONE_LINE_HEIGHT;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to_x: "text_left_padding";
-                  to_y: "right_bottom_padding";
-               }
-               rel2 {
-                  relative: 0.0 1.0;
-                  to_x: "text_right_padding";
-                  to_y: "right_bottom_padding";
-               }
-               text {
-                  style: "grid_out_text_style";
-                  min: 0 1;
-                  align: 0.5 0.0;
-               }
-            }
-         }
-      }
-   }
-
-   group { name: "elm/gengrid/item/default/popup";
-      data.item: "texts" "elm.text";
-      data.item: "contents" "elm.swallow.icon elm.swallow.end";
-      data.item: "focus_highlight" "on";
-      images {
-         set {
-            name: "core_focus.#";
-               image {
-                  image: SMALL"images/Content_views/core_focus.#.png" COMP;
-               }
-               image {
-                  image: MEDIUM"images/Content_views/core_focus.#.png" COMP;
-               }
-         }
-      }
-      parts {
-         part { name: "select_clip";
-            type: RECT;
-            description { state: "default" 0.0;
-               visible: 1;
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
                color: 255 255 255 255;
             }
             description { state: "selected" 0.0;
-               visible: 1;
-               color: GRID_ICON_PRESSED_COLOR;
-            }
-         }
-         part { name: "bg";
-            type: RECT;
-            description { state: "default" 0.0;
-               color: GRID_DEFAULT_BG_COLOR;
-            }
-         }
-         part { name: "selected_bg";
-            type: RECT;
-            description { state: "default" 0.0;
-               visible: 0;
-               rel1.to: "item_real_bg";
-               rel2.to: "item_real_bg";
-            }
-            description { state: "enabled" 0.0;
                inherit: "default" 0.0;
-               visible: 1;
+               color: 255 255 255 255;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 51;
             }
          }
-         part { name: "item_real_bg";
-            type: SPACER;
-            description { state: "default" 0.0;
-               align: 0.5 0.0;
-               min: GRID_POPUP_ITEM_REAL_BG_SIZE;
-               max: GRID_POPUP_ITEM_REAL_BG_SIZE;
-               rel2.relative: 1.0 0.0;
-            }
-         }
-         part { name: "left_top_padding";
-            type: SPACER;
-            scale : 1;
-            description { state: "default" 0.0;
-               min: GRID_POPUP_PADDING_LEFT_TOP_SIZE;
-               align: 0.0 0.0;
-               fixed: 1 1;
-               rel1.to: "item_real_bg";
-               rel2 {
-                  relative: 0.0 0.0;
-                  to: "item_real_bg";
-               }
-            }
-         }
-         part { name: "right_bottom_padding";
-            type: SPACER;
+         part { name: "elm.text.1"; type: TEXT; mouse_events: 0;
+            effect: SOFT_SHADOW;
             scale: 1;
             description { state: "default" 0.0;
-               min: GRID_POPUP_PADDING_RIGHT_BOTTOM_SIZE;
-               align: 1.0 1.0;
-               fixed: 1 1;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to_x: "item_real_bg";
-                  to_y: "elm.text";
+               color: 211 211 211 255;
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 1.0;
+               align: 0.5 1.0;
+               text {
+                  font: "Sans";
+                  size: 17;
+                  min: 0 1;
+                  text_class: "grid_item";
                }
-               rel2 {
-                  relative: 1.0 0.0;
-                  to_x: "item_real_bg";
-                  to_y: "elm.text";
-               }
+               visible: 0;
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 51;
             }
          }
-         part { name: "elm.swallow.icon";
-            type: SWALLOW;
+      }
+      part { name: "disclip"; type: RECT;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1.to: "base";
+            rel2.to: "base";
+            color_class: "open_ux_theme_white";
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color_class: "open_ux_theme_alpha20";
+            visible: 1;
+         }
+      }
+      part { name: "event_blocker"; type: RECT; mouse_events: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            color: 0 0 0 0;
+            visible: 0;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+   }
+   programs {
+      program { name: "go_focused";
+         signal: "elm,state,focused"; source: "elm";
+         script {
+            init_values();
+            set_int(is_focused, 1);
+            set_states();
+         }
+      }
+      program { name: "go_unfocused";
+         signal: "elm,state,unfocused"; source: "elm";
+         script {
+            init_values();
+            set_int(is_focused, 0);
+            set_states();
+         }
+      }
+
+      program { name: "go_active";
+         signal: "elm,state,selected";
+         source: "elm";
+         script {
+            init_values();
+            set_int(is_selected, 1);
+            set_states();
+         }
+      }
+      program { name: "go_passive";
+         signal: "elm,state,unselected";
+         source: "elm";
+         script {
+            init_values();
+            set_int(is_selected, 0);
+            set_states();
+         }
+      }
+      program { name: "go_disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         script {
+            init_values();
+            set_int(is_enabled, 0);
+            set_states();
+         }
+      }
+      program { name: "go_enabled";
+         signal: "elm,state,enabled";
+         source: "elm";
+         script {
+            init_values();
+            set_int(is_enabled, 1);
+            set_states();
+         }
+      }
+      program { name: "go_reorder_disabled";
+         signal: "elm,state,reorder,disabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "reorder_bg";
+         transition: DECELERATE 0.5;
+      }
+      program { name: "go_reorder_enabled";
+         signal: "elm,state,reorder,enabled";
+         source: "elm";
+         action: STATE_SET "enabled" 0.0;
+         target: "reorder_bg";
+         transition: DECELERATE 0.5;
+      }
+      program { name: "do_default";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.1;
+         target: "base";
+         target: "base_colored";
+         target: "elm.text";
+         target: "elm.text.1";
+         target: "elm.shadow.icon.bg";
+         target: "elm.image.icon.bg";
+         target: "elm.swallow.icon";
+         target: "elm.swallow.icon_foc";
+         target: "disclip";
+         target: "event_blocker";
+      }
+
+      program { name: "do_focus";
+         action: STATE_SET "focused" 0.0;
+         target: "base";
+         target: "base_colored";
+         target: "elm.text";
+         target: "elm.text.1";
+         target: "elm.shadow.icon.bg";
+         target: "elm.image.icon.bg";
+         target: "elm.swallow.icon";
+         target: "elm.swallow.icon_foc";
+         target: "disclip";
+         target: "event_blocker";
+      }
+
+      program { name: "do_select";
+         action: STATE_SET "selected" 0.0;
+         target: "base";
+         target: "base_colored";
+         target: "elm.text";
+         target: "elm.text.1";
+         target: "elm.shadow.icon.bg";
+         target: "elm.image.icon.bg";
+         target: "elm.swallow.icon";
+         target: "elm.swallow.icon_foc";
+         target: "disclip";
+         target: "event_blocker";
+      }
+
+      program { name: "do_disable";
+         action: STATE_SET "disabled" 0.0;
+         target: "base";
+         target: "base_colored";
+         target: "elm.text";
+         target: "elm.text.1";
+         target: "elm.shadow.icon.bg";
+         target: "elm.image.icon.bg";
+         target: "elm.swallow.icon";
+         target: "elm.swallow.icon_foc";
+         target: "disclip";
+         target: "event_blocker";
+      }
+   }
+}
+
+//Start
+#define DEFAULT 1
+#define SELECTED 2
+#define FOCUSED 3
+#define DISABLED 4
+/*****************************************************************************
+Document: Tizen TV_General Guide_GUI Guideline_v1.0_140508_1.ppt : 37 and 11
+Description: Gengrid for two line text
+******************************************************************************/
+group { name: "elm/gengrid/item/2text.1icon.bg/default";
+   inherit: "elm/gengrid/item/1text.1icon.bg/default";
+   data.item: "texts" "elm.text elm.text.1";
+   data.item: "contents" "elm.swallow.icon elm.swallow.icon_foc elm.swallow.end";
+   parts {
+      part { name: "pad.top"; type: SPACER; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 52;
+            max: 9999 52;
+         }
+      }
+      part { name: "pad.bottom"; type: SPACER; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 43;
+            max: 9999 43;
+         }
+      }
+      part { name: "area_for_text"; type: RECT; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+         }
+         part { name: "elm.text"; type: TEXT; mouse_events: 0;
+            effect: SOFT_SHADOW;
+            scale: 1;
             description { state: "default" 0.0;
-               min: GRID_POPUP_SWALLOW_ICON_SIZE;
-               max: GRID_POPUP_SWALLOW_ICON_SIZE;
-               align: 0.5 0.5;
-               rel1 {
-                  relative: 1.0 1.0;
-                  to: "left_top_padding";
-               }
-               rel2 {
-                  relative: 0.0 0.0;
-                  to: "right_bottom_padding";
+               color: 211 211 211 255;
+               rel1.to: "elm.text.1";
+               rel2.to: "elm.text.1";
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 0.0;
+               text {
+                  font: "Sans";
+                  size: 23;
+                  min: 0 1;
+                  text_class: "grid_item";
                }
             }
-            clip_to: "select_clip";
-         }
-         part { name: "elm.swallow.end";
-            type: SWALLOW;
-            description { state: "default" 0.0;
-               rel1.to: "elm.swallow.icon";
-               rel2.to: "elm.swallow.icon";
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 51;
             }
          }
-         part { name: "elm.text";
-            type: TEXTBLOCK;
+         part { name: "elm.text.1"; type: TEXT;
+            effect: SOFT_SHADOW;
             mouse_events: 0;
             scale: 1;
             description { state: "default" 0.0;
-               min: GRID_POPUP_TEXT_SIZE;
-               max: GRID_POPUP_TEXT_SIZE;
-               fixed: 0 1;
-               align: 0.5 1.0;
-               rel1 {
-                  relative: 0.0 1.0;
-                  to: "item_real_bg";
-               }
-               rel2 {
-                  relative: 1.0 1.0;
-                  to: "item_real_bg";
-               }
-               text {
-                  style: "grid_popup_style";
-                  align: 0.5 0.0;
-               }
-            }
-         }
-         part { name: "reorder_bg";
-            type: RECT;
-            repeat_events: 1;
-            description { state: "default" 0.0;
-               rel1.to: "selected_bg";
-               rel2.to: "selected_bg";
-               color: 0 0 0 0;
-            }
-         }
-         part { name: "outline_bg";
-            repeat_events: 1;
-            description { state: "default" 0.0;
-               visible: 0;
-               rel1.to: "item_real_bg";
-               rel2.to: "item_real_bg";
-               image.normal: "core_focus.#";
-               color: 4 110 239 255;
-            }
-            description { state: "enabled" 0.0;
-               inherit: "default" 0.0;
                visible: 1;
+               color: 134 134 134 255;
             }
-         }
-         part { name: "focus_bg";
-            description { state: "default" 0.0;
-               visible: 0;
-               rel1.to: "item_real_bg";
-               rel2.to: "item_real_bg";
-               image.normal: "core_focus.#";
-               color: 4 110 239 255;
-            }
-            description { state: "enabled" 0.0;
+            description { state: "focused" 0.0;
                inherit: "default" 0.0;
-               visible: 1;
+               color: 255 255 255 255;
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 51;
             }
          }
-      }
-      programs
-      {
-         program { name: "touch_snd";
-            signal: "mouse,clicked,1";
-            source: "reorder_bg";
-            action: RUN_PLUGIN "touch_sound";
-         }
-         program { name: "selected";
-            signal: "elm,state,selected";
-            source: "elm";
-            script {
-               set_state(PART:"selected_bg", "default",  0.0);
-               set_state(PART:"outline_bg", "default", 0.0);
-               set_state(PART:"select_clip", "selected",  0.0);
-            }
-         }
-         program { name: "unselected";
-            signal: "elm,state,unselected";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "select_clip";
-         }
-         program { name: "select_enabled";
-            signal: "elm,select,enabled";
-            source: "";
-            action: STATE_SET "enabled" 0.0;
-            target: "selected_bg";
-            target: "outline_bg";
-         }
-         program { name: "select_disabled";
-            signal: "elm,select,disabled";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "selected_bg";
-            target: "outline_bg";
-         }
-         program { name: "action_focus";
-            signal: "elm,action,focus_highlight,show";
-            source: "elm";
-            action: STATE_SET "enabled" 0.0;
-            target: "focus_bg";
-         }
-         program { name: "action_unfocus";
-            signal: "elm,action,focus_highlight,hide";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "focus_bg";
-         }
-         GENGRID_PROGRAM_DEFAULT(
-            target: "selected_bg";
-            target: "outline_bg";
-            target: "elm.text";
-            target: "select_clip";
-         )
       }
    }
+}
+#undef DEFAULT 1
+#undef SELECTED 2
+#undef FOCUSED 3
+#undef DISABLED 4
+#undef DEFAULT 1
+#undef SELECTED 2
+#undef FOCUSED 3
+#undef DISABLED 4
