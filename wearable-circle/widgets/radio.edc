@@ -524,42 +524,38 @@ group { name: "elm/radio/base/datepicker";
                relative: 1.0 0.0;
             }
             text {
-               /*(Changeable UI) text_class: "T271";*/
+               /*(Changeable UI) color_class: "T273S";*/
                font: "Tizen:style=Light";
                size: "24";
                text_class: "tizen";
                min: 1 1;
             }
             align: 0.5 0.0;
-            color: 102 102 102 255;
+            /*(Changeable UI) color_class: "T273S";*/
+            color: 249 249 249 255;
          }
          description { state: "pressed" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T273P";
             /*(Changeable UI) color_class: "T273P";*/
-            color: 30 57 102 255;
+            color: 75 143 252 255;
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T273D";
             /*(Changeable UI) color_class: "T273D";*/
             color: 51 51 51 255;
          }
          description { state: "on" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T273S";
             /*(Changeable UI) color_class: "T273S";*/
             color: 249 249 249 255;
          }
          description { state: "on_pressed" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T273SP";
             /*(Changeable UI) color_class: "T273P";*/
             color: 75 143 252 255;
          }
          description { state: "on_disabled" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T273D";
             /*(Changeable UI) color_class: "T273D";*/
             color: 51 51 51 255;
          }
@@ -601,44 +597,40 @@ group { name: "elm/radio/base/datepicker";
                relative: 1.0 1.0;
             }
             text {
-               /*(Changeable UI) text_class: "T271";*/
+               /*(Changeable UI) text_class: "T271S";*/
                font: "Tizen:style=Light";
                size: "45";
                text_class: "tizen";
                min: 1 1;
             }
-            /*(Changeable UI) color_class: "T271";*/
-            color: 186 186 186 255;
+            /*(Changeable UI) color_class: "T271S";*/
+            color: 249 249 249 255;
             align: 0.0 0.0;
          }
          description { state: "pressed" 0.0;
             inherit: "default" 0.0;
             /*(Changeable UI) color_class: "T271P";*/
-            color: 30 57 102 255;
+            color: 75 143 252 255;
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T271D";
             /*(Changeable UI) color_class: "T271D";*/
             color: 51 51 51 255;
          }
          description { state: "on" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T271S";
             /*(Changeable UI) color_class: "T271S";*/
             color: 249 249 249 255;
          }
          description { state: "on_pressed" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T271SP";
-            /*(Changeable UI) color_class: "T271SP";*/
-            color: 75 143 252 255;
+             /*(Changeable UI) color_class: "T273P";*/
+             color: 75 143 252 255;
          }
-         description { state: "on_disabled" 0.0;
+         description { state: "on_unselected" 0.0;
             inherit: "default" 0.0;
-            text.text_class: "T271D";
-            /*(Changeable UI) color_class: "T271D";*/
-            color: 51 51 51 255;
+            /*(Changeable UI) color_class: "T271";*/
+            color: 186 186 186 255;
          }
       }
       part { name: "event";
@@ -675,6 +667,7 @@ group { name: "elm/radio/base/datepicker";
             } else {
                set_state(PART:"elm.text", "on", 0.0);
                set_state(PART:"elm.text.title", "on", 0.0);
+               run_program(PROGRAM:"select_on");
             }
          }
       }
@@ -743,12 +736,69 @@ group { name: "elm/radio/base/datepicker";
          transition: CUBIC_BEZIER 0.3 0.25 0.46 0.45 1.0;
          target: "elm.text.title";
          target: "elm.text";
+         after: "select_on";
       }
       program { name: "animate_off";
          action: STATE_SET "default" 0.0;
          transition: CUBIC_BEZIER 0.3 0.25 0.46 0.45 1.0;
          target: "elm.text.title";
          target: "elm.text";
+      }
+      program { name: "select_on";
+         script {
+            if (get_int(radio_disabled) == 1) return;
+            if (get_int(radio_state) == 1) {
+               run_program(PROGRAM:"active_select_on");
+            }
+         }
+      }
+      program { name: "active_select_on";
+         action: STATE_SET "on" 0.0;
+         transition: CUBIC_BEZIER 0.8 0.25 0.46 0.45 1.0;
+         target: "elm.text";
+         after: "select_off";
+      }
+      program { name: "select_off";
+         script {
+            if (get_int(radio_disabled) == 1) return;
+            if (get_int(radio_state) == 1) {
+               run_program(PROGRAM:"active_select_off");
+            }
+         }
+      }
+      program { name: "active_select_off";
+         action: STATE_SET "on_unselected" 0.0;
+         transition: CUBIC_BEZIER 0.2 0.25 0.46 0.45 1.0;
+         target: "elm.text";
+         after: "unselect_on";
+      }
+      program { name: "unselect_on";
+         script {
+            if (get_int(radio_disabled) == 1) return;
+            if (get_int(radio_state) == 1) {
+               run_program(PROGRAM:"active_unselect_on");
+            }
+         }
+      }
+      program { name: "active_unselect_on";
+         action: STATE_SET "on_unselected" 0.0;
+         transition: CUBIC_BEZIER 0.8 0.25 0.46 0.45 1.0;
+         target: "elm.text";
+         after: "unselect_off";
+      }
+      program { name: "unselect_off";
+         script {
+            if (get_int(radio_disabled) == 1) return;
+            if (get_int(radio_state) == 1) {
+               run_program(PROGRAM:"active_unselect_off");
+            }
+         }
+      }
+      program { name: "active_unselect_off";
+         action: STATE_SET "on" 0.0;
+         transition: CUBIC_BEZIER 0.2 0.25 0.46 0.45 1.0;
+         target: "elm.text";
+         after: "select_on";
       }
    }
 }
