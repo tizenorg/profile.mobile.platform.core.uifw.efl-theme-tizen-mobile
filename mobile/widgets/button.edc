@@ -3292,212 +3292,55 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
    }
 
    group { name: "elm/button/base/datetime/ampm";
-      script {
-         public mouse_down = 0;
-         public multi_down = 0;
-         public unselected = 0;
-      }
-      images {
-         set {
-            name: "core_list_button_bg.#";
-            image {
-               image: SMALL"images/Controls/core_list_button_bg.#.png" COMP;
-            }
-            image {
-               image: MEDIUM"images/Controls/core_list_button_bg.#.png" COMP;
+      inherit: "elm/button/base/default";
+      parts {
+         part { name: "base";
+            description { state: "default" 0.0;
+               min: DATETIME_AMPM_BUTTON_WIDTH_SIZE_INC DATETIME_AMPM_BUTTON_HEIGHT_SIZE_INC;
             }
          }
-
-      }
-      parts {
-         part { name: "bg";
-            scale: 1;
+         part { name: "tizen_vg_shape";
             description { state: "default" 0.0;
-               min: DATETIME_AMPM_BUTTON_SIZE_INC;
-               image.normal: "core_list_button_bg.#";
-               color: 82 199 217 255;;
+               min: 0 DATETIME_AMPM_BUTTON_HEIGHT_SIZE_INC;
             }
-            description { state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               color: 84 144 153 255;
-            }
-            description { state: "unselected" 0.0;
-               inherit: "default" 0.0;
-               color: 204 204 204 255;
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               color: 204 204 204 255;
-            }
+         }
+          part { name: "tizen_vg_shape_clipper";
+              description { state: "unselected" 0.0;
+                 color: 204 204 204 255;
+              }
          }
          part { name: "padding_left_top";
-            type: SPACER;
-            scale: 1;
             description { state: "default" 0.0;
-               state: "default" 0.0;
-               min: 24 0;
-               fixed: 1 0;
-               rel2.relative: 0.0 1.0;
-               align: 0.0 0.5;
+               min: DATETIME_AMPM_BUTTON_TOP_LEFT_PADDING_INC;
             }
          }
          part { name: "padding_right_bottom";
-            type: SPACER;
-            scale: 1;
             description { state: "default" 0.0;
-               state: "default" 0.0;
-               min: 24 0;
-               fixed: 1 0;
-               rel1.relative: 1.0 0.0;
-               align: 1.0 0.5;
+               min: DATETIME_AMPM_BUTTON_BOTTOM_RIGHT_PADDING_INC;
             }
          }
          part { name: "elm.text";
-            type: TEXTBLOCK;
-            mouse_events: 0;
-            scale: 1;
             description { state: "default" 0.0;
-               fixed: 1 1;
-               rel1 {
-                  relative: 1.0 0.0;
-                  to: "padding_left_top";
-               }
-               rel2 {
-                  relative: 0.0 1.0;
-                  to: "padding_right_bottom";
-               }
-               text {
-                  style: "button_ampm";
-               }
-            }
-            description { state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               text.style: "button_ampm_press";
+               text.style: "button_ampm";
             }
             description { state: "unselected" 0.0;
-               inherit: "default" 0.0;
                text.style: "button_ampm_dim";
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               text.style: "button_ampm_dim";
-            }
-         }
-         part { name: "event";
-            scale: 1;
-            type: RECT;
-            description { state: "default" 0.0;
-               rel1.to: "bg";
-               rel2.to: "bg";
-               color: 0 0 0 0;
             }
          }
       }
-      programs {
-         program { name: "pressed";
-            signal: "mouse,down,1*";
-            source: "event";
-            script {
-               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) {
-                  set_int(mouse_down, 1);
-                  run_program(PROGRAM:"button_press1");
-               }
-            }
-         }
-         program { name: "button_press1";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"bg", st, 30, vl);
-               if (strcmp(st, "disabled")) {
-                  set_state(PART:"bg", "pressed", 0.0);
-                  set_state(PART:"elm.text", "pressed", 0.0);
-                  emit("elm,action,press", "");
-               }
-            }
-         }
-         program { name: "unpressed";
-            signal: "mouse,up,1";
-            source: "event";
-            script {
-               if (get_int(mouse_down) == 1) {
-                  set_int(mouse_down, 0);
-                  run_program(PROGRAM:"button_unpress1");
-               }
-            }
-         }
-         program { name: "button_unpress1";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"bg", st, 30, vl);
-               if (strcmp(st, "disabled")) {
-                  set_state(PART:"bg", "default", 0.0);
-                  set_state(PART:"elm.text", "default", 0.0);
-                  emit("elm,action,unpress", "");
-               }
-            }
-         }
-         program { name: "touch_snd";
-            signal: "mouse,clicked,1";
-            source: "event";
-            script {
-               new st[31];
-               new Float:vl;
-               if (get_int(multi_down) == 0) {
-                  get_state(PART:"bg", st, 30, vl);
-                  if (strcmp(st, "disabled")) {
-                     run_program(PROGRAM:"touch_sound");
-                     emit("elm,action,click", "");
-                  }
-               }
-            }
-         }
-         program { name: "touch_sound";
-            action: RUN_PLUGIN "touch_sound";
-         }
-         program { name: "disable";
-            signal: "elm,state,disabled";
-            source: "elm";
-            action: STATE_SET "disabled" 0.0;
-            target: "bg";
-            target: "elm.text";
-         }
-         program { name: "enable";
-            signal: "elm,state,enabled";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "bg";
-            target: "elm.text";
-         }
-         program { name: "button_unselected";
-            signal: "elm,action,button,unselected";
-            source: "elm";
-            action: STATE_SET "unselected" 0.0;
-            target: "bg";
-            target: "elm.text";
-         }
-         program { name: "selected";
-            signal: "elm,action,button,selected";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "bg";
-            target: "elm.text";
-         }
-         program { name: "multi_down";
-            signal: "elm,action,multi,down";
-            source: "elm";
-            script {
-               set_int(multi_down, 1);
-            }
-         }
-         program { name: "multi_up";
-            signal: "elm,action,multi,up";
-            source: "elm";
-            script {
-               set_int(multi_down, 0);
-            }
-         }
+      program { name: "unselected";
+         signal: "elm,action,button,unselected";
+         source: "elm";
+         action: STATE_SET "unselected" 0.0;
+         target: "tizen_vg_shape_clipper";
+         target: "elm.text";
+      }
+      program { name: "selected";
+         signal: "elm,action,button,selected";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "tizen_vg_shape_clipper";
+         target: "elm.text";
       }
    }
 
