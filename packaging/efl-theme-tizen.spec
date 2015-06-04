@@ -1,6 +1,6 @@
 Name:          efl-theme-tizen
 Summary:       Tizen theme files
-Version:       1.2.13
+Version:       1.2.14
 Release:       1
 Group:         TO_BE/FILLED_IN
 License:       BSD 2-Clause
