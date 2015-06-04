@@ -89,62 +89,6 @@
             scale: 1;
             description { state: "default" 0.0;
                fixed: 1 1;
-               min: SLIDER_INDICATOR_NORMAL_SIZE_INC;
-               max: SLIDER_INDICATOR_NORMAL_SIZE_INC;
-               color: 255 255 255 255;
-               visible: 0;
-               rel1.to: "button0";
-               rel2.to: "button0";
-            }
-            description { state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               min: SLIDER_INDICATOR_NORMAL_PRESSED_SIZE_INC;
-               max: SLIDER_INDICATOR_NORMAL_PRESSED_SIZE_INC;
-               visible: 1;
-            }
-         }
-      }
-      programs {
-         program { name: "mouse_down";
-            signal: "mouse,down,*";
-            source: "button_events";
-            action:  STATE_SET "pressed" 0.0;
-            transition: DECELERATE 0.3;
-            target: "button0_press";
-         }
-         program { name: "mouse_up";
-            signal: "mouse,up,*";
-            source: "button_events";
-            action:  STATE_SET "default" 0.0;
-            transition: DECELERATE 0.3;
-            target: "button0_press";
-         }
-         program { name: "slider_disable";
-            signal: "elm,state,disabled";
-            source: "elm";
-            action:  STATE_SET "disabled" 0.0;
-            target: "button0";
-            target: "button_events";
-         }
-         program { name: "slider_enable";
-            signal: "elm,state,enabled";
-            source: "elm";
-            action:  STATE_SET "default" 0.0;
-            target: "button0";
-            target: "button_events";
-         }
-      }
-   }
-
-group { name: "elm/slider/horizontal/indicator/bubble";
-      inherit: "elm/slider/horizontal/indicator/default";
-      parts {
-         part { name: "button0_press";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               fixed: 1 1;
                min: SLIDER_INDICATOR_BUBBLE_SIZE_INC;
                max: SLIDER_INDICATOR_BUBBLE_SIZE_INC;
                color: 255 255 255 255;
@@ -236,9 +180,22 @@ group { name: "elm/slider/horizontal/indicator/bubble";
             transition: DECELERATE 0.09;
             target: "elm.indicator";
          }
+         program { name: "slider_disable";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action:  STATE_SET "disabled" 0.0;
+            target: "button0";
+            target: "button_events";
+         }
+         program { name: "slider_enable";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action:  STATE_SET "default" 0.0;
+            target: "button0";
+            target: "button_events";
+         }
+      }
    }
-}
-
 
 group { name: "elm/slider/horizontal/default";
       data.item: "vector_ux" "default";
@@ -647,7 +604,7 @@ group { name: "elm/slider/horizontal/default";
             }
             part { name: "elm.dragable.slider";
                type: GROUP;
-               source: "elm/slider/horizontal/indicator/bubble";
+               source: "elm/slider/horizontal/indicator/default";
                mouse_events: 1;
                scale: 1;
                clip_to : "handle_color";
@@ -1430,7 +1387,7 @@ group { name: "elm/slider/vertical/default";
          }
         part { name: "elm.dragable.slider";
            type: GROUP;
-           source: "elm/slider/horizontal/indicator/bubble";
+           source: "elm/slider/horizontal/indicator/default";
            mouse_events: 1;
            scale: 1;
            clip_to : "handle_color";
