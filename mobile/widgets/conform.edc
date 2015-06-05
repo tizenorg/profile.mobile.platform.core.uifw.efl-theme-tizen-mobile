@@ -363,12 +363,16 @@ group { name: "elm/conformant/base/default";
          script {
             set_int(landscape_mode, 1);
             run_program(PROGRAM:"update_indicator_adapter");
+            set_state(PART:"indicator_bg", "transparent", 0.0);
          }
       }
       program { name: "change_to_portrait";
          script {
             set_int(landscape_mode, 0);
             run_program(PROGRAM:"update_indicator_adapter");
+            if (get_int(transparent_mode) == 0) {
+               set_state(PART:"indicator_bg", "default", 0.0);
+            }
          }
       }
       program { name: "overlap_mode";
@@ -402,7 +406,8 @@ group { name: "elm/conformant/base/default";
             }
             //update indicator adapter
             if ((get_int(transparent_mode) == 1) ||
-                (get_int(indicator_visible) == 0))
+                (get_int(indicator_visible) == 0) ||
+                (get_int(landscape_mode)))
               set_state(PART:"indicator_adapter", "hide", 0.0);
             else
               set_state(PART:"indicator_adapter", "default", 0.0);
