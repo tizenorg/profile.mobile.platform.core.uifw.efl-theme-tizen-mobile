@@ -560,12 +560,21 @@ group { name: "elm/genlist/item/group_index/default";
             max: LIST_ITEM_LR_PADDING_INC LIST_ITEM_GROUP_INDEX_HEIGHT_INC;
          )
       )
-      PART(SPACER, "elm.padding.right",
-         DSC_FROM_R("default" 0.0,
+      part { name: "elm.padding.right";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.relative: 1.0 0.0;
+            align: 1.0 0.5;
+            min: LIST_ITEM_GROUP_INDEX_RIGHT_PADDING_INC LIST_ITEM_GROUP_INDEX_HEIGHT_INC;
+            max: LIST_ITEM_GROUP_INDEX_RIGHT_PADDING_INC LIST_ITEM_GROUP_INDEX_HEIGHT_INC;
+         }
+         description { state: "end_text_visible" 0.0;
+            inherit: "default" 0.0;
             min: LIST_ITEM_LR_PADDING_INC LIST_ITEM_GROUP_INDEX_HEIGHT_INC;
             max: LIST_ITEM_LR_PADDING_INC LIST_ITEM_GROUP_INDEX_HEIGHT_INC;
-         )
-      )
+         }
+      }
       PART(SPACER, "content_bg",
          DSC_LR("default" 0.0, "elm.padding.left", "elm.padding.right",
             min: 0 LIST_ITEM_GROUP_INDEX_CONTENT_HEIGHT_INC;
@@ -583,9 +592,9 @@ group { name: "elm/genlist/item/group_index/default";
       )
       PART(SWALLOW, "elm.swallow.end",
          description { state: "default" 0.0;
-            align: 1.0 0.5;
-            rel1 { to: "main_content_bg"; relative: 1.0 0.0; }
-            rel2 { to: "main_content_bg"; relative: 1.0 1.0; }
+            align: 0.5 0.5;
+            rel1 { to: "main_content_bg"; relative: 1.0 0.5; offset: -30 0; }
+            rel2 { to: "main_content_bg"; relative: 1.0 0.5; offset: -30 0; }
          }
          description { state: "end_text_visible" 0.0;
             inherit: "default" 0.0;
@@ -620,8 +629,8 @@ group { name: "elm/genlist/item/group_index/default";
          description { state: "end_icon_visible" 0.0;
             inherit: "default" 0.0;
             min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC LIST_ITEM_GROUP_INDEX_CONTENT_HEIGHT_INC;
-            rel1 { to: "elm.swallow.end"; relative: 0.0 0.0; }
-            rel2 { to: "elm.swallow.end"; relative: 0.0 1.0; }
+            rel1 { to_x: "elm.swallow.end"; to_y: "main_content_bg"; relative: 0.0 0.0; }
+            rel2 { to_x: "elm.swallow.end"; to_y: "main_content_bg"; relative: 0.0 1.0; }
          }
       )
       PART (SPACER, "main_end_text_bg",
@@ -677,6 +686,7 @@ group { name: "elm/genlist/item/group_index/default";
          source: "elm";
          script {
             if (get_int(main_end_text_visible) == 0) {
+               set_state(PART:"elm.padding.right", "default", 0.0);
                set_state(PART:"main_text_end_padding", "end_icon_visible", 0.0);
                set_state(PART:"main_end_text_bg", "end_icon_visible", 0.0);
                set_state(PART:"elm.swallow.end", "default", 0.0);
@@ -688,6 +698,7 @@ group { name: "elm/genlist/item/group_index/default";
          signal: "elm,state,elm.text.end,visible";
          source: "elm";
          script {
+            set_state(PART:"elm.padding.right", "end_text_visible", 0.0);
             set_state(PART:"main_text_end_padding", "default", 0.0);
             set_state(PART:"main_end_text_bg", "end_text_visible", 0.0);
             set_state(PART:"elm.swallow.end", "end_text_visible", 0.0);
@@ -698,6 +709,7 @@ group { name: "elm/genlist/item/group_index/default";
          signal: "elm,state,default";
          source: "elm";
          script {
+            set_state(PART:"elm.padding.right", "default", 0.0);
             set_state(PART:"main_text_end_padding", "default", 0.0);
             set_state(PART:"main_end_text_bg", "default", 0.0);
             set_state(PART:"elm.swallow.end", "default", 0.0);
