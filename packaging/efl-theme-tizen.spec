@@ -1,6 +1,6 @@
 Name:          efl-theme-tizen
 Summary:       Tizen theme files
-Version:       1.2.17
+Version:       1.2.18
 Release:       1
 Group:         TO_BE/FILLED_IN
 License:       BSD 2-Clause
