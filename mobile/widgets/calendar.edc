@@ -26,19 +26,22 @@
 
 #define CIT_STYLES\
       style { name: "calendar_date_style";\
-         base: "font=Tizen:style=Regular font_size="CALENDAR_DATE_TEXT_SIZE" color=#000000ff align=center text_class=tizen";\
+         base: "font=Tizen:style=Light font_size="CALENDAR_DATE_TEXT_SIZE" color=#000000ff align=center text_class=tizen";\
       }\
       style { name: "calendar_date_selected_style";\
-         base: "font=Tizen:style=Regular font_size="CALENDAR_DATE_TEXT_SIZE" color=#ffffffff align=center text_class=tizen";\
+         base: "font=Tizen:style=Light font_size="CALENDAR_DATE_TEXT_SIZE" color=#ffffffff align=center text_class=tizen";\
       }\
       style { name: "calendar_date_hilighted_style";\
-         base: "font=Tizen:style=Regular font_size="CALENDAR_DATE_TEXT_SIZE" color=#ffffffff align=center text_class=tizen";\
+         base: "font=Tizen:style=Light font_size="CALENDAR_DATE_TEXT_SIZE" color=#ffffffff align=center text_class=tizen";\
       }\
       style { name: "calendar_date_holiday_style";\
-         base: "font=Tizen:style=Regular font_size="CALENDAR_DATE_TEXT_SIZE" color=#cc3d3dff align=center text_class=tizen";\
+         base: "font=Tizen:style=Light font_size="CALENDAR_DATE_TEXT_SIZE" color=#cc3d3dff align=center text_class=tizen";\
       }\
       style { name: "calendar_date_today_style";\
-         base: "font=Tizen:style=Regular font_size="CALENDAR_DATE_TEXT_SIZE" color=#3399ff align=center text_class=tizen";\
+         base: "font=Tizen:style=Light font_size="CALENDAR_DATE_TEXT_SIZE" color=#3399ff align=center text_class=tizen";\
+      }\
+      style { name: "calendar_date_disabled_style";\
+         base: "font=Tizen:style=Light font_size="CALENDAR_DATE_TEXT_SIZE" color=#00000038 align=center text_class=tizen";\
       }\
 
 #define CAL_SPIN(_sufix, _signal_sufix, _text, _relative)\
@@ -256,6 +259,10 @@
          inherit: "default" 0.0; \
          text.style: "calendar_date_today_style"; \
       } \
+      description { state: "disabled" 0.0; \
+         inherit: "default" 0.0; \
+         text.style: "calendar_date_disabled_style"; \
+      } \
       description { state: "hilighted" 0.0; \
          inherit: "default" 0.0; \
          text.style: "calendar_date_hilighted_style"; \
@@ -372,15 +379,17 @@
             new st[31]; \
             new Float:vl; \
             get_state(PART:"cit_"#_pos".text", st, 30, vl); \
-            if (strstr(st, "selected") == -1) { \
-               if (!strncmp(st, "holiday", 7)) \
-                  set_state(PART:"cit_"#_pos".text", "holiday_hilighted", 0.0); \
-               else if (!strncmp(st, "today", 5)) \
-                  set_state(PART:"cit_"#_pos".text", "today_hilighted", 0.0); \
-               else \
-                  set_state(PART:"cit_"#_pos".text", "hilighted", 0.0); \
+            if (strcmp(st, "disabled")) { \
+               if (strstr(st, "selected") == -1) { \
+                  if (!strncmp(st, "holiday", 7)) \
+                     set_state(PART:"cit_"#_pos".text", "holiday_hilighted", 0.0); \
+                  else if (!strncmp(st, "today", 5)) \
+                     set_state(PART:"cit_"#_pos".text", "today_hilighted", 0.0); \
+                  else \
+                     set_state(PART:"cit_"#_pos".text", "hilighted", 0.0); \
+               } \
+               set_state(PART:"cit_"#_pos".selected2", "hilighted", 0.0); \
             } \
-            set_state(PART:"cit_"#_pos".selected2", "hilighted", 0.0); \
          } \
       } \
       program { \
@@ -391,16 +400,37 @@
             new st[31]; \
             new Float:vl; \
             get_state(PART:"cit_"#_pos".text", st, 30, vl); \
-            if (strstr(st, "selected") == -1) { \
-               if (!strncmp(st, "holiday", 7)) \
-                  set_state(PART:"cit_"#_pos".text", "holiday", 0.0); \
-               else if (!strncmp(st, "today", 5)) \
-                  set_state(PART:"cit_"#_pos".text", "today", 0.0); \
-               else \
-                  set_state(PART:"cit_"#_pos".text", "default", 0.0); \
+            if (strcmp(st, "disabled")) { \
+               if (strstr(st, "selected") == -1) { \
+                  if (!strncmp(st, "holiday", 7)) \
+                     set_state(PART:"cit_"#_pos".text", "holiday", 0.0); \
+                  else if (!strncmp(st, "today", 5)) \
+                     set_state(PART:"cit_"#_pos".text", "today", 0.0); \
+                  else \
+                     set_state(PART:"cit_"#_pos".text", "default", 0.0); \
+               } \
+               set_state(PART:"cit_"#_pos".selected2", "default", 0.0); \
             } \
-            set_state(PART:"cit_"#_pos".selected2", "default", 0.0); \
          } \
+      } \
+      program { \
+         name:    "cit_"#_pos".enable"; \
+         signal:  "cit_"#_pos",enable"; \
+         source:  "elm"; \
+         script { \
+            new st[31]; \
+            new Float:vl; \
+            get_state(PART:"cit_"#_pos".text", st, 30, vl); \
+            if (!strcmp(st, "disabled")) \
+              set_state(PART:"cit_"#_pos".text", "default", 0.0); \
+         } \
+      } \
+      program { \
+         name:    "cit_"#_pos".disable"; \
+         signal:  "cit_"#_pos",disable"; \
+         source:  "elm"; \
+         action:  STATE_SET "disabled" 0.0; \
+         target:  "cit_"#_pos".text"; \
       } \
       program { \
          name: "cit_"#_pos".clicked"; \
