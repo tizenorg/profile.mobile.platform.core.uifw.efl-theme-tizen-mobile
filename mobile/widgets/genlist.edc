@@ -506,24 +506,32 @@ group { name: "elm/genlist/item/multiline/default";
             color: 0 0 0 0;
          }
       }
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 LIST_ITEM_MULTILINE_1LINE_HEIGHT_INC;
+            align: 0.5 0.5;
+         }
+      }
       part { name: "elm.padding.left";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: LIST_ITEM_LR_PADDING_INC (LIST_ITEM_WITH_1LINE_HEIGHT_INC-LIST_ITEM_TB_PADDING_INC);
+            min: LIST_ITEM_LR_PADDING_INC 0;
+            align: 0.0 0.5;
             rel1.relative: 0.0 0.0;
-            rel2 { to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
-            align: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
          }
       }
       part { name: "elm.padding.right";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: LIST_ITEM_LR_PADDING_INC (LIST_ITEM_WITH_1LINE_HEIGHT_INC-LIST_ITEM_TB_PADDING_INC);
+            min: LIST_ITEM_LR_PADDING_INC 0;
+            align: 1.0 0.5;
             rel1.relative: 1.0 0.0;
-            rel2 { to_y: "elm.padding.bottom"; relative: 1.0 0.0; }
-            align: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
          }
       }
       part { name: "elm.padding.top";
@@ -531,75 +539,77 @@ group { name: "elm/genlist/item/multiline/default";
          scale: 1;
          description { state: "default" 0.0;
             min: 0 LIST_ITEM_TB_PADDING_INC;
+            max: -1 LIST_ITEM_TB_PADDING_INC;
+            align: 0.5 0.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 0.0;
-            align: 0.5 0.0;
          }
       }
-      PART(SPACER, "main_text_bg",
+      part { name: "elm.padding.bottom";
+         type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
-            min: 0 0;
-            align: 0.5 0.0;
-            rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.top"; relative: 1.0 1.0; }
-            rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.top"; relative: 0.0 1.0; }
+            min: 0 LIST_ITEM_TB_PADDING_INC;
+            max: -1 LIST_ITEM_TB_PADDING_INC;
+            align: 0.5 1.0;
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 1.0;
          }
-         description { state: "main_text_visible" 0.0;
-            inherit: "default" 0.0;
-            min: 0 LIST_ITEM_MULTILINE_1LINE_HEIGHT_INC;
-            rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.top"; relative: 1.0 1.0; }
-            rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
-         }
-         description { state: "multiline_text_visible" 0.0;
-            inherit: "default" 0.0;
-            min: 0 LIST_ITEM_MAIN_LINE_HEIGHT_INC;
-         }
-      )
-      PART(TEXTBLOCK, "elm.text",
-         mouse_events: 0;
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 0.0;
-            rel1.to: "main_text_bg";
-            rel2.to: "main_text_bg";
+            rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.top"; relative: 1.0 1.0; }
+            rel2 { to_x: "elm.padding.right"; to_y: "base_line"; relative: 0.0 0.0; }
             text.style: "list_text_main";
             text.min: 0 1;
-            text.align: 0.0 0.5;
          }
          description { state: "pressed" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_main_press";
+            text.style: "list.text_main_press";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
-            text.style: "list_text_main_dim";
+            text.style: "list.text_main_dim";
          }
-      )
-      PART(SPACER, "multiline_text_bg",
+      }
+      part { name: "base_line";
+         type: SPACER;
          description { state: "default" 0.0;
-            min: 0 0;
-            align: 0.5 0.0;
-            rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.top"; relative: 1.0 1.0; }
-            rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.top"; relative: 0.0 1.0; }
+            rel1 { to: "elm.padding.top"; relative: 0.0 0.0; }
+            rel2 { to: "elm.padding.top"; relative: 1.0 0.0; }
          }
          description { state: "main_text_visible" 0.0;
-            inherit: "default" 0.0;
-            min: 0 LIST_ITEM_SUB_LINE_HEIGHT_INC;
-            rel1 { to: "elm.text"; relative: 0.0 1.0; }
-            rel2 { to: "elm.text"; relative: 1.0 1.0; }
+            rel1 { to: "elm.padding.bottom"; relative: 0.0 0.0; }
+            rel2 { to: "elm.padding.bottom"; relative: 1.0 0.0; }
          }
          description { state: "multiline_text_visible" 0.0;
-            inherit: "default" 0.0;
-            min: 0 LIST_ITEM_MULTILINE_1LINE_HEIGHT_INC;
+            rel1 { to: "elm.text.multiline"; relative: 0.0 0.0; }
+            rel2 { to: "elm.text.multiline"; relative: 1.0 0.0; }
          }
-      )
-      PART (TEXTBLOCK, "elm.text.multiline",
-         mouse_events: 0;
+      }
+      part { name: "multiline_base_line";
+         type: SPACER;
          description { state: "default" 0.0;
-            align: 0.5 0.0;
-            rel1.to: "multiline_text_bg";
-            rel2.to: "multiline_text_bg";
+            rel1 { to: "elm.padding.top"; relative: 0.0 1.0; }
+            rel2 { to: "elm.padding.top"; relative: 1.0 1.0; }
+         }
+         description { state: "main_text_visible" 0.0;
+            rel1 { to: "elm.padding.bottom"; relative: 0.0 0.0; }
+            rel2 { to: "elm.padding.bottom"; relative: 1.0 0.0; }
+         }
+      }
+      part { name: "elm.text.multiline";
+         type: TEXTBLOCK;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            rel1 { to_x: "elm.padding.left"; to_y: "multiline_base_line"; relative: 1.0 1.0; }
+            rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
             text.style: "list_text_multiline";
             text.min: 0 1;
-            text.align: 0.0 0.5;
          }
          description { state: "pressed" 0.0;
             inherit: "default" 0.0;
@@ -609,16 +619,6 @@ group { name: "elm/genlist/item/multiline/default";
             inherit: "default" 0.0;
             text.style: "list_text_multiline_dim";
          }
-      )
-      part { name: "elm.padding.bottom";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_TB_PADDING_INC;
-            rel1 { to_y: "elm.text.multiline"; relative: 0.0 1.0; }
-            rel2.relative: 1.0 1.0;
-            align: 0.5 1.0;
-         }
       }
    }
    LIST_PROGRAMS( target: "elm.text"; )
@@ -627,36 +627,38 @@ group { name: "elm/genlist/item/multiline/default";
          signal: "elm,state,elm.text,visible";
          source: "elm";
          script {
-            set_int(main_text_visible, 1);
             if (get_int(multiline_text_visible) == 1) {
-               set_state(PART:"main_text_bg", "multiline_text_visible", 0.0);
-               set_state(PART:"multiline_text_bg", "main_text_visible", 0.0);
+               set_state(PART:"base_line", "multiline_text_visible", 0.0);
+               set_state(PART:"multiline_base_line", "main_text_visible", 0.0);
             }
             else {
-               set_state(PART:"main_text_bg", "main_text_visible", 0.0);
+               set_state(PART:"base_line", "main_text_visible", 0.0);
+               set_state(PART:"multiline_base_line", "default", 0.0);
             }
+            set_int(main_text_visible, 1);
          }
       }
       program { name: "multiline_text_visible";
          signal: "elm,state,elm.text.multiline,visible";
          source: "elm";
-         script {
-            set_int(multiline_text_visible, 1);
+          script {
             if (get_int(main_text_visible) == 1) {
-               set_state(PART:"main_text_bg", "multiline_text_visible", 0.0);
-               set_state(PART:"multiline_text_bg", "main_text_visible", 0.0);
+               set_state(PART:"base_line", "multiline_text_visible", 0.0);
+               set_state(PART:"multiline_base_line", "main_text_visible", 0.0);
             }
             else {
-               set_state(PART:"multiline_text_bg", "multiline_text_visible", 0.0);
+               set_state(PART:"base_line", "main_text_visible", 0.0);
+               set_state(PART:"multiline_base_line", "default", 0.0);
             }
+            set_int(multiline_text_visible, 1);
          }
       }
-      program { name: "restore_defaults";
+      program { name: "restore_default";
          signal: "elm,state,default";
          source: "elm";
          script {
-            set_state(PART:"main_text_bg", "default", 0.0);
-            set_state(PART:"multiline_text_bg", "default", 0.0);
+            set_state(PART:"base_line", "default", 0.0);
+            set_state(PART:"multiline_base_line", "default", 0.0);
             set_int(main_text_visible, 0);
             set_int(multiline_text_visible, 0);
          }
