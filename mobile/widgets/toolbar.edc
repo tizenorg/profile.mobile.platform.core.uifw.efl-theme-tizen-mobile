@@ -2014,7 +2014,7 @@ group { name: "elm/toolbar/item/navigationbar";
                 && get_int(mouse_down) == 1)
               {
                 set_int(mouse_down, 0);
-                set_state(PART:"elm.text", "visible", 0.0);
+                set_state(PART:"elm.text", "selected", 0.0);
               }
          }
       }
@@ -2024,6 +2024,7 @@ group { name: "elm/toolbar/item/navigationbar";
          script {
             if (get_int(multi_down) == 0) {
                emit("elm,action,click", "elm");
+               set_state(PART:"elm.text", "selected", 0.0);
                if (get_int(item_state) != ITEM_STATE_DISABLED)
                   run_program(PROGRAM:"touch_sound");
             }
@@ -2085,10 +2086,12 @@ group { name: "elm/toolbar/item/navigationbar";
       program { name: "divider_visible_1";
          signal: "elm,order,first,item";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "divider";
-         target: "divider_bg";
-         target: "right_padding";
+         script {
+            set_state(PART:"divider", "default", 0.0);
+            set_state(PART:"divider_bg", "default", 0.0);
+            set_state(PART:"right_padding", "default", 0.0);
+            set_state(PART:"elm.text", "default", 0.0);
+         }
       }
       program { name: "divider_visible_2";
          signal: "elm,order,default,item";
@@ -2097,15 +2100,18 @@ group { name: "elm/toolbar/item/navigationbar";
             set_state(PART:"divider", "default", 0.0);
             set_state(PART:"divider_bg", "default", 0.0);
             set_state(PART:"right_padding", "default", 0.0);
+            set_state(PART:"elm.text", "default", 0.0);
          }
       }
       program { name: "divider_hidden";
          signal: "elm,order,last,item";
          source: "elm";
-         action: STATE_SET "hidden" 0.0;
-         target: "divider";
-         target: "divider_bg";
-         target: "right_padding";
+         script {
+               set_state(PART:"divider", "hidden", 0.0);
+               set_state(PART:"divider_bg", "hidden", 0.0);
+               set_state(PART:"right_padding", "hidden", 0.0);
+               set_state(PART:"elm.text", "selected", 0.0);
+         }
       }
       program { name: "highlight_on";
          signal: "elm,highlight,on";
