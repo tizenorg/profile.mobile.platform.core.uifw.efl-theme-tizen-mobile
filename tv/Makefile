@@ -28,7 +28,6 @@ all:
 		-sd ./$$s/sounds -fd ../objects \
 		$(SRC)-$(TARGET)-$$s.edc $(DST)-$(TARGET)-$$s.edj; \
 	done
-	edje_cc $(EDJE_FLAGS_$(V)) -id default/images/tizen-hd -sd default/sounds -fd ../objects \
 		-id ./UHD/images/\
 		-id ./UHD/images/Activity_indicator/\
 		-id ./UHD/images/Activity_indicator/large\
@@ -40,20 +39,17 @@ all:
 		-id ./UHD/images/Emoticon\
 		-id ./UHD/images/Navigation_elements\
 		-id ./UHD/images/Popups\
-		default.edc default.edj
 
 clean:
 	for s in $(SIZE); do \
 		rm -rf $(DST)-$(TARGET)-$$s.*; \
 	done
-	rm -rf default.edj;\
 
 install:
 	mkdir -p $(THEME_DIR)
 	for s in $(SIZE); do \
 		$(INSTALL) $(DST)-$(TARGET)-$$s.edj $(THEME_DIR); \
 	done
-	$(INSTALL) default.edj $(THEME_DIR); \
 
 uninstall:
 	rm -rf $(THEME_DIR)/
