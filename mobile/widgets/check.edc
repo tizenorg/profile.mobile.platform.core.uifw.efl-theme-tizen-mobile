@@ -30,6 +30,7 @@ group { name: "elm/check/base/default";
       public check_state;
       public disabled;
       public text;
+      public animate = 0;
    }
    parts {
       part { name: "base";
@@ -156,11 +157,30 @@ group { name: "elm/check/base/default";
       program { name: "touch_sound";
          action: RUN_PLUGIN "touch_sound";
       }
+      program { name: "check_on_activate";
+         signal: "elm,activate,check,on";
+         source: "elm";
+         script {
+            set_int(animate, 1);
+         }
+      }
+      program { name: "check_off_activate";
+         signal: "elm,activate,check,off";
+         source: "elm";
+         script {
+            set_int(animate, 1);
+         }
+      }
       program { name: "check_on";
          signal: "elm,state,check,on";
          source: "elm";
          script {
-            emit("elm,check,action,toggle", "tizen_vg");
+            if (get_int(animate) == 0) {
+               emit("elm,check,state,toggle", "tizen_vg");
+            } else {
+               emit("elm,check,action,toggle", "tizen_vg");
+            }
+            set_int(animate, 0);
             set_int(check_state, 1);
          }
       }
@@ -168,7 +188,12 @@ group { name: "elm/check/base/default";
          signal: "elm,state,check,off";
          source: "elm";
          script {
-            emit("elm,check,action,toggle", "tizen_vg");
+            if (get_int(animate) == 0) {
+               emit("elm,check,state,toggle", "tizen_vg");
+            } else {
+               emit("elm,check,action,toggle", "tizen_vg");
+            }
+            set_int(animate, 0);
             set_int(check_state, 0);
          }
       }
@@ -305,11 +330,19 @@ group { name: "elm/check/base/favorite";
          signal: "elm,state,check,on";
          source: "elm";
          script {
-            emit("elm,check,action,toggle", "tizen_vg");
-            set_int(check_state, 1);
-            if (!get_int(disabled)) {
-               run_program(PROGRAM:"toggle_on_effect");
+            if (get_int(animate) == 0) {
+               emit("elm,check,state,toggle", "tizen_vg");
+               if (!get_int(disabled)) {
+                  set_state(PART:"tizen_vg_shape_clipper2", "on", 0.0);
+               }
+            } else {
+               emit("elm,check,action,toggle", "tizen_vg");
+               if (!get_int(disabled)) {
+                  run_program(PROGRAM:"toggle_on_effect");
+               }
             }
+            set_int(animate, 0);
+            set_int(check_state, 1);
          }
       }
       program { name: "toggle_off_effect";
@@ -321,11 +354,19 @@ group { name: "elm/check/base/favorite";
          signal: "elm,state,check,off";
          source: "elm";
          script {
-            emit("elm,check,action,toggle", "tizen_vg");
-            set_int(check_state, 0);
-            if (!get_int(disabled)) {
-               run_program(PROGRAM:"toggle_off_effect");
+            if (get_int(animate) == 0) {
+               emit("elm,check,state,toggle", "tizen_vg");
+               if (!get_int(disabled)) {
+                  set_state(PART:"tizen_vg_shape_clipper2", "default", 0.0);
+               }
+            } else {
+               emit("elm,check,action,toggle", "tizen_vg");
+               if (!get_int(disabled)) {
+                  run_program(PROGRAM:"toggle_off_effect");
+               }
             }
+            set_int(animate, 0);
+            set_int(check_state, 0);
          }
       }
       program { name: "disabled";
@@ -442,11 +483,19 @@ group { name: "elm/check/base/on&off";
          signal: "elm,state,check,on";
          source: "elm";
          script {
-            emit("elm,check,action,toggle", "tizen_vg");
-            set_int(check_state, 1);
-            if (!get_int(disabled)) {
-               run_program(PROGRAM:"toggle_on_effect");
+            if (get_int(animate) == 0) {
+               emit("elm,check,state,toggle", "tizen_vg");
+               if (!get_int(disabled)) {
+                  set_state(PART:"tizen_vg_shape_clipper2", "on", 0.0);
+               }
+            } else {
+               emit("elm,check,action,toggle", "tizen_vg");
+               if (!get_int(disabled)) {
+                  run_program(PROGRAM:"toggle_on_effect");
+               }
             }
+            set_int(animate, 0);
+            set_int(check_state, 1);
          }
       }
       program { name: "toggle_off_effect";
@@ -458,11 +507,19 @@ group { name: "elm/check/base/on&off";
          signal: "elm,state,check,off";
          source: "elm";
          script {
-            emit("elm,check,action,toggle", "tizen_vg");
-            set_int(check_state, 0);
-            if (!get_int(disabled)) {
-               run_program(PROGRAM:"toggle_off_effect");
+            if (get_int(animate) == 0) {
+               emit("elm,check,state,toggle", "tizen_vg");
+               if (!get_int(disabled)) {
+                  set_state(PART:"tizen_vg_shape_clipper2", "default", 0.0);
+               }
+            } else {
+               emit("elm,check,action,toggle", "tizen_vg");
+               if (!get_int(disabled)) {
+                  run_program(PROGRAM:"toggle_off_effect");
+               }
             }
+            set_int(animate, 0);
+            set_int(check_state, 0);
          }
       }
       program { name: "disabled";
