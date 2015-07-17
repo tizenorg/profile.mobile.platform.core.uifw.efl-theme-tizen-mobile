@@ -29,6 +29,7 @@ group { name: "elm/radio/base/default";
       public radio_state;
       public disabled;
       public text;
+      public animate = 0;
    }
    parts {
       part { name: "base";
@@ -188,6 +189,20 @@ group { name: "elm/radio/base/default";
       program { name: "touch_sound";
          action: RUN_PLUGIN "touch_sound";
       }
+      program { name: "radio_on_activate";
+         signal: "elm,activate,radio,on";
+         source: "elm";
+         script {
+            set_int(animate, 1);
+         }
+      }
+      program { name: "radio_off_activate";
+         signal: "elm,activate,radio,off";
+         source: "elm";
+         script {
+            set_int(animate, 1);
+         }
+      }
       program { name: "toggle_on_effect";
          action: STATE_SET "on" 0.0;
          target: "tizen_vg_shape_clipper";
@@ -241,9 +256,16 @@ group { name: "elm/radio/base/default";
                set_state(PART:"tizen_vg_shape_clipper2", "disabled", 0.0);
                set_state(PART:"tizen_vg_shape_clipper3", "disabled", 0.0);
             }else {
-               run_program(PROGRAM:"toggle_on_effect");
-               run_program(PROGRAM:"toggle_on_effect2");
+               if (get_int(animate) == 0) {
+                 set_state(PART:"tizen_vg_shape_clipper", "on", 0.0);
+                 set_state(PART:"tizen_vg_shape_clipper2", "on", 0.0);
+                 set_state(PART:"tizen_vg_shape_clipper3", "on", 0.0);
+               } else {
+                 run_program(PROGRAM:"toggle_on_effect");
+                 run_program(PROGRAM:"toggle_on_effect2");
+               }
             }
+            set_int(animate, 0);
             set_int(radio_state, 1);
          }
       }
@@ -256,9 +278,16 @@ group { name: "elm/radio/base/default";
                set_state(PART:"tizen_vg_shape_clipper2", "disabled", 0.0);
                set_state(PART:"tizen_vg_shape_clipper3", "disabled", 0.0);
             }else {
-              run_program(PROGRAM:"toggle_off_effect");
-              run_program(PROGRAM:"toggle_off_effect2");
+              if (get_int(animate) == 0) {
+                 set_state(PART:"tizen_vg_shape_clipper", "default", 0.0);
+                 set_state(PART:"tizen_vg_shape_clipper2", "default", 0.0);
+                 set_state(PART:"tizen_vg_shape_clipper3", "default", 0.0);
+              } else {
+                 run_program(PROGRAM:"toggle_off_effect");
+                 run_program(PROGRAM:"toggle_off_effect2");
+              }
             }
+            set_int(animate, 0);
             set_int(radio_state, 0);
          }
       }
