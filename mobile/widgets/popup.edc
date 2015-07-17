@@ -182,6 +182,17 @@ group { name: "elm/notify/bottom/toast";
          action: STATE_SET "default" 0.0;
          target: "elm.swallow.content";
       }
+      program { name: "hide_effect";
+         signal: "effect,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.1;
+         target: "elm.swallow.content";
+         after: "hide_effect_done";
+      }
+      program { name: "hide_effect_done";
+         action: SIGNAL_EMIT "effect,hide,finished" "";
+      }
    }
 }
 
@@ -1171,6 +1182,7 @@ group { name: "elm/popup/base/toast";
    parts {
       part { name: "bg";
          scale: 1;
+         clip_to: "clipper";
          description { state: "default" 0.0;
             rel1.to: "bg_outer";
             rel2.to: "bg_outer";
@@ -1179,6 +1191,7 @@ group { name: "elm/popup/base/toast";
       }
       part { name: "bg_outer";
          scale: 1;
+         clip_to: "clipper";
          description { state: "default" 0.0;
             image.normal: "core_popup_noti_bg_stroke.#";
             color: 61 185 204 255;
@@ -1194,11 +1207,16 @@ group { name: "elm/popup/base/toast";
         type: SPACER;
         scale: 1;
         description { state: "default" 0.0;
-            min: 0 POPUP_TOAST_BOTTOM_PAD_INC;
-            max: -1 POPUP_TOAST_BOTTOM_PAD_INC;
+            min: 0 POPUP_TOAST_VI_BOTTOM_PAD_INC;
+            max: -1 POPUP_TOAST_VI_BOTTOM_PAD_INC;
             fixed: 0 1;
             align: 0.5 1.0;
             rel1.relative: 0.0 1.0;
+         }
+         description { state: "show_effect";
+            inherit: "default" 0.0;
+            min: 0 POPUP_TOAST_BOTTOM_PAD_INC;
+            max: -1 POPUP_TOAST_BOTTOM_PAD_INC;
          }
       }
       part { name: "title_top_padding";
@@ -1281,6 +1299,7 @@ group { name: "elm/popup/base/toast";
       }
       part { name: "elm.text";
          type: TEXTBLOCK;
+         clip_to: "clipper";
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
@@ -1305,6 +1324,7 @@ group { name: "elm/popup/base/toast";
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         clip_to: "clipper";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.5 1.0;
@@ -1312,6 +1332,19 @@ group { name: "elm/popup/base/toast";
             rel1.relative: 0.0 0.0;
             rel2.to_y: "title_bottom_padding";
             rel2.relative: 1.0 0.0;
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+         description { state: "show_effect" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
          }
       }
    }
@@ -1332,6 +1365,21 @@ group { name: "elm/popup/base/toast";
             set_state(PART:"title_left_padding", "part_text_show", 0.0);
             set_state(PART:"title_right_padding", "part_text_show", 0.0);
          }
+      }
+      program { name: "show_effect";
+         signal: "show";
+         action: STATE_SET "show_effect" 0.0;
+         transition: LINEAR 0.1;
+         target: "clipper";
+         target: "bottom_padding";
+      }
+      program { name: "hide_effect";
+         signal: "elm,state,tizen,content,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.1;
+         target: "clipper";
+         target: "bottom_padding";
       }
    }
 }
