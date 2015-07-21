@@ -103,6 +103,17 @@ group { name: "elm/notify/bottom/popup";
          action: STATE_SET "default" 0.0;
          target: "elm.swallow.content";
       }
+      program { name: "hide_effect";
+         signal: "effect,hide";
+         source: "elm";
+         transition: SIN_FAC 0.33 1.7;
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.content";
+         after: "hide_effect_done";
+      }
+      program { name: "hide_effect_done";
+         action: SIGNAL_EMIT "effect,hide,finished" "";
+      }
    }
 }
 
@@ -184,7 +195,7 @@ group { name: "elm/notify/block_events/popup";
          scale: 1;
          description { state: "default" 0.0;
             image.normal: "core_theme_bg_dim.png";
-            color: 255 255 255 255;
+            color: 0 0 0 0;
          }
          description { state: "show" 0.0;
             image.normal: "core_theme_bg_dim.png";
@@ -206,8 +217,19 @@ group { name: "elm/notify/block_events/popup";
       program { name: "show1";
          signal: "show";
          action: STATE_SET "show" 0.0;
-         transition: SIN_FAC 0.166 0.5;
+         transition: SIN_FAC 0.33 1.7;
          target: "block_events_color";
+      }
+      program { name: "hide_effect";
+         signal: "effect,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         transition: SIN_FAC 0.33 1.7;
+         target: "block_events_color";
+         after: "hide_effect_done";
+      }
+      program { name: "hide_effect_done";
+         action: SIGNAL_EMIT "effect,hide,finished" "elm";
       }
       program { name: "block_clicked";
          signal: "mouse,clicked,1";
