@@ -30,7 +30,7 @@ group { name: "elm/genlist/item/type1/default";
    alias: "elm/genlist/item_compress/type1/default";
 
    data.item: "texts" "elm.text elm.text.end elm.text.sub elm.text.sub.end";
-   data.item: "contents" "elm.swallow.icon elm.swallow.end";
+   data.item: "contents" "elm.swallow.icon elm.swallow.icon.0 elm.swallow.icon.1 elm.swallow.end";
 
    script {
       public end_icon_visible = 0;
@@ -38,13 +38,12 @@ group { name: "elm/genlist/item/type1/default";
    }
 
    parts {
-      part { name: "elm.swallow.bg";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
+      // for banded bg
+      swallow { "elm.swallow.bg"; scale;
+         desc { "default";
          }
       }
-      // "bg" part is used by genlist event macro. this will be removed.
+      // FIXME: "bg" part is used by genlist event macro. this will be removed.
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
@@ -61,282 +60,301 @@ group { name: "elm/genlist/item/type1/default";
             color: 0 0 0 0;
          }
       }
-      part { name: "base";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_WITH_1LINE_HEIGHT_INC;
-            align: 0.5 0.5;
+      // base spacer for item min height
+      spacer { "base"; scale;
+         desc { "default";
+            min: 0 GENLIST_ITEM_1LINE_HEIGHT_INC;
          }
-         description { state: "sub_text_visible";
-            inherit: "default" 0.0;
-            min: 0 LIST_ITEM_WITH_2LINE_HEIGHT_INC;
+         desc { "sub_text_visible";
+            min: 0 GENLIST_ITEM_2LINE_HEIGHT_INC;
          }
       }
-      part { name: "elm.padding.left";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: LIST_ITEM_LR_PADDING_INC 0;
+      // padding outside
+      spacer { "elm.padding.left"; scale;
+         desc { "default";
+            min: GENLIST_ITEM_LR_PADDING_INC 0;
             align: 0.0 0.5;
             rel1.relative: 0.0 0.0;
             rel2.relative: 0.0 1.0;
          }
       }
-      part { name: "elm.padding.right";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: LIST_ITEM_LR_PADDING_INC 0;
+      spacer { "elm.padding.right"; scale;
+         desc { "default";
+            min: GENLIST_ITEM_LR_PADDING_INC 0;
             align: 1.0 0.5;
             rel1.relative: 1.0 0.0;
             rel2.relative: 1.0 1.0;
          }
       }
-      part { name: "elm.padding.top";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_TB_PADDING_INC;
-            max: -1 LIST_ITEM_TB_PADDING_INC;
+      spacer { "elm.padding.top"; scale;
+         desc { "default";
+            min: 0 GENLIST_ITEM_TB_PADDING_INC;
+            max: -1 GENLIST_ITEM_TB_PADDING_INC;
             align: 0.5 0.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 0.0;
          }
       }
-      part { name: "elm.padding.bottom";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_TB_PADDING_INC;
-            max: -1 LIST_ITEM_TB_PADDING_INC;
+      spacer { "elm.padding.bottom"; scale;
+         desc { "default";
+            min: 0 GENLIST_ITEM_TB_PADDING_INC;
+            max: -1 GENLIST_ITEM_TB_PADDING_INC;
             align: 0.5 1.0;
             rel1.relative: 0.0 1.0;
             rel2.relative: 1.0 1.0;
          }
       }
-      part { name: "elm.swallow.icon";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
+      // left swallow (Type B)
+      swallow { "elm.swallow.icon"; scale;
+         desc { state: "default";
             align: 0.0 0.5;
-            rel1 { to_x: "elm.padding.left"; to_y: "main_icon_text_padding"; relative: 1.0 0.5; }
-            rel2 { to_x: "elm.padding.left"; to_y: "main_icon_text_padding"; relative: 1.0 0.5; }
+            rel1 { to: "elm.padding.left"; relative: 1.0 0.5; }
+            rel2 { to: "elm.padding.left"; relative: 1.0 0.5; }
          }
       }
-      part { name: "main_icon_text_padding";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
+      // padding between left swallow & center contents
+      spacer { "elm.padding.center.left"; scale;
+         desc { "default";
             min: 0 0;
             align: 0.0 0.5;
-            rel1 { to_x: "elm.swallow.icon"; to_y: "elm.text"; relative: 1.0 0.0; }
-            rel2 { to_x: "elm.swallow.icon"; to_y: "elm.text"; relative: 1.0 1.0; }
+            rel1 { to: "elm.swallow.icon"; relative: 1.0 0.5; }
+            rel2 { to: "elm.swallow.icon"; relative: 1.0 0.5; }
          }
-         description { state: "icon_visible" 0.0;
-            inherit: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_ICON_TEXT_PADDING_WIDTH_INC 0;
+         desc { "icon_visible"; inherit: "default";
+            min: GENLIST_ITEM_CENTER_LEFT_PADDING_INC 0;
          }
       }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_MAIN_LINE_HEIGHT_INC;
+      // right swallow (Type C)
+      swallow { "elm.swallow.end"; scale;
+         desc { state: "default";
+            align: 1.0 0.5;
+            rel1 { to: "elm.padding.right"; relative: 0.0 0.5; }
+            rel2 { to: "elm.padding.right"; relative: 0.0 0.5; }
+         }
+      }
+      // padding between center contents & right swallow
+      spacer { "elm.padding.center.right"; scale;
+         desc { "default";
+            min: 0 0;
+            align: 1.0 0.5;
+            rel1 { to: "elm.swallow.end"; relative: 0.0 0.5; }
+            rel2 { to: "elm.swallow.end"; relative: 0.0 0.5; }
+         }
+         desc { "icon_visible"; inherit: "default";
+            min: GENLIST_ITEM_CENTER_LEFT_PADDING_INC 0;
+         }
+      }
+      // center contents (Type A)
+      // main line
+      swallow { "elm.swallow.icon.0"; scale;
+         desc { "default";
+            align: 0.0 0.5;
+            rel1 { to_x: "elm.padding.center.left"; to_y: "elm.padding.main.icon.text"; relative: 1.0 0.5; }
+            rel2 { to_x: "elm.padding.center.left"; to_y: "elm.padding.main.icon.text"; relative: 1.0 0.5; }
+         }
+      }
+      spacer { "elm.padding.main.icon.text"; scale;
+         desc { "default";
+            min: 0 0;
+            align: 0.0 0.5;
+            rel1 { to_x: "elm.swallow.icon.0"; to_y: "elm.text"; relative: 1.0 0.0; }
+            rel2 { to_x: "elm.swallow.icon.0"; to_y: "elm.text"; relative: 1.0 1.0; }
+         }
+         desc { "icon_visible"; inherit: "default";
+            min: GENLIST_ITEM_MAIN_LINE_ICON_TEXT_PADDING_INC 0;
+         }
+      }
+      textblock { "elm.text"; scale;
+         desc { "default";
+            min: 0 GENLIST_ITEM_MAIN_LINE_HEIGHT_INC;
             align: 0.5 0.5;
-            rel1 { to_x: "main_icon_text_padding"; to_y: "elm.padding.top"; relative: 1.0 1.0; }
-            rel2 { to_x: "main_text_end_padding"; to_y: "base_line"; relative: 0.0 0.0; }
+            rel1 { to_x: "elm.padding.main.icon.text"; to_y: "elm.padding.top"; relative: 1.0 1.0; }
+            rel2 { to_x: "elm.padding.main.text.end"; to_y: "base_line"; relative: 0.0 0.0; }
             text.style: "list_text_main";
             text.min: 0 1;
          }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
+         desc { "pressed"; inherit: "default";
             text.style: "list_text_main_press";
          }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
+         desc { "disabled"; inherit: "default";
             text.style: "list_text_main_dim";
          }
       }
-      part { name: "base_line";
-         type: SPACER;
-         description { state: "default" 0.0;
+      // bottom line of "elm.text"
+      spacer { "base_line";
+         desc { "default";
             rel1 { to: "elm.padding.bottom"; relative: 0.0 0.0; }
             rel2 { to: "elm.padding.bottom"; relative: 1.0 0.0; }
          }
-         description { state: "sub_text_visible" 0.0;
-            rel1 { to: "elm.text.sub"; relative: 0.0 0.0; }
-            rel2 { to: "elm.text.sub"; relative: 1.0 0.0; }
+         desc { "sub_text_visible"; inherit: "default";
+            rel1 { to_y: "elm.text.sub"; relative: 0.0 0.0; }
+            rel2 { to_y: "elm.text.sub"; relative: 1.0 0.0; }
          }
       }
-      part { name: "main_text_end_padding";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
+      //
+      spacer { "elm.padding.main.text.end"; scale;
+         desc { "default";
             min: 0 0;
             align: 1.0 0.5;
-            rel1 { to_x: "elm.swallow.end"; to_y: "elm.text"; relative: 0.0 0.0; }
-            rel2 { to_x: "elm.swallow.end"; to_y: "elm.text"; relative: 0.0 1.0; }
+            rel1 { to_x: "elm.swallow.icon.1"; to_y: "elm.text"; relative: 0.0 0.0; }
+            rel2 { to_x: "elm.swallow.icon.1"; to_y: "elm.text"; relative: 0.0 1.0; }
          }
-         description { state: "icon_visible" 0.0;
-            inherit: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC 0;
+         desc { "icon_visible"; inherit: "default";
+            min: GENLIST_ITEM_MAIN_LINE_TEXT_END_PADDING_INC 0;
          }
-         description { state: "text_visible" 0.0;
-            inherit: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC 0;
+         desc { "text_visible"; inherit: "default";
+            min: GENLIST_ITEM_MAIN_LINE_TEXT_END_PADDING_INC 0;
             rel1 { to_x: "elm.text.end"; to_y: "elm.text"; relative: 0.0 0.0; }
             rel2 { to_x: "elm.text.end"; to_y: "elm.text"; relative: 0.0 1.0; }
          }
-         description { state: "sub_text_visible" 0.0;
-            inherit: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC 0;
+         desc { "sub_text_visible"; inherit: "default";
+            min: GENLIST_ITEM_MAIN_LINE_TEXT_END_PADDING_INC 0;
             rel1 { to_x: "elm.text.sub.end"; to_y: "elm.text"; relative: 0.0 0.0; }
             rel2 { to_x: "elm.text.sub.end"; to_y: "elm.text"; relative: 0.0 1.0; }
          }
       }
-      part { name: "elm.swallow.end";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.icon.1"; scale;
+         desc { "default";
             align: 1.0 0.5;
-            rel1 { to_x: "elm.padding.right"; to_y: "elm.padding.top"; relative: 0.0 1.0; }
-            rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
+            rel1 { to_x: "elm.padding.center.right"; to_y: "elm.padding.top"; relative: 0.0 1.0; }
+            rel2 { to_x: "elm.padding.center.right"; to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
          }
-         description { state: "text_visible" 0.0;
-            inherit: "default" 0.0;
-            rel1 { to_x: "elm.padding.right"; to_y: "main_text_end_padding"; relative: 0.0 0.5; }
-            rel2 { to_x: "elm.padding.right"; to_y: "main_text_end_padding"; relative: 0.0 0.5; }
+         desc { "text_visible"; inherit: "default";
+            rel1 { to_x: "elm.padding.center.right"; to_y: "elm.padding.main.text.end"; relative: 0.0 0.5; }
+            rel2 { to_x: "elm.padding.center.right"; to_y: "elm.padding.main.text.end"; relative: 0.0 0.5; }
          }
       }
-      part { name: "elm.text.end";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
+      textblock { "elm.text.end"; scale;
+         desc { "default";
+            max: GENLIST_ITEM_END_TEXT_WIDTH_INC -1;
             align: 1.0 0.5;
-            rel1 { to_x: "elm.padding.right"; to_y: "main_text_end_padding"; relative: 0.0 0.5; }
-            rel2 { to_x: "elm.padding.right"; to_y: "main_text_end_padding"; relative: 0.0 0.5; }
+            rel1 { to_x: "elm.padding.center.right"; to_y: "elm.padding.main.text.end"; relative: 0.0 0.5; }
+            rel2 { to_x: "elm.padding.center.right"; to_y: "elm.padding.main.text.end"; relative: 0.0 0.5; }
             text.style: "list_text_end";
             text.min: 1 1;
+            text.max: 0 1;
          }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
+         desc { "pressed"; inherit: "default";
             text.style: "list_text_end_press";
          }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
+         desc { "disabled"; inherit: "default";
             text.style: "list_text_end_dim";
          }
       }
-      part { name: "elm.text.sub";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
+      // sub line
+      textblock { "elm.text.sub"; scale;
+         desc { "default";
             align: 0.5 1.0;
-            rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.bottom"; relative: 1.0 0.0; }
-            rel2 { to_x: "sub_text_end_padding"; to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
+            rel1 { to_x: "elm.padding.center.left"; to_y: "elm.padding.bottom"; relative: 1.0 0.0; }
+            rel2 { to_x: "elm.padding.sub.text.end"; to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
             text.style: "list_text_sub_01";
             text.min: 0 1;
          }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
+         desc { "pressed"; inherit: "default";
             text.style: "list_text_sub_01_press";
          }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
+         desc { "disabled"; inherit: "default";
             text.style: "list_text_sub_01_dim";
          }
       }
-      part { name: "sub_text_end_padding";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
+      spacer { "elm.padding.sub.text.end"; scale;
+         desc { "default";
             min: 0 0;
             align: 1.0 0.5;
-            rel1 { to_x: "elm.swallow.end"; to_y: "elm.text"; relative: 0.0 0.0; }
-            rel2 { to_x: "elm.swallow.end"; to_y: "elm.text"; relative: 0.0 1.0; }
+            rel1 { to_x: "elm.swallow.icon.1"; to_y: "elm.text"; relative: 0.0 0.0; }
+            rel2 { to_x: "elm.swallow.icon.1"; to_y: "elm.text"; relative: 0.0 1.0; }
          }
-         description { state: "icon_visible" 0.0;
-            inherit: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC 0;
+         desc { "icon_visible"; inherit: "default";
+            min: GENLIST_ITEM_SUB_LINE_TEXT_END_PADDING_INC 0;
          }
-         description { state: "text_visible" 0.0;
-            inherit: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC 0;
+         desc { "text_visible"; inherit: "default";
+            min: GENLIST_ITEM_SUB_LINE_TEXT_END_PADDING_INC 0;
             rel1 { to_x: "elm.text.sub.end"; to_y: "elm.text.sub"; relative: 0.0 0.0; }
             rel2 { to_x: "elm.text.sub.end"; to_y: "elm.text.sub"; relative: 0.0 1.0; }
          }
       }
-      part { name: "elm.text.sub.end";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
+      textblock { "elm.text.sub.end"; scale;
+         desc { "default";
+            max: GENLIST_ITEM_END_TEXT_WIDTH_INC -1;
             align: 1.0 0.5;
-            rel1 { to_x: "elm.padding.right"; to_y: "sub_text_end_padding"; relative: 0.0 0.5; }
-            rel2 { to_x: "elm.padding.right"; to_y: "sub_text_end_padding"; relative: 0.0 0.5; }
+            rel1 { to_x: "elm.padding.center.right"; to_y: "elm.padding.sub.text.end"; relative: 0.0 0.5; }
+            rel2 { to_x: "elm.padding.center.right"; to_y: "elm.padding.sub.text.end"; relative: 0.0 0.5; }
             text.style: "list_text_end";
             text.min: 1 1;
+            text.max: 0 1;
          }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
+         desc { "pressed"; inherit: "default";
             text.style: "list_text_end_press";
          }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
+         desc { "disabled"; inherit: "default";
             text.style: "list_text_end_dim";
          }
       }
    }
-   LIST_PROGRAMS( target: "elm.text"; )
+   LIST_PROGRAMS( target: "elm.text"; \
+                  target: "elm.text.end"; \
+                  target: "elm.text.sub"; \
+                  target: "elm.text.sub.end"; )
    programs {
-      program { name: "icon_visible";
+      program {
          signal: "elm,state,elm.swallow.icon,visible";
          source: "elm";
          action: STATE_SET "icon_visible" 0.0;
-         target: "main_icon_text_padding";
+         target: "elm.padding.center.left";
       }
-      program { name: "end_icon_visible";
+      program {
          signal: "elm,state,elm.swallow.end,visible";
+         source: "elm";
+         action: STATE_SET "icon_visible" 0.0;
+         target: "elm.padding.center.right";
+      }
+      program {
+         signal: "elm,state,elm.swallow.icon.0,visible";
+         source: "elm";
+         action: STATE_SET "icon_visible" 0.0;
+         target: "elm.padding.main.icon.text";
+      }
+      program {
+         signal: "elm,state,elm.swallow.icon.1,visible";
          source: "elm";
          script {
             if (get_int(sub_end_text_visible) == 0) {
-               set_state(PART:"main_text_end_padding", "icon_visible", 0.0);
-               set_state(PART:"sub_text_end_padding", "icon_visible", 0.0);
+               set_state(PART:"elm.padding.main.text.end", "icon_visible", 0.0);
+               set_state(PART:"elm.padding.sub.text.end", "icon_visible", 0.0);
             }
             else {
-               set_state(PART:"main_text_end_padding", "sub_text_visible", 0.0);
-               set_state(PART:"sub_text_end_padding", "text_visible", 0.0);
+               set_state(PART:"elm.padding.main.text.end", "sub_text_visible", 0.0);
+               set_state(PART:"elm.padding.sub.text.end", "text_visible", 0.0);
             }
             set_int(end_icon_visible, 1);
          }
       }
-      program { name: "sub_text_visible";
+      program {
          signal: "elm,state,elm.text.sub,visible";
          source: "elm";
          action: STATE_SET "sub_text_visible" 0.0;
          target: "base";
          target: "base_line";
       }
-      program { name: "main_end_text_visible";
+      program {
          signal: "elm,state,elm.text.end,visible";
          source: "elm";
          script {
             if (get_int(end_icon_visible) == 1 && get_int(sub_end_text_visible) == 1) {
-               set_state(PART:"main_text_end_padding", "sub_text_visible", 0.0);
+               set_state(PART:"elm.padding.main.text.end", "sub_text_visible", 0.0);
             }
-            else
-            {
-               set_state(PART:"main_text_end_padding", "text_visible", 0.0);
+            else {
+               set_state(PART:"elm.padding.main.text.end", "text_visible", 0.0);
             }
          }
       }
-      program { name: "sub_end_text_visible";
+      program {
          signal: "elm,state,elm.text.sub.end,visible";
          source: "elm";
          script {
             set_int(sub_end_text_visible, 1);
-            set_state(PART:"sub_text_end_padding", "text_visible", 0.0);
-            set_state(PART:"elm.swallow.end", "text_visible", 0.0);
+            set_state(PART:"elm.padding.sub.text.end", "text_visible", 0.0);
+            set_state(PART:"elm.swallow.icon.1", "text_visible", 0.0);
          }
       }
       program { name: "restore_default";
@@ -345,10 +363,12 @@ group { name: "elm/genlist/item/type1/default";
          script {
             set_state(PART:"base", "default", 0.0);
             set_state(PART:"base_line", "default", 0.0);
-            set_state(PART:"elm.swallow.end", "default", 0.0);
-            set_state(PART:"main_icon_text_padding", "default", 0.0);
-            set_state(PART:"main_text_end_padding", "default", 0.0);
-            set_state(PART:"sub_text_end_padding", "default", 0.0);
+            set_state(PART:"elm.swallow.icon.1", "default", 0.0);
+            set_state(PART:"elm.padding.center.left", "default", 0.0);
+            set_state(PART:"elm.padding.center.right", "default", 0.0);
+            set_state(PART:"elm.padding.main.icon.text", "default", 0.0);
+            set_state(PART:"elm.padding.main.text.end", "default", 0.0);
+            set_state(PART:"elm.padding.sub.text.end", "default", 0.0);
             set_int(sub_end_text_visible, 0);
          }
       }
@@ -389,56 +409,47 @@ group { name: "elm/genlist/item/type2/default";
    alias: "elm/genlist/item_compress/type2/default";
    inherit: "elm/genlist/item/type1/default";
    data.item: "texts" "elm.text elm.text.end elm.text.sub elm.text.sub.end";
-   data.item: "contents" "elm.swallow.icon elm.swallow.end";
+   data.item: "contents" "elm.swallow.icon elm.swallow.icon.0 elm.swallow.icon.1 elm.swallow.end";
 
    parts {
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_MAIN_LINE_HEIGHT_INC;
+      textblock { "elm.text"; scale;
+         desc { "default";
+            min: 0 GENLIST_ITEM_MAIN_LINE_HEIGHT_INC;
             align: 0.5 0.5;
-            rel1 { to_x: "main_icon_text_padding"; to_y: "base_line"; relative: 1.0 1.0; }
-            rel2 { to_x: "main_text_end_padding"; to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
+            rel1 { to_x: "elm.padding.main.icon.text"; to_y: "base_line"; relative: 1.0 1.0; }
+            rel2 { to_x: "elm.padding.main.text.end"; to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
             text.style: "list_text_main";
             text.min: 0 1;
          }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
+         desc { "pressed"; inherit: "default";
             text.style: "list.text_main_press";
          }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
+         desc { "disabled"; inherit: "default";
             text.style: "list.text_main_dim";
          }
       }
-      part { name: "base_line";
-         type: SPACER;
-         description { state: "default" 0.0;
+      spacer { "base_line";
+         desc { "default";
             rel1 { to: "elm.padding.top"; relative: 0.0 1.0; }
             rel2 { to: "elm.padding.top"; relative: 1.0 1.0; }
          }
-         description { state: "sub_text_visible" 0.0;
+         desc { "sub_text_visible";
             rel1 { to: "elm.text.sub"; relative: 0.0 1.0; }
             rel2 { to: "elm.text.sub"; relative: 1.0 1.0; }
          }
       }
-      part { name: "elm.text.sub";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
+      textblock { "elm.text.sub"; scale;
+         desc { "default";
             align: 0.5 0.0;
-            rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.top"; relative: 1.0 1.0; }
-            rel2 { to_x: "sub_text_end_padding"; to_y: "elm.padding.top"; relative: 0.0 1.0; }
+            rel1 { to_x: "elm.padding.center.left"; to_y: "elm.padding.top"; relative: 1.0 1.0; }
+            rel2 { to_x: "elm.padding.sub.text.end"; to_y: "elm.padding.top"; relative: 0.0 1.0; }
             text.style: "list_text_sub_01";
             text.min: 0 1;
          }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
+         desc { "pressed"; inherit: "default";
             text.style: "list_text_sub_01_press";
          }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
+         desc { "disabled"; inherit: "default";
             text.style: "list_text_sub_01_dim";
          }
       }
@@ -449,6 +460,7 @@ group { name: "elm/genlist/item/multiline/default";
    alias: "elm/genlist/item_compress/multiline/default";
 
    data.item: "texts" "elm.text elm.text.multiline";
+   data.item: "contents" "elm.swallow.icon elm.swallow.icon.0 elm.swallow.icon.1 elm.swallow.end";
 
    script {
       public main_text_visible = 0;
@@ -456,10 +468,8 @@ group { name: "elm/genlist/item/multiline/default";
    }
 
    parts {
-      part { name: "elm.swallow.bg";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.bg"; scale;
+         desc { "default";
          }
       }
       // "bg" part is used by genlist event macro. this will be removed.
@@ -479,123 +489,200 @@ group { name: "elm/genlist/item/multiline/default";
             color: 0 0 0 0;
          }
       }
-      part { name: "base";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_MULTILINE_1LINE_HEIGHT_INC;
+      spacer { "base"; scale;
+         desc { "default";
+            min: 0 GENLIST_ITEM_MULTILINE_1LINE_HEIGHT_INC;
             align: 0.5 0.5;
          }
       }
-      part { name: "elm.padding.left";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: LIST_ITEM_LR_PADDING_INC 0;
+      spacer { "elm.padding.left"; scale;
+         desc { "default";
+            min: GENLIST_ITEM_LR_PADDING_INC 0;
             align: 0.0 0.5;
             rel1.relative: 0.0 0.0;
             rel2.relative: 0.0 1.0;
          }
       }
-      part { name: "elm.padding.right";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: LIST_ITEM_LR_PADDING_INC 0;
+      spacer { "elm.padding.right"; scale;
+         desc { "default";
+            min: GENLIST_ITEM_LR_PADDING_INC 0;
             align: 1.0 0.5;
             rel1.relative: 1.0 0.0;
             rel2.relative: 1.0 1.0;
          }
       }
-      part { name: "elm.padding.top";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_TB_PADDING_INC;
-            max: -1 LIST_ITEM_TB_PADDING_INC;
+      spacer { "elm.padding.top"; scale;
+         desc { "default";
+            min: 0 GENLIST_ITEM_TB_PADDING_INC;
+            max: -1 GENLIST_ITEM_TB_PADDING_INC;
             align: 0.5 0.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 0.0;
          }
       }
-      part { name: "elm.padding.bottom";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_TB_PADDING_INC;
-            max: -1 LIST_ITEM_TB_PADDING_INC;
+      spacer { "elm.padding.bottom"; scale;
+         desc { "default";
+            min: 0 GENLIST_ITEM_TB_PADDING_INC;
+            max: -1 GENLIST_ITEM_TB_PADDING_INC;
             align: 0.5 1.0;
             rel1.relative: 0.0 1.0;
             rel2.relative: 1.0 1.0;
          }
       }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.icon"; scale;
+         desc { state: "default";
+            align: 0.0 0.5;
+            rel1 { to: "elm.padding.left"; relative: 1.0 0.5; }
+            rel2 { to: "elm.padding.left"; relative: 1.0 0.5; }
+         }
+      }
+      spacer { "elm.padding.center.left"; scale;
+         desc { "default";
+            min: 0 0;
+            align: 0.0 0.5;
+            rel1 { to: "elm.swallow.icon"; relative: 1.0 0.5; }
+            rel2 { to: "elm.swallow.icon"; relative: 1.0 0.5; }
+         }
+         desc { "icon_visible"; inherit: "default";
+            min: GENLIST_ITEM_CENTER_LEFT_PADDING_INC 0;
+         }
+      }
+      swallow { "elm.swallow.end"; scale;
+         desc { state: "default";
+            align: 1.0 0.5;
+            rel1 { to: "elm.padding.right"; relative: 0.0 0.5; }
+            rel2 { to: "elm.padding.right"; relative: 0.0 0.5; }
+         }
+      }
+      spacer { "elm.padding.center.right"; scale;
+         desc { "default";
+            min: 0 0;
+            align: 1.0 0.5;
+            rel1 { to: "elm.swallow.end"; relative: 0.0 0.5; }
+            rel2 { to: "elm.swallow.end"; relative: 0.0 0.5; }
+         }
+         desc { "icon_visible"; inherit: "default";
+            min: GENLIST_ITEM_CENTER_LEFT_PADDING_INC 0;
+         }
+      }
+      swallow { "elm.swallow.icon.0"; scale;
+         desc { "default";
+            align: 0.0 0.5;
+            rel1 { to_x: "elm.padding.center.left"; to_y: "elm.padding.main.icon.text"; relative: 1.0 0.5; }
+            rel2 { to_x: "elm.padding.center.left"; to_y: "elm.padding.main.icon.text"; relative: 1.0 0.5; }
+         }
+      }
+      spacer { "elm.padding.main.icon.text"; scale;
+         desc { "default";
+            min: 0 0;
+            align: 0.0 0.5;
+            rel1 { to_x: "elm.swallow.icon.0"; relative: 1.0 0.5; }
+            rel2 { to_x: "elm.swallow.icon.0"; relative: 1.0 0.5; }
+         }
+         desc { "icon_visible"; inherit: "default";
+            min: GENLIST_ITEM_MAIN_LINE_TEXT_END_PADDING_INC 0;
+         }
+      }
+      textblock { "elm.text"; scale;
+         desc { "default";
             align: 0.5 0.0;
-            rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.top"; relative: 1.0 1.0; }
-            rel2 { to_x: "elm.padding.right"; to_y: "base_line"; relative: 0.0 0.0; }
+            rel1 { to_x: "elm.padding.main.icon.text"; to_y: "elm.padding.top"; relative: 1.0 1.0; }
+            rel2 { to_x: "elm.padding.main.text.end"; to_y: "base_line"; relative: 0.0 0.0; }
             text.style: "list_text_main";
             text.min: 0 1;
          }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
+         desc { "pressed"; inherit: "default";
             text.style: "list.text_main_press";
          }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
+         desc { "disabled"; inherit: "default";
             text.style: "list.text_main_dim";
          }
       }
-      part { name: "base_line";
-         type: SPACER;
-         description { state: "default" 0.0;
+      spacer { "base_line";
+         desc { "default";
             rel1 { to: "elm.padding.top"; relative: 0.0 0.0; }
             rel2 { to: "elm.padding.top"; relative: 1.0 0.0; }
          }
-         description { state: "main_text_visible" 0.0;
+         desc { "main_text_visible";
             rel1 { to: "elm.padding.bottom"; relative: 0.0 0.0; }
             rel2 { to: "elm.padding.bottom"; relative: 1.0 0.0; }
          }
-         description { state: "multiline_text_visible" 0.0;
+         desc { "multiline_text_visible";
             rel1 { to: "elm.text.multiline"; relative: 0.0 0.0; }
             rel2 { to: "elm.text.multiline"; relative: 1.0 0.0; }
          }
       }
-      part { name: "multiline_base_line";
-         type: SPACER;
-         description { state: "default" 0.0;
+      spacer { "elm.padding.main.text.end"; scale;
+         desc { "default";
+            min: 0 0;
+            align: 1.0 0.5;
+            rel1 { to_x: "elm.swallow.icon.1"; relative: 0.0 0.5; }
+            rel2 { to_x: "elm.swallow.icon.1"; relative: 0.0 0.5; }
+         }
+         desc { "icon_visible"; inherit: "default";
+            min: GENLIST_ITEM_MAIN_LINE_TEXT_END_PADDING_INC 0;
+         }
+      }
+      swallow { "elm.swallow.icon.1"; scale;
+         desc { "default";
+            align: 1.0 0.5;
+            rel1 { to_x: "elm.padding.center.right"; to_y: "elm.padding.main.text.end"; relative: 0.0 0.5; }
+            rel2 { to_x: "elm.padding.center.right"; to_y: "elm.padding.main.text.end"; relative: 0.0 0.5; }
+         }
+      }
+      spacer { "multiline_base_line";
+         desc { "default";
             rel1 { to: "elm.padding.top"; relative: 0.0 1.0; }
             rel2 { to: "elm.padding.top"; relative: 1.0 1.0; }
          }
-         description { state: "main_text_visible" 0.0;
+         desc { "main_text_visible";
             rel1 { to: "elm.padding.bottom"; relative: 0.0 0.0; }
             rel2 { to: "elm.padding.bottom"; relative: 1.0 0.0; }
          }
       }
-      part { name: "elm.text.multiline";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
+      textblock { "elm.text.multiline"; scale;
+         desc { "default";
             align: 0.5 1.0;
-            rel1 { to_x: "elm.padding.left"; to_y: "multiline_base_line"; relative: 1.0 1.0; }
-            rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
+            rel1 { to_x: "elm.padding.main.icon.text"; to_y: "multiline_base_line"; relative: 1.0 1.0; }
+            rel2 { to_x: "elm.padding.main.text.end"; to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
             text.style: "list_text_multiline";
             text.min: 0 1;
          }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
+         desc { "pressed"; inherit: "default";
             text.style: "list_text_multiline_press";
          }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
+         desc { "disabled"; inherit: "default";
             text.style: "list_text_multiline_dim";
          }
       }
    }
-   LIST_PROGRAMS( target: "elm.text"; )
+   LIST_PROGRAMS( target: "elm.text"; \
+                  target: "elm.text.multiline"; )
    programs {
+      program {
+         signal: "elm,state,elm.swallow.icon,visible";
+         source: "elm";
+         action: STATE_SET "icon_visible" 0.0;
+         target: "elm.padding.center.left";
+      }
+      program {
+         signal: "elm,state,elm.swallow.end,visible";
+         source: "elm";
+         action: STATE_SET "icon_visible" 0.0;
+         target: "elm.padding.center.right";
+      }
+      program {
+         signal: "elm,state,elm.swallow.icon.0,visible";
+         source: "elm";
+         action: STATE_SET "icon_visible" 0.0;
+         target: "elm.padding.main.icon.text";
+      }
+      program {
+         signal: "elm,state,elm.swallow.icon.1,visible";
+         source: "elm";
+         action: STATE_SET "icon_visible" 0.0;
+         target: "elm.padding.main.text.end";
+      }
       program { name: "main_text_visible";
          signal: "elm,state,elm.text,visible";
          source: "elm";
@@ -632,6 +719,10 @@ group { name: "elm/genlist/item/multiline/default";
          script {
             set_state(PART:"base_line", "default", 0.0);
             set_state(PART:"multiline_base_line", "default", 0.0);
+            set_state(PART:"elm.padding.center.left", "default", 0.0);
+            set_state(PART:"elm.padding.center.right", "default", 0.0);
+            set_state(PART:"elm.padding.main.icon.text", "default", 0.0);
+            set_state(PART:"elm.padding.main.text.end", "default", 0.0);
             set_int(main_text_visible, 0);
             set_int(multiline_text_visible, 0);
          }
@@ -645,10 +736,8 @@ group { name: "elm/genlist/item/full/default";
    data.item: "contents" "elm.swallow.content";
 
    parts {
-      part { name: "elm.swallow.bg";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.bg"; scale;
+         desc { "default";
          }
       }
       // "bg" part is used by genlist event macro. this will be removed.
@@ -668,10 +757,8 @@ group { name: "elm/genlist/item/full/default";
             color: 0 0 0 0;
          }
       }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         scale:1 ;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.content"; scale;
+         desc { "default";
          }
       }
    }
@@ -685,12 +772,11 @@ group { name: "elm/genlist/item/group_index/default";
    data.item: "contents" "elm.swallow.end";
 
    parts {
-      part { name: "elm.swallow.bg";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.bg"; scale;
+         desc { "default";
          }
       }
+      // FIXME: "bg" part is used by genlist event macro. this will be removed.
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
@@ -707,127 +793,103 @@ group { name: "elm/genlist/item/group_index/default";
             color: 0 0 0 0;
          }
       }
-      part { name: "base";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_GROUP_INDEX_HEIGHT_INC;
+      spacer { "base"; scale;
+         desc { "default";
+            min: 0 GENLIST_ITEM_GROUP_INDEX_HEIGHT_INC;
             align: 0.5 0.5;
          }
       }
-      part { name: "elm.padding.left";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: LIST_ITEM_LR_PADDING_INC 0;
+      spacer { "elm.padding.left"; scale;
+         desc { "default";
+            min: GENLIST_ITEM_LR_PADDING_INC 0;
             align: 0.0 0.5;
             rel1.relative: 0.0 0.0;
             rel2.relative: 0.0 1.0;
          }
       }
-      part { name: "elm.padding.right";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: LIST_ITEM_LR_PADDING_INC 0;
+      spacer { "elm.padding.right"; scale;
+         desc { "default";
+            min: GENLIST_ITEM_LR_PADDING_INC 0;
             align: 1.0 0.5;
             rel1.relative: 1.0 0.0;
             rel2.relative: 1.0 1.0;
          }
       }
-      part { name: "elm.padding.top";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_GROUP_INDEX_TB_PADDING_INC;
-            max: -1 LIST_ITEM_GROUP_INDEX_TB_PADDING_INC;
+      spacer { "elm.padding.top"; scale;
+         desc { "default";
+            min: 0 GENLIST_ITEM_GROUP_INDEX_TOP_PADDING_INC;
+            max: -1 GENLIST_ITEM_GROUP_INDEX_TOP_PADDING_INC;
             align: 0.5 0.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 0.0;
          }
       }
-      part { name: "elm.padding.bottom";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 LIST_ITEM_GROUP_INDEX_TB_PADDING_INC;
-            max: -1 LIST_ITEM_GROUP_INDEX_TB_PADDING_INC;
+      spacer { "elm.padding.bottom"; scale;
+         desc { "default";
+            min: 0 GENLIST_ITEM_GROUP_INDEX_BOTTOM_PADDING_INC;
+            max: -1 GENLIST_ITEM_GROUP_INDEX_BOTTOM_PADDING_INC;
             align: 0.5 1.0;
             rel1.relative: 0.0 1.0;
             rel2.relative: 1.0 1.0;
          }
       }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
+      textblock { "elm.text"; scale;
+         desc { "default";
             align: 0.5 0.5;
             rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.top"; relative: 1.0 1.0; }
-            rel2 { to_x: "text_end_padding"; to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
+            rel2 { to_x: "elm.padding.text.end"; to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
             text.style: "list_text_group_index_main";
             text.min: 0 1;
          }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
+         desc { "pressed"; inherit: "default";
             text.style: "list_text_group_index_main_press";
          }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
+         desc { "disabled"; inherit: "default";
             text.style: "list_text_group_index_main_dim";
          }
       }
-      part { name: "text_end_padding";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
+      spacer { name: "elm.padding.text.end"; scale;
+         desc { "default";
             min: 0 0;
             align: 1.0 0.5;
             rel1 { to_x: "elm.swallow.end"; to_y: "elm.text"; relative: 0.0 0.0; }
             rel2 { to_x: "elm.swallow.end"; to_y: "elm.text"; relative: 0.0 1.0; }
          }
-         description { state: "icon_visible" 0.0;
-            inherit: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC 0;
+         desc { "icon_visible"; inherit: "default";
+            min: GENLIST_ITEM_MAIN_LINE_TEXT_END_PADDING_INC 0;
          }
-         description { state: "text_visible" 0.0;
-            inherit: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC 0;
+         desc { "text_visible"; inherit: "default";
+            min: GENLIST_ITEM_MAIN_LINE_TEXT_END_PADDING_INC 0;
             rel1 { to_x: "elm.text.end"; to_y: "elm.text"; relative: 0.0 0.0; }
             rel2 { to_x: "elm.text.end"; to_y: "elm.text"; relative: 0.0 1.0; }
          }
       }
-      part { name: "elm.swallow.end";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.end"; scale;
+         desc { "default";
             align: 1.0 0.5;
-            rel1 { to_x: "elm.padding.right"; to_y: "text_end_padding"; relative: 0.0 0.5; }
-            rel2 { to_x: "elm.padding.right"; to_y: "text_end_padding"; relative: 0.0 0.5; }
+            rel1 { to_x: "elm.padding.right"; to_y: "elm.padding.text.end"; relative: 0.0 0.5; }
+            rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.text.end"; relative: 0.0 0.5; }
          }
       }
-      part { name: "elm.text.end";
-         type: TEXTBLOCK;
-         scale: 1;
-         description { state: "default" 0.0;
+      textblock { "elm.text.end"; scale;
+         desc { "default";
+            max: GENLIST_ITEM_END_TEXT_WIDTH_INC -1;
             align: 1.0 0.5;
-            rel1 { to_x: "elm.padding.right"; to_y: "text_end_padding"; relative: 0.0 0.5; }
-            rel2 { to_x: "elm.padding.right"; to_y: "text_end_padding"; relative: 0.0 0.5; }
+            rel1 { to_x: "elm.padding.right"; to_y: "elm.padding.text.end"; relative: 0.0 0.5; }
+            rel2 { to_x: "elm.padding.right"; to_y: "elm.padding.text.end"; relative: 0.0 0.5; }
             text.style: "list_text_group_index_sub";
             text.min: 1 1;
+            text.max: 0 1;
          }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
+         desc { "pressed"; inherit: "default";
             text.style: "list_text_group_index_sub_press";
          }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
+         desc { "disabled"; inherit: "default";
             text.style: "list_text_group_index_sub_dim";
          }
       }
-      part { name: "elm.topline";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
+      rect { "elm.topline"; scale;
+         desc { "default";
             min: 0 LIST_BOTTOMLINE_HEIGHT;
             max: -1  LIST_BOTTOMLINE_HEIGHT;
             align: 0.5 0.0;
@@ -843,19 +905,19 @@ group { name: "elm/genlist/item/group_index/default";
          signal: "elm,state,elm.swallow.end,visible";
          source: "elm";
          action: STATE_SET "icon_visible" 0.0;
-         target: "text_end_padding";
+         target: "elm.padding.text.end";
       }
       program { name: "end_text_visible";
          signal: "elm,state,elm.text.end,visible";
          source: "elm";
          action: STATE_SET "text_visible" 0.0;
-         target: "text_end_padding";
+         target: "elm.padding.text.end";
       }
       program { name: "restore_default";
          signal: "elm,state,default";
          source: "elm";
          action: STATE_SET "default" 0.0;
-         target: "text_end_padding";
+         target: "elm.padding.text.end";
       }
    }
 }
@@ -889,65 +951,42 @@ group { name: "elm/genlist/item/group_index/expandable/default";
    }
 
    parts {
-      part { name: "text_end_padding";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC 0;
+      spacer { "elm.padding.text.end"; scale;
+         desc { "default";
+            min: GENLIST_ITEM_MAIN_LINE_TEXT_END_PADDING_INC 0;
             align: 1.0 0.5;
             rel1 { to_x: "elm.expand.icon"; to_y: "elm.text"; relative: 0.0 0.0; }
             rel2 { to_x: "elm.expand.icon"; to_y: "elm.text"; relative: 0.0 1.0; }
-         } description { state: "icon_visible" 0.0; inherit: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC 0;
-            rel1 { to_x: "elm.swallow.end"; to_y: "elm.text"; relative: 0.0 0.0; }
-            rel2 { to_x: "elm.swallow.end"; to_y: "elm.text"; relative: 0.0 1.0; }
-         }
-         description { state: "icon_visible" 0.0;
-            inherit: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC 0;
-         }
-         description { state: "text_visible" 0.0;
-            inherit: "default" 0.0;
-            min: LIST_ITEM_MAIN_LINE_TEXT_END_PADDING_WIDTH_INC 0;
-            rel1 { to_x: "elm.text.end"; to_y: "elm.text"; relative: 0.0 0.0; }
-            rel2 { to_x: "elm.text.end"; to_y: "elm.text"; relative: 0.0 1.0; }
          }
       }
-      part { name: "elm.expand.padding.right";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: LIST_ITEM_GROUP_INDEX_RIGHT_PADDING_INC 0;
+      spacer { "elm.expand.padding.right"; scale;
+         desc { "default";
+            min: GENLIST_ITEM_GROUP_INDEX_RIGHT_PADDING_INC 0;
             align: 1.0 0.5;
             rel1.relative: 1.0 0.0;
             rel2.relative: 1.0 1.0;
          }
       }
-      part { name: "elm.expand.icon";
-         type: IMAGE;
-         scale: 1;
-         clip_to: "elm.expand.clipper";
-         description { state: "default" 0.0;
-            min: LIST_ITEM_GROUP_INDEX_EXPAND_ICON_SIZE_INC;
+      image { "elm.expand.icon"; scale;
+         clip: "elm.expand.clipper";
+         desc { "default";
+            min: GENLIST_ITEM_GROUP_INDEX_EXPAND_ICON_SIZE_INC;
             align: 1.0 0.5;
             rel1 { to: "elm.expand.padding.right"; relative: 0.0 0.0; }
             rel2 { to: "elm.expand.padding.right"; relative: 0.0 1.0; }
             image.normal: "core_icon_expand_close";
          }
-         description { state: "expanded" 0.0;
-            inherit: "default" 0.0;
+         desc { "expanded"; inherit: "default";
             image.normal: "core_icon_expand_open";
          }
       }
-      part { name: "elm.expand.clipper";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "elm.expand.clipper";
+         desc { "default";
             rel1.to: "elm.expand.icon";
             rel2.to: "elm.expand.icon";
             color: 61 185 204 255;
          }
-         description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
+         desc { "pressed"; inherit: "default";
             color: 61 185 244 77;
          }
       }
@@ -981,7 +1020,7 @@ group { name: "elm/genlist/item/group_index/expandable/default";
          signal: "elm,state,default";
          source: "elm";
          action: STATE_SET "default" 0.0;
-         target: "text_end_padding";
+         target: "elm.padding.text.end";
          target: "elm.expand.icon";
          target: "elm.expand.clipper";
       }
