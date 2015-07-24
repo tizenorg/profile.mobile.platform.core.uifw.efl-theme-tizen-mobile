@@ -44,8 +44,21 @@
 
 styles {
    style { name: "grid_popup_style";
-      base: "font=Tizen:style=Regular font_size=24 color=#070707FF text_class=tizen align=center wrap=mixed ellipsis=1.0 linegap=-3";
-      //base: "font=Tizen:style=Regular font_size="GRID_POPUP_TEXT_FONT_SIZE" color=#ffffff color_class=T0601 text_class=T0601 align=center wrap=mixed ellipsis=1.0 linegap=-3";
+      base: "font=Tizen:style=Regular font_size=32 color=#070707FF text_class=tizen align=center wrap=mixed ellipsis=1.0 linegap=-3";
+      tag: "br" "\n";
+      tag: "ps" "ps";
+      tag: "tab" "\t";
+      tag: "b" "+ font_weight=Bold";
+      }
+   style { name: "grid_out_text_style";
+      base: "font=Tizen:style=Regular font_size=29 color=#000000FF align=center wrap=mixed ellipsis=1.0";
+      tag: "br" "\n";
+      tag: "ps" "ps";
+      tag: "tab" "\t";
+      tag: "b" "+ font_weight=Bold";
+      }
+   style { name: "grid_in_text_style";
+      base: "font=Tizen:style=Regular font_size=29 color=#FFFFFFFF align=center wrap=mixed ellipsis=1.0";
       tag: "br" "\n";
       tag: "ps" "ps";
       tag: "tab" "\t";
@@ -60,8 +73,10 @@ styles {
 
 
    group { name: "elm/gengrid/item/default/default";
+      alias: "elm/gengrid/item/type1/default";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "focus_highlight" "on";
+      data.item: "texts" "elm.text";
 
       parts {
          part { name: "bg";
@@ -110,7 +125,7 @@ styles {
                   relative: 0.0 0.0;
                   to: "right_bottom_padding";
                }
-               color: 2 61 132 255; /*(Changeable UI) color_class: "B011";*/
+               color: 2 61 132 255;
             }
          }
          part { name: "elm.swallow.icon";
@@ -120,11 +135,38 @@ styles {
                rel2.to: "item_bg";
             }
          }
+         part { name: "end_top_right_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GRID_PADDING_END_TOP_RIGHT_SIZE;
+               align: 1.0 0.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to: "item_bg";
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  to: "item_bg";
+               }
+            }
+         }
          part { name: "elm.swallow.end";
             type: SWALLOW;
+            scale: 1;
             description { state: "default" 0.0;
-               rel1.to: "elm.swallow.icon";
-               rel2.to: "elm.swallow.icon";
+               min: GRID_END_SIZE;
+               align: 1.0 0.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to: "end_top_right_padding";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to: "end_top_right_padding";
+               }
             }
          }
          part { name: "select_bg";
@@ -133,7 +175,7 @@ styles {
                visible: 0;
                rel1.to: "item_bg";
                rel2.to: "item_bg";
-               color: 2 61 132 255; /*(Changeable UI) color_class: "B011";*/
+               color: 2 61 132 255;
             }
             description { state: "pressed" 0.0;
                inherit: "default" 0.0;
@@ -163,8 +205,70 @@ styles {
                inherit: "default" 0.0;
             }
          }
+         part { name: "text_bottom_left_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GRID_PADDING_IN_TEXT_LEFT_RIGHT_SIZE;
+               align: 0.0 1.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to: "item_bg";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to: "item_bg";
+               }
+            }
+         }
+         part { name: "text_bottom_right_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GRID_PADDING_IN_TEXT_LEFT_RIGHT_SIZE;
+               align: 1.0 1.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to: "item_bg";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to: "item_bg";
+               }
+            }
+         }
+         part { name: "elm.text";
+            type: TEXTBLOCK;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GRID_IN_OUT_TEXT_ONE_LINE_HEIGHT;
+               fixed: 0 1;
+               align: 0.5 1.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to: "text_bottom_left_padding";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  to: "text_bottom_right_padding";
+               }
+               text {
+                  style: "grid_in_text_style";
+                  align: 0.5 1.0;
+                  min: 0 1;
+               }
+            }
+         }
       }
       programs {
+         program { name: "touch_sound";
+            signal: "mouse,clicked,1";
+            source: "reorder_bg";
+            action: RUN_PLUGIN "touch_sound";
+         }
          program { name: "selected";
             signal: "elm,state,selected";
             source: "elm";
@@ -193,10 +297,90 @@ styles {
             target: "elm.swallow.icon";
             target: "elm.swallow.end";
             target: "select_bg";
+            target: "elm.text";
          )
       }
    }
 
+   group { name: "elm/gengrid/item/type2/default";
+      inherit: "elm/gengrid/item/default/default";
+      parts {
+        part { name: "right_bottom_padding";
+            type: SPACER;
+            description { state: "default" 0.0;
+               min: GRID_PADDING_OUT_TEXT_BOTTOM_RIGHT_SIZE;
+               align: 1.0 1.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to: "bg";
+               }
+               rel2.to: "bg";
+            }
+         }
+         part { name: "text_left_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GRID_PADDING_OUT_TEXT_LEFT_RIGHT_SIZE;
+               align: 0.0 0.5;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to_x: "item_bg";
+                  to_y: "bg";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "item_bg";
+                  to_y: "bg";
+              }
+           }
+         }
+         part { name: "text_right_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GRID_PADDING_OUT_TEXT_LEFT_RIGHT_SIZE;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "item_bg";
+                  to_y: "bg";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to_x: "item_bg";
+                  to_y: "bg";
+               }
+            }
+         }
+         part { name: "elm.text";
+            type: TEXTBLOCK;
+            mouse_events: 0;
+            scale: 1;
+            multiline : 1;
+            description { state: "default" 0.0;
+               min: GRID_IN_OUT_TEXT_ONE_LINE_HEIGHT;
+               align: 0.5 0.0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  to_x: "text_left_padding";
+                  to_y: "right_bottom_padding";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  to_x: "text_right_padding";
+                  to_y: "right_bottom_padding";
+               }
+               text {
+                  style: "grid_out_text_style";
+                  min: 0 1;
+                  align: 0.5 0.0;
+               }
+            }
+         }
+      }
+   }
 
    group { name: "elm/gengrid/item/default/popup";
       data.item: "texts" "elm.text";
@@ -206,10 +390,10 @@ styles {
          set {
             name: "core_focus.#";
                image {
-                  image: SMALL"images/Content_views/core_focus.#.png" COMP;
+                  image: SMALL"images/Presentation_views/core_focus.#.png" COMP;
                }
                image {
-                  image: MEDIUM"images/Content_views/core_focus.#.png" COMP;
+                  image: MEDIUM"images/Presentation_views/core_focus.#.png" COMP;
                }
          }
       }
@@ -245,6 +429,7 @@ styles {
          }
          part { name: "item_real_bg";
             type: SPACER;
+            scale: 1;
             description { state: "default" 0.0;
                align: 0.5 0.0;
                min: GRID_POPUP_ITEM_REAL_BG_SIZE;
@@ -266,7 +451,7 @@ styles {
                }
             }
          }
-         part { name: "right_bottom_padding";
+         part { name: "icon_text_padding";
             type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
@@ -285,8 +470,45 @@ styles {
                }
             }
          }
+         part { name: "right_bottom_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GRID_POPUP_PADDING_BOTTOM_SIZE;
+               min: GRID_POPUP_PADDING_BOTTOM_SIZE;
+               align: 1.0 1.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to: "item_real_bg";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to: "item_real_bg";
+               }
+            }
+         }
+         part { name: "left_bottom_padding";
+            type: SPACER;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: GRID_POPUP_PADDING_BOTTOM_SIZE;
+               min: GRID_POPUP_PADDING_BOTTOM_SIZE;
+               align: 0.0 1.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to: "item_real_bg";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to: "item_real_bg";
+               }
+            }
+         }
          part { name: "elm.swallow.icon";
             type: SWALLOW;
+            scale: 1;
             description { state: "default" 0.0;
                min: GRID_POPUP_SWALLOW_ICON_SIZE;
                max: GRID_POPUP_SWALLOW_ICON_SIZE;
@@ -297,13 +519,14 @@ styles {
                }
                rel2 {
                   relative: 0.0 0.0;
-                  to: "right_bottom_padding";
+                  to: "icon_text_padding";
                }
             }
             clip_to: "select_clip";
          }
          part { name: "elm.swallow.end";
             type: SWALLOW;
+            scale: 1;
             description { state: "default" 0.0;
                rel1.to: "elm.swallow.icon";
                rel2.to: "elm.swallow.icon";
@@ -314,17 +537,17 @@ styles {
             mouse_events: 0;
             scale: 1;
             description { state: "default" 0.0;
-               min: GRID_POPUP_TEXT_SIZE;
-               max: GRID_POPUP_TEXT_SIZE;
-               fixed: 0 1;
+               min: 164 GRID_POPUP_TEXT_HEIGHT;
+               max: 164 GRID_POPUP_TEXT_HEIGHT;
+               fixed: 1 1;
                align: 0.5 1.0;
                rel1 {
-                  relative: 0.0 1.0;
-                  to: "item_real_bg";
+                  relative: 1.0 0.0;
+                  to: "left_bottom_padding";
                }
                rel2 {
-                  relative: 1.0 1.0;
-                  to: "item_real_bg";
+                  relative: 0.0 0.0;
+                  to: "right_bottom_padding";
                }
                text {
                   style: "grid_popup_style";
@@ -348,7 +571,7 @@ styles {
                rel1.to: "item_real_bg";
                rel2.to: "item_real_bg";
                image.normal: "core_focus.#";
-               color: 4 110 239 255; /*(Changeable UI) color_class: "W161";*/
+               color: 4 110 239 255;
             }
             description { state: "enabled" 0.0;
                inherit: "default" 0.0;
@@ -361,7 +584,7 @@ styles {
                rel1.to: "item_real_bg";
                rel2.to: "item_real_bg";
                image.normal: "core_focus.#";
-               color: 4 110 239 255; /*(Changeable UI) color_class: "W161";*/
+               color: 4 110 239 255;
             }
             description { state: "enabled" 0.0;
                inherit: "default" 0.0;
@@ -371,6 +594,11 @@ styles {
       }
       programs
       {
+         program { name: "touch_snd";
+            signal: "mouse,clicked,1";
+            source: "reorder_bg";
+            action: RUN_PLUGIN "touch_sound";
+         }
          program { name: "selected";
             signal: "elm,state,selected";
             source: "elm";

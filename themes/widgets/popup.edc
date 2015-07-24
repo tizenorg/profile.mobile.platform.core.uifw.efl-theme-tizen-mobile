@@ -103,6 +103,17 @@ group { name: "elm/notify/bottom/popup";
          action: STATE_SET "default" 0.0;
          target: "elm.swallow.content";
       }
+      program { name: "hide_effect";
+         signal: "effect,hide";
+         source: "elm";
+         transition: SIN_FAC 0.33 1.7;
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.content";
+         after: "hide_effect_done";
+      }
+      program { name: "hide_effect_done";
+         action: SIGNAL_EMIT "effect,hide,finished" "";
+      }
    }
 }
 
@@ -171,24 +182,39 @@ group { name: "elm/notify/bottom/toast";
          action: STATE_SET "default" 0.0;
          target: "elm.swallow.content";
       }
+      program { name: "hide_effect";
+         signal: "effect,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.1;
+         target: "elm.swallow.content";
+         after: "hide_effect_done";
+      }
+      program { name: "hide_effect_done";
+         action: SIGNAL_EMIT "effect,hide,finished" "";
+      }
    }
 }
 
 group { name: "elm/notify/block_events/popup";
+   images {
+      image: "core_theme_bg_dim.png" COMP;
+   }
    parts {
       part { name: "block_events_color";
-         type: RECT;
+         type: IMAGE;
          scale: 1;
          description { state: "default" 0.0;
-            color: 7 7 7 102; /*(Changeable UI) color_class: "B015";*/
+            image.normal: "core_theme_bg_dim.png";
+            color: 0 0 0 0;
          }
          description { state: "show" 0.0;
-            inherit: "default" 0.0;
-            color: 7 7 7 102; /*(Changeable UI) color_class: "B015";*/
+            image.normal: "core_theme_bg_dim.png";
+            color: 255 255 255 255;
          }
          description { state: "clicked" 0.0;
-            inherit: "default" 0.0;
-            color: 7 7 7 102; /*(Changeable UI) color_class: "B015";*/
+            image.normal: "core_theme_bg_dim.png";
+            color: 255 255 255 255;
          }
       }
    }
@@ -202,8 +228,19 @@ group { name: "elm/notify/block_events/popup";
       program { name: "show1";
          signal: "show";
          action: STATE_SET "show" 0.0;
-         transition: SIN_FAC 0.166 0.5;
+         transition: SIN_FAC 0.33 1.7;
          target: "block_events_color";
+      }
+      program { name: "hide_effect";
+         signal: "effect,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         transition: SIN_FAC 0.33 1.7;
+         target: "block_events_color";
+         after: "hide_effect_done";
+      }
+      program { name: "hide_effect_done";
+         action: SIGNAL_EMIT "effect,hide,finished" "elm";
       }
       program { name: "block_clicked";
          signal: "mouse,clicked,1";
@@ -233,7 +270,7 @@ group { name: "elm/notify/block_events/transparent";
       part { name: "block_events";
          type: RECT;
          description { state: "default" 0.0;
-            color_class: "transparent";
+            color: 0 0 0 0;
          }
       }
    }
@@ -304,7 +341,7 @@ group { name: "elm/label/base/popup/default";
    alias: "elm/label/base/popup/transparent";
    styles {
       style { name: "popup_desc_style";
-         base: "font=Tizen:style=Regular font_size=30 align=left color=#070707FF wrap=mixed text_class=label";
+         base: "font=Tizen:style=Regular font_size="POPUP_DESCRIPTION_DEFAULT_TEXT_FONT_SIZE_INC" align=left color=#070707FF wrap=mixed text_class=label";
          //(Changeable UI) base: "font=Tizen:style=Regular font_size="POPUP_DESCRIPTION_DEFAULT_TEXT_FONT_SIZE_INC" align=left color=#FFFFFF color_class=T123 wrap=mixed text_class=T123";
          tag: "br" "\n";
          tag: "ps" "ps";
@@ -400,57 +437,45 @@ group { name: "elm/label/base/popup/default";
 group { name: "elm/label/base/popup/toast";
    styles {
       style { name: "popup_toast_style";
-         base: "font=Tizen:style=Regular font_size=27 align=center color=#070707FF wrap=mixed text_class=label";
+         base: "font=Tizen:style=Regular font_size="POPUP_TOAST_BASE_DEFAULT_TEXT_FONT_SIZE_INC" align=center color=#070707FF wrap=mixed text_class=label";
          //(Changeable UI) base: "font=Tizen:style=Regular font_size="POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC" color=#FFFFFF align=center color_class=T1221 wrap=mixed text_class=T1221";
          tag:  "br" "\n";
          tag:  "tab" "\t";
       }
    }
    parts {
-      part { name: "pad_l";
-        type: SPACER;
-        scale: 1;
-        description { state: "default" 0.0;
-            min: POPUP_TOAST_TITLE_LEFT_RIGHT_PAD_INC 0;
-            max: POPUP_TOAST_TITLE_LEFT_RIGHT_PAD_INC -1;
-            fixed: 1 0;
-            align: 0.0 0.0;
-            rel2 {
-               relative: 0.0 1.0;
-            }
-         }
-      }
-      part { name: "pad_r";
-        type: SPACER;
-        scale: 1;
-        description { state: "default" 0.0;
-            min: POPUP_TOAST_TITLE_LEFT_RIGHT_PAD_INC 0;
-            max: POPUP_TOAST_TITLE_LEFT_RIGHT_PAD_INC -1;
-            fixed: 1 0;
-            align: 1.0 1.0;
-            rel1 {
-               relative: 1.0 0.0;
-            }
-         }
-      }
       part { name: "elm.text";
          type: TEXTBLOCK;
+         mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
-            fixed: 1 0;
-            rel1 {
-               to_x: "pad_l";
-               relative: 1.0 0.0;
-            }
-            rel2 {
-               to_x: "pad_r";
-               relative: 0.0 1.0;
-            }
+            min: POPUP_TOAST_TEXT_MIN_WIDTH_INC POPUP_TOAST_TEXT_MIN_HEIGHT_INC;
+            max: POPUP_TOAST_TEXT_MAX_WIDTH_INC POPUP_TOAST_TEXT_MAX_HEIGHT_INC;
             text {
                style: "popup_toast_style";
-               min: 0 1;
+               min: 1 1;
                max: 0 1;
             }
+         }
+         description { state: "multiline" 0.0;
+            inherit: "default" 0.0;
+            min: POPUP_TOAST_TEXT_MULTI_LINE_MIN_INC POPUP_TOAST_TEXT_MIN_HEIGHT_INC;
+            text.min: 0 1;
+         }
+      }
+   }
+    programs {
+      program { name: "multiline";
+         signal: "elm,state,text,visible";
+         source: "elm";
+         script {
+            new tx, ty, tw, th, w;
+            get_geometry(PART:"elm.text", tx, ty, tw, th);
+            w = POPUP_TOAST_TEXT_MULTI_LINE_MIN_INC;
+            if (tw >= w)
+               set_state(PART:"elm.text", "multiline", 0.0);
+            else
+               set_state(PART:"elm.text", "default", 0.0);
          }
       }
    }
@@ -463,20 +488,16 @@ group { name: "elm/popup/base/default";
       item: "default_orient" "2"; //top, center:1 bottom:2
       item: "title_height" POPUP_TITLE_AREA_HEIGHT;
       item: "popup_outside_pad" POPUP_OUTSIDE_PADDING;
-      item: "max_height" POPUP_SCROLLER_MAX_HEIGHT;
    }
    styles {
       style { name: "popup_title_style";
-         base: "font=Tizen:style=Regular align=center font_size=30 color=#F4F4F4FF wrap=mixed ellipsis=1.0 text_class=label style=far_shadow,bottom shadow_color="POPUP_BASE_DEFAULT_TEXT_SHADOW_COLOR_INC"";
-         // (Changeable UI) base: "font=Tizen:style=Regular align=center font_size="POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC" color=#FFFFFF color_class=T121 wrap=mixed ellipsis=1.0 text_class=T121 style=far_shadow,bottom shadow_color="POPUP_BASE_DEFAULT_TEXT_SHADOW_COLOR_INC"";
-         tag:  "br" "\n";
-         tag:  "tab" "\t";
+         base: "font=Tizen:style=Condensed align=center font_size="POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC" color=#3DB9CCFF ellipsis=1.0 text_class=tizen";
+      }
+      style { name: "popup_title_sub_style";
+         base: "font=Tizen:style=Condensed align=center font_size="POPUP_TITLE_SUB_TEXT_FONT_SIZE_INC" color=#3DB9CCFF ellipsis=1.0 text_class=tizen";
       }
       style { name: "popup_subtitle_style";
-         base: "font=Tizen:style=Regular align=center font_size=21 color=#F4F4F4FF wrap=mixed ellipsis=1.0 text_class=label style=far_shadow,bottom shadow_color="POPUP_SUBTITLE_TEXT_SHADOW_COLOR_INC"";
-         // (Changeable UI) base: "font=Tizen:style=Regular align=center font_size="POPUP_SUBTITLE_TEXT_FONT_SIZE_INC" color=#FFFFFF color_class=T1211 wrap=mixed ellipsis=1.0 text_class=T1211 style=far_shadow,bottom shadow_color="POPUP_SUBTITLE_TEXT_SHADOW_COLOR_INC"";
-         tag:  "br" "\n";
-         tag:  "tab" "\t";
+         base: "font=Tizen:style=Condensed align=center font_size="POPUP_SUBTITLE_TEXT_FONT_SIZE_INC" color=#3DB9CCFF ellipsis=1.0 text_class=tizen";
       }
    }
    parts {
@@ -486,6 +507,7 @@ group { name: "elm/popup/base/default";
          description { state: "default" 0.0;
             min: POPUP_BASE_DEFAULT_BASE_DEFAULT_MIN_INC;
             max: POPUP_BASE_DEFAULT_BASE_DEFAULT_MAX_INC;
+            fixed: 1 0;
          }
          description { state: "landscape" 0.0;
             inherit: "default" 0.0;
@@ -499,7 +521,6 @@ group { name: "elm/popup/base/default";
          description { state: "default" 0.0;
             rel1.to: "base";
             rel2.to: "base";
-            color: 244 244 242 255; /*(Changeable UI) color_class: "B061L1";*/
          }
       }
       part { name: "access.outline";
@@ -522,11 +543,14 @@ group { name: "elm/popup/base/default";
             rel1.to: "base";
             rel2.to: "base";
             rel2.relative: 1.0 0.0;
-            color: 84 125 175 255; /*(Changeable UI) color_class: "B061L3";*/
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             min: POPUP_BASE_DEFAULT_TITLE_DEFAULT_MIN_INC;
+         }
+         description { state: "subtitle_visible" 0.0;
+            inherit: "default" 0.0;
+            min: POPUP_BASE_DEFAULT_TITLE_SUB_DEFAULT_MIN_INC;
          }
       }
       part { name: "title_left_top_padding";
@@ -538,6 +562,11 @@ group { name: "elm/popup/base/default";
             fixed: 1 1;
             min: POPUP_TITLE_LEFT_PADDING POPUP_TITLE_TOP_PADDING;
             max: POPUP_TITLE_LEFT_PADDING POPUP_TITLE_TOP_PADDING;
+         }
+         description { state: "subtitle_visible" 0.0;
+            inherit: "default" 0.0;
+            min: POPUP_TITLE_LEFT_PADDING POPUP_TITLE_TOP_SUB_PADDING;
+            max: POPUP_TITLE_LEFT_PADDING POPUP_TITLE_TOP_SUB_PADDING;
          }
       }
       part { name: "title_right_bottom_padding";
@@ -556,10 +585,7 @@ group { name: "elm/popup/base/default";
          scale:1;
          description { state: "default" 0.0;
             fixed: 1 1;
-            text {
-              style: "popup_title_style";
-              size: POPUP_BASE_DEFAULT_TEXT_FONT_SIZE_INC;
-            }
+            text.style: "popup_title_style";
             rel1 {
                relative: 1.0 1.0;
                to: "title_left_top_padding";
@@ -571,6 +597,7 @@ group { name: "elm/popup/base/default";
          }
          description { state: "subtitle_visible" 0.0;
             inherit: "default" 0.0;
+            text.style: "popup_title_sub_style";
             rel2 {
                relative: 1.0 0.0;
                to: "elm.text.subtitle";
@@ -678,7 +705,6 @@ group { name: "elm/popup/base/default";
             inherit: "default" 0.0;
             min: POPUP_BASE_DEFAULT_BUTTON_BG_DEFAULT_MIN_INC;
             visible: 1;
-            color: 255 255 255 255; /*(Changeable UI) color_class: "B062";*/
          }
       }
       part { name: "elm.swallow.action_area";
@@ -695,6 +721,8 @@ group { name: "elm/popup/base/default";
          signal: "elm,state,subtitle,text,visible";
          source: "elm";
          action: STATE_SET "subtitle_visible" 0.0;
+         target: "title_left_top_padding";
+         target: "elm.bg.title";
          target: "elm.text.title";
          target: "elm.text.subtitle";
       }
@@ -850,13 +878,11 @@ group { name: "elm/popup/content/default";
 }
 
 group { name: "elm/popup/content/toast";
-   data.item: "content_area_width" POPUP_TOAST_TEXT_MAX_WIDTH_INC;
    parts{
       part { name:"elm.swallow.content";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            min: POPUP_TOAST_TEXT_MAX_WIDTH_INC 0;
          }
       }
    }
@@ -1133,121 +1159,227 @@ group { name: "elm/popup/base/toast";
       set {
          name: "core_popup_noti_bg.#";
          image {
-            image: SMALL"images/Popups/core_popup_noti_bg.#.png" COMP;
+            image: SMALL"images/Assist_Views/core_popup_noti_bg.#.png" COMP;
          }
          image {
-            image: MEDIUM"images/Popups/core_popup_noti_bg.#.png" COMP;
-         }
-      }
-      set {
-         name: "core_popup_noti_bg_ef.#";
-         image {
-            image: SMALL"images/Popups/core_popup_noti_bg_ef.#.png" COMP;
-         }
-         image {
-            image: MEDIUM"images/Popups/core_popup_noti_bg_ef.#.png" COMP;
+            image: MEDIUM"images/Assist_Views/core_popup_noti_bg.#.png" COMP;
          }
       }
       set {
          name: "core_popup_noti_bg_stroke.#";
          image {
-            image: SMALL"images/Popups/core_popup_noti_bg_stroke.#.png" COMP;
+            image: SMALL"images/Assist_Views/core_popup_noti_bg_stroke.#.png" COMP;
          }
          image {
-            image: MEDIUM"images/Popups/core_popup_noti_bg_stroke.#.png" COMP;
+            image: MEDIUM"images/Assist_Views/core_popup_noti_bg_stroke.#.png" COMP;
          }
       }
    }
    data {
       item: "default_orient" "2"; //top, center:1 bottom:2
-      item: "title_height" POPUP_TITLE_AREA_HEIGHT;
       item: "popup_outside_pad" POPUP_OUTSIDE_PADDING;
    }
    parts {
       part { name: "bg";
          scale: 1;
+         clip_to: "clipper";
          description { state: "default" 0.0;
             rel1.to: "bg_outer";
             rel2.to: "bg_outer";
             image.normal: "core_popup_noti_bg.#";
-            color: 244 244 242 255; /*(Changeable UI) color_class: "B066";*/
          }
       }
       part { name: "bg_outer";
          scale: 1;
+         clip_to: "clipper";
          description { state: "default" 0.0;
             image.normal: "core_popup_noti_bg_stroke.#";
-            color: 2 61 132 255; /*(Changeable UI) color_class: "B011";*/
-            min: POPUP_TOAST_TEXT_MAX_WIDTH_INC 0;
-            max: POPUP_TOAST_BG_MAX_WIDTH_INC POPUP_TOAST_BG_MAX_HEIGHT_INC;
-         }
-      }
-      part { name: "bg_shadow";
-         scale: 1;
-         description { state: "default" 0.0;
-            rel1.to: "bg";
-            rel2.to: "bg";
-            image.normal: "core_popup_noti_bg_ef.#";
-         }
-      }
-      part { name: "title_top_padding";
-        type: SPACER;
-        scale: 1;
-        description { state: "default" 0.0;
-            align: 0.5 0.0;
-            min: 0 POPUP_TOAST_TITLE_TOP_BOTTOM_PAD_INC;
-            max: -1 POPUP_TOAST_TITLE_TOP_BOTTOM_PAD_INC;
-            fixed: 0 1;
-            rel1.to: "bg";
-            rel2 {
-               to: "bg";
-               relative: 1.0 0.0;
-            }
+            color: 61 185 204 255;
+            rel1.to_x: "title_left_padding";
+            rel1.to_y: "title_top_padding";
+            rel1.relative: 0.0 0.0;
+            rel2.to_x: "title_right_padding";
+            rel2.to_y: "title_bottom_padding";
+            rel2.relative: 1.0 1.0;
          }
       }
       part { name: "bottom_padding";
         type: SPACER;
         scale: 1;
         description { state: "default" 0.0;
-            min: 0 POPUP_TOAST_BOTTOM_PAD_INC;
-            max: -1 POPUP_TOAST_BOTTOM_PAD_INC;
+            min: 0 POPUP_TOAST_VI_BOTTOM_PAD_INC;
+            max: -1 POPUP_TOAST_VI_BOTTOM_PAD_INC;
             fixed: 0 1;
             align: 0.5 1.0;
-            rel1 {
-               to: "bg";
-               relative: 0.0 1.0;
-            }
-            rel2.to: "bg";
+            rel1.relative: 0.0 1.0;
          }
+         description { state: "show_effect";
+            inherit: "default" 0.0;
+            min: 0 POPUP_TOAST_BOTTOM_PAD_INC;
+            max: -1 POPUP_TOAST_BOTTOM_PAD_INC;
+         }
+      }
+      part { name: "title_top_padding";
+        type: SPACER;
+        scale: 1;
+        description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 POPUP_TOAST_TITLE_TOP_PAD_INC;
+            max: -1 POPUP_TOAST_TITLE_TOP_PAD_INC;
+            fixed: 0 1;
+            rel1.relative: 0.0 0.0;
+            rel1.to_y: "elm.swallow.content";
+            rel2.relative: 1.0 0.0;
+            rel2.to_y: "elm.swallow.content";
+         }
+        description { state: "part_text_show" 0.0;
+           inherit: "default";
+           rel1.relative: 0.0 0.0;
+           rel1.to_y: "elm.text";
+           rel2.relative: 1.0 0.0;
+           rel2.to_y: "elm.text";
+        }
       }
       part { name: "title_bottom_padding";
         type: SPACER;
         scale: 1;
         description { state: "default" 0.0;
-            min: 0 POPUP_TOAST_TITLE_TOP_BOTTOM_PAD_INC;
-            max: -1 POPUP_TOAST_TITLE_TOP_BOTTOM_PAD_INC;
+            min: 0 POPUP_TOAST_TITLE_BOTTOM_PAD_INC;
+            max: -1 POPUP_TOAST_TITLE_BOTTOM_PAD_INC;
             fixed: 0 1;
             align: 0.5 1.0;
             rel1.to: "bottom_padding";
-            rel2 {
-               to: "bottom_padding";
-               relative: 1.0 0.0;}
+            rel1.relative: 0.0 0.0;
+            rel2.to: "bottom_padding";
+            rel2.relative: 1.0 0.0;
+         }
+      }
+      part { name: "title_left_padding";
+        type: SPACER;
+        scale: 1;
+        description { state: "default" 0.0;
+            min: POPUP_TOAST_TITLE_LEFT_RIGHT_PAD_INC 0;
+            max: POPUP_TOAST_TITLE_LEFT_RIGHT_PAD_INC 0;
+            fixed: 1 0;
+            align: 1.0 0.5;
+            rel1.to: "elm.swallow.content";
+            rel1.relative: 0.0 0.0;
+            rel2.to: "elm.swallow.content";
+            rel2.relative: 0.0 1.0;
+        }
+        description { state: "part_text_show" 0.0;
+            inherit: "default";
+            rel1.to: "elm.text";
+            rel1.relative: 0.0 0.0;
+            rel2.to: "elm.text";
+            rel2.relative: 0.0 1.0;
+        }
+      }
+      part { name: "title_right_padding";
+        type: SPACER;
+        scale: 1;
+        description { state: "default" 0.0;
+            min: POPUP_TOAST_TITLE_LEFT_RIGHT_PAD_INC 0;
+            max: POPUP_TOAST_TITLE_LEFT_RIGHT_PAD_INC 0;
+            fixed: 1 0;
+            align: 0.0 0.5;
+            rel1.to: "elm.swallow.content";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "elm.swallow.content";
+            rel2.relative: 1.0 1.0;
+        }
+        description { state: "part_text_show" 0.0;
+            inherit: "default";
+            align: 0.0 0.5;
+            rel1.to: "elm.text";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "elm.text";
+            rel2.relative: 1.0 1.0;
+        }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         clip_to: "clipper";
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: POPUP_TOAST_TEXT_MIN_WIDTH_INC POPUP_TOAST_TEXT_MIN_HEIGHT_INC;
+            max: POPUP_TOAST_TEXT_MAX_WIDTH_INC POPUP_TOAST_TEXT_MAX_HEIGHT_INC;
+            align: 0.5 1.0;
+            rel1.to_y: "title_bottom_padding";
+            rel1.relative: 0.0 0.0;
+            rel2.to_y: "title_bottom_padding";
+            rel2.relative: 1.0 0.0;
+            text {
+               style: "popup_toast_style";
+               min: 1 1;
+               max: 0 1;
+            }
+         }
+         description { state: "multiline" 0.0;
+            inherit: "default" 0.0;
+            min: POPUP_TOAST_TEXT_MULTI_LINE_MIN_INC POPUP_TOAST_TEXT_MIN_HEIGHT_INC;
+            text.min: 0 1;
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         clip_to: "clipper";
          scale: 1;
          description { state: "default" 0.0;
-            min: 0 POPUP_TOAST_TEXT_MIN_HEIGHT_INC;
-            rel1 {
-              to_y: "title_top_padding";
-              relative: 0.0 1.0;
-            }
-            rel2 {
-              to_y: "title_bottom_padding";
-              relative: 1.0 0.0;
-            }
+            align: 0.5 1.0;
+            rel1.to_y: "title_bottom_padding";
+            rel1.relative: 0.0 0.0;
+            rel2.to_y: "title_bottom_padding";
+            rel2.relative: 1.0 0.0;
          }
+      }
+      part { name: "clipper";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+         description { state: "show_effect" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+   }
+   programs {
+      program { name: "part_text_show";
+         signal: "elm,state,text,visible";
+         source: "elm";
+         script {
+            new tx, ty, tw, th, w;
+            get_geometry(PART:"elm.text", tx, ty, tw, th);
+            w = POPUP_TOAST_TEXT_MULTI_LINE_MIN_INC;
+            if (tw >= w)
+               set_state(PART:"elm.text", "multiline", 0.0);
+            else
+               set_state(PART:"elm.text", "default", 0.0);
+
+            set_state(PART:"title_top_padding", "part_text_show", 0.0);
+            set_state(PART:"title_left_padding", "part_text_show", 0.0);
+            set_state(PART:"title_right_padding", "part_text_show", 0.0);
+         }
+      }
+      program { name: "show_effect";
+         signal: "show";
+         action: STATE_SET "show_effect" 0.0;
+         transition: LINEAR 0.1;
+         target: "clipper";
+         target: "bottom_padding";
+      }
+      program { name: "hide_effect";
+         signal: "elm,state,tizen,content,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.1;
+         target: "clipper";
+         target: "bottom_padding";
       }
    }
 }

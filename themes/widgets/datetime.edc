@@ -26,127 +26,74 @@
 ///////////////////////////////////////////////////////////////////////////////
 // datetime
 ///////////////////////////////////////////////////////////////////////////////
-
-#define size1 70
-#define size2 140
-#define DATETIME_FIELD(_pos,width) \
-   part { \
-      name: "field"#_pos; type: SWALLOW; \
-      scale: 1; \
-      clip_to: "clip"; \
-      description { state: "default" 0.0; \
-         visible: 0; \
-         min: 0 250; \
-         max: 0 250; \
-         fixed: 1 0; \
-         align: 0.0 0.5; \
-         rel1.relative: 1.0 0.0; \
-         rel1.to: "separator"#_pos; \
-         rel2.relative: 1.0 1.0; \
-         rel2.to: "separator"#_pos; \
-      } \
-      description { state: "enable" 0.0; \
-         inherit: "default" 0.0; \
-         min: width 250; \
-         max: width 250; \
-         visible: 1; \
-      } \
-   } \
-   programs{ \
-      program { name: "field_"#_pos"enabled"; \
-         signal: "field"#_pos",enable"; source: "elm"; \
-         action: STATE_SET "enable" 0.0; \
-         target: "field"#_pos; \
-      } \
-      program { name: "field_"#_pos"disabled"; \
-         signal: "field"#_pos",disable"; source: "elm"; \
-         action: STATE_SET "default" 0.0; \
-         target: "field"#_pos; \
-      } \
-    }
-#define DATETIME_SEPARATOR(_pos, _after) \
-   part { \
-      name: "separator"#_pos; type: TEXT; \
-      scale: 1; \
-      effect: SHADOW BOTTOM; \
-      clip_to: "disclip"; \
-      description { state: "default" 0.0; \
-         visible: 0; \
-         min: 0 0; \
-         align: 0.0 0.5; \
-         fixed: 1 0; \
-         rel1 { \
-            relative: 1.0 0.0; \
-            to: "field"#_after; \
-         } \
-         rel2 { \
-            relative: 1.0 1.0; \
-            to: "field"#_after; \
-         } \
-         color: 7 7 7 255; /*(Changeable UI) color_class: "T1232";*/ \
-         text { \
-            font: "Sans"; size: 100; \
-            min: 1 0; \
-            ellipsis: -1; \
-            align: 0.5 0.5; \
-            font: "Tizen:style=Light"; size: "90"; /*(Changeable UI) text_class: "T1232";*/ \
-            text_class: "tizen"; \
-         } \
-      } \
-      description { state: "enable" 0.0; \
-         inherit: "default" 0.0; \
-         visible: 1; \
-         min: 8 10; \
-      } \
-   } \
-   part { \
-      name: "separator"#_pos"d"; type: TEXT; \
-      scale: 1; \
-      effect: SHADOW BOTTOM; \
-      clip_to: "disclip2"; \
-      description { state: "default" 0.0; \
-         visible: 0; \
-         rel1.to: "separator"#_pos; \
-         rel2.to: "separator"#_pos; \
-         color_class: "datetime_text"; \
-         text { \
-            text_source: "separator"#_pos; \
-            font: "Sans"; size: 100; \
-         } \
-      } \
-      description { state: "enable" 0.0; \
-         inherit: "default" 0.0; \
-         visible: 1; \
-      } \
-   } \
-   programs { \
-      program { \
-         signal: "field"#_after",enable"; source: "elm"; \
-         action: STATE_SET "enable" 0.0; \
-         target: "separator"#_pos; \
-         target: "separator"#_pos"d"; \
-      } \
-      program { \
-         signal: "field"#_after",disable"; source: "elm"; \
-         action: STATE_SET "default" 0.0; \
-         target: "separator"#_pos; \
-         target: "separator"#_pos"d"; \
-      } \
-   }
-
-#undef DATETIME_SEPARATOR
-#undef DATETIME_FIELD
-
 group { name: "elm/datetime/base/default";
    alias: "elm/datetime/base/date_layout";
    parts {
+      part { name: "base_bg";
+        type: RECT;
+        scale: 1;
+        description { state: "default" 0.0;
+           color: 250 250 250 255;
+        }
+      }
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: DATETIME_LAYOUT_BASE_BG_SIZE_INC;
+         }
+      }
+      part { name: "bg.top.padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 DATETIME_BG_TOP_BOTTOM_PADDING;
+            max: -1 DATETIME_BG_TOP_BOTTOM_PADDING;
+            fixed: 0 1;
+            rel1 {
+               relative: 0.0 0.0;
+               to: "base";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to: "base";
+            }
+            align: 0.5 0.0;
+         }
+      }
+      part { name: "bg.bottom.padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 DATETIME_BG_TOP_BOTTOM_PADDING;
+            max: -1 DATETIME_BG_TOP_BOTTOM_PADDING;
+            fixed: 0 1;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "base";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               to: "base";
+            }
+            align: 0.5 1.0;
+         }
+      }
       part { name: "bg";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
             min: DATETIME_LAYOUT_CONTENT_SIZE_INC;
             max: DATETIME_LAYOUT_CONTENT_SIZE_INC;
-            color_class: "B0211";
+            rel1 {
+               relative: 0.0 1.0;
+               to: "bg.top.padding";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to: "bg.bottom.padding";
+            }
+            color: 250 250 250 255;
          }
       }
       part { name: "left.padding";
@@ -318,13 +265,71 @@ group { name: "elm/datetime/base/default";
 
 group { name: "elm/datetime/base/time_layout";
    parts {
+      part { name: "base_bg";
+        type: RECT;
+        scale: 1;
+        description { state: "default" 0.0;
+           color: 250 250 250 255;
+        }
+      }
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: TIME_LAYOUT_BASE_BG_SIZE_INC;
+         }
+      }
+      part { name: "bg.top.padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 DATETIME_BG_TOP_BOTTOM_PADDING;
+            max: -1 DATETIME_BG_TOP_BOTTOM_PADDING;
+            fixed: 0 1;
+            rel1 {
+               relative: 0.0 0.0;
+               to: "base";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to: "base";
+            }
+            align: 0.5 0.0;
+         }
+      }
+      part { name: "bg.bottom.padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 DATETIME_BG_TOP_BOTTOM_PADDING;
+            max: -1 DATETIME_BG_TOP_BOTTOM_PADDING;
+            fixed: 0 1;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "base";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               to: "base";
+            }
+            align: 0.5 1.0;
+         }
+      }
       part { name: "bg";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            min: DATETIME_LAYOUT_CONTENT_SIZE_INC;
-            max: DATETIME_LAYOUT_CONTENT_SIZE_INC;
-            color_class: "B0211";
+            min: TIME_LAYOUT_CONTENT_SIZE_INC;
+            max: TIME_LAYOUT_CONTENT_SIZE_INC;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "bg.top.padding";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to: "bg.bottom.padding";
+            }
+            color: 250 250 250 255;
          }
       }
       part { name: "left.padding";
@@ -413,16 +418,14 @@ group { name: "elm/datetime/base/time_layout";
          description { state: "default" 0.0;
             rel1.to: "text_bg";
             rel2.to: "text_bg";
-            color: 7 7 7 255; /*(Changeable UI) color_class: "T1232";*/
-            align: 0.5 0.4;
+            color: 0 0 0 255;
+            fixed: 1 1;
             text {
-               min: 1 1;
-               fit: 1 1;
-               font: "Tizen:style=Light"; size: "90"; /*(Changeable UI) text_class: "T1232";*/
-               text_class: "tizen";
+               min: 1 0;
+               font: "TizenSans:style=Light";
+               size: "106";
                text: ":";
-               align: 0.5 0.4;
-               ellipsis: -1;
+               align: 0.5 0.44;
             }
          }
       }
@@ -460,8 +463,8 @@ group { name: "elm/datetime/base/time_layout";
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 0;
-            min: TIME_LAYOUT_CONTENT_RIGHT_PADDING_WIDTH_INC 0;
-            max: TIME_LAYOUT_CONTENT_RIGHT_PADDING_WIDTH_INC -1;
+            min: TIME_LAYOUT_MINITE_RIGHT_PADDING_WIDTH_INC 0;
+            max: TIME_LAYOUT_MINITE_RIGHT_PADDING_WIDTH_INC -1;
              rel1 {
                relative: 1.0 0.0;
                to: "field4";
@@ -475,8 +478,8 @@ group { name: "elm/datetime/base/time_layout";
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 0;
-            min: TIME_LAYOUT_CONTENT_FIELD_WIDTH_INC 0;
-            max: TIME_LAYOUT_CONTENT_FIELD_WIDTH_INC -1;
+            min: TIME_LAYOUT_CONTENT_AMPM_FIELD_WIDTH_INC 0;
+            max: TIME_LAYOUT_CONTENT_AMPM_FIELD_WIDTH_INC -1;
              rel1 {
                relative: 1.0 0.0;
                to: "center.padding3";
@@ -544,6 +547,13 @@ group { name: "elm/datetime/base/time_layout_24hr";
    inherit: "elm/datetime/base/time_layout";
 
    parts {
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: TIME24_LAYOUT_BASE_BG_SIZE_INC;
+         }
+      }
       part { name: "left.padding";
          type: SPACER;
          scale: 1;
@@ -580,34 +590,21 @@ group { name: "elm/datetime/base/time_layout_24hr";
             align: 1.0 1.0;
          }
       }
-      part { name: "center.padding1";
-         type: SPACER;
+      part { name: "bg";
+         type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            fixed: 1 0;
-            min: TIME_LAYOUT_CONTENT_TIME_24HR_CENTER_PADDING_WIDTH_INC 0;
-            max: TIME_LAYOUT_CONTENT_TIME_24HR_CENTER_PADDING_WIDTH_INC -1;
+            min: TIME24_LAYOUT_CONTENT_SIZE_INC;
+            max: TIME24_LAYOUT_CONTENT_SIZE_INC;
             rel1 {
-               relative: 1.0 0.0;
-               to: "field3";
+               relative: 0.0 1.0;
+               to: "bg.top.padding";
             }
-            rel2.to: "field3";
-            align: 0.0 0.5;
-         }
-      }
-      part { name: "center.padding2";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            fixed: 1 0;
-            min: TIME_LAYOUT_CONTENT_TIME_24HR_CENTER_PADDING_WIDTH_INC 0;
-            max: TIME_LAYOUT_CONTENT_TIME_24HR_CENTER_PADDING_WIDTH_INC -1;
-            rel1 {
+            rel2 {
                relative: 1.0 0.0;
-               to: "text_bg";
+               to: "bg.bottom.padding";
             }
-            rel2.to: "text_bg";
-            align: 0.0 0.5;
+            color: 250 250 250 255;
          }
       }
       part { name: "field5";
