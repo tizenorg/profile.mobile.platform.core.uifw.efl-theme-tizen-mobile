@@ -49,31 +49,6 @@
                min: 0 PROGRESSBAR_DEFAULT_HEIGHT_INC;
             }
          }
-         part { name: "elm.text.top.left";
-            type: TEXT;
-            scale: 1;
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               rel1.relative: 0.0 0.0;
-               rel2.relative: 0.0 0.0;
-               rel1.to: "top_padding";
-               rel2.to: "top_padding";
-               text {
-                  min: 0 0;
-                  align: 0.5 0.5;
-                  font: "Tizen:style=Regular"; size: "32";
-                  text_class: "tizen";
-               }
-               align: 0.0 1.0;
-               color: 102 102 102 255;
-               visible: 0;
-            }
-            description { state: "show" 0.0;
-               inherit: "default" 0.0;
-               text.min: 1 1;
-               visible: 1;
-            }
-         }
          part { name: "elm.text.top.right";
             type: TEXT;
             scale: 1;
@@ -279,6 +254,31 @@
                visible: 1;
             }
          }
+         part { name: "elm.text.status";
+            type: TEXT;
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1.to_y: "bottom_padding";
+               rel2.to_y: "bottom_padding";
+               rel1.relative: 1.0 1.0;
+               rel2.relative: 1.0 1.0;
+               text {
+                  min: 0 0;
+                  align: 0.5 0.5;
+                  font: "Tizen:style=Regular"; size: "32";
+                  text_class: "tizen";
+               }
+               align: 1.0 0.0;
+               color: 102 102 102 255;
+               visible: 0;
+            }
+            description { state: "show" 0.0;
+               inherit: "default" 0.0;
+               text.min: 1 1;
+               visible: 1;
+            }
+         }
          part { name: "elm.text.bottom.right";
             type: TEXT;
             scale: 1;
@@ -306,18 +306,6 @@
          }
       }
       programs {
-         program { name: "text_top_left_show";
-            signal: "elm,state,top.left,visible";
-            source: "elm";
-            action: STATE_SET "show" 0.0;
-            target: "elm.text.top.left";
-         }
-         program { name: "text_top_left_text_hide";
-            signal: "elm,state,top.left,hidden";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "elm.text.top.left";
-         }
          program { name: "text_top_right_show";
             signal: "elm,state,top.right,visible";
             source: "elm";
@@ -345,14 +333,24 @@
          program { name: "text_bottom_right_show";
             signal: "elm,state,bottom.right,visible";
             source: "elm";
-            action: STATE_SET "show" 0.0;
-            target: "elm.text.bottom.right";
+            script {
+               set_state(PART:"elm.text.status", "default", 0.0);
+               set_state(PART:"elm.text.bottom.right", "show", 0.0);
+            }
          }
-         program { name: "text_bottom_right_text_hide";
-            signal: "elm,state,bottom.right,hidden";
+         program { name: "text_status_show";
+            signal: "elm,state,status,visible";
+            source: "elm";
+            script {
+               set_state(PART:"elm.text.bottom.right", "default", 0.0);
+               set_state(PART:"elm.text.status", "show", 0.0);
+            }
+         }
+         program { name: "text_status_text_hide";
+            signal: "elm,state,status,hidden";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "elm.text.bottom.right";
+            target: "elm.text.status";
          }
          program { name: "slide_to_end";
             action: STATE_SET "state_end" 0.0;
@@ -464,31 +462,6 @@
                min: 0 PROGRESSBAR_PENDING_HEIGHT_INC;
             }
          }
-         part { name: "elm.text.top.left";
-            type: TEXT;
-            scale: 1;
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               rel1.relative: 0.0 0.0;
-               rel2.relative: 0.0 0.0;
-               rel1.to: "top_padding";
-               rel2.to: "top_padding";
-               text {
-                  min: 0 0;
-                  align: 0.5 0.5;
-                  font: "Tizen:style=Regular"; size: "32";
-                  text_class: "tizen";
-               }
-               align: 0.0 1.0;
-               color: 102 102 102 255;
-               visible: 0;
-            }
-            description { state: "show" 0.0;
-               inherit: "default" 0.0;
-               text.min: 1 1;
-               visible: 1;
-            }
-         }
          part { name: "elm.text.top.right";
             type: TEXT;
             scale: 1;
@@ -593,6 +566,31 @@
                visible: 1;
             }
          }
+         part { name: "elm.text.status";
+            type: TEXT;
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1.to_y: "bottom_padding";
+               rel2.to_y: "bottom_padding";
+               rel1.relative: 1.0 1.0;
+               rel2.relative: 1.0 1.0;
+               text {
+                  min: 0 0;
+                  align: 0.5 0.5;
+                  font: "Tizen:style=Regular"; size: "32";
+                  text_class: "tizen";
+               }
+               align: 1.0 0.0;
+               color: 102 102 102 255;
+               visible: 0;
+            }
+            description { state: "show" 0.0;
+               inherit: "default" 0.0;
+               text.min: 1 1;
+               visible: 1;
+            }
+         }
          part { name: "elm.text.bottom.right";
             type: TEXT;
             scale: 1;
@@ -620,18 +618,6 @@
          }
       }
       programs {
-         program { name: "text_top_left_show";
-            signal: "elm,state,top.left,visible";
-            source: "elm";
-            action: STATE_SET "show" 0.0;
-            target: "elm.text.top.left";
-         }
-         program { name: "text_top_left_text_hide";
-            signal: "elm,state,top.left,hidden";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "elm.text.top.left";
-         }
          program { name: "text_top_right_show";
             signal: "elm,state,top.right,visible";
             source: "elm";
@@ -659,14 +645,24 @@
          program { name: "text_bottom_right_show";
             signal: "elm,state,bottom.right,visible";
             source: "elm";
-            action: STATE_SET "show" 0.0;
-            target: "elm.text.bottom.right";
+            script {
+               set_state(PART:"elm.text.status", "default", 0.0);
+               set_state(PART:"elm.text.bottom.right", "show", 0.0);
+            }
          }
-         program { name: "text_bottom_right_text_hide";
-            signal: "elm,state,bottom.right,hidden";
+         program { name: "text_status_show";
+            signal: "elm,state,status,visible";
+            source: "elm";
+            script {
+               set_state(PART:"elm.text.bottom.right", "default", 0.0);
+               set_state(PART:"elm.text.status", "show", 0.0);
+            }
+         }
+         program { name: "text_status_text_hide";
+            signal: "elm,state,status,hidden";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "elm.text.bottom.right";
+            target: "elm.text.status";
          }
          program { name: "slide_to_end";
             in: 0.3 0.0;
