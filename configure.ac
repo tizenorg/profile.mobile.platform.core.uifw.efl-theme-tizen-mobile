@@ -17,5 +17,5 @@ AM_INIT_AUTOMAKE([foreign])
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
-                 themes/Makefile])
+                 mobile/Makefile])
 AC_OUTPUT
