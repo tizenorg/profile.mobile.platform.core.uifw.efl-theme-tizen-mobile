@@ -1085,7 +1085,7 @@
    }
 
 ///////////////////////////////////////////////////////////////////////////////////////
-#define BUTTON_ICON_STYLES(style_name, image_normal, style_normal , style_press , style_dim ,min_width, min_height) \
+#define BUTTON_ICON_STYLES(style_name, image_normal, color_normal_r, color_normal_g, color_normal_b, color_normal_a, color_press_r, color_press_g, color_press_b, color_press_a, color_dim_r, color_dim_g, color_dim_b, color_dim_a, min_width, min_height) \
    group { name: "elm/button/base/"style_name; \
       images { \
          image: image_normal COMP; \
@@ -1093,6 +1093,7 @@
       script { \
          public mouse_down = 0; \
          public multi_down = 0; \
+         public disabled = 0; \
       } \
       parts { \
          part { name: "button_image"; \
@@ -1110,15 +1111,15 @@
                rel1.to: "button_image"; \
                rel2.to: "button_image"; \
                image.normal: image_normal; \
-               color_class: style_normal; \
+               color: color_normal_r color_normal_g color_normal_b color_normal_a; \
             } \
             description { state: "pressed" 0.0; \
                inherit: "default" 0.0; \
-               color_class: style_press; \
+               color: color_press_r color_press_g color_press_b color_press_a; \
             } \
             description { state: "disabled" 0.0; \
                inherit: "default" 0.0; \
-               color_class: style_dim; \
+               color: color_dim_r color_dim_g color_dim_b color_dim_a; \
             } \
          } \
          part { name: "over1"; \
@@ -1162,7 +1163,10 @@
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) \
                  { \
                      set_int(mouse_down, 1); \
-                     run_program(PROGRAM:"button_press2"); \
+                     if (get_int(disabled) == 0) \
+                       { \
+                          run_program(PROGRAM:"button_press2"); \
+                       } \
                  } \
             } \
          } \
@@ -1193,8 +1197,11 @@
                if (get_int(mouse_down) == 1) \
                  { \
                     set_int(mouse_down, 0); \
-                    run_program(PROGRAM:"button_unpress2"); \
-                    run_program(PROGRAM:"button_unpress_anim"); \
+                    if (get_int(disabled) == 0) \
+                      { \
+                         run_program(PROGRAM:"button_unpress2"); \
+                         run_program(PROGRAM:"button_unpress_anim"); \
+                      } \
                  } \
             } \
          } \
@@ -1209,10 +1216,14 @@
             signal: "mouse,clicked,1"; \
             source: "over2"; \
             script { \
-               if (get_int(multi_down) == 0) { \
-                 run_program(PROGRAM:"touch_sound"); \
-                 run_program(PROGRAM:"button_click2"); \
-               } \
+               if (get_int(multi_down) == 0) \
+                 { \
+                    if (get_int(disabled) == 0) \
+                      { \
+                         run_program(PROGRAM:"touch_sound"); \
+                         run_program(PROGRAM:"button_click2"); \
+                      } \
+                 } \
             } \
          } \
          program { name: "touch_sound"; \
@@ -1224,16 +1235,21 @@
          program { name: "disable"; \
             signal: "elm,state,disabled"; \
             source: "elm"; \
-            action: STATE_SET "disabled" 0.0; \
-            target: "disabler"; \
-            target: "button_center_part"; \
+            script { \
+              set_int(disabled, 1); \
+              set_state(PART:"disabler", "disabled", 0.0); \
+              set_state(PART:"button_center_part", "disabled", 0.0); \
+            } \
          } \
          program { name: "enable"; \
             signal: "elm,state,enabled"; \
             source: "elm"; \
             action: STATE_SET "default" 0.0; \
-            target: "disabler"; \
-            target: "button_center_part"; \
+            script { \
+              set_int(disabled, 0); \
+              set_state(PART:"disabler", "default", 0.0); \
+              set_state(PART:"button_center_part", "default", 0.0); \
+            } \
          } \
          program { \
             name: "multi_down"; \
@@ -1255,11 +1271,11 @@
    }
 
 ///////////////////////////////////////////////////////////////////////////////////////
-   BUTTON_ICON_STYLES("icon_reorder", "core_button_reorder.png", "F060L1" ,"F060L1P" , "F060L1D" ,  BUTTON_ICON_WIDTH_INC, BUTTON_ICON_HEIGHT_INC)
+   BUTTON_ICON_STYLES("icon_reorder", "core_button_reorder.png", 61, 185, 204, 255, 34, 104, 115, 255, 61, 185, 204, 77,  BUTTON_ICON_WIDTH_INC, BUTTON_ICON_HEIGHT_INC)
 ///////////////////////////////////////////////////////////////////////////////////////
-   BUTTON_ICON_STYLES("icon_expand_add", "core_button_add.png", "F060L2" , "F060L2P", "F060L2D",  BUTTON_ICON_WIDTH_INC, BUTTON_ICON_HEIGHT_INC)
+   BUTTON_ICON_STYLES("icon_expand_add", "core_button_add.png", 61, 185, 204, 255, 34, 104, 115, 255, 61, 185, 204, 77,  BUTTON_ICON_WIDTH_INC, BUTTON_ICON_HEIGHT_INC)
 ///////////////////////////////////////////////////////////////////////////////////////
-   BUTTON_ICON_STYLES("icon_expand_delete", "core_button_delete.png", "F060L3" , "F060L3P" ,"F060L3D",  BUTTON_ICON_WIDTH_INC, BUTTON_ICON_HEIGHT_INC)
+   BUTTON_ICON_STYLES("icon_expand_delete", "core_button_delete.png", 214, 49, 49, 255, 176, 40, 40, 255, 61, 185, 204, 77,  BUTTON_ICON_WIDTH_INC, BUTTON_ICON_HEIGHT_INC)
 
 
 group { name: "elm/button/base/contacts";
