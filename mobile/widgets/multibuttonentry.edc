@@ -157,27 +157,7 @@
    styles {
       style {
          name: "multibuttonentry_btn_text_style";
-         base: "font=Tizen:style=Light font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#FFFFFF align=center";
-      }
-      style {
-         name: "multibuttonentry_btn_text_pressed_style";
-         base: "font=Tizen:style=Light font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#FFFFFF align=center";
-      }
-      style {
-         name: "multibuttonentry_btn_text_dim_style";
-         base: "font=Tizen:style=Light font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#FFFFFF align=center";
-      }
-      style {
-         name: "multibuttonentry_btn_text_ellipsis_style";
-         base: "font=Tizen:style=Light font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#FFFFFF ellipsis=1";
-      }
-      style {
-         name: "multibuttonentry_btn_text_ellipsis_pressed_style";
-         base: "font=Tizen:style=Light font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#FFFFFF ellipsis=1";
-      }
-      style {
-         name: "multibuttonentry_btn_text_ellipsis_dim_style";
-         base: "font=Tizen:style=Light font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#FFFFFF ellipsis=1";
+         base: "font=Tizen:style=Light font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#FFFFFF ellipsis=1.0";
       }
    }
    script {
@@ -250,7 +230,7 @@
             state: "default" 0.0;
             text {
                style: "multibuttonentry_btn_text_style";
-               min: 1 0;
+               min: 1 1;
             }
             rel1 {
                relative: 1.0 0.0;
@@ -260,34 +240,29 @@
                relative: 0.0 1.0;
                to: "right.padding";
             }
+            visible: 0;
          }
+      }
+      part { name: "text";
+         type: TEXTBLOCK;
+         mouse_events: 0;
+         scale: 1;
+         multiline: 0;
          description {
-            state: "pressed" 0.0;
-            inherit: "default" 0.0;
-            text.style: "multibuttonentry_btn_text_pressed_style";
-         }
-         description {
-            state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            text.style: "multibuttonentry_btn_text_dim_style";
-         }
-         description {
-            state: "ellipsis" 0.0;
-            inherit: "default" 0.0;
+            state: "default" 0.0;
             text {
-               style: "multibuttonentry_btn_text_ellipsis_style";
-               min: 0 0;
+               style: "multibuttonentry_btn_text_style";
+               text_source: "elm.btn.text";
+               min: 0 1;
             }
-         }
-         description {
-            state: "ellipsis_pressed" 0.0;
-            inherit: "ellipsis" 0.0;
-            text.style: "multibuttonentry_btn_text_ellipsis_pressed_style";
-         }
-         description {
-            state: "ellipsis_disabled" 0.0;
-            inherit: "ellipsis" 0.0;
-            text.style: "multibuttonentry_btn_text_ellipsis_dim_style";
+            rel1 {
+               relative: 1.0 0.0;
+               to: "left.padding";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to: "right.padding";
+            }
          }
       }
       part {
@@ -318,43 +293,13 @@
    }
    programs {
       program {
-         name: "text_ellipsis";
-         signal: "elm,state,text,ellipsis";
-         source: "";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.btn.text", st, 30, vl);
-            if (!strcmp(st, "ellipsis_disabled"))
-              set_state(PART:"elm.btn.text", "ellipsis_disabled", 0.0);
-            else
-              set_state(PART:"elm.btn.text", "ellipsis", 0.0);
-         }
-      }
-      program {
-         name: "text_default";
-         signal: "elm,state,text,default";
-         source: "";
-         action: STATE_SET "default" 0.0;
-         target: "elm.btn.text";
-      }
-      program {
          name: "pressed";
          signal: "mouse,down,1";
          source: "drag";
          script {
-            new st[31];
-            new Float:vl;
-            if (get_int(disabled) ==  1)
-              return;
-            get_state(PART:"elm.btn.text", st, 30, vl);
-            if (!strcmp(st, "default") || !strcmp(st, "pressed"))
-              set_state(PART:"elm.btn.text", "pressed", 0.0);
-            else if (!strcmp(st, "ellipsis") || !strcmp(st, "ellipsis_pressed"))
-              set_state(PART:"elm.btn.text", "ellipsis_pressed", 0.0);
-            set_state(PART:"button_image", "pressed", 0.0);
+            if (get_int(disabled) ==  0)
+              set_state(PART:"button_image", "pressed", 0.0);
          }
-         after: "selected";
       }
       program {
          name: "move";
@@ -366,14 +311,7 @@
               return;
             get_drag(PART:"drag", dx, dy);
             if ((abs(dx) > 20) || (abs(dy) > 20)) {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.btn.text", st, 30, vl);
-               if (!strcmp(st, "default") || !strcmp(st, "pressed"))
-                 set_state(PART:"elm.btn.text", "default", 0.0);
-               else if (!strcmp(st, "ellipsis") || !strcmp(st, "ellipsis_pressed"))
-                 set_state(PART:"elm.btn.text", "ellipsis", 0.0);
-               set_state(PART:"button_image", "default", 0.0);
+              set_state(PART:"button_image", "default", 0.0);
             }
          }
       }
@@ -382,68 +320,17 @@
          signal: "mouse,up,1";
          source: "drag";
          script {
-            new st[31];
-            new Float:vl;
-            if (get_int(disabled) ==  1)
-              return;
-            get_state(PART:"elm.btn.text", st, 30, vl);
-            if (!strcmp(st, "default") || !strcmp(st, "pressed"))
-              set_state(PART:"elm.btn.text", "default", 0.0);
-            else if (!strcmp(st, "ellipsis") || !strcmp(st, "ellipsis_pressed"))
-              set_state(PART:"elm.btn.text", "ellipsis", 0.0);
-            set_state(PART:"button_image", "default", 0.0);
-            set_drag(PART:"drag", 0.0, 0.0);
-         }
-         after: "unselected";
-      }
-      program {
-         name: "selected_elm";
-         signal: "elm,action,btn,selected";
-         source: "";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.btn.text", st, 30, vl);
-            if (!strcmp(st, "default") || !strcmp(st, "pressed"))
-              set_state(PART:"elm.btn.text", "default", 0.0);
-            else if (!strcmp(st, "ellipsis") || !strcmp(st, "ellipsis_pressed"))
-              set_state(PART:"elm.btn.text", "ellipsis", 0.0);
-            set_state(PART:"button_image", "pressed", 0.0);
-         }
-         after: "selected";
-      }
-      program {
-         name: "unselected_elm";
-         signal: "elm,action,btn,unselected";
-         source: "";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.btn.text", st, 30, vl);
-            if (!strcmp(st, "default") || !strcmp(st, "pressed"))
-              set_state(PART:"elm.btn.text", "default", 0.0);
-            else if (!strcmp(st, "ellipsis") || !strcmp(st, "ellipsis_pressed"))
-              set_state(PART:"elm.btn.text", "ellipsis", 0.0);
-            if (get_int(disabled) ==  0)
+            if (get_int(disabled) ==  0) {
               set_state(PART:"button_image", "default", 0.0);
-            else
-              set_state(PART:"button_image", "disabled", 0.0);
-            set_drag(PART:"drag", 0.0, 0.0);
+              set_drag(PART:"drag", 0.0, 0.0);
+            }
          }
-         after: "unselected";
       }
       program {
          name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
          script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.btn.text", st, 30, vl);
-            if (!strcmp(st, "default") || !strcmp(st, "disabled"))
-              set_state(PART:"elm.btn.text", "default", 0.0);
-            else if (!strcmp(st, "ellipsis") || !strcmp(st, "ellipsis_disabled"))
-              set_state(PART:"elm.btn.text", "ellipsis", 0.0);
             set_state(PART:"button_image", "default", 0.0);
             set_int(disabled , 0);
          }
@@ -453,13 +340,6 @@
          signal: "elm,state,disabled";
          source: "elm";
          script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.btn.text", st, 30, vl);
-            if (!strcmp(st, "default") || !strcmp(st, "disabled"))
-              set_state(PART:"elm.btn.text", "disabled", 0.0);
-            else if (!strcmp(st, "ellipsis") || !strcmp(st, "ellipsis_disabled"))
-              set_state(PART:"elm.btn.text", "ellipsis_disabled", 0.0);
             set_state(PART:"button_image", "disabled", 0.0);
             set_int(disabled , 1);
          }
@@ -474,14 +354,6 @@
       program {
          name: "touch_snd";
          action: RUN_PLUGIN "touch_sound" ;
-      }
-      program {
-         name: "selected";
-         action: SIGNAL_EMIT "elm,action,selected" "";
-      }
-      program {
-         name: "unselected";
-         action: SIGNAL_EMIT "elm,action,unselected" "";
       }
    }
  }
