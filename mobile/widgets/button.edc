@@ -3682,6 +3682,10 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
       alias: "elm/button/base/spinner/vertical_time_picker";
       alias: "elm/button/base/spinner/datetime";
       data.item: "focus_highlight" "on";
+      script {
+         public mouse_down = 0;
+         public multi_down = 0;
+      }
       parts {
          part { name: "bg";
             type: SPACER;
@@ -3704,6 +3708,9 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
                   size: 106;
                   text_class: "tizen";
                }
+            }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0 0 ;
             }
             description { state: "disabled" 0.0;
                inherit: "default" 0 0 ;
@@ -3740,12 +3747,43 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
          }
       }
       programs {
+         program { name: "button_press";
+            signal: "mouse,down,1*";
+            source: "over";
+            script {
+               if ((get_int(multi_down) == 0) &&
+                   (get_int(mouse_down) == 0)) {
+                     set_int(mouse_down, 1);
+                     run_program(PROGRAM:"button_press2");
+               }
+            }
+         }
+         program { name: "button_press2";
+            action: SIGNAL_EMIT "elm,action,press" "";
+            after: "action_pressed";
+         }
+         program { name: "button_unpress";
+            signal: "mouse,up,1*";
+            source: "over";
+            script {
+               if (get_int(mouse_down) == 1) {
+                     set_int(mouse_down, 0);
+                     run_program(PROGRAM:"button_unpress2");
+               }
+            }
+         }
+         program { name: "button_unpress2";
+            action: SIGNAL_EMIT "elm,action,unpress" "";
+            after: "action_unpressed";
+         }
          program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over";
             script {
+               if (get_int(multi_down) == 0) {
                  run_program(PROGRAM:"play_sound");
                  run_program(PROGRAM:"button_click2");
+               }
             }
          }
          program { name: "play_sound";
@@ -3753,6 +3791,14 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
          }
          program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
+         }
+         program { name: "action_pressed";
+            action: STATE_SET "pressed" 0.0;
+            target: "elm.text";
+         }
+         program { name: "action_unpressed";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text";
          }
          program { name: "action_focus";
             signal: "elm,action,focus_highlight,show";
@@ -3779,6 +3825,22 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
             action: STATE_SET "default" 0.0;
             target: "disabler";
             target: "elm.text";
+         }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
          }
       }
    }
