@@ -4245,12 +4245,20 @@ group { name: "elm/button/base/hoversel_vertical_entry/default";
       public disabled = 0;
    }
    parts {
+      part { name: "base";
+         scale: 1;
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 0 BUTTON_HOVERSEL_ENTRY_MIN_HEIGHT_INC;
+         }
+      }
       part { name: "button_image";
          type: RECT;
          mouse_events: 1;
          scale: 1;
          description { state: "default" 0.0;
-            min: 0 HOVERSEL_ITEM_MIN_HEIGHT_INC;
+            rel1.to: "base";
+            rel2.to: "base";
             color: 0 0 0 0;
          }
          description { state: "pressed" 0.0;
@@ -4265,50 +4273,47 @@ group { name: "elm/button/base/hoversel_vertical_entry/default";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: HOVERSEL_ITEM_TEXT_LR_PADDING_INC 0;
+            min: BUTTON_HOVERSEL_ENTRY_TEXT_LEFT_PADDING_INC 0;
             fixed: 1 1;
             align: 0.0 0.5;
-            rel1 { to: "button_image"; relative: 0.0 0.0; }
-            rel2 { to: "button_image"; relative: 0.0 1.0; }
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 { to: "text_left_padding"; relative: 1.0 0.0; }
+            rel2 { to: "text_right_padding"; relative: 0.0 1.0; }
+            text.style: "button_hoversel_entry";
+            text.min: 1 0;
+            text.ellipsis: -1;
+         }
+         description { state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            text.style: "button_hoversel_entry_press";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text.style: "button_hoversel_entry_dim";
          }
       }
       part { name: "text_right_padding";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: HOVERSEL_ITEM_TEXT_LR_PADDING_INC 0;
+            min: BUTTON_HOVERSEL_ENTRY_TEXT_RIGHT_PADDING_INC 0;
             fixed: 1 1;
             align: 1.0 0.5;
-            rel1 { to: "button_image"; relative: 1.0 0.0; }
-            rel2 { to: "button_image"; relative: 1.0 1.0; }
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
          }
-      }
-      part { name: "elm.text";
-         type: TEXT;
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.5 0.5;
-            rel1 { to_x: "text_left_padding"; to_y: "button_image"; relative: 1.0 0.0; }
-            rel2 { to_x: "text_right_padding"; to_y: "button_image"; relative: 0.0 1.0; }
-            text {
-               font: "Tizen:style=Regular";
-               size: "26";
-               align: 0.0 0.5;
-               min: 1 1;
-            }
-            color: 0 0 0 255;
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            color: 0 0 0 115;
-         }
-      }
-      part { name: "over2";
+     }
+     part { name: "event";
          type: RECT;
          mouse_events: 1;
-         repeat_events: 1;
-         ignore_flags: ON_HOLD;
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
@@ -4319,32 +4324,35 @@ group { name: "elm/button/base/hoversel_vertical_entry/default";
       }
    }
    programs {
-      program { name: "button_click";
+      program { name: "press";
          signal: "mouse,down,1";
-         source: "over2";
+         source: "event";
          script {
             if (get_int(disabled) == 0) {
                emit("elm,action,press", "");
-               run_program(PROGRAM:"button_click_anim");
+               set_state(PART:"button_image", "pressed", 0.0);
             }
          }
       }
-      program { name: "button_click_anim";
-         action: STATE_SET "pressed" 0.0;
-         target: "button_image";
-      }
-      program { name: "button_unclick_anim";
+      program { name: "unpress";
          signal: "mouse,up,1";
-         source: "over2";
+         source: "event";
          script {
             if (get_int(disabled) == 0) {
+               emit("elm,action,unpress", "");
                set_state(PART:"button_image", "default", 0.0);
-               run_program(PROGRAM:"button_unclick");
             }
          }
       }
-      program { name: "button_unclick";
-         action: SIGNAL_EMIT "elm,action,click" "";
+      program { name: "click";
+         signal: "mouse,clicked,1";
+         source: "event";
+         script {
+            if (get_int(disabled) == 0) {
+               run_program(PROGRAM:"touch_sound");
+               emit("elm,action,click", "");
+            }
+         }
       }
       program { name: "disable";
          signal: "elm,state,disabled";
@@ -4352,7 +4360,7 @@ group { name: "elm/button/base/hoversel_vertical_entry/default";
          script {
             set_int(disabled, 1);
             set_state(PART:"button_image", "disabled", 0.0);
-            set_state(PART:"over2", "disabled", 0.0);
+            set_state(PART:"event", "disabled", 0.0);
             set_state(PART:"elm.text", "disabled", 0.0);
          }
       }
@@ -4362,17 +4370,8 @@ group { name: "elm/button/base/hoversel_vertical_entry/default";
          script {
             set_int(disabled, 0);
             set_state(PART:"button_image", "default", 0.0);
-            set_state(PART:"over2", "default", 0.0);
+            set_state(PART:"event", "default", 0.0);
             set_state(PART:"elm.text", "default", 0.0);
-         }
-      }
-      program { name: "touch_snd";
-         signal: "mouse,clicked,1";
-         source: "over2";
-         script {
-            if (get_int(disabled) == 0) {
-               run_program(PROGRAM:"touch_sound");
-            }
          }
       }
       program { name: "touch_sound";
@@ -4404,7 +4403,7 @@ group { name: "elm/button/base/hoversel_vertical/default";
          scale: 1;
          type: SPACER;
          description { state: "default" 0.0;
-            min: BUTTON_HOVERSEL_MIN_SIZE_INC;
+            min: 0 BUTTON_HOVERSEL_MIN_HEIGHT_INC;
          }
       }
       part { name: "button_image";
@@ -4412,6 +4411,8 @@ group { name: "elm/button/base/hoversel_vertical/default";
          mouse_events: 1;
          scale: 1;
          description { state: "default" 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
             color: 255 255 255 255;
          }
          description { state: "pressed" 0.0;
@@ -4427,35 +4428,34 @@ group { name: "elm/button/base/hoversel_vertical/default";
          scale: 1;
          description { state: "default" 0.0;
             min: BUTTON_HOVERSEL_TEXT_LEFT_PADDING_INC 0;
-            fixed: 1 0;
+            fixed: 1 1;
             align: 0.0 0.5;
-            rel1 { to: "button_image"; relative: 0.0 0.0; }
-            rel2 { to: "button_image"; relative: 0.0 1.0; }
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
          }
       }
       part { name: "elm.text";
-         type: TEXT;
+         type: TEXTBLOCK;
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
             rel1 { to: "text_left_padding"; relative: 1.0 0.0; }
             rel2 { to: "text_right_padding"; relative: 0.0 1.0; }
-            color: 61 185 204 255;
-            text {
-               font: "Tizen:style=Regular";
-               size: "40";
-               min: 1 0;
-               ellipsis: -1;
-               align: -1.0 0.5;
-            }
+            text.style: "button_hoversel";
+            text.min: 1 0;
+            text.ellipsis: -1;
          }
          description { state: "pressed" 0.0;
             inherit: "default" 0.0;
-            color: 61 185 204 255;
+            text.style: "button_hoversel_press";
+            text.min: 1 0;
+            text.ellipsis: -1;
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
-            color: 61 185 204 163;
+            text.style: "button_hoversel_dim";
+            text.min: 1 0;
+            text.ellipsis: -1;
          }
       }
       part { name: "underline";
@@ -4464,10 +4464,10 @@ group { name: "elm/button/base/hoversel_vertical/default";
          mouse_events: 0;
          description { state: "default" 0.0;
             min: 0 BUTTON_HOVERSEL_UNDERLINE_HEIGHT_INC;
-            fixed: 0 1;
+            fixed: 1 1;
             align: 0.5 1.0;
-            rel1 { to: "button_image"; relative: 0.0 1.0; }
-            rel2 { to: "button_image"; relative: 1.0 1.0; }
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 1.0;
             color: 61 185 204 255;
          }
       }
@@ -4475,8 +4475,8 @@ group { name: "elm/button/base/hoversel_vertical/default";
          type: SPACER;
          scale: 1;
          description { state: "default";
-            fixed: 0 1;
             align: 0.5 1.0;
+            fixed: 1 1;
             min: 0 BUTTON_HOVERSEL_UNDERLINE_PADDING_INC;
             rel1 { to: "underline"; relative: 0.0 0.0; }
             rel2 { to: "underline"; relative: 1.0 0.0; }
@@ -4489,8 +4489,8 @@ group { name: "elm/button/base/hoversel_vertical/default";
             min: BUTTON_HOVERSEL_ARROW_ICON_SIZE_INC;
             fixed: 1 1;
             align: 1.0 1.0;
-            rel1 { to_x: "button_image"; to_y: "underline_padding"; relative: 1.0 0.0; }
-            rel1 { to_x: "button_image"; to_y: "underline_padding"; relative: 1.0 0.0; }
+            rel1 { to_y: "underline_padding"; relative: 1.0 0.0; }
+            rel2 { to_y: "underline_padding"; relative: 1.0 0.0; }
             image.normal: "core_dropdown_label_icon_arrow";
             color: 61 185 204 255;
          }
@@ -4500,16 +4500,15 @@ group { name: "elm/button/base/hoversel_vertical/default";
          scale: 1;
          description { state: "default" 0.0;
             min: BUTTON_HOVERSEL_TEXT_RIGHT_PADDING_INC 0;
-            fixed: 1 0;
+            fixed: 1 1;
             align: 1.0 0.5;
-            rel1 { to_x: "arrow"; to_y: "button_image"; relative: 0.0 0.0; }
-            rel2 { to_x: "arrow"; to_y: "button_image"; relative: 0.0 1.0; }
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
          }
-      }
-     part { name: "over2";
+     }
+     part { name: "event";
          type: RECT;
          mouse_events: 1;
-         repeat_events: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
@@ -4520,40 +4519,35 @@ group { name: "elm/button/base/hoversel_vertical/default";
       }
    }
    programs {
-      program { name: "button_click";
+      program { name: "press";
          signal: "mouse,down,1";
-         source: "over2";
+         source: "event";
          script {
             if (get_int(disabled) == 0) {
                emit("elm,action,press", "");
-               run_program(PROGRAM:"button_click_anim");
+               set_state(PART:"button_image", "pressed", 0.0);
             }
          }
       }
-      program { name: "button_click_anim";
-         action: STATE_SET "pressed" 0.0;
-         target: "button_image";
-      }
-      program { name: "button_unclick_anim";
+      program { name: "unpress";
          signal: "mouse,up,1";
-         source: "over2";
+         source: "event";
          script {
             if (get_int(disabled) == 0) {
+               emit("elm,action,unpress", "");
                set_state(PART:"button_image", "default", 0.0);
             }
          }
       }
-      program { name: "button_clicked_prog";
+      program { name: "click";
          signal: "mouse,clicked,1";
-         source: "over2";
+         source: "event";
          script {
             if (get_int(disabled) == 0) {
-               run_program(PROGRAM:"button_clicked");
+               run_program(PROGRAM:"touch_sound");
+               emit("elm,action,click", "");
             }
          }
-      }
-      program { name: "button_clicked";
-         action: SIGNAL_EMIT "elm,action,click" "";
       }
       program { name: "disable";
          signal: "elm,state,disabled";
@@ -4561,7 +4555,7 @@ group { name: "elm/button/base/hoversel_vertical/default";
          script {
             set_int(disabled, 1);
             set_state(PART:"button_image", "disabled", 0.0);
-            set_state(PART:"over2", "disabled", 0.0);
+            set_state(PART:"event", "disabled", 0.0);
             set_state(PART:"elm.text", "disabled", 0.0);
          }
       }
@@ -4571,17 +4565,8 @@ group { name: "elm/button/base/hoversel_vertical/default";
          script {
             set_int(disabled, 0);
             set_state(PART:"button_image", "default", 0.0);
-            set_state(PART:"over2", "default", 0.0);
+            set_state(PART:"event", "default", 0.0);
             set_state(PART:"elm.text", "default", 0.0);
-         }
-      }
-      program { name: "touch_snd";
-         signal: "mouse,clicked,1";
-         source: "over2";
-         script {
-            if (get_int(disabled) == 0) {
-               run_program(PROGRAM:"touch_sound");
-            }
          }
       }
       program { name: "touch_sound";
