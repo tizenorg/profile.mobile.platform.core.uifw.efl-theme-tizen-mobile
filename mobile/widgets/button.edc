@@ -423,6 +423,7 @@
          public mouse_down = 0;
          public multi_down = 0;
          public disabled = 0;
+         public animate = 0;
       }
       parts {
          part { name: "base";
@@ -591,7 +592,6 @@
          }
          part { name: "event";
             type: RECT;
-            ignore_flags: ON_HOLD;
             description { state: "default" 0.0;
                rel1.to: "tizen_vg_shape";
                rel2.to: "elm.text";
@@ -600,38 +600,48 @@
          }
       }
       programs {
-         program { name: "clicked_effect";
+         program { name: "pressed_effect";
             action: STATE_SET "ready" 0.0;
             target: "tizen_vg_shape2";
             target: "tizen_vg_shape_clipper2";
-            after: "clicked_effect2";
+            after: "pressed_effect2";
          }
-         program { name: "clicked_effect2";
-            script {
-               run_program(PROGRAM:"clicked_effect3");
-               run_program(PROGRAM:"clicked_effect4");
-            }
-         }
-         program { name: "clicked_effect3";
+         program { name: "pressed_effect2";
             action: STATE_SET "pressed" 0.0;
             target: "tizen_vg_shape2";
             target: "elm.text";
             target: "clipper";
-            transition: DECELERATE 0.3;
-         }
-         program { name: "clicked_effect4";
-            action: STATE_SET "pressed" 0.0;
             target: "tizen_vg_shape_clipper2";
-            transition: DECELERATE 0.225;
-            after: "clicked_effect5";
+            transition: GLIDE_EASE_OUT(0.3);
+            after: "pressed_effect3";
          }
-         program { name: "clicked_effect5";
+         program { name: "pressed_effect3";
+            script {
+               set_int(animate, 0);
+               if (get_int(mouse_down) == 0) {
+                  emit("elm,action,unpress", "");
+                  run_program(PROGRAM:"unpressed_effect");
+               }
+            }
+         }
+         program { name: "unpressed_effect";
+            script {
+               run_program(PROGRAM:"unpressed_effect2");
+               run_program(PROGRAM:"unpressed_effect3");
+            }
+         }
+         program { name: "unpressed_effect2";
             action: STATE_SET "ready" 0.0;
             target: "tizen_vg_shape_clipper2";
-            transition: LINEAR 0.45;
-            after: "clicked_effect6";
+            transition: GLIDE_EASE_OUT(0.45);
          }
-         program { name: "clicked_effect6";
+         program { name: "unpressed_effect3";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text";
+            transition: GLIDE_EASE_OUT(0.45);
+            after: "unpressed_effect4";
+         }
+         program { name: "unpressed_effect4";
             action: STATE_SET "default" 0.0;
             target: "tizen_vg_shape2";
             target: "tizen_vg_shape_clipper2";
@@ -644,9 +654,10 @@
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) {
                   set_int(mouse_down, 1);
+                  set_int(animate, 1);
                   if (get_int(disabled) == 0) {
                      emit("elm,action,press", "");
-                     run_program(PROGRAM:"clicked_effect");
+                     run_program(PROGRAM:"pressed_effect");
                   }
                }
             }
@@ -657,8 +668,11 @@
             script {
                if (get_int(mouse_down) == 1) {
                   set_int(mouse_down, 0);
-                  if (get_int(disabled) == 0) {
-                     emit("elm,action,unpress", "");
+                  if (get_int(animate) == 0) {
+                     if (get_int(disabled) == 0) {
+                        emit("elm,action,unpress", "");
+                        run_program(PROGRAM:"unpressed_effect");
+                     }
                   }
                }
             }
