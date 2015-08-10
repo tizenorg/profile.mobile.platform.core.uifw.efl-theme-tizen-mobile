@@ -295,12 +295,31 @@ group { name: "elm/genlist/item/type1/default";
             text.style: "list_text_end_dim";
          }
       }
+      rect { "elm.bottomline"; scale;
+         desc { "default";
+            min: 0 LIST_BOTTOMLINE_HEIGHT;
+            max: -1  LIST_BOTTOMLINE_HEIGHT;
+            align: 0.5 0.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            color: 230 230 230 255;
+         }
+         desc { "hidden"; inherit: "default";
+            visible: 0;
+         }
+      }
    }
    LIST_PROGRAMS( target: "elm.text"; \
                   target: "elm.text.end"; \
                   target: "elm.text.sub"; \
                   target: "elm.text.sub.end"; )
    programs {
+      program {
+         signal: "elm,state,elm.swallow.bg,visible";
+         source: "elm";
+         action: STATE_SET "hidden" 0.0;
+         target: "elm.bottomline";
+      }
       program {
          signal: "elm,state,elm.swallow.icon,visible";
          source: "elm";
@@ -374,6 +393,7 @@ group { name: "elm/genlist/item/type1/default";
             set_state(PART:"elm.padding.main.icon.text", "default", 0.0);
             set_state(PART:"elm.padding.main.text.end", "default", 0.0);
             set_state(PART:"elm.padding.sub.text.end", "default", 0.0);
+            set_state(PART:"elm.bottomline", "default", 0.0);
             set_int(sub_end_text_visible, 0);
          }
       }
@@ -662,10 +682,29 @@ group { name: "elm/genlist/item/multiline/default";
             text.style: "list_text_multiline_dim";
          }
       }
+      rect { "elm.bottomline"; scale;
+         desc { "default";
+            min: 0 LIST_BOTTOMLINE_HEIGHT;
+            max: -1  LIST_BOTTOMLINE_HEIGHT;
+            align: 0.5 0.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            color: 230 230 230 255;
+         }
+         desc { "hidden"; inherit: "default";
+            visible: 0;
+         }
+      }
    }
    LIST_PROGRAMS( target: "elm.text"; \
                   target: "elm.text.multiline"; )
    programs {
+      program {
+         signal: "elm,state,elm.swallow.bg,visible";
+         source: "elm";
+         action: STATE_SET "hidden" 0.0;
+         target: "elm.bottomline";
+      }
       program {
          signal: "elm,state,elm.swallow.icon,visible";
          source: "elm";
@@ -730,6 +769,7 @@ group { name: "elm/genlist/item/multiline/default";
             set_state(PART:"elm.padding.center.right", "default", 0.0);
             set_state(PART:"elm.padding.main.icon.text", "default", 0.0);
             set_state(PART:"elm.padding.main.text.end", "default", 0.0);
+            set_state(PART:"elm.bottomline", "default", 0.0);
             set_int(main_text_visible, 0);
             set_int(multiline_text_visible, 0);
          }
@@ -770,8 +810,35 @@ group { name: "elm/genlist/item/full/default";
          desc { "default";
          }
       }
+      rect { "elm.bottomline"; scale;
+         desc { "default";
+            min: 0 LIST_BOTTOMLINE_HEIGHT;
+            max: -1  LIST_BOTTOMLINE_HEIGHT;
+            align: 0.5 0.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
+            color: 230 230 230 255;
+         }
+         desc { "hidden"; inherit: "default";
+            visible: 0;
+         }
+      }
    }
    LIST_PROGRAMS( ; )
+   programs {
+      program {
+         signal: "elm,state,elm.swallow.bg,visible";
+         source: "elm";
+         action: STATE_SET "hidden" 0.0;
+         target: "elm.bottomline";
+      }
+      program { name: "restore_default";
+         signal: "elm,state,default";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.bottomline";
+      }
+   }
 }
 
 group { name: "elm/genlist/item/group_index/default";
@@ -908,10 +975,19 @@ group { name: "elm/genlist/item/group_index/default";
             rel2.relative: 1.0 0.0;
             color: 61 185 204 38;
          }
+         desc { "banded_off"; inherit: "default";
+            color: 230 230 230 255;
+         }
       }
    }
    LIST_PROGRAMS( target: "elm.text"; )
    programs {
+      program {
+         signal: "elm,state,elm.swallow.bg,visible";
+         source: "elm";
+         action: STATE_SET "banded_off" 0.0;
+         target: "elm.topline";
+      }
       program { name: "end_icon_visible";
          signal: "elm,state,elm.swallow.end,visible";
          source: "elm";
@@ -929,6 +1005,7 @@ group { name: "elm/genlist/item/group_index/default";
          source: "elm";
          action: STATE_SET "default" 0.0;
          target: "elm.padding.text.end";
+         target: "elm.topline";
       }
    }
 }
@@ -1032,6 +1109,7 @@ group { name: "elm/genlist/item/group_index/expandable/default";
          source: "elm";
          action: STATE_SET "default" 0.0;
          target: "elm.padding.text.end";
+         target: "elm.topline";
          target: "elm.expand.icon";
          target: "elm.expand.clipper";
       }
