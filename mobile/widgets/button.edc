@@ -265,8 +265,14 @@
          }
          program { name: "unpressed_effect";
             script {
-               run_program(PROGRAM:"unpressed_effect2");
-               run_program(PROGRAM:"unpressed_effect3");
+               if (get_int(disabled) == 0) {
+                 run_program(PROGRAM:"unpressed_effect2");
+                 run_program(PROGRAM:"unpressed_effect3");
+               } else {
+                 run_program(PROGRAM:"disabled_effect");
+                 run_program(PROGRAM:"disabled_effect2");
+                 set_state(PART:"elm.text", "disabled", 0.0);
+               }
             }
          }
          program { name: "unpressed_effect2";
@@ -287,17 +293,32 @@
             target: "elm.text";
             target: "clipper";
          }
+         program { name: "disabled_effect";
+            action: STATE_SET "ready" 0.0;
+            target: "tizen_vg_shape_clipper2";
+            transition: GLIDE_EASE_OUT(0.45);
+         }
+         program { name: "disabled_effect2";
+            action: STATE_SET "disabled" 0.0;
+            target: "clipper";
+            target: "tizen_vg_shape_clipper";
+            transition: GLIDE_EASE_OUT(0.45);
+            after: "disabled_effect3";
+         }
+         program { name: "disabled_effect3";
+            action: STATE_SET "default" 0.0;
+            target: "tizen_vg_shape2";
+            target: "tizen_vg_shape_clipper2";
+         }
          program { name: "pressed";
             signal: "mouse,down,1*";
             source: "event";
             script {
-               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
-                  if (get_int(disabled) == 0) {
-                     emit("elm,action,press", "");
-                     run_program(PROGRAM:"pressed_effect");
-                  }
+                  emit("elm,action,press", "");
+                  run_program(PROGRAM:"pressed_effect");
                }
             }
          }
@@ -386,6 +407,7 @@
             source: "elm";
             script {
               set_int(disabled, 1);
+              if (get_int(animate) == 1) return;
               set_state(PART:"clipper", "disabled", 0.0);
               set_state(PART:"tizen_vg_shape_clipper", "disabled", 0.0);
               set_state(PART:"elm.text", "disabled", 0.0);
@@ -553,7 +575,6 @@
             type: TEXTBLOCK;
             mouse_events: 0;
             scale: 1;
-            clip_to: "clipper";
             description { state: "default" 0.0;
                rel1 {
                   relative: 1.0 0.0;
@@ -626,8 +647,14 @@
          }
          program { name: "unpressed_effect";
             script {
-               run_program(PROGRAM:"unpressed_effect2");
-               run_program(PROGRAM:"unpressed_effect3");
+               if (get_int(disabled) == 0) {
+                 run_program(PROGRAM:"unpressed_effect2");
+                 run_program(PROGRAM:"unpressed_effect3");
+               } else {
+                 run_program(PROGRAM:"disabled_effect");
+                 run_program(PROGRAM:"disabled_effect2");
+                 set_state(PART:"elm.text", "disabled", 0.0);
+               }
             }
          }
          program { name: "unpressed_effect2";
@@ -648,17 +675,32 @@
             target: "elm.text";
             target: "clipper";
          }
+         program { name: "disabled_effect";
+            action: STATE_SET "ready" 0.0;
+            target: "tizen_vg_shape_clipper2";
+            transition: GLIDE_EASE_OUT(0.45);
+         }
+         program { name: "disabled_effect2";
+            action: STATE_SET "disabled" 0.0;
+            target: "clipper";
+            target: "tizen_vg_shape_clipper";
+            transition: GLIDE_EASE_OUT(0.45);
+            after: "disabled_effect3";
+         }
+         program { name: "disabled_effect3";
+            action: STATE_SET "default" 0.0;
+            target: "tizen_vg_shape2";
+            target: "tizen_vg_shape_clipper2";
+         }
          program { name: "pressed";
             signal: "mouse,down,1*";
             source: "event";
             script {
-               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
-                  if (get_int(disabled) == 0) {
-                     emit("elm,action,press", "");
-                     run_program(PROGRAM:"pressed_effect");
-                  }
+                  emit("elm,action,press", "");
+                  run_program(PROGRAM:"pressed_effect");
                }
             }
          }
@@ -713,6 +755,7 @@
             source: "elm";
             script {
               set_int(disabled, 1);
+              if (get_int(animate) == 1) return;
               set_state(PART:"clipper", "disabled", 0.0);
               set_state(PART:"tizen_vg_shape_clipper", "disabled", 0.0);
               set_state(PART:"elm.text", "disabled", 0.0);
@@ -877,7 +920,6 @@
             type: TEXTBLOCK;
             mouse_events: 0;
             scale: 1;
-            clip_to: "clipper";
             description { state: "default" 0.0;
                rel1 {
                   relative: 1.0 1.0;
@@ -2299,32 +2341,46 @@ group { name: "elm/button/base/contacts";
          }
          program { name: "unpressed_effect";
             script {
-               run_program(PROGRAM:"unpressed_effect2");
+               if (get_int(disabled) == 0) {
+                 run_program(PROGRAM:"unpressed_effect2");
+               } else {
+                 run_program(PROGRAM:"disabled_effect");
+                 set_state(PART:"elm.text", "disabled", 0.0);
+               }
             }
          }
          program { name: "unpressed_effect2";
             action: STATE_SET "ready" 0.0;
             target: "tizen_vg_shape_clipper";
             transition: GLIDE_EASE_OUT(0.45);
-            after: "unpressed_effect4";
+            after: "unpressed_effect3";
          }
-         program { name: "unpressed_effect4";
+         program { name: "unpressed_effect3";
             action: STATE_SET "default" 0.0;
             target: "tizen_vg_shape";
             target: "tizen_vg_shape_clipper";
             target: "elm.text";
          }
+         program { name: "disabled_effect";
+            action: STATE_SET "ready" 0.0;
+            target: "tizen_vg_shape_clipper";
+            transition: GLIDE_EASE_OUT(0.45);
+            after: "disabled_effect2";
+         }
+         program { name: "disabled_effect2";
+            action: STATE_SET "default" 0.0;
+            target: "tizen_vg_shape";
+            target: "tizen_vg_shape_clipper";
+         }
          program { name: "pressed";
             signal: "mouse,down,1*";
             source: "over2";
             script {
-               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
-                  if (get_int(disabled) == 0) {
-                     emit("elm,action,press", "");
-                     run_program(PROGRAM:"pressed_effect");
-                  }
+                  emit("elm,action,press", "");
+                  run_program(PROGRAM:"pressed_effect");
                }
             }
          }
@@ -2359,16 +2415,21 @@ group { name: "elm/button/base/contacts";
          program { name: "enable";
             signal: "elm,state,enabled";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "elm.text";
-            target: "disabler";
+            script {
+              set_int(disabled, 0);
+              set_state(PART:"disabler", "default", 0.0);
+              set_state(PART:"elm.text", "default", 0.0);
+            }
          }
          program { name: "disable";
             signal: "elm,state,disabled";
             source: "elm";
-            action: STATE_SET "disabled" 0.0;
-            target: "elm.text";
-            target: "disabler";
+            script {
+              set_int(disabled, 1);
+              if (get_int(animate) == 1) return;
+              set_state(PART:"disabler", "disabled", 0.0);
+              set_state(PART:"elm.text", "disabled", 0.0);
+            }
          }
          program {
             name: "multi_down";
