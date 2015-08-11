@@ -338,7 +338,7 @@
             }
          }
          program { name: "text_status_show";
-            signal: "elm,state,status,visible";
+            signal: "elm,state,units,visible";
             source: "elm";
             script {
                set_state(PART:"elm.text.bottom.right", "default", 0.0);
@@ -346,7 +346,7 @@
             }
          }
          program { name: "text_status_text_hide";
-            signal: "elm,state,status,hidden";
+            signal: "elm,state,units,hidden";
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "elm.text.status";
@@ -381,6 +381,8 @@
             source: "elm";
             action: STATE_SET "state_begin" 0.0;
             target: "elm.progress.progressbar";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text.status";
          }
          program { name: "state_fraction";
             signal: "elm,state,fraction";
@@ -391,6 +393,7 @@
             target: "start_pulse";
             action: STATE_SET "default" 0.0;
             target: "elm.progress.progressbar";
+            target: "elm.text.status";
          }
          program { name: "set_invert_on";
             signal: "elm,state,inverted,on";
@@ -650,7 +653,7 @@
             }
          }
          program { name: "text_status_show";
-            signal: "elm,state,status,visible";
+            signal: "elm,state,units,visible";
             source: "elm";
             script {
                set_state(PART:"elm.text.bottom.right", "default", 0.0);
@@ -658,7 +661,7 @@
             }
          }
          program { name: "text_status_text_hide";
-            signal: "elm,state,status,hidden";
+            signal: "elm,state,units,hidden";
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "elm.text.status";
@@ -680,9 +683,17 @@
             }
             after: "slide_to_end";
          }
+         program { name: "state_pulse";
+            signal: "elm,state,pulse";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text.status";
+         }
          program { name: "start_pulse";
             signal: "elm,state,pulse,start";
             source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text.status";
             after: "slide_to_end";
          }
          program { name: "stop_pulse";
@@ -693,6 +704,17 @@
             target: "slide_to_end";
             target: "start_pulse";
             after: "init_pulse";
+         }
+         program { name: "state_fraction";
+            signal: "elm,state,fraction";
+            source: "elm";
+            action: ACTION_STOP;
+            target: "slide_to_begin";
+            target: "slide_to_end";
+            target: "start_pulse";
+            action: STATE_SET "default" 0.0;
+            target: "elm.progress.progressbar";
+            target: "elm.text.status";
          }
          program { name: "init_pulse";
             action: STATE_SET "default" 0.0;
