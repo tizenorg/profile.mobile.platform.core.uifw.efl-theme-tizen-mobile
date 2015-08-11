@@ -52,13 +52,14 @@
             type: TEXT;
             scale: 1;
             description { state: "default" 0.0;
-               rel1.relative: 0.0 0.0;
+               fixed: 1 1;
+               rel1.relative: 1.0 0.0;
                rel2.relative: 1.0 0.0;
-               rel1.to: "base";
+               rel1.to: "top_padding";
                rel2.to: "top_padding";
                text {
                   min: 0 0;
-                  align: 1.0 1.0;
+                  align: 0.5 0.5;
                   font: "Tizen:style=Regular"; size: "32";
                   text_class: "tizen";
                }
@@ -68,7 +69,6 @@
             }
             description { state: "show" 0.0;
                inherit: "default" 0.0;
-               min: 0 PROGRESSBAR_DEFAULT_TEXT_HEIGHT_INC;
                text.min: 1 1;
                visible: 1;
             }
@@ -78,13 +78,12 @@
             scale: 1;
             description { state: "default" 0.0;
                min: 0 PROGRESSBAR_PADDING_HEIGHT_INC;
-               max: -1 PROGRESSBAR_PADDING_HEIGHT_INC;
                fixed: 0 1;
-               rel1.to: "background";
-               rel2.to: "background";
-               rel1.relative: 0.0 0.0;
-               rel2.relative: 1.0 0.0;
-               align: 0.5 1.0;
+               rel1.to_y: "background";
+               rel2.to_y: "background";
+               rel1.relative: 0 0;
+               rel2.relative: 1 0;
+               align: 0.5 1;
             }
          }
          part { name: "background";
@@ -93,8 +92,10 @@
             scale: 1;
             description { state: "default" 0.0;
                min: 0 PROGRESSBAR_DEFAULT_HEIGHT_INC;
-               max: -1 PROGRESSBAR_DEFAULT_HEIGHT_INC;
                fixed: 0 1;
+               rel1.relative: 0.0 0.5;
+               rel2.relative: 1.0 0.5;
+               align: 0.5 0.5;
                color: 145 145 145 179;
             }
          }
@@ -219,26 +220,26 @@
             scale: 1;
             description { state: "default" 0.0;
                min: 0 PROGRESSBAR_PADDING_HEIGHT_INC;
-               max: -1 PROGRESSBAR_PADDING_HEIGHT_INC;
                fixed: 0 1;
-               rel1.to: "background";
-               rel2.to: "background";
-               rel1.relative: 0.0 1.0;
-               rel2.relative: 1.0 1.0;
-               align: 0.5 0.0;
+               rel1.to_y: "background";
+               rel2.to_y: "background";
+               rel1.relative: 0 1;
+               rel2.relative: 1 1;
+               align: 0.5 0;
             }
          }
          part { name: "elm.text.bottom.left";
             type: TEXT;
             scale: 1;
             description { state: "default" 0.0;
-               rel1.to: "bottom_padding";
-               rel2.to: "base";
+               fixed: 1 1;
+               rel1.to_y: "bottom_padding";
+               rel2.to_y: "bottom_padding";
                rel1.relative: 0.0 1.0;
-               rel2.relative: 1.0 1.0;
+               rel2.relative: 0.0 1.0;
                text {
                   min: 0 0;
-                  align: 0.0 0.0;
+                  align: 0.5 0.5;
                   font: "Tizen:style=Regular"; size: "32";
                   text_class: "tizen";
                }
@@ -250,45 +251,44 @@
                inherit: "default" 0.0;
                text.min: 1 1;
                visible: 1;
-               min: 0 PROGRESSBAR_DEFAULT_TEXT_HEIGHT_INC;
             }
          }
          part { name: "elm.text.status";
             type: TEXT;
             scale: 1;
             description { state: "default" 0.0;
-               rel1.to: "bottom_padding";
-               rel2.to: "base";
-               rel1.relative: 0.0 1.0;
+               fixed: 1 1;
+               rel1.to_y: "bottom_padding";
+               rel2.to_y: "bottom_padding";
+               rel1.relative: 1.0 1.0;
                rel2.relative: 1.0 1.0;
                text {
-                  min: 0 0;
-                  align: 1.0 0.0;
+                  min: 1 1;
+                  align: 0.5 0.5;
                   font: "Tizen:style=Regular"; size: "32";
                   text_class: "tizen";
                }
                align: 1.0 0.0;
                color: 102 102 102 255;
-               visible: 0;
             }
-            description { state: "show" 0.0;
+            description { state: "hidden" 0.0;
                inherit: "default" 0.0;
-               text.min: 1 1;
-               min: 0 PROGRESSBAR_DEFAULT_TEXT_HEIGHT_INC;
-               visible: 1;
+               text.min: 0 0;
+               visible: 0;
             }
          }
          part { name: "elm.text.bottom.right";
             type: TEXT;
             scale: 1;
             description { state: "default" 0.0;
-               rel1.to: "bottom_padding";
-               rel2.to: "base";
-               rel1.relative: 0.0 1.0;
+               fixed: 1 1;
+               rel1.to_y: "bottom_padding";
+               rel2.to_y: "bottom_padding";
+               rel1.relative: 1.0 1.0;
                rel2.relative: 1.0 1.0;
                text {
                   min: 0 0;
-                  align: 1.0 0.0;
+                  align: 0.5 0.5;
                   font: "Tizen:style=Regular"; size: "32";
                   text_class: "tizen";
                }
@@ -300,7 +300,6 @@
                inherit: "default" 0.0;
                text.min: 1 1;
                visible: 1;
-               min: 0 PROGRESSBAR_DEFAULT_TEXT_HEIGHT_INC;
             }
          }
       }
@@ -333,7 +332,7 @@
             signal: "elm,state,bottom.right,visible";
             source: "elm";
             script {
-               set_state(PART:"elm.text.status", "default", 0.0);
+               set_state(PART:"elm.text.status", "hidden", 0.0);
                set_state(PART:"elm.text.bottom.right", "show", 0.0);
             }
          }
@@ -342,13 +341,13 @@
             source: "elm";
             script {
                set_state(PART:"elm.text.bottom.right", "default", 0.0);
-               set_state(PART:"elm.text.status", "show", 0.0);
+               set_state(PART:"elm.text.status", "default", 0.0);
             }
          }
          program { name: "text_status_text_hide";
             signal: "elm,state,units,hidden";
             source: "elm";
-            action: STATE_SET "default" 0.0;
+            action: STATE_SET "hidden" 0.0;
             target: "elm.text.status";
          }
          program { name: "slide_to_end";
@@ -381,7 +380,7 @@
             source: "elm";
             action: STATE_SET "state_begin" 0.0;
             target: "elm.progress.progressbar";
-            action: STATE_SET "default" 0.0;
+            action: STATE_SET "hidden" 0.0;
             target: "elm.text.status";
          }
          program { name: "state_fraction";
@@ -468,24 +467,23 @@
             type: TEXT;
             scale: 1;
             description { state: "default" 0.0;
-               rel1.relative: 0.0 0.0;
+               fixed: 1 1;
+               rel1.relative: 1.0 0.0;
                rel2.relative: 1.0 0.0;
-               rel1.to: "base";
+               rel1.to: "top_padding";
                rel2.to: "top_padding";
                text {
                   min: 0 0;
-                  align: 1.0 1.0;
+                  align: 0.5 0.5;
                   font: "Tizen:style=Regular"; size: "32";
                   text_class: "tizen";
                }
-               max: -1 0;
                align: 1.0 1.0;
                color: 102 102 102 255;
                visible: 0;
             }
             description { state: "show" 0.0;
                inherit: "default" 0.0;
-               min: 0 PROGRESSBAR_PENDING_TEXT_HEIGHT_INC;
                text.min: 1 1;
                visible: 1;
             }
@@ -495,21 +493,22 @@
             scale: 1;
             description { state: "default" 0.0;
                min: 0 PROGRESSBAR_PADDING_HEIGHT_INC;
-               max: -1 PROGRESSBAR_PADDING_HEIGHT_INC;
                fixed: 0 1;
-               rel1.to: "background";
-               rel2.to: "background";
-               rel1.relative: 0.0 0.0;
-               rel2.relative: 1.0 0.0;
-               align: 0.5 1.0;
+               rel1.to_y: "background";
+               rel2.to_y: "background";
+               rel1.relative: 0 0;
+               rel2.relative: 1 0;
+               align: 0.5 1;
             }
          }
          part { name: "background";
             scale: 1;
             description { state: "default" 0.0;
                min: 0 PROGRESSBAR_PENDING_HEIGHT_INC;
-               max: -1 PROGRESSBAR_PENDING_HEIGHT_INC;
                fixed: 0 1;
+               rel1.relative: 0.0 0.5;
+               rel2.relative: 1.0 0.5;
+               align: 0.5 0.5;
                image.normal: "core_progress_bar.#";
                color: 178 178 178 255;
             }
@@ -535,91 +534,86 @@
             scale: 1;
             description { state: "default" 0.0;
                min: 0 PROGRESSBAR_PADDING_HEIGHT_INC;
-               max: -1 PROGRESSBAR_PADDING_HEIGHT_INC;
                fixed: 0 1;
-               rel1.to: "background";
-               rel2.to: "background";
-               rel1.relative: 0.0 1.0;
-               rel2.relative: 1.0 1.0;
-               align: 0.5 0.0;
+               rel1.to_y: "background";
+               rel2.to_y: "background";
+               rel1.relative: 0 1;
+               rel2.relative: 1 1;
+               align: 0.5 0;
             }
          }
          part { name: "elm.text.bottom.left";
             type: TEXT;
             scale: 1;
             description { state: "default" 0.0;
-               rel1.to: "bottom_padding";
-               rel2.to: "base";
+               fixed: 1 1;
+               rel1.to_y: "bottom_padding";
+               rel2.to_y: "bottom_padding";
                rel1.relative: 0.0 1.0;
-               rel2.relative: 1.0 1.0;
+               rel2.relative: 0.0 1.0;
                text {
                   min: 0 0;
-                  align: 0.0 0.0;
+                  align: 0.5 0.5;
                   font: "Tizen:style=Regular"; size: "32";
                   text_class: "tizen";
                }
                align: 0.0 0.0;
                color: 102 102 102 255;
-               max: -1 0;
                visible: 0;
             }
             description { state: "show" 0.0;
                inherit: "default" 0.0;
                text.min: 1 1;
                visible: 1;
-               min: 0 PROGRESSBAR_PENDING_TEXT_HEIGHT_INC;
             }
          }
          part { name: "elm.text.status";
             type: TEXT;
             scale: 1;
             description { state: "default" 0.0;
-               rel1.to: "bottom_padding";
-               rel2.to: "base";
-               rel1.relative: 0.0 1.0;
+               fixed: 1 1;
+               rel1.to_y: "bottom_padding";
+               rel2.to_y: "bottom_padding";
+               rel1.relative: 1.0 1.0;
                rel2.relative: 1.0 1.0;
                text {
-                  min: 0 0;
-                  align: 1.0 0.0;
+                  min: 1 1;
+                  align: 0.5 0.5;
                   font: "Tizen:style=Regular"; size: "32";
                   text_class: "tizen";
                }
                align: 1.0 0.0;
                color: 102 102 102 255;
-               max: -1 0;
-               visible: 0;
             }
-            description { state: "show" 0.0;
+            description { state: "hidden" 0.0;
                inherit: "default" 0.0;
-               text.min: 1 1;
-               min: 0 PROGRESSBAR_PENDING_TEXT_HEIGHT_INC;
-               visible: 1;
+               text.min: 0 0;
+               visible: 0;
             }
          }
          part { name: "elm.text.bottom.right";
             type: TEXT;
             scale: 1;
             description { state: "default" 0.0;
-               rel1.to: "bottom_padding";
-               rel2.to: "base";
-               rel1.relative: 0.0 1.0;
+               fixed: 1 1;
+               rel1.to_y: "bottom_padding";
+               rel2.to_y: "bottom_padding";
+               rel1.relative: 1.0 1.0;
                rel2.relative: 1.0 1.0;
                text {
                   min: 0 0;
-                  align: 1.0 0.0;
+                  align: 0.5 0.5;
                   font: "Tizen:style=Regular"; size: "32";
                   text_class: "tizen";
                }
                align: 1.0 0.0;
                color: 102 102 102 255;
-               max: -1 0;
                visible: 0;
             }
             description { state: "show" 0.0;
                inherit: "default" 0.0;
                text.min: 1 1;
                visible: 1;
-               min: 0 PROGRESSBAR_PENDING_TEXT_HEIGHT_INC;
             }
          }
       }
@@ -652,7 +646,7 @@
             signal: "elm,state,bottom.right,visible";
             source: "elm";
             script {
-               set_state(PART:"elm.text.status", "default", 0.0);
+               set_state(PART:"elm.text.status", "hidden", 0.0);
                set_state(PART:"elm.text.bottom.right", "show", 0.0);
             }
          }
@@ -661,13 +655,13 @@
             source: "elm";
             script {
                set_state(PART:"elm.text.bottom.right", "default", 0.0);
-               set_state(PART:"elm.text.status", "show", 0.0);
+               set_state(PART:"elm.text.status", "default", 0.0);
             }
          }
          program { name: "text_status_text_hide";
             signal: "elm,state,units,hidden";
             source: "elm";
-            action: STATE_SET "default" 0.0;
+            action: STATE_SET "hidden" 0.0;
             target: "elm.text.status";
          }
          program { name: "slide_to_end";
@@ -690,13 +684,13 @@
          program { name: "state_pulse";
             signal: "elm,state,pulse";
             source: "elm";
-            action: STATE_SET "default" 0.0;
+            action: STATE_SET "hidden" 0.0;
             target: "elm.text.status";
          }
          program { name: "start_pulse";
             signal: "elm,state,pulse,start";
             source: "elm";
-            action: STATE_SET "default" 0.0;
+            action: STATE_SET "hidden" 0.0;
             target: "elm.text.status";
             after: "slide_to_end";
          }
