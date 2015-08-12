@@ -101,20 +101,10 @@
             type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
-               rel1.to: "tizen_vg_shape";
-               rel2.to: "tizen_vg_shape";
                align: 0.0 0.0;
                rel2.relative: 0.0 0.0;
                min: BUTTON_PADDING_LEFT_RIGHT_INC BUTTON_PADDING_TOP_HEIGHT_INC;
                fixed: 1 1;
-            }
-            description { state: "icon_only" 0.0;
-               inherit: "default" 0.0;
-               min: 0 0;
-            }
-            description { state: "icon_text" 0.0;
-               inherit: "default" 0.0;
-               min: (BUTTON_PADDING_LEFT_RIGHT_INC + BUTTON_ICON_DEFAULT_WIDTH_INC) BUTTON_PADDING_TOP_HEIGHT_INC;
             }
          }
          part { name: "padding_right_bottom";
@@ -128,23 +118,20 @@
                min: BUTTON_PADDING_LEFT_RIGHT_INC BUTTON_PADDING_BOTTOM_HEIGHT_INC;
                fixed: 1 1;
             }
-            description { state: "icon_only" 0.0;
-               inherit: "default" 0.0;
-               min: 0 0;
-            }
          }
          part { name: "icon_rect";
             type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
-               align: 1.0 0.0;
+               align: 0.0 0.5;
                rel1 {
-                  relative: 0.0 0.0;
-                  to: "icon_text_padding";
+                  relative: 1.0 1.0;
+                  to: "padding_left_top";
                }
                rel2 {
-                  relative: 0.0 1.0;
-                  to: "icon_text_padding";
+                  relative: 1.0 0.0;
+                  to_x: "padding_left_top";
+                  to_y: "padding_right_bottom";
                }
                min: 0 BUTTON_ICON_DEFAULT_HEIGHT_INC;
                fixed: 1 1;
@@ -152,24 +139,11 @@
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
                min: BUTTON_ICON_DEFAULT_WIDTH_INC BUTTON_ICON_DEFAULT_HEIGHT_INC;
+               max: BUTTON_ICON_DEFAULT_WIDTH_INC BUTTON_ICON_DEFAULT_HEIGHT_INC;
                fixed: 1 1;
             }
             description { state: "icon_only" 0.0;
-               rel1.to: "tizen_vg_shape";
-               rel2.to: "tizen_vg_shape";
-               min: BUTTON_ICON_DEFAULT_WIDTH_INC BUTTON_ICON_DEFAULT_HEIGHT_INC;
-               max: BUTTON_ICON_DEFAULT_WIDTH_INC BUTTON_ICON_DEFAULT_HEIGHT_INC;
-               align: 0.5 0.5;
-               fixed: 1 1;
-            }
-         }
-         part { name: "elm.swallow.content";
-            type: SWALLOW;
-            scale: 1;
-            clip_to: "clipper";
-            description { state: "default" 0.0;
-               rel1.to: "icon_rect";
-               rel2.to: "icon_rect";
+               inherit: "default" 0.0;
             }
          }
          part { name: "icon_text_padding";
@@ -179,6 +153,7 @@
                align: 1.0 0.5;
                min: 0 0;
                rel1 {
+                  relative: 0.0 0.0;
                   to: "elm.text";
                }
                rel2 {
@@ -192,6 +167,49 @@
                min: BUTTON_PADDING_ICON_RIGHT_INC 0;
             }
          }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            scale: 1;
+            clip_to: "clipper";
+            description { state: "default" 0.0;
+               align: 0.0 1.0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  to: "padding_left_top";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to_x: "padding_left_top";
+                  to_y: "padding_right_bottom";
+               }
+               min: 0 BUTTON_ICON_DEFAULT_HEIGHT_INC;
+               fixed: 1 0;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to_x: "icon_text_padding";
+                  to_y: "padding_left_top";
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  to_x: "icon_text_padding";
+                  to_y: "padding_right_bottom";
+               }
+               min: BUTTON_ICON_DEFAULT_WIDTH_INC BUTTON_ICON_DEFAULT_HEIGHT_INC;
+               fixed: 1 1;
+            }
+            description { state: "icon_only" 0.0;
+               rel1.to: "tizen_vg_shape";
+               rel2.to: "tizen_vg_shape";
+               min: BUTTON_ICON_DEFAULT_WIDTH_INC BUTTON_ICON_DEFAULT_HEIGHT_INC;
+               max: BUTTON_ICON_DEFAULT_WIDTH_INC BUTTON_ICON_DEFAULT_HEIGHT_INC;
+               align: 0.5 0.5;
+               fixed: 1 1;
+            }
+         }
          part { name: "elm.text";
             type: TEXTBLOCK;
             mouse_events: 0;
@@ -199,7 +217,8 @@
             description { state: "default" 0.0;
                rel1 {
                   relative: 1.0 1.0;
-                  to: "padding_left_top";
+                  to_x: "icon_rect";
+                  to_y: "padding_left_top";
                }
                rel2 {
                   relative: 0.0 0.0;
@@ -207,6 +226,7 @@
                }
                text {
                   style: "button_main";
+                  max: 1 0;
                }
             }
             description { state: "pressed" 0.0;
@@ -360,11 +380,11 @@
                set_state(PART:"icon_text_padding", "visible", 0.0);
                if (get_int(text) == 1) {
                   set_state(PART:"icon_rect", "visible", 0.0);
-                  set_state(PART:"padding_left_top", "icon_text", 0.0);
+                  set_state(PART:"elm.swallow.content", "visible", 0.0);
                } else {
                   set_state(PART:"icon_rect", "icon_only", 0.0);
+                  set_state(PART:"elm.swallow.content", "icon_only", 0.0);
                   set_state(PART:"padding_left_top", "icon_only", 0.0);
-                  set_state(PART:"padding_right_bottom", "icon_only", 0.0);
                }
             }
          }
@@ -375,8 +395,7 @@
                set_int(content, 0);
                set_state(PART:"icon_text_padding", "default", 0.0);
                set_state(PART:"icon_rect", "default", 0.0);
-               set_state(PART:"padding_left_top", "default", 0.0);
-               set_state(PART:"padding_right_bottom", "default", 0.0);
+               set_state(PART:"elm.swallow.content", "default", 0.0);
             }
          }
          program { name: "text_show";
@@ -386,7 +405,7 @@
                set_int(text, 1);
                if (get_int(content) == 1) {
                   set_state(PART:"icon_rect", "visible", 0.0);
-                  set_state(PART:"padding_left_top", "icon_text", 0.0);
+                  set_state(PART:"elm.swallow.content", "visible", 0.0);
                }
             }
          }
@@ -397,8 +416,7 @@
                set_int(text, 0);
                if (get_int(content) == 1) {
                   set_state(PART:"icon_rect", "icon_only", 0.0);
-                  set_state(PART:"padding_left_top", "icon_only", 0.0);
-                  set_state(PART:"padding_right_bottom", "icon_only", 0.0);
+                  set_state(PART:"elm.swallow.content", "icon_only", 0.0);
                }
             }
          }
@@ -948,14 +966,6 @@
                min: BUTTON_PADDING_LEFT_RIGHT_INC BUTTON_BOTTOM_PADDING_TOP_HEIGHT_INC;
                fixed: 1 1;
             }
-            description { state: "icon_only" 0.0;
-               inherit: "default" 0.0;
-               min: 0 0;
-            }
-            description { state: "icon_text" 0.0;
-               inherit: "default" 0.0;
-               min: (BUTTON_PADDING_LEFT_RIGHT_INC + BUTTON_ICON_DEFAULT_WIDTH_INC) BUTTON_BOTTOM_PADDING_TOP_HEIGHT_INC;
-            }
          }
          part { name: "padding_right_bottom";
             type: SPACER;
@@ -968,10 +978,6 @@
                min: BUTTON_PADDING_LEFT_RIGHT_INC BUTTON_BOTTOM_PADDING_BOTTOM_HEIGHT_INC;
                fixed: 1 1;
             }
-            description { state: "icon_only" 0.0;
-               inherit: "default" 0.0;
-               min: 0 0;
-            }
          }
          part { name: "elm.text";
             type: TEXTBLOCK;
@@ -980,7 +986,8 @@
             description { state: "default" 0.0;
                rel1 {
                   relative: 1.0 1.0;
-                  to: "padding_left_top";
+                  to_x: "icon_rect";
+                  to_y: "padding_left_top";
                }
                rel2 {
                   relative: 0.0 0.0;
@@ -988,6 +995,7 @@
                }
                text {
                   style: "button_bottom";
+                  max: 1 0;
                }
             }
             description { state: "pressed" 0.0;
