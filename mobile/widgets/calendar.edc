@@ -45,8 +45,23 @@
       }\
 
 #define CAL_SPIN(_sufix, _signal_sufix, _text, _relative)\
+      part { name: "left_bt"#_sufix"_swallow";\
+         type: SWALLOW;\
+         scale: 1;\
+         description { state: "default" 0.0;\
+            fixed: 1 1;\
+            rel1.to: "left_bt"#_sufix;\
+            rel2.to: "left_bt"#_sufix;\
+         }\
+         description { state: "rtl" 0.0;\
+            inherit: "default" 0.0;\
+            rel1.to: "right_bt"#_sufix;\
+            rel2.to: "right_bt"#_sufix;\
+         }\
+      }\
       part { name: "left_bt"#_sufix; type: RECT;\
          scale: 1;\
+         repeat_events: 1;\
          description { state: "default" 0.0;\
             fixed: 1 1;\
             rel1.to: #_relative;\
@@ -57,24 +72,23 @@
             color: 0 0 0 0;\
          }\
       }\
-      part { name: "left_bt"#_sufix"_over"; repeat_events: 1;\
+      part { name: "right_bt"#_sufix"_swallow";\
+         type: SWALLOW;\
          scale: 1;\
          description { state: "default" 0.0;\
-            min: CALENDAR_DATE_PICKER_LEFT_RIGHT_ARROW_IMAGE_SIZE_INC;\
-            max: CALENDAR_DATE_PICKER_LEFT_RIGHT_ARROW_IMAGE_SIZE_INC;\
-            align: 0.5 0.5;\
-            rel1.to: "left_bt"#_sufix;\
-            rel2.to: "left_bt"#_sufix;\
-            image.normal: "core_date_picker_arrow_l.png";\
-            color: 61 184 204 255; \
+            fixed: 1 1;\
+            rel1.to: "right_bt"#_sufix;\
+            rel2.to: "right_bt"#_sufix;\
          }\
          description { state: "rtl" 0.0;\
             inherit: "default" 0.0;\
-            image.normal: "core_date_picker_arrow_r.png";\
+            rel1.to: "left_bt"#_sufix;\
+            rel2.to: "left_bt"#_sufix;\
          }\
       }\
       part { name: "right_bt"#_sufix; type: RECT;\
          scale: 1;\
+         repeat_events: 1;\
          description { state: "default" 0.0;\
             fixed: 1 1;\
             rel1.to: #_relative;\
@@ -83,21 +97,6 @@
             min: CALENDAR_DATE_PICKER_LEFT_RIGHT_ARROW_IMAGE_SIZE_INC;\
             max: CALENDAR_DATE_PICKER_LEFT_RIGHT_ARROW_IMAGE_SIZE_INC;\
             color: 0 0 0 0;\
-         }\
-      }\
-      part { name: "right_bt"#_sufix"_over"; repeat_events: 1;\
-         scale: 1;\
-         description { state: "default" 0.0;\
-            min: CALENDAR_DATE_PICKER_LEFT_RIGHT_ARROW_IMAGE_SIZE_INC;\
-            max: CALENDAR_DATE_PICKER_LEFT_RIGHT_ARROW_IMAGE_SIZE_INC;\
-            rel1.to: "right_bt"#_sufix;\
-            rel2.to: "right_bt"#_sufix;\
-            image.normal: "core_date_picker_arrow_r.png";\
-            color: 61 184 204 255; \
-         }\
-         description { state: "rtl" 0.0;\
-            inherit: "default" 0.0;\
-            image.normal: "core_date_picker_arrow_l.png";\
          }\
       }\
       part { name: #_text; type: TEXT; mouse_events: 0;\
@@ -138,16 +137,16 @@
             signal: "edje,state,rtl"; source: "edje";\
             script {\
                set_int(rtl, 1);\
-               set_state(PART:"left_bt"#_sufix"_over", "rtl", 0.0);\
-               set_state(PART:"right_bt"#_sufix"_over", "rtl", 0.0);\
+               set_state(PART:"left_bt"#_sufix"_swallow", "rtl", 0.0);\
+               set_state(PART:"right_bt"#_sufix"_swallow", "rtl", 0.0);\
             }\
          }\
          program { name:   "ltr"#_sufix;\
             signal: "edje,state,ltr"; source: "edje";\
             script {\
                set_int(rtl, 0);\
-               set_state(PART:"left_bt"#_sufix"_over", "default", 0.0);\
-               set_state(PART:"right_bt"#_sufix"_over", "default", 0.0);\
+               set_state(PART:"left_bt"#_sufix"_swallow", "default", 0.0);\
+               set_state(PART:"right_bt"#_sufix"_swallow", "default", 0.0);\
             }\
          }\
          program {\
