@@ -1820,6 +1820,7 @@ group { name: "elm/toolbar/item/navigationbar";
       public item_state = ITEM_STATE_ENABLED;
       public mouse_down = 0;
       public multi_down = 0;
+      public selected = 0;
    }
    parts {
       part { name: "bg";
@@ -1901,10 +1902,6 @@ group { name: "elm/toolbar/item/navigationbar";
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
             text.style: "tabbar_navi_text_style_T042D";
-         }
-         description { state: "focused" 0.0;
-            inherit: "default" 0.0;
-            text.style: "tabbar_navi_text_style_T042P";
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.0;
@@ -1999,7 +1996,10 @@ group { name: "elm/toolbar/item/navigationbar";
                 && get_int(mouse_down) == 1)
               {
                 set_int(mouse_down, 0);
-                set_state(PART:"elm.text", "selected", 0.0);
+                if (get_int(selected))
+                    set_state(PART:"elm.text", "selected", 0.0);
+                else
+                    set_state(PART:"elm.text", "default", 0.0);
               }
          }
       }
@@ -2010,6 +2010,7 @@ group { name: "elm/toolbar/item/navigationbar";
             if (get_int(multi_down) == 0) {
                emit("elm,action,click", "elm");
                set_state(PART:"elm.text", "selected", 0.0);
+               set_int(selected, 1);
                if (get_int(item_state) != ITEM_STATE_DISABLED)
                   run_program(PROGRAM:"touch_sound");
             }
@@ -2042,6 +2043,7 @@ group { name: "elm/toolbar/item/navigationbar";
             set_state(PART:"bg", "disabled", 0.0);
             set_state(PART:"elm.text", "disabled", 0.0);
             set_state(PART:"elm.text.clipper", "disabled", 0.0);
+            set_int(selected, 0);
          }
       }
       program { name: "multi_down";
@@ -2066,6 +2068,7 @@ group { name: "elm/toolbar/item/navigationbar";
             set_state(PART:"bg", "default", 0.0);
             set_state(PART:"elm.text", "default", 0.0);
             set_state(PART:"elm.text.clipper", "default", 0.0);
+            set_int(selected, 0);
          }
       }
       program { name: "divider_visible_1";
@@ -2075,6 +2078,7 @@ group { name: "elm/toolbar/item/navigationbar";
             set_state(PART:"divider", "default", 0.0);
             set_state(PART:"right_padding", "default", 0.0);
             set_state(PART:"elm.text", "default", 0.0);
+            set_int(selected, 0);
          }
       }
       program { name: "divider_visible_2";
@@ -2084,6 +2088,7 @@ group { name: "elm/toolbar/item/navigationbar";
             set_state(PART:"divider", "default", 0.0);
             set_state(PART:"right_padding", "default", 0.0);
             set_state(PART:"elm.text", "default", 0.0);
+            set_int(selected, 0);
          }
       }
       program { name: "divider_hidden";
@@ -2093,31 +2098,32 @@ group { name: "elm/toolbar/item/navigationbar";
                set_state(PART:"divider", "hidden", 0.0);
                set_state(PART:"right_padding", "hidden", 0.0);
                set_state(PART:"elm.text", "selected", 0.0);
+               set_int(selected, 1);
          }
-      }
-      program { name: "highlight_on";
-         signal: "elm,highlight,on";
-         source: "elm";
-         action: STATE_SET "focused" 0.0;
-         target: "elm.text";
-      }
-      program { name: "highlight_off";
-         signal: "elm,highlight,off";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text";
       }
       program { name: "go_active";
          signal:  "elm,state,selected";
          source:  "elm";
          action:  STATE_SET "selected" 0.0;
          target:  "elm.text";
+         after:   "selected_set";
+      }
+      program { name: "selected_set";
+         script{
+            set_int(selected, 1);
+         }
       }
       program { name: "go_passive";
          signal:  "elm,state,unselected";
          source:  "elm";
          action:  STATE_SET "default" 0.0;
          target:  "elm.text";
+         after:   "unselected_set";
+      }
+      program { name: "unselected_set";
+         script{
+            set_int(selected, 0);
+         }
       }
    }
 }
