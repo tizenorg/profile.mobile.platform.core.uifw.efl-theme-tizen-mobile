@@ -234,6 +234,10 @@ group {
                max: 0 1;
             }
          }
+         description { state: "expanded" 0.0;
+            inherit: "default";
+            text.style: "empty_state_3";
+         }
       }
    }
    programs {
@@ -241,12 +245,30 @@ group {
          signal: "align.center";
          source: "elm";
          script {
+            new x,y,w,h;
+            new total_h;
+            new others_h;
+            new help_text_h;
             new buf[1024];
+
             get_text(PART:"elm.help.text", buf, 1024);
             if (strlen(buf) > 0)
               set_state(PART:"elm.text", "help_text_set", 0.0);
             else
               set_state(PART:"elm.text", "default", 0.0);
+
+            get_geometry(PART:"text_bg", x,y,w,h);
+            total_h = h;
+            get_geometry(PART:"elm.text", x,y,w,h);
+            others_h += h;
+            get_geometry(PART:"padding_after_text", x,y,w,h);
+            others_h += h;
+            get_geometry(PART:"help_text_top_padding", x,y,w,h);
+            others_h += h;
+            get_geometry(PART:"elm.help.text", x,y,w,h);
+            help_text_h = h;
+            if (help_text_h > (total_h - others_h))
+              set_state(PART:"elm.help.text", "expanded", 0.0);
          }
       }
    }
