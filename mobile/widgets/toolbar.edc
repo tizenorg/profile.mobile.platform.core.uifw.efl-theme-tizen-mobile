@@ -2009,10 +2009,12 @@ group { name: "elm/toolbar/item/navigationbar";
          script {
             if (get_int(multi_down) == 0) {
                emit("elm,action,click", "elm");
-               set_state(PART:"elm.text", "selected", 0.0);
-               set_int(selected, 1);
-               if (get_int(item_state) != ITEM_STATE_DISABLED)
+
+               if (get_int(item_state) != ITEM_STATE_DISABLED) {
+                  set_state(PART:"elm.text", "selected", 0.0);
+                  set_int(selected, 1);
                   run_program(PROGRAM:"touch_sound");
+               }
             }
          }
       }
@@ -2057,7 +2059,7 @@ group { name: "elm/toolbar/item/navigationbar";
          signal: "elm,action,multi,cancel";
          source: "elm";
          script {
-               set_int(multi_down, 0);
+            set_int(multi_down, 0);
          }
       }
       program { name: "enable";
@@ -2077,8 +2079,10 @@ group { name: "elm/toolbar/item/navigationbar";
          script {
             set_state(PART:"divider", "default", 0.0);
             set_state(PART:"right_padding", "default", 0.0);
-            set_state(PART:"elm.text", "default", 0.0);
-            set_int(selected, 0);
+            if (get_int(item_state) != ITEM_STATE_DISABLED) {
+               set_state(PART:"elm.text", "default", 0.0);
+               set_int(selected, 0);
+            }
          }
       }
       program { name: "divider_visible_2";
@@ -2087,42 +2091,42 @@ group { name: "elm/toolbar/item/navigationbar";
          script {
             set_state(PART:"divider", "default", 0.0);
             set_state(PART:"right_padding", "default", 0.0);
-            set_state(PART:"elm.text", "default", 0.0);
-            set_int(selected, 0);
+            if (get_int(item_state) != ITEM_STATE_DISABLED) {
+               set_state(PART:"elm.text", "default", 0.0);
+               set_int(selected, 0);
+            }
          }
       }
       program { name: "divider_hidden";
          signal: "elm,order,last,item";
          source: "elm";
          script {
-               set_state(PART:"divider", "hidden", 0.0);
-               set_state(PART:"right_padding", "hidden", 0.0);
+            set_state(PART:"divider", "hidden", 0.0);
+            set_state(PART:"right_padding", "hidden", 0.0);
+            if (get_int(item_state) != ITEM_STATE_DISABLED) {
                set_state(PART:"elm.text", "selected", 0.0);
                set_int(selected, 1);
+            }
          }
       }
       program { name: "go_active";
          signal:  "elm,state,selected";
          source:  "elm";
-         action:  STATE_SET "selected" 0.0;
-         target:  "elm.text";
-         after:   "selected_set";
-      }
-      program { name: "selected_set";
-         script{
-            set_int(selected, 1);
+         script {
+            if (get_int(item_state) != ITEM_STATE_DISABLED) {
+               set_state(PART:"elm.text", "selected", 0.0);
+               set_int(selected, 1);
+            }
          }
       }
       program { name: "go_passive";
          signal:  "elm,state,unselected";
          source:  "elm";
-         action:  STATE_SET "default" 0.0;
-         target:  "elm.text";
-         after:   "unselected_set";
-      }
-      program { name: "unselected_set";
-         script{
-            set_int(selected, 0);
+         script {
+            if (get_int(item_state) != ITEM_STATE_DISABLED) {
+               set_state(PART:"elm.text", "default", 0.0);
+               set_int(selected, 0);
+            }
          }
       }
    }
