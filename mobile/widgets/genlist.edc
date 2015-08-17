@@ -45,7 +45,6 @@ group { name: "elm/genlist/item/type1/default";
          desc { "default";
          }
       }
-      // FIXME: "bg" part is used by genlist event macro. this will be removed.
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
@@ -56,9 +55,6 @@ group { name: "elm/genlist/item/type1/default";
             color: 0 0 0 10;
          }
          description { state: "disabled" 0.0;
-            color: 0 0 0 0;
-         }
-         description { state: "reorder" 0.0;
             color: 0 0 0 0;
          }
       }
@@ -332,10 +328,6 @@ group { name: "elm/genlist/item/type1/default";
          }
       }
    }
-   LIST_PROGRAMS( target: "elm.text"; \
-                  target: "elm.text.end"; \
-                  target: "elm.text.sub"; \
-                  target: "elm.text.sub.end"; )
    programs {
       program {
          signal: "elm,state,elm.swallow.bg,visible";
@@ -410,7 +402,7 @@ group { name: "elm/genlist/item/type1/default";
             set_state(PART:"elm.swallow.icon.1", "text_visible", 0.0);
          }
       }
-      program { name: "restore_default";
+      program { name: "default";
          signal: "elm,state,default";
          source: "elm";
          script {
@@ -424,8 +416,53 @@ group { name: "elm/genlist/item/type1/default";
             set_state(PART:"elm.padding.main.text.end", "default", 0.0);
             set_state(PART:"elm.padding.sub.text.end", "default", 0.0);
             set_state(PART:"elm.bottomline", "default", 0.0);
+            set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"elm.text", "default", 0.0);
+            set_state(PART:"elm.text.end", "default", 0.0);
+            set_state(PART:"elm.text.sub", "default", 0.0);
+            set_state(PART:"elm.text.sub.end", "default", 0.0);
             set_int(sub_end_text_visible, 0);
          }
+      }
+      program { name: "pressed";
+         signal: "elm,state,selected";
+         source: "elm";
+         action: STATE_SET "pressed" 0.0;
+         target: "bg";
+         target: "elm.text";
+         target: "elm.text.end";
+         target: "elm.text.sub";
+         target: "elm.text.sub.end";
+      }
+      program { name: "unpressed";
+         signal: "elm,state,unselected";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+         target: "elm.text";
+         target: "elm.text.end";
+         target: "elm.text.sub";
+         target: "elm.text.sub.end";
+      }
+      program { name: "enabled";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+         target: "elm.text";
+         target: "elm.text.end";
+         target: "elm.text.sub";
+         target: "elm.text.sub.end";
+      }
+      program { name: "disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "bg";
+         target: "elm.text";
+         target: "elm.text.end";
+         target: "elm.text.sub";
+         target: "elm.text.sub.end";
       }
    }
 }
@@ -529,7 +566,6 @@ group { name: "elm/genlist/item/multiline/default";
          desc { "default";
          }
       }
-      // "bg" part is used by genlist event macro. this will be removed.
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
@@ -540,9 +576,6 @@ group { name: "elm/genlist/item/multiline/default";
             color: 0 0 0 10;
          }
          description { state: "disabled" 0.0;
-            color: 0 0 0 0;
-         }
-         description { state: "reorder" 0.0;
             color: 0 0 0 0;
          }
       }
@@ -744,8 +777,6 @@ group { name: "elm/genlist/item/multiline/default";
          }
       }
    }
-   LIST_PROGRAMS( target: "elm.text"; \
-                  target: "elm.text.multiline"; )
    programs {
       program {
          signal: "elm,state,elm.swallow.bg,visible";
@@ -813,7 +844,7 @@ group { name: "elm/genlist/item/multiline/default";
             set_int(multiline_text_visible, 1);
          }
       }
-      program { name: "restore_default";
+      program { name: "default";
          signal: "elm,state,default";
          source: "elm";
          script {
@@ -825,9 +856,44 @@ group { name: "elm/genlist/item/multiline/default";
             set_state(PART:"elm.padding.main.icon.text", "default", 0.0);
             set_state(PART:"elm.padding.main.text.end", "default", 0.0);
             set_state(PART:"elm.bottomline", "default", 0.0);
+            set_state(PART:"bg", "default", 0.0);
+            set_state(PART:"elm.text", "default", 0.0);
+            set_state(PART:"elm.text.multiline", "default", 0.0);
             set_int(main_text_visible, 0);
             set_int(multiline_text_visible, 0);
          }
+      }
+      program { name: "pressed";
+         signal: "elm,state,selected";
+         source: "elm";
+         action: STATE_SET "pressed" 0.0;
+         target: "bg";
+         target: "elm.text";
+         target: "elm.text.multiline";
+      }
+      program { name: "unpressed";
+         signal: "elm,state,unselected";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+         target: "elm.text";
+         target: "elm.text.multiline";
+      }
+      program { name: "enabled";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+         target: "elm.text";
+         target: "elm.text.multiline";
+      }
+      program { name: "disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "bg";
+         target: "elm.text";
+         target: "elm.text.multiline";
       }
    }
 }
@@ -844,7 +910,6 @@ group { name: "elm/genlist/item/full/default";
          desc { "default";
          }
       }
-      // "bg" part is used by genlist event macro. this will be removed.
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
@@ -855,9 +920,6 @@ group { name: "elm/genlist/item/full/default";
             color: 0 0 0 10;
          }
          description { state: "disabled" 0.0;
-            color: 0 0 0 0;
-         }
-         description { state: "reorder" 0.0;
             color: 0 0 0 0;
          }
       }
@@ -879,7 +941,6 @@ group { name: "elm/genlist/item/full/default";
          }
       }
    }
-   LIST_PROGRAMS( ; )
    programs {
       program {
          signal: "elm,state,elm.swallow.bg,visible";
@@ -887,11 +948,36 @@ group { name: "elm/genlist/item/full/default";
          action: STATE_SET "hidden" 0.0;
          target: "elm.bottomline";
       }
-      program { name: "restore_default";
+      program { name: "default";
          signal: "elm,state,default";
          source: "elm";
          action: STATE_SET "default" 0.0;
+         target: "bg";
          target: "elm.bottomline";
+      }
+      program { name: "pressed";
+         signal: "elm,state,selected";
+         source: "elm";
+         action: STATE_SET "pressed" 0.0;
+         target: "bg";
+      }
+      program { name: "unpressed";
+         signal: "elm,state,unselected";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+      }
+      program { name: "enabled";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+      }
+      program { name: "disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "bg";
       }
    }
 }
@@ -909,7 +995,6 @@ group { name: "elm/genlist/item/group_index/default";
          desc { "default";
          }
       }
-      // FIXME: "bg" part is used by genlist event macro. this will be removed.
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
@@ -920,9 +1005,6 @@ group { name: "elm/genlist/item/group_index/default";
             color: 0 0 0 10;
          }
          description { state: "disabled" 0.0;
-            color: 0 0 0 0;
-         }
-         description { state: "reorder" 0.0;
             color: 0 0 0 0;
          }
       }
@@ -974,12 +1056,6 @@ group { name: "elm/genlist/item/group_index/default";
             text.style: "list_text_group_index_main";
             text.min: 0 1;
          }
-         desc { "pressed"; inherit: "default";
-            text.style: "list_text_group_index_main_press";
-         }
-         desc { "disabled"; inherit: "default";
-            text.style: "list_text_group_index_main_dim";
-         }
       }
       spacer { name: "elm.padding.text.end"; scale;
          desc { "default";
@@ -1014,12 +1090,6 @@ group { name: "elm/genlist/item/group_index/default";
             text.min: 1 1;
             text.max: 0 1;
          }
-         desc { "pressed"; inherit: "default";
-            text.style: "list_text_group_index_sub_press";
-         }
-         desc { "disabled"; inherit: "default";
-            text.style: "list_text_group_index_sub_dim";
-         }
       }
       rect { "elm.topline"; scale;
          desc { "default";
@@ -1035,7 +1105,6 @@ group { name: "elm/genlist/item/group_index/default";
          }
       }
    }
-   LIST_PROGRAMS( target: "elm.text"; )
    programs {
       program {
          signal: "elm,state,elm.swallow.bg,visible";
@@ -1055,12 +1124,37 @@ group { name: "elm/genlist/item/group_index/default";
          action: STATE_SET "text_visible" 0.0;
          target: "elm.padding.text.end";
       }
-      program { name: "restore_default";
+      program { name: "default";
          signal: "elm,state,default";
          source: "elm";
          action: STATE_SET "default" 0.0;
+         target: "bg";
          target: "elm.padding.text.end";
          target: "elm.topline";
+      }
+      program { name: "pressed";
+         signal: "elm,state,selected";
+         source: "elm";
+         action: STATE_SET "pressed" 0.0;
+         target: "bg";
+      }
+      program { name: "unpressed";
+         signal: "elm,state,unselected";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+      }
+      program { name: "enabled";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+      }
+      program { name: "disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "bg";
       }
    }
 }
@@ -1094,6 +1188,21 @@ group { name: "elm/genlist/item/group_index/expandable/default";
    }
 
    parts {
+      textblock { "elm.text"; scale;
+         desc { "default";
+            align: 0.5 0.5;
+            rel1 { to_x: "elm.padding.left"; to_y: "elm.padding.top"; relative: 1.0 1.0; }
+            rel2 { to_x: "elm.padding.text.end"; to_y: "elm.padding.bottom"; relative: 0.0 0.0; }
+            text.style: "list_text_group_index_expandable";
+            text.min: 0 1;
+         }
+         desc { "pressed"; inherit: "default";
+            text.style: "list_text_group_index_expandable_press";
+         }
+         desc { "disabled"; inherit: "default";
+            text.style: "list_text_group_index_expandable_dim";
+         }
+      }
       spacer { "elm.padding.text.end"; scale;
          desc { "default";
             min: GENLIST_ITEM_MAIN_LINE_TEXT_END_PADDING_INC 0;
@@ -1135,18 +1244,6 @@ group { name: "elm/genlist/item/group_index/expandable/default";
       }
    }
    programs {
-      program { name: "pressed";
-         signal: "elm,state,selected";
-         source: "elm";
-         action: STATE_SET "pressed" 0.0;
-         target: "elm.expand.clipper";
-      }
-      program { name: "unpressed";
-         signal: "elm,state,unselected";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.expand.clipper";
-      }
       program { name: "expanded";
          signal: "elm,state,expanded";
          source: "elm";
@@ -1163,9 +1260,43 @@ group { name: "elm/genlist/item/group_index/expandable/default";
          signal: "elm,state,default";
          source: "elm";
          action: STATE_SET "default" 0.0;
+         target: "bg";
+         target: "elm.text";
          target: "elm.padding.text.end";
          target: "elm.topline";
          target: "elm.expand.icon";
+         target: "elm.expand.clipper";
+      }
+      program { name: "pressed";
+         signal: "elm,state,selected";
+         source: "elm";
+         action: STATE_SET "pressed" 0.0;
+         target: "bg";
+         target: "elm.text";
+         target: "elm.expand.clipper";
+      }
+      program { name: "unpressed";
+         signal: "elm,state,unselected";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+         target: "elm.text";
+         target: "elm.expand.clipper";
+      }
+      program { name: "enabled";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+         target: "elm.text";
+         target: "elm.expand.clipper";
+      }
+      program { name: "disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "bg";
+         target: "elm.text";
          target: "elm.expand.clipper";
       }
    }
