@@ -34,12 +34,10 @@
    parts {
       part {
          name: "bg";
-         type: RECT;
-         mouse_events: 0;
+         type: SPACER;
          scale: 1;
          description {
             state: "default" 0.0;
-            color: 0 0 0 0;
          }
       }
       part {
@@ -48,7 +46,7 @@
          scale: 1;
          description {
             state: "default" 0.0;
-            min : MULTIBUTTONENTRY_WIDTH_PAD_INC MULTIBUTTONENTRY_HEIGHT_PAD_INC;
+            min: MULTIBUTTONENTRY_WIDTH_PAD_INC MULTIBUTTONENTRY_HEIGHT_PAD_INC;
             fixed: 1 1;
             rel2.relative: 0.0 0.0;
             align: 0.0 0.0;
@@ -60,7 +58,7 @@
          scale: 1;
          description {
             state: "default" 0.0;
-            min : MULTIBUTTONENTRY_WIDTH_PAD_INC MULTIBUTTONENTRY_BOTTOM_HEIGHT_PAD_INC;
+            min: MULTIBUTTONENTRY_WIDTH_PAD_INC MULTIBUTTONENTRY_BOTTOM_HEIGHT_PAD_INC;
             fixed: 1 1;
             rel1.relative: 1.0 1.0;
             align: 1.0 1.0;
@@ -123,7 +121,7 @@
          scale: 1;
          description {
             state: "default" 0.0;
-            min: 0 MULTIBUTTONENTRY_GUIDE_HEIGHT_INC;
+            min: 0 MULTIBUTTONENTRY_ITEM_HEIGHT_INC;
             text.style: "multibuttonentry_guide_style";
          }
          description {
@@ -149,75 +147,88 @@
          target: "elm.text";
       }
    }
- }
+}
 
  group {
    name: "elm/multibuttonentry/btn/default";
 
+   images.image: "core_contact_div.png" COMP;
+
    styles {
       style {
          name: "multibuttonentry_btn_text_style";
-         base: "font=Tizen:style=Light font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#FFFFFF ellipsis=1.0";
+         base: "font=Tizen:style=Medium font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#3DB9CCFF ellipsis=1.0";
+      }
+      style {
+         name: "multibuttonentry_btn_disabled_text_style";
+         base: "font=Tizen:style=Medium font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#3DB9CC40 ellipsis=1.0";
       }
    }
+
    script {
       public disabled = 0;
    }
-   images {
-      set {
-         name: "core_list_button_bg.#";
-         image {
-            image: SMALL"images/User_Innput_Elements/core_list_button_bg.#.png" COMP;
-         }
-         image {
-            image: MEDIUM"images/User_Input_Elements/core_list_button_bg.#.png" COMP;
-         }
-      }
-   }
-
-   data.item: "button_left_pad" MULTIBUTTONENTRY_BUTTON_PAD_INC;
-   data.item: "button_right_pad" MULTIBUTTONENTRY_BUTTON_PAD_INC;
-   data.item: "focus_highlight" "on";
 
    parts {
-      part { name: "button_image";
+     part { name: "base";
+        type: SPACER;
+        scale: 1;
+        description { state: "default" 0.0;
+           min: 0 MULTIBUTTONENTRY_ITEM_HEIGHT_INC;
+           max: -1 MULTIBUTTONENTRY_ITEM_HEIGHT_INC;
+        }
+     }
+     part { name: "divider";
+        scale:1;
+        description { state: "default" 0.0;
+           min: MULTIBUTTONENTRY_DIVIDER_SIZE_INC;
+           max: MULTIBUTTONENTRY_DIVIDER_SIZE_INC;
+           fixed: 1 1;
+           align: 1.0 0.6;
+           image.normal: "core_contact_div.png";
+           color: 61 185 204 128;
+           rel1 {
+              to: "base";
+              relative: 1.0 0.0;
+           }
+           rel2 {
+              to: "base";
+              relative: 1.0 1.0;
+           }
+        }
+     }
+     part {
+        name: "right.padding";
+        type: SPACER;
+        scale:1;
+        description {
+           state: "default" 0.0;
+           min: MULTIBUTTONENTRY_DIVIERR_LEFT_PADDING_SIZE_INC;
+           max: MULTIBUTTONENTRY_DIVIERR_LEFT_PADDING_SIZE_INC;
+           fixed: 1 1;
+           align: 1.0 0.5;
+           rel1 {
+              to: "divider";
+              relative: 0.0 0.0;
+           }
+           rel2 {
+              to: "divider";
+              relative: 0.0 1.0;
+           }
+        }
+      }
+      part {
+         name: "button_bg";
+         type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            min: MULTIBUTTONENTRY_BUTTON_WIDTH_INC MULTIBUTTONENTRY_BUTTON_HEIGHT_INC;
-            image.normal: "core_list_button_bg.#";
-            color: 82 199 217 255;
+            rel1.to: "text";
+            rel2.to: "text";
+            color: 0 0 0 0;
          }
          description { state: "pressed" 0.0;
-            inherit: "default" 0.0;
-            color: 108 209 224 255;
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            color: 147 208 217 255;
-         }
-      }
-      part {
-         name: "left.padding";
-         type: SPACER;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: MULTIBUTTONENTRY_BUTTON_PAD_INC 0;
-            fixed: 1 0;
-            rel2.relative: 0.0 1.0;
-            align: 0.0 0.5;
-         }
-      }
-      part {
-         name: "right.padding";
-         type: SPACER;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: MULTIBUTTONENTRY_BUTTON_PAD_INC 0;
-            fixed: 1 0;
-            rel1.relative: 1.0 0.0;
-            align: 1.0 0.5;
+            inherit: "default";
+            color: 61 185 204 77;
          }
       }
       part {
@@ -233,8 +244,8 @@
                min: 1 1;
             }
             rel1 {
-               relative: 1.0 0.0;
-               to: "left.padding";
+               relative: 0.0 0.0;
+               to: "base";
             }
             rel2 {
                relative: 0.0 1.0;
@@ -243,7 +254,8 @@
             visible: 0;
          }
       }
-      part { name: "text";
+      part {
+         name: "text";
          type: TEXTBLOCK;
          mouse_events: 0;
          scale: 1;
@@ -256,13 +268,18 @@
                min: 0 1;
             }
             rel1 {
-               relative: 1.0 0.0;
-               to: "left.padding";
+               relative: 0.0 0.0;
+               to: "base";
             }
             rel2 {
                relative: 0.0 1.0;
                to: "right.padding";
             }
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default";
+            text.style: "multibuttonentry_btn_disabled_text_style";
          }
       }
       part {
@@ -271,6 +288,8 @@
          ignore_flags: ON_HOLD;
          description {
             state: "default" 0.0;
+            rel1.to: "button_bg";
+            rel2.to: "button_bg";
             color: 0 0 0 0;
          }
       }
@@ -285,8 +304,8 @@
          }
          description {
             state: "default" 0.0;
-            rel1.to: "button_image";
-            rel2.to: "button_image";
+            rel1.to: "button_bg";
+            rel2.to: "button_bg";
             color: 0 0 0 0;
          }
       }
@@ -298,7 +317,7 @@
          source: "drag";
          script {
             if (get_int(disabled) ==  0)
-              set_state(PART:"button_image", "pressed", 0.0);
+              set_state(PART:"button_bg", "pressed", 0.0);
          }
       }
       program {
@@ -311,7 +330,7 @@
               return;
             get_drag(PART:"drag", dx, dy);
             if ((abs(dx) > 20) || (abs(dy) > 20)) {
-              set_state(PART:"button_image", "default", 0.0);
+              set_state(PART:"button_bg", "default", 0.0);
             }
          }
       }
@@ -321,7 +340,7 @@
          source: "drag";
          script {
             if (get_int(disabled) ==  0) {
-              set_state(PART:"button_image", "default", 0.0);
+              set_state(PART:"button_bg", "default", 0.0);
               set_drag(PART:"drag", 0.0, 0.0);
             }
          }
@@ -331,7 +350,7 @@
          signal: "elm,state,enabled";
          source: "elm";
          script {
-            set_state(PART:"button_image", "default", 0.0);
+            set_state(PART:"text", "default", 0.0);
             set_int(disabled , 0);
          }
       }
@@ -340,19 +359,19 @@
          signal: "elm,state,disabled";
          source: "elm";
          script {
-            set_state(PART:"button_image", "disabled", 0.0);
+            set_state(PART:"text", "disabled", 0.0);
             set_int(disabled , 1);
          }
       }
       program {
          signal: "elm,state,default"; source: "elm";
          action: STATE_SET "default" 0.0;
-         target: "button_image";
+         target: "button_bg";
       }
       program {
          signal: "elm,state,focused"; source: "elm";
          action: STATE_SET "pressed" 0.0;
-         target: "button_image";
+         target: "button_bg";
       }
       program {
          name: "clicked";
@@ -366,7 +385,7 @@
          action: RUN_PLUGIN "touch_sound" ;
       }
    }
- }
+}
 
  group {
    name: "elm/multibuttonentry/number/default";
@@ -401,7 +420,7 @@
          scale: 1;
          description {
             state: "default" 0.0;
-            min: 0 MULTIBUTTONENTRY_LABEL_HEIGHT_INC;
+            min: 0 MULTIBUTTONENTRY_ITEM_HEIGHT_INC;
             text {
                style: "multibuttonentry_number_text_style";
                min: 1 0;
@@ -472,7 +491,7 @@
          scale: 1;
          description {
             state: "default" 0.0;
-            min: 0 MULTIBUTTONENTRY_LABEL_HEIGHT_INC;
+            min: 0 MULTIBUTTONENTRY_ITEM_HEIGHT_INC;
             text {
                style: "multibuttonentry_label_style";
                min: 1 0;
@@ -484,4 +503,4 @@
          }
       }
    }
- }
+}
