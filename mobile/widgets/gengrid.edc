@@ -559,14 +559,27 @@ styles {
             }
          }
          part { name: "select_bg";
+            type: RECT;
             description { state: "default" 0.0;
                visible: 0;
-               image.normal: "core_focus.#";
                rel1.to: "item_bg";
                rel2.to: "item_bg";
-               color: 0 221 255 255;
+               color: 61 185 204 77;
             }
             description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "outline_bg";
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1.to: "item_bg";
+               rel2.to: "item_bg";
+               image.normal: "core_focus.#";
+               color: 0 221 255 255;
+            }
+            description { state: "enabled" 0.0;
                inherit: "default" 0.0;
                visible: 1;
             }
@@ -620,6 +633,18 @@ styles {
             target: "select_bg";
             target: "elm.text";
          }
+         program { name: "select_enabled";
+            signal: "elm,select,enabled";
+            source: "";
+            action: STATE_SET "enabled" 0.0;
+            target: "outline_bg";
+         }
+         program { name: "select_disabled";
+            signal: "elm,select,disabled";
+            source: "";
+            action: STATE_SET "default" 0.0;
+            target: "outline_bg";
+         }
          program { name: "action_focus";
             signal: "elm,action,focus_highlight,show";
             source: "elm";
@@ -637,6 +662,7 @@ styles {
             target: "elm.swallow.end";
             target: "select_bg";
             target: "elm.text";
+            target: "outline_bg";
          )
       }
    }
