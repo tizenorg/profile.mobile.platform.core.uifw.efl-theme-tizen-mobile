@@ -73,129 +73,8 @@
                inherit: "default" 0.0;
             }
          }
-         part { name: "elm.swallow.tizen_vg_shape2";
-            type: SWALLOW;
-            mouse_events: 0;
-            scale: 1;
-            clip_to: "button0_press";
-            description { state: "default" 0.0;
-               rel1.to: "button0_press";
-               rel2.to: "button0_press";
-            }
-         }
-         part { name: "button0_press";
-            type: RECT;
-            mouse_events: 0;
-            scale: 1;
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               min: SLIDER_INDICATOR_BUBBLE_SIZE_INC;
-               max: SLIDER_INDICATOR_BUBBLE_SIZE_INC;
-               color: 255 255 255 255;
-               visible: 0;
-               rel1.to: "button0";
-               rel2.to: "button0";
-               rel1.relative: 0.0 0.5;
-               rel2.relative: 1.0 0.5;
-               align: 0.5 0.5;
-            }
-            description { state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               min: SLIDER_INDICATOR_BUBBLE_PRESSED_SIZE_INC;
-               max: SLIDER_INDICATOR_BUBBLE_PRESSED_SIZE_INC;
-               visible: 1;
-               align: 0.5 0.72;
-            }
-         }
-         part { name: "elm.indicator";
-            type: TEXT;
-            scale: 1;
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               visible: 0;
-               min: SLIDER_INDICATOR_TEXT_SIZE_WIDTH SLIDER_INDICATOR_TEXT_SIZE_HEIGHT;
-               max: -1 SLIDER_INDICATOR_TEXT_SIZE_HEIGHT;
-               color: 7 7 7 255;
-               align: 0.5 0.0;
-               rel1.to: "button0_press";
-               rel2.to: "button0_press";
-               rel1.offset: 0 12;
-               text {
-                  min: 0 1;
-                  font: "Tizen:style=Light"; size: "36";
-                  text_class: "tizen";
-               }
-            }
-            description { state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               text {
-                  min: 0 1;
-                  font: "Tizen:style=Light"; size: "36";
-                  text_class: "tizen";
-               }
-            }
-         }
       }
       programs {
-         program { name: "mouse_down";
-            signal: "drag,start";
-            source: "*";
-            script {
-               run_program(PROGRAM:"pressed_effect1");
-               run_program(PROGRAM:"pressed_effect2");
-            }
-         }
-         program { name: "mouse_up";
-            signal: "drag,stop";
-            source: "*";
-            script {
-               run_program(PROGRAM:"release_effect1");
-               run_program(PROGRAM:"release_effect2");
-            }
-         }
-         program { name: "indicator_show";
-            signal: "elm,state,indicator,show";
-            source: "elm";
-            script {
-               run_program(PROGRAM:"pressed_effect1");
-               run_program(PROGRAM:"pressed_effect2");
-            }
-         }
-         program { name: "indicator_hide";
-            signal: "elm,state,indicator,hide";
-            source: "elm";
-            script {
-               run_program(PROGRAM:"release_effect1");
-               run_program(PROGRAM:"release_effect2");
-            }
-         }
-         program { name: "pressed_effect1";
-            action:  STATE_SET "pressed" 0.0;
-            transition: DECELERATE 0.3;
-            target: "button0_press";
-         }
-         program { name: "pressed_effect2";
-            action:  STATE_SET "default" 0.0;
-            transition: DECELERATE 0.21;
-            target: "elm.indicator";
-            after: "pressed_effect3";
-         }
-         program { name: "pressed_effect3";
-            action:  STATE_SET "pressed" 0.0;
-            transition: DECELERATE 0.09;
-            target: "elm.indicator";
-         }
-         program { name: "release_effect1";
-            action:  STATE_SET "default" 0.0;
-            transition: DECELERATE 0.3;
-            target: "button0_press";
-         }
-         program { name: "release_effect2";
-            action:  STATE_SET "default" 0.0;
-            transition: DECELERATE 0.09;
-            target: "elm.indicator";
-         }
          program { name: "slider_disable";
             signal: "elm,state,disabled";
             source: "elm";
@@ -221,7 +100,7 @@ group { name: "elm/slider/horizontal/default";
          public popup_show = 1;
          public show = 0;
          public set_popup_show() {
-            set_int(popup_show, 0);
+            set_int(popup_show, 1);
          }
          public set_popup_hide() {
             set_int(popup_show, 0);
@@ -254,7 +133,7 @@ group { name: "elm/slider/horizontal/default";
             else
               set_state(PART:"level2", "pressed", 0.0);
             set_state(PART:"handle_color", "pressed", 0.0);
-            if (get_int(popup_show) == 1)
+            if (get_int(popup_show))
                emit("popup,show", "elm");
             }
          public thumb_up() {
@@ -263,7 +142,7 @@ group { name: "elm/slider/horizontal/default";
             else
               set_state(PART:"level2", "inverted", 0.0);
             set_state(PART:"handle_color", "default", 0.0);
-            if (get_int(popup_show) == 1)
+            if (get_int(popup_show))
                emit("popup,hide", "elm");
             }
          public drag_state() {
@@ -578,26 +457,6 @@ group { name: "elm/slider/horizontal/default";
                   color: 61 184 204 77;
                }
             }
-            /* TIZEN ONLY(20150724) : This part have recalc issue.
-            Tizen 2.4 doesn't use this part. So I disabled it.
-            part { name: "elm.track.slider";
-               type: SWALLOW;
-               mouse_events: 0;
-               scale: 1;
-               description { state: "default" 0.0;
-                  min: 0 SLIDER_POPUP_HEIGHT_INC;
-                  max: -1 SLIDER_POPUP_HEIGHT_INC;
-                  align: 0.5 1.0;
-                  fixed: 0 1;
-                  rel1.to: "elm.dragable.slider";
-                  rel1.offset: 0 8;
-                  rel2 {
-                     relative: 1.0 0.0;
-                     to: "elm.dragable.slider";
-                     offset: 0 8;
-                  }
-               }
-            }*/
             part { name: "elm.swallow.tizen_vg_shape1";
                type: SWALLOW;
                mouse_events: 0;
@@ -670,6 +529,18 @@ group { name: "elm/slider/horizontal/default";
                   color: 0 0 0 0;
                }
             }
+            part { name: "elm.track.slider";
+               type: SWALLOW;
+               mouse_events: 0;
+               scale: 1;
+               description { state: "default" 0.0;
+                  min: 0 SLIDER_POPUP_HEIGHT_INC;
+                  max: -1 SLIDER_POPUP_HEIGHT_INC;
+                  fixed: 0 1;
+                  rel1.to: "elm.dragable.slider";
+                  rel2.to: "elm.dragable.slider";
+               }
+            }
             part { name:"handle_color";
                type: RECT;
                scale: 1;
@@ -710,6 +581,13 @@ group { name: "elm/slider/horizontal/default";
             }
          }
       programs {
+          program { name: "load";
+            signal: "load";
+            source: "";
+            script {
+                set_int(popup_show, 1);
+            }
+          }
          program { name: "invert_on";
             signal: "elm,state,inverted,on";
             source: "elm";
@@ -751,6 +629,16 @@ group { name: "elm/slider/horizontal/default";
             script {
                set_popup_hide();
             }
+         }
+         program { name: "indicator_show";
+            signal: "elm,state,indicator,show";
+            source: "elm";
+            action:  SIGNAL_EMIT "elm,popup,show" "elm";
+         }
+         program { name: "indicator_hide";
+            signal: "elm,state,indicator,hide";
+            source: "elm";
+            action:  SIGNAL_EMIT "elm,popup,hide" "elm";
          }
          program { name: "icon_show";
             signal: "elm,state,icon,visible";
@@ -993,7 +881,7 @@ group { name: "elm/slider/horizontal/warning";
          public popup_show = 1;
          public show = 0;
          public set_popup_show() {
-            set_int(popup_show, 0);
+            set_int(popup_show, 1);
          }
          public set_popup_hide() {
             set_int(popup_show, 0);
@@ -1041,7 +929,7 @@ group { name: "elm/slider/horizontal/warning";
               set_state(PART:"handle_color", "pressed", 0.0);
             else
               set_state(PART:"handle_color", "pressed_warning", 0.0);
-            if (get_int(popup_show) == 1)
+            if (get_int(popup_show))
                emit("popup,show", "elm");
          }
          public thumb_up() {
@@ -1049,7 +937,7 @@ group { name: "elm/slider/horizontal/warning";
               set_state(PART:"handle_color", "default", 0.0);
             else
               set_state(PART:"handle_color", "warning", 0.0);
-            if (get_int(popup_show) == 1)
+            if (get_int(popup_show))
                emit("popup,hide", "elm");
          }
          public drag_state_warning() {
@@ -1059,6 +947,8 @@ group { name: "elm/slider/horizontal/warning";
                if (dx > SLIDER_WARNING_LEVEL) {
                  if (!get_int(disabled)) {
                    set_state(PART:"handle_color", "warning", 0.0);
+                   if (get_int(popup_show))
+                     emit("popup,warning", "popup,emit");
                  }
                  else {
                    set_state(PART:"handle_color", "disabled_warning", 0.0);
@@ -1069,6 +959,8 @@ group { name: "elm/slider/horizontal/warning";
                else {
                  if (!get_int(disabled)) {
                    set_state(PART:"handle_color", "default", 0.0);
+                   if (get_int(popup_show))
+                     emit("popup,default", "popup,emit");
                  }
                  else {
                    set_state(PART:"handle_color", "disabled", 0.0);
@@ -1081,6 +973,8 @@ group { name: "elm/slider/horizontal/warning";
                if (dx < (1.0 - SLIDER_WARNING_LEVEL)) {
                  if (!get_int(disabled)) {
                    set_state(PART:"handle_color", "warning", 0.0);
+                   if (get_int(popup_show))
+                     emit("popup,warning", "popup,emit");
                  }
                  else {
                    set_state(PART:"handle_color", "disabled_warning", 0.0);
@@ -1091,6 +985,8 @@ group { name: "elm/slider/horizontal/warning";
                else {
                  if (!get_int(disabled)) {
                    set_state(PART:"handle_color", "default", 0.0);
+                   if (get_int(popup_show))
+                     emit("popup,default", "popup,emit");
                  }
                  else {
                    set_state(PART:"handle_color", "disabled", 0.0);
@@ -1435,26 +1331,6 @@ group { name: "elm/slider/horizontal/warning";
                   align: (1.0 - SLIDER_WARNING_LEVEL) 0.5;
                }
             }
-            /* TIZEN ONLY(20150724) : This part have recalc issue.
-            Tizen 2.4 doesn't use this part. So I disabled it.
-            part { name: "elm.track.slider";
-               type: SWALLOW;
-               mouse_events: 0;
-               scale: 1;
-               description { state: "default" 0.0;
-                  min: 0 SLIDER_POPUP_HEIGHT_INC;
-                  max: -1 SLIDER_POPUP_HEIGHT_INC;
-                  align: 0.5 1.0;
-                  fixed: 0 1;
-                  rel1.to: "elm.dragable.slider";
-                  rel1.offset: 0 8;
-                  rel2 {
-                     relative: 1.0 0.0;
-                     to: "elm.dragable.slider";
-                     offset: 0 8;
-                  }
-               }
-            }*/
             part { name: "elm.swallow.tizen_vg_shape1";
                type: SWALLOW;
                mouse_events: 0;
@@ -1527,6 +1403,18 @@ group { name: "elm/slider/horizontal/warning";
                   color: 0 0 0 0;
                }
             }
+            part { name: "elm.track.slider";
+               type: SWALLOW;
+               mouse_events: 0;
+               scale: 1;
+               description { state: "default" 0.0;
+                  min: 0 SLIDER_POPUP_HEIGHT_INC;
+                  max: -1 SLIDER_POPUP_HEIGHT_INC;
+                  fixed: 0 1;
+                  rel1.to: "elm.dragable.slider";
+                  rel2.to: "elm.dragable.slider";
+               }
+            }
             part { name:"handle_color";
                type: RECT;
                scale: 1;
@@ -1570,6 +1458,13 @@ group { name: "elm/slider/horizontal/warning";
             }
          }
       programs {
+         program { name: "load";
+           signal: "load";
+           source: "";
+           script {
+               set_int(popup_show, 1);
+           }
+         }
          program { name: "invert_on";
             signal: "elm,state,inverted,on";
             source: "elm";
@@ -1611,6 +1506,16 @@ group { name: "elm/slider/horizontal/warning";
             script {
                set_popup_hide();
             }
+         }
+         program { name: "indicator_show";
+            signal: "elm,state,indicator,show";
+            source: "elm";
+            action:  SIGNAL_EMIT "elm,popup,show" "elm";
+         }
+         program { name: "indicator_hide";
+            signal: "elm,state,indicator,hide";
+            source: "elm";
+            action:  SIGNAL_EMIT "elm,popup,hide" "elm";
          }
          program { name: "icon_show";
             signal: "elm,state,icon,visible";
@@ -1727,7 +1632,7 @@ group { name: "elm/slider/vertical/default";
      public show = 0;
      public popup_show = 1;
      public set_popup_show() {
-        set_int(popup_show, 0);
+        set_int(popup_show, 1);
      }
      public set_popup_hide() {
         set_int(popup_show, 0);
@@ -1760,7 +1665,7 @@ group { name: "elm/slider/vertical/default";
         else
           set_state(PART:"level", "pressed", 0.0);
          set_state(PART:"handle_color", "pressed", 0.0);
-        if (get_int(popup_show) == 1)
+        if (get_int(popup_show))
            emit("popup,show", "elm");
         }
      public thumb_up() {
@@ -1769,7 +1674,7 @@ group { name: "elm/slider/vertical/default";
         else
          set_state(PART:"level", "inverted", 0.0);
         set_state(PART:"handle_color", "default", 0.0);
-        if (get_int(popup_show) == 1)
+        if (get_int(popup_show))
            emit("popup,hide", "elm");
         }
      public drag_state() {
@@ -2012,26 +1917,6 @@ group { name: "elm/slider/vertical/default";
               color: 61 184 204 77;
            }
         }
-        /* TIZEN ONLY(20150724) : This part have recalc issue.
-        Tizen 2.4 doesn't use this part. So I disabled it.
-        part { name: "elm.track.slider";
-           type: SWALLOW;
-           mouse_events: 0;
-           scale: 1;
-           description { state: "default" 0.0;
-              min: 0 SLIDER_POPUP_HEIGHT_INC;
-              max: -1 SLIDER_POPUP_HEIGHT_INC;
-              align: 0.5 1.0;
-              fixed: 0 1;
-              rel1.to: "elm.dragable.slider";
-              rel1.offset: 0 8;
-              rel2 {
-                 relative: 1.0 0.0;
-                 to: "elm.dragable.slider";
-                 offset: 0 8;
-              }
-           }
-        }*/
          part { name: "elm.swallow.tizen_vg_shape1";
             type: SWALLOW;
             mouse_events: 0;
@@ -2104,6 +1989,18 @@ group { name: "elm/slider/vertical/default";
               color: 0 0 0 0;
            }
         }
+        part { name: "elm.track.slider";
+           type: SWALLOW;
+           mouse_events: 0;
+           scale: 1;
+           description { state: "default" 0.0;
+              min: 0 SLIDER_POPUP_HEIGHT_INC;
+              max: -1 SLIDER_POPUP_HEIGHT_INC;
+              fixed: 0 1;
+              rel1.to: "elm.dragable.slider";
+              rel2.to: "elm.dragable.slider";
+           }
+        }
          part { name:"handle_color";
             type: RECT;
             scale: 1;
@@ -2144,6 +2041,13 @@ group { name: "elm/slider/vertical/default";
         }
      }
      programs {
+        program { name: "load";
+          signal: "load";
+          source: "";
+          script {
+              set_int(popup_show, 1);
+          }
+        }
         program { name: "invert_on";
            signal: "elm,state,inverted,on";
            source: "elm";
@@ -2186,6 +2090,16 @@ group { name: "elm/slider/vertical/default";
               set_popup_hide();
            }
         }
+         program { name: "indicator_show";
+            signal: "elm,state,indicator,show";
+            source: "elm";
+            action:  SIGNAL_EMIT "elm,popup,show" "elm";
+         }
+         program { name: "indicator_hide";
+            signal: "elm,state,indicator,hide";
+            source: "elm";
+            action:  SIGNAL_EMIT "elm,popup,hide" "elm";
+         }
         program { name: "icon_show";
            signal: "elm,state,icon,visible";
            source: "elm";
@@ -2246,149 +2160,83 @@ group { name: "elm/slider/vertical/default";
    }
    group { name: "elm/slider/horizontal/popup/default";
       alias: "elm/slider/vertical/popup/default";
-      images {
-         set {
-            name: "core_slider_popup_bg";
-            image {
-               image: SMALL"images/Old/core_slider_popup_bg.png" COMP;
-            }
-            image {
-               image: MEDIUM"images/Old/core_slider_popup_bg.png" COMP;
-            }
-         }
-         set {
-            name: "core_slider_popup_bg_stroke";
-            image {
-               image: SMALL"images/Old/core_slider_popup_bg_stroke.png" COMP;
-            }
-            image {
-               image: MEDIUM"images/Old/core_slider_popup_bg_stroke.png" COMP;
-            }
-         }
-         set {
-            name: "core_slider_popup_bg_ef";
-            image {
-               image: SMALL"images/Old/core_slider_popup_bg_ef.png" COMP;
-            }
-            image {
-               image: MEDIUM"images/Old/core_slider_popup_bg_ef.png" COMP;
-            }
-         }
+      script {
+         public warning = 0;
+         public show = 0;
       }
       parts {
-         part { name: "bg";
-            type: SPACER;
+         part { name: "elm.swallow.tizen_vg_shape2";
+            type: SWALLOW;
+            mouse_events: 0;
             scale: 1;
+            clip_to: "button0_press";
             description { state: "default" 0.0;
-               min: SLIDER_POPUP_WIDTH_INC SLIDER_POPUP_HEIGHT_INC;
-               max: -1 SLIDER_POPUP_HEIGHT_INC;
+               rel1.to: "button0_press";
+               rel2.to: "button0_press";
             }
          }
-         part { name: "bg.image";
+         part { name: "button0_press";
+            type: RECT;
+            mouse_events: 0;
             scale: 1;
             description { state: "default" 0.0;
+               fixed: 1 1;
+               min: SLIDER_INDICATOR_BUBBLE_SIZE_INC;
+               max: SLIDER_INDICATOR_BUBBLE_SIZE_INC;
                visible: 0;
-               min: SLIDER_POPUP_WIDTH_INC SLIDER_POPUP_HEIGHT_INC;
-               max: -1 SLIDER_POPUP_HEIGHT_INC;
-               image.normal: "core_slider_popup_bg";
-               color: 255 255 255 255; /*(Changeable UI) color_class: "W0631";*/
+               color: 61 184 204 255;
+               rel1.relative: 0.0 0.5;
+               rel2.relative: 1.0 0.5;
             }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "bg.effect.image";
-            scale: 1;
-            description { state: "default" 0.0;
+            description { state: "warning" 0.0;
+               inherit: "default";
                visible: 0;
-               min: SLIDER_POPUP_WIDTH_INC SLIDER_POPUP_HEIGHT_INC;
-               max: -1 SLIDER_POPUP_HEIGHT_INC;
-               image.normal: "core_slider_popup_bg_ef";
+               color: 255 25 25 255;
+               rel1.relative: 0.0 0.5;
+               rel2.relative: 1.0 0.5;
             }
-            description { state: "visible" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
+               min: SLIDER_INDICATOR_BUBBLE_PRESSED_SIZE_INC;
+               max: SLIDER_INDICATOR_BUBBLE_PRESSED_SIZE_INC;
                visible: 1;
+               align: 0.5 0.72;
             }
-         }
-         part { name: "bg.stroke";
-            scale: 1;
-            description { state: "default" 0.0;
-               visible: 0;
-               min: SLIDER_POPUP_WIDTH_INC SLIDER_POPUP_HEIGHT_INC;
-               max: -1 SLIDER_POPUP_HEIGHT_INC;
-               image.normal: "core_slider_popup_bg_stroke";
-               color: 2 61 132 255; /*(Changeable UI) color_class: "W0632";*/
-            }
-            description { state: "visible" 0.0;
-               inherit: "default" 0.0;
+            description { state: "pressed_warning" 0.0;
+               inherit: "warning" 0.0;
+               min: SLIDER_INDICATOR_BUBBLE_PRESSED_SIZE_INC;
+               max: SLIDER_INDICATOR_BUBBLE_PRESSED_SIZE_INC;
                visible: 1;
-            }
-         }
-         part {
-            name: "indicator.top.pad";
-            type: SPACER;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               min: 0 SLIDER_INDICATOR_PADDING_TOP;
-               max: -1 SLIDER_INDICATOR_PADDING_TOP;
-               fixed: 0 1;
-               rel1 {
-                  relative: 0.0  0.0;
-                  to: "bg.image";
-               }
-               rel2 {
-                  relative: 1.0  0.0;
-                  to: "bg.image";
-               }
-               align: 0.5 0.0;
-            }
-         }
-         part {
-            name: "indicator.bottom.pad";
-            type: SPACER;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               min: 0 SLIDER_INDICATOR_PADDING_BOTTOM;
-               max: -1 SLIDER_INDICATOR_PADDING_BOTTOM;
-               fixed: 0 1;
-               rel1 {
-                  relative: 0.0  1.0;
-                  to: "bg.image";
-               }
-               rel2 {
-                  relative: 1.0  1.0;
-                  to: "bg.image";
-               }
-               align: 0.5 1.0;
+               align: 0.5 0.72;
             }
          }
          part { name: "elm.indicator";
             type: TEXT;
             scale: 1;
             description { state: "default" 0.0;
+               fixed: 1 1;
                visible: 0;
                min: SLIDER_INDICATOR_TEXT_SIZE_WIDTH SLIDER_INDICATOR_TEXT_SIZE_HEIGHT;
                max: -1 SLIDER_INDICATOR_TEXT_SIZE_HEIGHT;
-               color: 0 0 0 255; /*(Changeable UI) color_class: "T116";*/
-               rel1 {
-                  to: "indicator.top.pad";
-                  relative: 0.0 1.0;
-               }
-               rel2 {
-                  to: "indicator.bottom.pad";
-                  relative: 1.0 0.0;
-               }
+               color: 7 7 7 255;
+               align: 0.5 0.0;
+               rel1.to: "button0_press";
+               rel2.to: "button0_press";
+               rel1.offset: 0 12;
                text {
-                  min: 1 1;
-                  font: "Bold"; size: "33"; /*(Changeable UI) text_class: "T116";*/
+                  min: 0 1;
+                  font: "Tizen:style=Light"; size: "36";
+                  text_class: "tizen";
                }
             }
-            description { state: "visible" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                visible: 1;
+               text {
+                  min: 0 1;
+                  font: "Tizen:style=Light"; size: "36";
+                  text_class: "tizen";
+               }
             }
          }
       }
@@ -2396,42 +2244,125 @@ group { name: "elm/slider/vertical/default";
          program { name: "popup,val,show";
             signal: "elm,state,val,show";
             source: "elm";
-            action:  STATE_SET "visible" 0.0;
-            target: "elm.indicator";
-            target: "bg.image";
-            target: "bg.effect.image";
-            target: "bg.stroke";
+            script {
+               if (!get_int(show))
+                 {
+                   set_int(show, 1);
+                   if (!get_int(warning))
+                     run_program(PROGRAM:"pressed_effect1");
+                   else
+                     run_program(PROGRAM:"pressed_warning_effect1");
+                   run_program(PROGRAM:"pressed_effect2");
+                 }
+            }
          }
          program { name: "popup,val,hide";
             signal: "elm,state,val,hide";
             source: "elm";
-            action:  STATE_SET "default" 0.0;
-            target: "elm.indicator";
-            target: "bg.image";
-            target: "bg.effect.image";
-            target: "bg.stroke";
+            script {
+               if (get_int(show))
+                 {
+                   set_int(show, 0);
+                   if (!get_int(warning))
+                     run_program(PROGRAM:"release_effect1");
+                   else
+                     run_program(PROGRAM:"release_warning_effect1");
+                   run_program(PROGRAM:"release_effect2");
+                 }
+            }
          }
          program { name: "popup,show";
             signal: "popup,show";
             source: "elm";
-            action:  STATE_SET "visible" 0.0;
-            target: "elm.indicator";
-            target: "bg.image";
-            target: "bg.effect.image";
-            target: "bg.stroke";
+            script {
+               if (!get_int(show))
+                 {
+                   set_int(show, 1);
+                   if (!get_int(warning))
+                     run_program(PROGRAM:"pressed_effect1");
+                   else
+                     run_program(PROGRAM:"pressed_warning_effect1");
+                   run_program(PROGRAM:"pressed_effect2");
+                 }
+            }
          }
          program { name: "popup,hide";
             signal: "popup,hide";
             source: "elm";
-            action:  STATE_SET "default" 0.0;
-            target: "elm.indicator";
-            target: "bg.image";
-            target: "bg.effect.image";
-            target: "bg.stroke";
-            after: "popup,hide,done";
+            script {
+               if (get_int(show))
+                 {
+                   set_int(show, 0);
+                   if (!get_int(warning))
+                     run_program(PROGRAM:"release_effect1");
+                   else
+                     run_program(PROGRAM:"release_warning_effect1");
+                   run_program(PROGRAM:"release_effect2");
+                 }
+            }
+         }
+         program { name: "popup,handle,default";
+           signal: "popup,default";
+           source: "popup,emit";
+           script {
+              if (get_int(warning))
+                {
+                  set_int(warning, 0);
+                  if (get_int(show))
+                    run_program(PROGRAM:"pressed_effect1");
+                }
+           }
+         }
+         program { name: "popup,handle,warning";
+           signal: "popup,warning";
+           source: "popup,emit";
+           script {
+              if (!get_int(warning))
+                {
+                  set_int(warning, 1);
+                  if (get_int(show))
+                    run_program(PROGRAM:"pressed_warning_effect1");
+                }
+           }
          }
          program { name: "popup,hide,done";
             action: SIGNAL_EMIT "popup,hide,done" "elm";
+         }
+         program { name: "pressed_effect1";
+            action:  STATE_SET "pressed" 0.0;
+            transition: DECELERATE 0.3;
+            target: "button0_press";
+         }
+         program { name: "pressed_effect2";
+            action:  STATE_SET "default" 0.0;
+            transition: DECELERATE 0.21;
+            target: "elm.indicator";
+            after: "pressed_effect3";
+         }
+         program { name: "pressed_effect3";
+            action:  STATE_SET "pressed" 0.0;
+            transition: DECELERATE 0.09;
+            target: "elm.indicator";
+         }
+         program { name: "release_effect1";
+            action:  STATE_SET "default" 0.0;
+            transition: DECELERATE 0.3;
+            target: "button0_press";
+         }
+         program { name: "release_effect2";
+            action:  STATE_SET "default" 0.0;
+            transition: DECELERATE 0.09;
+            target: "elm.indicator";
+         }
+         program { name: "pressed_warning_effect1";
+            action:  STATE_SET "pressed_warning" 0.0;
+            transition: DECELERATE 0.3;
+            target: "button0_press";
+         }
+         program { name: "release_warning_effect1";
+            action:  STATE_SET "warning" 0.0;
+            transition: DECELERATE 0.3;
+            target: "button0_press";
          }
       }
    }
