@@ -34,8 +34,19 @@
          public text = 0;
          public content = 0;
          public animate = 0;
-         public r1 = 0;
-         public r2 = 0;
+         public minw = 0;
+         public minh = 0;
+         public get_effect_min_size(base_effect, Float:ratio, min_w, min_h) {
+            new x, y, w, h;
+            get_geometry(base_effect, x, y, w, h);
+            if (w > h) {
+               set_float(min_w, w - h * (1 - ratio));
+               set_float(min_h, h * ratio);
+            } else {
+               set_float(min_w, w * ratio);
+               set_float(min_h, h - w * (1 - ratio));
+            }
+         }
       }
       parts {
          part { name: "base";
@@ -350,18 +361,10 @@
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
-                  new x, y, w, h;
-                  get_geometry(PART:"base", x, y, w, h);
-                  if (w > h) {
-                     set_float(r1, w - h * 0.3);
-                     set_float(r2, h * 0.7);
-                  } else {
-                     set_float(r1, w * 0.7);
-                     set_float(r2, h - w * 0.3);
-                  }
+                  get_effect_min_size(PART:"base", 0.7, minw, minh);
                   custom_state(PART:"effect_spacer", "default", 0.0);
-                  set_state_val(PART:"effect_spacer", STATE_MIN, get_int(r1), get_int(r2));
-                  set_state(PART:"effect_spacer", "custom", 0.0);
+                  set_state_val(PART:"effect_spacer", STATE_MIN, get_int(minw), get_int(minh));
+                  set_state(PART:"effect_spacer", "custom",0.0);
                   emit("elm,action,press", "");
                   run_program(PROGRAM:"pressed_effect");
                }
@@ -1210,8 +1213,13 @@
          public multi_down = 0; \
          public disabled = 0; \
          public animate = 0; \
-         public r1 = 0; \
-         public r2 = 0; \
+         public min_radius = 0; \
+         public max_radius = 0; \
+         public get_circumscription_radius(base_effect, radius) { \
+            new x, y, w, h; \
+            get_geometry(base_effect, x, y, w, h); \
+            set_float(radius, sqrt(pow(w, 2) + pow(h, 2))); \
+         } \
       } \
       parts { \
          part { name: "button_bg"; \
@@ -1331,7 +1339,7 @@
          program { name: "pressed_effect2"; \
             script { \
                custom_state(PART:"tizen_vg_shape", "pressed", 0.0); \
-               set_state_val(PART:"tizen_vg_shape", STATE_MIN, get_int(r2), get_int(r2)); \
+               set_state_val(PART:"tizen_vg_shape", STATE_MIN, get_int(max_radius), get_int(max_radius)); \
                run_program(PROGRAM:"pressed_effect3"); \
                run_program(PROGRAM:"pressed_effect4"); \
             } \
@@ -1380,12 +1388,10 @@
                   set_int(mouse_down, 1); \
                   set_int(animate, 1); \
                   if (get_int(disabled) == 0) { \
-                     new x, y, w, h; \
-                     get_geometry(PART:"button_bg", x, y, w, h); \
-                     set_float(r1, sqrt(pow(w, 2) + pow(h, 2))); \
-                     set_float(r2, get_float(r1) * 1.3); \
+                     get_circumscription_radius(PART:"button_bg", min_radius); \
+                     set_float(max_radius, get_float(min_radius) * 1.3); \
                      custom_state(PART:"effect_spacer", "default", 0.0); \
-                     set_state_val(PART:"effect_spacer", STATE_MIN, get_int(r1), get_int(r1)); \
+                     set_state_val(PART:"effect_spacer", STATE_MIN, get_int(min_radius), get_int(min_radius)); \
                      set_state(PART:"effect_spacer", "custom",0.0); \
                      emit("elm,action,press", ""); \
                      run_program(PROGRAM:"pressed_effect"); \
@@ -2815,8 +2821,13 @@ group { name: "elm/button/base/contacts";
          public multi_down = 0;
          public disabled = 0;
          public animate = 0;
-         public r1 = 0;
-         public r2 = 0;
+         public min_radius = 0;
+         public max_radius = 0;
+         public get_circumscription_radius(base_effect, radius) {
+            new x, y, w, h;
+            get_geometry(base_effect, x, y, w, h);
+            set_float(radius, sqrt(pow(w, 2) + pow(h, 2)));
+         }
       }
       parts {
          part { name: "button_bg";
@@ -2932,7 +2943,7 @@ group { name: "elm/button/base/contacts";
          program { name: "pressed_effect2";
             script {
                custom_state(PART:"tizen_vg_shape", "pressed", 0.0);
-               set_state_val(PART:"tizen_vg_shape", STATE_MIN, get_int(r2), get_int(r2));
+               set_state_val(PART:"tizen_vg_shape", STATE_MIN, get_int(max_radius), get_int(max_radius));
                run_program(PROGRAM:"pressed_effect3");
                run_program(PROGRAM:"pressed_effect4");
             }
@@ -2981,13 +2992,11 @@ group { name: "elm/button/base/contacts";
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
                   if (get_int(disabled) == 0) {
-                     new x, y, w, h;
-                     get_geometry(PART:"button_bg", x, y, w, h);
-                     set_float(r1, sqrt(pow(w, 2) + pow(h, 2)));
-                     set_float(r2, get_float(r1) * 1.3);
-                     custom_state(PART:"effect_spacer", "default", 0.0);
-                     set_state_val(PART:"effect_spacer", STATE_MIN, get_int(r1), get_int(r1));
-                     set_state(PART:"effect_spacer", "custom",0.0);
+                     get_circumscription_radius(PART:"button_bg", min_radius);
+                     set_float(max_radius, get_float(min_radius) * 1.3);
+                     custom_state(PART:"effect_spacer", "default", 0.0)
+                     set_state_val(PART:"effect_spacer", STATE_MIN, get_int(min_radius), get_int(min_radius));
+                     set_state(PART:"effect_spacer", "custom", 0.0);
                      emit("elm,action,press", "");
                      run_program(PROGRAM:"pressed_effect");
                   }
