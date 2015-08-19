@@ -73,7 +73,6 @@ styles{
 
 group { name: "elm/toolbar/base/default";
    alias: "elm/toolbar/base/tabbar";
-   alias: "elm/toolbar/base/scroll/tabbar";
    parts {
       part { name: "base";
          type: SPACER;
@@ -127,6 +126,7 @@ group { name: "elm/toolbar/item/tabbar";
       public multi_down = 0;
       public landscape = 0;
       public item_text = 0;
+      public shrink_scroll_enabled = 0;
    }
    parts {
       part { name: "bg";
@@ -139,6 +139,14 @@ group { name: "elm/toolbar/item/tabbar";
          description { state: "land" 0.0;
             inherit: "default" 0.0;
             min: TABBAR_COMMON_LANDSCAPE_DEFAULT_ITEM_SIZE_INC;
+         }
+         description { state: "scroll" 0.0;
+            inherit: "default" 0.0;
+            min: TABBAR_COMMON_SCROLL_ITEM_SIZE_INC;
+         }
+         description { state: "land_scroll" 0.0;
+            inherit: "default" 0.0;
+            min: TABBAR_COMMON_LANDSCAPE_SCROLL_ITEM_SIZE_INC;
          }
       }
       part { name: "badge_top_right_padding";
@@ -787,10 +795,17 @@ group { name: "elm/toolbar/item/tabbar";
          signal: "elm,number,item,*";
          source: "elm";
          script {
-            if (get_int(landscape))
-               set_state(PART:"bg", "land", 0.0);
-            else
-               set_state(PART:"bg", "default", 0.0);
+            if (get_int(landscape)) {
+               if (get_int(shrink_scroll_enabled))
+                  set_state(PART:"bg", "land_scroll", 0.0);
+               else
+                  set_state(PART:"bg", "land", 0.0);
+            } else {
+               if (get_int(shrink_scroll_enabled))
+                  set_state(PART:"bg", "scroll", 0.0);
+               else
+                  set_state(PART:"bg", "default", 0.0);
+            }
          }
       }
       program {
@@ -798,7 +813,10 @@ group { name: "elm/toolbar/item/tabbar";
          script {
             if (!get_int(landscape)) {
                set_int(landscape, 1);
-               set_state(PART:"bg", "land", 0.0);
+               if (get_int(shrink_scroll_enabled))
+                  set_state(PART:"bg", "land_scroll", 0.0);
+               else
+                  set_state(PART:"bg", "land", 0.0);
 
                if (get_int(icon_text)) {
                  set_state(PART:"padding_left_top", "icon_text_land", 0.0);
@@ -832,8 +850,11 @@ group { name: "elm/toolbar/item/tabbar";
          name: "change_to_portrait";
          script {
             if (get_int(landscape)) {
-              set_int(landscape, 0);
-              set_state(PART:"bg", "default", 0.0);
+               set_int(landscape, 0);
+               if (get_int(shrink_scroll_enabled))
+                  set_state(PART:"bg", "scroll", 0.0);
+               else
+                  set_state(PART:"bg", "default", 0.0);
 
                if (get_int(icon_text)) {
                  set_state(PART:"padding_left_top", "icon_text", 0.0);
@@ -883,23 +904,45 @@ group { name: "elm/toolbar/item/tabbar";
          signal: "elm,state,orient,180";
          after: "change_to_portrait";
       }
-   }
-}
-
-group { name: "elm/toolbar/item/scroll/tabbar";
-   inherit: "elm/toolbar/item/tabbar";
-   parts {
-      part { name: "bg";
-         type: SPACER;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            min: TABBAR_COMMON_SCROLL_ITEM_SIZE_INC;
+      program { name: "shrink_scroll";
+         signal: "elm,state,shrink,scroll";
+         source: "elm";
+         script {
+            set_int(shrink_scroll_enabled, 1);
+            if (get_int(landscape))
+               set_state(PART:"bg", "land_scroll", 0.0);
+            else
+               set_state(PART:"bg", "scroll", 0.0);
          }
-         description { state: "land" 0.0;
-            inherit: "default" 0.0;
-            min: TABBAR_COMMON_LANDSCAPE_SCROLL_ITEM_SIZE_INC;
+      }
+      program { name: "shrink_scroll_disable";
+         script {
+            set_int(shrink_scroll_enabled, 0);
+            if (get_int(landscape))
+               set_state(PART:"bg", "land", 0.0);
+            else
+               set_state(PART:"bg", "default", 0.0);
          }
+      }
+      program { name: "shrink_expand";
+         signal: "elm,state,shrink,expand";
+         source: "elm";
+         after: "shrink_scroll_disable";
+      }
+      program { name: "shrink_menu";
+         signal: "elm,state,shrink,menu";
+         source: "elm";
+         after: "shrink_scroll_disable";
+      }
+      program { name: "shrink_hide";
+         signal: "elm,state,shrink,hide";
+         source: "elm";
+         after: "shrink_scroll_disable";
+      }
+      program { name: "shrink_default";
+         signal: "elm,state,shrink,default";
+         source: "elm";
+         after: "shrink_scroll_disable";
       }
    }
 }
@@ -916,7 +959,6 @@ group { name: "elm/toolbar/object/default";
 }
 
 group { name: "elm/toolbar/base/tabbar_with_title";
-   alias: "elm/toolbar/base/scroll/tabbar_with_title";
    parts {
       part { name: "base";
          type: SPACER;
@@ -969,6 +1011,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
       public multi_down = 0;
       public landscape = 0;
       public item_text = 0;
+      public shrink_scroll_enabled = 0;
    }
    parts {
       part { name: "bg";
@@ -981,6 +1024,14 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          description { state: "land" 0.0;
             inherit: "default" 0.0;
             min: TABBAR_COMMON_LANDSCAPE_DEFAULT_ITEM_SIZE_INC;
+         }
+         description { state: "scroll" 0.0;
+            inherit: "default" 0.0;
+            min: TABBAR_COMMON_SCROLL_ITEM_SIZE_INC;
+         }
+         description { state: "land_scroll" 0.0;
+            inherit: "default" 0.0;
+            min: TABBAR_COMMON_LANDSCAPE_SCROLL_ITEM_SIZE_INC;
          }
       }
       part { name: "bg_cover";
@@ -1481,10 +1532,17 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          signal: "elm,number,item,*";
          source: "elm";
          script {
-            if (get_int(landscape))
-               set_state(PART:"bg", "land", 0.0);
-            else
-               set_state(PART:"bg", "default", 0.0);
+            if (get_int(landscape)) {
+               if (get_int(shrink_scroll_enabled))
+                  set_state(PART:"bg", "land_scroll", 0.0);
+               else
+                  set_state(PART:"bg", "land", 0.0);
+            } else {
+               if (get_int(shrink_scroll_enabled))
+                  set_state(PART:"bg", "scroll", 0.0);
+               else
+                  set_state(PART:"bg", "default", 0.0);
+            }
          }
       }
       program {
@@ -1492,7 +1550,10 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          script {
             if (!get_int(landscape)) {
                set_int(landscape, 1);
-               set_state(PART:"bg", "land", 0.0);
+               if (get_int(shrink_scroll_enabled))
+                  set_state(PART:"bg", "land_scroll", 0.0);
+               else
+                  set_state(PART:"bg", "land", 0.0);
             }
          }
       }
@@ -1500,8 +1561,11 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          name: "change_to_portrait";
          script {
             if (get_int(landscape)) {
-              set_int(landscape, 0);
-              set_state(PART:"bg", "default", 0.0);
+               set_int(landscape, 0);
+               if (get_int(shrink_scroll_enabled))
+                  set_state(PART:"bg", "scroll", 0.0);
+               else
+                  set_state(PART:"bg", "default", 0.0);
             }
          }
       }
@@ -1525,23 +1589,45 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          signal: "elm,state,orient,180";
          after: "change_to_portrait";
       }
-   }
-}
-
-group { name: "elm/toolbar/item/scroll/tabbar_with_title";
-   inherit: "elm/toolbar/item/tabbar_with_title";
-   parts {
-      part { name: "bg";
-         type: SPACER;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            min: TABBAR_COMMON_SCROLL_ITEM_SIZE_INC;
+      program { name: "shrink_scroll";
+         signal: "elm,state,shrink,scroll";
+         source: "elm";
+         script {
+            set_int(shrink_scroll_enabled, 1);
+            if (get_int(landscape))
+               set_state(PART:"bg", "land_scroll", 0.0);
+            else
+               set_state(PART:"bg", "scroll", 0.0);
          }
-         description { state: "land" 0.0;
-            inherit: "default" 0.0;
-            min: TABBAR_COMMON_LANDSCAPE_SCROLL_ITEM_SIZE_INC;
+      }
+      program { name: "shrink_scroll_disable";
+         script {
+            set_int(shrink_scroll_enabled, 0);
+            if (get_int(landscape))
+               set_state(PART:"bg", "land", 0.0);
+            else
+               set_state(PART:"bg", "default", 0.0);
          }
+      }
+      program { name: "shrink_expand";
+         signal: "elm,state,shrink,expand";
+         source: "elm";
+         after: "shrink_scroll_disable";
+      }
+      program { name: "shrink_menu";
+         signal: "elm,state,shrink,menu";
+         source: "elm";
+         after: "shrink_scroll_disable";
+      }
+      program { name: "shrink_hide";
+         signal: "elm,state,shrink,hide";
+         source: "elm";
+         after: "shrink_scroll_disable";
+      }
+      program { name: "shrink_default";
+         signal: "elm,state,shrink,default";
+         source: "elm";
+         after: "shrink_scroll_disable";
       }
    }
 }
