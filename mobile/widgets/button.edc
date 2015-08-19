@@ -4063,10 +4063,6 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
    group { name: "elm/button/base/spinner/default";
       alias: "elm/button/base/spinner/horizontal";
       data.item: "focus_highlight" "on";
-      script {
-         public mouse_down = 0;
-         public multi_down = 0;
-      }
       parts {
          part { name: "bg";
             type: SPACER;
@@ -4088,9 +4084,6 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
                   size: 106;
                   text_class: "tizen";
                }
-            }
-            description { state: "pressed" 0.0;
-               inherit: "default" 0 0 ;
             }
             description { state: "disabled" 0.0;
                inherit: "default" 0 0 ;
@@ -4127,35 +4120,6 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
          }
       }
       programs {
-         program { name: "button_press";
-            signal: "mouse,down,1*";
-            source: "over";
-            script {
-               if ((get_int(multi_down) == 0) &&
-                   (get_int(mouse_down) == 0)) {
-                     set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_press2");
-               }
-            }
-         }
-         program { name: "button_press2";
-            action: SIGNAL_EMIT "elm,action,press" "";
-            after: "action_pressed";
-         }
-         program { name: "button_unpress";
-            signal: "mouse,up,1*";
-            source: "over";
-            script {
-               if (get_int(mouse_down) == 1) {
-                     set_int(mouse_down, 0);
-                     run_program(PROGRAM:"button_unpress2");
-               }
-            }
-         }
-         program { name: "button_unpress2";
-            action: SIGNAL_EMIT "elm,action,unpress" "";
-            after: "action_unpressed";
-         }
          program { name: "button_click";
             signal: "mouse,clicked,1";
             source: "over";
@@ -4169,14 +4133,6 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
          }
          program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
-         }
-         program { name: "action_pressed";
-            action: STATE_SET "pressed" 0.0;
-            target: "elm.text";
-         }
-         program { name: "action_unpressed";
-            action: STATE_SET "default" 0.0;
-            target: "elm.text";
          }
          program { name: "action_focus";
             signal: "elm,action,focus_highlight,show";
@@ -4538,13 +4494,12 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
             type: TEXT;
             scale: 1;
             description { state: "default" 0.0;
-               min: SPINNER_VERTICAL_TIME_PICKER_TEXT_AREA_SIZE_INC;
-               max: SPINNER_VERTICAL_TIME_PICKER_TEXT_AREA_SIZE_INC;
                fixed: 1 1;
                color: 0 0 0 255;
                rel1.to: "bg";
                rel2.to: "bg";
                text {
+                  // FIXME: It should be changed to SNum-3L font.
                   font: "Tizen:style=Light";
                   size: 106;
                   text_class: "tizen";
@@ -4733,8 +4688,6 @@ group { name: "elm/button/base/spinner/vertical_date_picker";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
-            min: SPINNER_VERTICAL_DATE_PICKER_TEXT_AREA_SIZE_INC;
-            max: SPINNER_VERTICAL_DATE_PICKER_TEXT_AREA_SIZE_INC;
             fixed: 1 1;
             color: 0 0 0 255;
             rel1.to: "bg";
