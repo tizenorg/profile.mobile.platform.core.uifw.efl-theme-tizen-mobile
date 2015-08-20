@@ -892,41 +892,299 @@
    }
 
    group { name: "elm/button/base/floatingbutton/default";
-      inherit: "elm/button/base/default";
-      data.item: "vector_ux" "circle";
+      data.item: "vector_ux" "no_bg/circle";
+      script {
+         public mouse_down = 0;
+         public multi_down = 0;
+         public disabled = 0;
+         public animate = 0;
+         public min_radius = 0;
+         public max_radius = 0;
+         public get_circumscription_radius(base_effect, radius) {
+            new x, y, w, h;
+            get_geometry(base_effect, x, y, w, h);
+            set_float(radius, sqrt(pow(w, 2) + pow(h, 2)));
+         }
+      }
       parts {
          part { name: "base";
+            type: SPACER;
             scale: 1;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: BUTTON_ICON_WIDTH_INC BUTTON_ICON_HEIGHT_INC;
+               max: BUTTON_ICON_WIDTH_INC BUTTON_ICON_HEIGHT_INC;
+            }
+         }
+         part { name: "effect_spacer";
             type: SPACER;
             description { state: "default" 0.0;
-               min: BUTTON_FLOATINGBUTTON_SIZE_INC;
+               fixed: 1 1;
+               rel1.relative: 0.5 0.5;
+               rel2.relative: 0.5 0.5;
+            }
+         }
+         //Effect Shape Part
+         part { name: "tizen_vg_shape";
+            type: SWALLOW;
+            clip_to: "tizen_vg_shape_clipper";
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1.relative: 0.5 0.5;
+               rel2.relative: 0.5 0.5;
+            }
+            description { state: "ready" 0.0;
+               fixed: 1 1;
+               rel1.to: "effect_spacer";
+               rel2.to: "effect_spacer";
+            }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
             }
          }
          part { name: "tizen_vg_shape_clipper";
             type: RECT;
             description { state: "default" 0.0;
-               visible: 0;
-            }
-            description { state: "disabled" 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "tizen_vg_shape_clipper2";
-            type: RECT;
-            description { state: "default" 0.0;
-               visible: 0;
                color: 0 0 0 0;
+               visible: 0;
+               fixed: 1 1;
+               rel1.to: "tizen_vg_shape";
+               rel2.to: "tizen_vg_shape";
             }
             description { state: "ready" 0.0;
                inherit: "default" 0.0;
                visible: 1;
             }
             description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
                color: 0 0 0 77;
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            scale: 1;
+            clip_to: "clipper";
+            description { state: "default" 0.0;
+               min: BUTTON_ICON_WIDTH_INC BUTTON_ICON_HEIGHT_INC;
+               max: BUTTON_ICON_WIDTH_INC BUTTON_ICON_HEIGHT_INC;
+               rel1.to: "base";
+               rel2.to: "base";
+               align: 0.5 0.5;
+               fixed: 1 1;
+            }
+         }
+         part { name: "clipper";
+            type: RECT;
+            description { state: "default" 0.0;
+            }
+            description { state: "pressed" 0.0;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 163;
+            }
+         }
+         part { name: "over2";
+            type: RECT;
+            ignore_flags: ON_HOLD;
+            description { state: "default" 0.0;
+               rel1.to: "base";
+               rel2.to: "base";
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "over3";
+            type: RECT;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               rel1.to: "base";
+               rel2.to: "base";
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "disabler";
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1.to: "base";
+               rel2.to: "base";
+               color: 0 0 0 0;
+               visible: 0;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
             }
          }
       }
       programs {
+         program { name: "pressed_effect";
+            action: STATE_SET "ready" 0.0;
+            target: "tizen_vg_shape_clipper";
+            target: "tizen_vg_shape";
+            after: "pressed_effect2";
+         }
+         program { name: "pressed_effect2";
+            script {
+               custom_state(PART:"tizen_vg_shape", "pressed", 0.0);
+               set_state_val(PART:"tizen_vg_shape", STATE_MIN, get_int(max_radius), get_int(max_radius));
+               run_program(PROGRAM:"pressed_effect3");
+               run_program(PROGRAM:"pressed_effect4");
+            }
+         }
+         program { name: "pressed_effect3";
+            action: STATE_SET "pressed" 0.0;
+            target: "tizen_vg_shape_clipper";
+            target: "tizen_vg_shape";
+            transition: GLIDE_EASE_OUT(0.3);
+         }
+         program { name: "pressed_effect4";
+            action: STATE_SET "custom" 0.0;
+            target: "tizen_vg_shape";
+            transition: GLIDE_EASE_OUT(0.3);
+            after: "pressed_effect5";
+         }
+         program { name: "pressed_effect5";
+            script {
+               set_int(animate, 0);
+               if (get_int(mouse_down) == 0) {
+                  emit("elm,action,unpress", "");
+                  run_program(PROGRAM:"unpressed_effect");
+               }
+            }
+         }
+         program { name: "unpressed_effect";
+            script {
+               run_program(PROGRAM:"unpressed_effect2");
+            }
+         }
+         program { name: "unpressed_effect2";
+            action: STATE_SET "ready" 0.0;
+            target: "tizen_vg_shape_clipper";
+            transition: GLIDE_EASE_OUT(0.45);
+            after: "unpressed_effect4";
+         }
+         program { name: "unpressed_effect4";
+            action: STATE_SET "default" 0.0;
+            target: "tizen_vg_shape";
+            target: "tizen_vg_shape_clipper";
+         }
+         program { name: "pressed";
+            signal: "mouse,down,1*";
+            source: "over2";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0)) {
+                  set_int(mouse_down, 1);
+                  set_int(animate, 1);
+                  if (get_int(disabled) == 0) {
+                     get_circumscription_radius(PART:"base", max_radius);
+                     set_float(min_radius, get_float(max_radius) * 0.7);
+                     custom_state(PART:"effect_spacer", "default", 0.0)
+                     set_state_val(PART:"effect_spacer", STATE_MIN, get_int(min_radius), get_int(min_radius));
+                     set_state(PART:"effect_spacer", "custom", 0.0);
+                     emit("elm,action,press", "");
+                     run_program(PROGRAM:"pressed_effect");
+                  }
+               }
+            }
+         }
+         program { name: "unpressed";
+            signal: "mouse,up,1";
+            source: "over3";
+            script {
+               if (get_int(mouse_down) == 1) {
+                  set_int(mouse_down, 0);
+                  if (get_int(animate) == 0) {
+                     if (get_int(disabled) == 0) {
+                        emit("elm,action,unpress", "");
+                        run_program(PROGRAM:"unpressed_effect");
+                     }
+                  }
+               }
+            }
+         }
+         program { name: "button_click";
+            signal: "mouse,clicked,1";
+            source: "over2";
+            script {
+               if (get_int(multi_down) == 0) {
+                 run_program(PROGRAM:"play_sound");
+                 emit("elm,action,click", "");
+               }
+            }
+         }
+         program { name: "play_sound";
+            action: RUN_PLUGIN "touch_sound";
+         }
+         program { name: "enable";
+            signal: "elm,state,enabled";
+            source: "elm";
+            script {
+              set_int(disabled, 0);
+              set_state(PART:"disabler", "default", 0.0);
+            }
+         }
+         program { name: "disable";
+            signal: "elm,state,disabled";
+            source: "elm";
+            script {
+              set_int(disabled, 1);
+              set_state(PART:"disabler", "disabled", 0.0);
+            }
+         }
+         program {
+            name: "multi_down";
+            signal: "elm,action,multi,down";
+            source: "elm";
+            script {
+               set_int(multi_down, 1);
+            }
+         }
+         program {
+            name: "multi_up";
+            signal: "elm,action,multi,up";
+            source: "elm";
+            script {
+               set_int(multi_down, 0);
+            }
+         }
+         program { name: "pass_event_enable";
+            signal: "elm,event,pass,enabled";
+            source: "elm";
+            script {
+               set_mouse_events(PART:"over2", 0);
+               set_mouse_events(PART:"over3", 0);
+               set_mouse_events(PART:"disabler", 0);
+            }
+         }
+         program { name: "pass_event_disable";
+            signal: "elm,event,pass,disabled";
+            source:"elm";
+            script {
+               set_mouse_events(PART:"over2", 1);
+               set_mouse_events(PART:"over3", 1);
+               set_mouse_events(PART:"disabler", 1);
+            }
+         }
+         program { name: "repeat_event_enable";
+            signal: "elm,event,repeat,enabled";
+            source: "elm";
+            script {
+               set_repeat_events(PART:"over2", 1);
+               set_repeat_events(PART:"over3", 1);
+               set_repeat_events(PART:"disabler", 1);
+            }
+         }
+         program { name: "repeat_event_disable";
+            signal: "elm,event,repeat,disabled";
+            source:"elm";
+            script {
+               set_repeat_events(PART:"over2", 0);
+               set_repeat_events(PART:"over3", 0);
+               set_repeat_events(PART:"disabler", 0);
+            }
+         }
          program {
             signal: "elm,state,default";
             source: "elm";
@@ -939,7 +1197,7 @@
    group { "elm/button/base/floatingbutton/white_bg";
       inherit: "elm/button/base/floatingbutton/default";
       parts {
-         part { name: "tizen_vg_shape_clipper2";
+         part { name: "tizen_vg_shape_clipper";
             type: RECT;
             description { state: "default" 0.0;
                visible: 0;
