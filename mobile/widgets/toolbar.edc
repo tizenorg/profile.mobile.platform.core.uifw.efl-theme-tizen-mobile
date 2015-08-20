@@ -21,6 +21,10 @@ styles{
       base: "font=Tizen:style=Condensed font_size=30 align=center wrap=none ellipsis=1 text_class=tizen color=#F9F9F9FF";
       TAG
    }
+   style { name: "tabbar_icon_text_style_T111S_slide";
+      base: "font=Tizen:style=Condensed font_size=30 align=left wrap=none text_class=tizen color=#F9F9F9FF";
+      TAG
+   }
    style { name: "tabbar_icon_text_style_T111D";
       base: "font=Tizen:style=Condensed font_size=30 align=center wrap=none ellipsis=1 text_class=tizen color=#F9F9F972";
       TAG
@@ -35,6 +39,10 @@ styles{
    }
    style { name: "tabbar_text_style_T1117S";
       base: "font=Tizen:style=Condensed font_size=38 align=center wrap=none ellipsis=1 text_class=tizen color=#F9F9F9FF";
+      TAG
+   }
+   style { name: "tabbar_text_style_T1117S_slide";
+      base: "font=Tizen:style=Condensed font_size=38 align=left wrap=none text_class=tizen color=#F9F9F9FF";
       TAG
    }
    style { name: "tabbar_text_style_T1117D";
@@ -63,6 +71,10 @@ styles{
    }
    style { name: "tabbar_text_style_T134S";
       base: "font=Tizen:style=Condensed font_size=32 align=center wrap=none ellipsis=1 text_class=tizen color=#F9F9F9FF";
+      TAG
+   }
+   style { name: "tabbar_text_style_T134S_slide";
+      base: "font=Tizen:style=Condensed font_size=32 align=center wrap=none text_class=tizen color=#F9F9F9FF";
       TAG
    }
    style { name: "tabbar_text_style_T134D";
@@ -127,6 +139,115 @@ group { name: "elm/toolbar/item/tabbar";
       public landscape = 0;
       public item_text = 0;
       public shrink_scroll_enabled = 0;
+      public g_duration = 0;
+      public g_stopslide = 0;
+      public g_timer_id = 0;
+      public g_anim_id = 0;
+      public g_tb_w = 0;
+      public g_tb_h = LABEL_FONT_SIZE_INC;
+      public org_text = 0;
+
+      public get_tb_width() {
+         new x, y, w, h;
+         get_geometry(PART:"elm.text.slide", x, y, w, h);
+         set_int(g_tb_w, w);
+         set_int(g_tb_h, h);
+         get_geometry(PART:"elm.text.slide.clipper", x, y, w, h);
+         set_int(org_text, w);
+      }
+      public slide_to_end_anim(val, Float:pos) {
+         new slide_start_timer;
+
+         if (get_int(g_stopslide)) return;
+         if (get_int(icon_text)) {
+            if (get_int(landscape))
+               set_tween_state(PART:"elm.text.slide", pos*0.5, "icon_text_land_slide_begin", 0.0, "icon_text_land_slide_end", 0.0);
+            else
+               set_tween_state(PART:"elm.text.slide", pos*0.5, "icon_text_slide_begin", 0.0, "icon_text_slide_end", 0.0);
+         } else {
+            set_tween_state(PART:"elm.text.slide", pos*0.5, "slide_begin", 0.0, "slide_end", 0.0);
+         }
+         if (pos >= 1.0) {
+            slide_start_timer = get_int(g_timer_id);
+            if (slide_start_timer) {
+               cancel_timer(slide_start_timer);
+               set_int(g_timer_id, 0);
+            }
+            set_int(g_timer_id, timer(1.5, "start_slide", 0));
+            set_int(g_anim_id, 0);
+         }
+      }
+      public slide_to_end() {
+         new slide_anim_id;
+         if (get_int(g_stopslide)) return;
+         slide_anim_id = get_int(g_anim_id);
+         if (slide_anim_id) {
+              cancel_anim(slide_anim_id);
+              set_int(g_anim_id, 0);
+         }
+         set_int(g_anim_id, anim(get_float(g_duration), "slide_to_end_anim", 0));
+      }
+      public start_slide(val) {
+         new buf[256];
+         new buffer[TABBAR_COMMON_SLIDE_TEXT_MAX_LENGTH];
+         new Float:len;
+         set_int(g_stopslide, 0);
+         get_text(PART:"elm.text", buf, 256);
+         set_text(PART:"elm.text.slide", buf);
+         get_tb_width();
+         if (!get_float(g_duration)) {
+            len = get_int(g_tb_w);
+            set_float(g_duration, len / get_int(g_tb_h) * TABBAR_COMMON_SLIDE_SPEED_WEIGHT);
+         }
+         if(get_int(g_tb_w) > get_int(org_text)) {
+            get_text(PART:"elm.text", buf, 256);
+            snprintf(buffer, TABBAR_COMMON_SLIDE_TEXT_MAX_LENGTH, "%s", buf);
+            strcat(buffer, TABBAR_COMMON_SLIDE_TEXT_CHAR_GAP);
+            strcat(buffer, buf);
+            strcat(buffer, TABBAR_COMMON_SLIDE_TEXT_CHAR_GAP);
+            set_text(PART:"elm.text.slide", buffer);
+
+            if (get_int(icon_text)) {
+               if (get_int(landscape))
+                  set_state(PART:"elm.text.slide", "icon_text_land_slide_begin", 0.0);
+               else
+                  set_state(PART:"elm.text.slide", "icon_text_slide_begin", 0.0);
+            } else {
+               set_state(PART:"elm.text.slide", "slide_begin", 0.0);
+            }
+
+            set_state(PART:"elm.text.clipper", "hide", 0.0);
+            set_state(PART:"elm.text.slide.clipper", "show", 0.0);
+            slide_to_end();
+         }
+         set_int(g_timer_id, 0);
+      }
+      public stop_slide() {
+         new slide_start_timer;
+         new slide_anim_id;
+         set_int(g_stopslide, 1);
+         set_float(g_duration, 0);
+         slide_start_timer = get_int(g_timer_id);
+         if (slide_start_timer) {
+            cancel_timer(slide_start_timer);
+            set_int(g_timer_id, 0);
+         }
+         slide_anim_id = get_int(g_anim_id);
+         if (slide_anim_id) {
+            cancel_anim(slide_anim_id);
+            set_int(g_anim_id, 0);
+         }
+         if (get_int(icon_text)) {
+            if (get_int(landscape))
+               set_state(PART:"elm.text.slide", "icon_text_land", 0.0);
+            else
+               set_state(PART:"elm.text.slide", "icon_text", 0.0);
+         } else {
+            set_state(PART:"elm.text.slide", "default", 0.0);
+         }
+         set_state(PART:"elm.text.clipper", "default", 0.0);
+         set_state(PART:"elm.text.slide.clipper", "default", 0.0);
+      }
    }
    parts {
       part { name: "bg";
@@ -483,6 +604,133 @@ group { name: "elm/toolbar/item/tabbar";
             text.style: "tabbar_icon_text_style_T1117D";
          }
       }
+      part { name: "slide_text_gap";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: TABBAR_COMMON_SLIDE_TEXT_GAP 0;
+            max: TABBAR_COMMON_SLIDE_TEXT_GAP -1;
+            align: 1.0 0.5;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
+            rel1 {
+               to: "padding_left_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to_x: "padding_left_top";
+               to_y: "padding_right_bottom";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "elm.text.slide";
+         type: TEXTBLOCK;
+         scale: 1;
+         clip_to: "elm.text.slide.clipper";
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            min: TABBAR_DEFAULT_TEXT_SIZE_INC;
+            max: TABBAR_DEFAULT_TEXT_SIZE_INC;
+            rel1 {
+               to: "padding_left_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding_right_bottom";
+               relative: 0.0 0.0;
+            }
+            text {
+               style: "tabbar_text_style_T1117S_slide";
+               min: 1 1;
+               max: 1 0;
+            }
+         }
+         description { state: "slide_begin" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "slide_end" 0.0;
+            inherit: "default" 0.0;
+            align: 1.0 0.5;
+            rel1 {
+               to_x: "slide_text_gap";
+               to_y: "padding_left_top";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "slide_text_gap";
+               to_y: "padding_right_bottom";
+               relative: 1.0 0.0;
+            }
+         }
+         description { state: "icon_text" 0.0;
+            inherit: "default" 0.0;
+            min: TABBAR_DEFAULT_ICON_TEXT_SIZE_INC;
+            max: TABBAR_DEFAULT_ICON_TEXT_SIZE_INC;
+            visible: 1;
+            rel1 {
+               to_x: "padding_left_top";
+               to_y: "text_top_padding";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding_right_bottom";
+               relative: 0.0 0.0;
+            }
+            text {
+               style: "tabbar_icon_text_style_T111S_slide";
+               min: 1 1;
+               max: 1 1;
+            }
+         }
+         description { state: "icon_text_slide_begin" 0.0;
+            inherit: "icon_text" 0.0;
+         }
+         description { state: "icon_text_slide_end" 0.0;
+            inherit: "icon_text" 0.0;
+            align: 1.0 0.5;
+            rel1 {
+               to_x: "slide_text_gap";
+               to_y: "text_top_padding";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "slide_text_gap";
+               to_y: "padding_right_bottom";
+               relative: 1.0 0.0;
+            }
+         }
+         description { state: "icon_text_land" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            min: TABBAR_DEFAULT_ICON_LAND_TEXT_SIZE_INC;
+            max: TABBAR_DEFAULT_ICON_LAND_TEXT_SIZE_INC;
+            text {
+               style: "tabbar_text_style_T1117S_slide";
+               min: 1 1;
+               max: 1 1;
+            }
+         }
+         description { state: "icon_text_land_slide_begin" 0.0;
+            inherit: "icon_text_land" 0.0;
+         }
+         description { state: "icon_text_land_slide_end" 0.0;
+            inherit: "icon_text_land" 0.0;
+            align: 1.0 0.5;
+            rel1 {
+               to_x: "slide_text_gap";
+               to_y: "padding_left_top";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "slide_text_gap";
+               to_y: "padding_right_bottom";
+               relative: 1.0 0.0;
+            }
+         }
+      }
       part { name: "elm.icon.clipper";
          type: RECT;
          description { state: "default" 0.0;
@@ -504,11 +752,42 @@ group { name: "elm/toolbar/item/tabbar";
       part { name: "elm.text.clipper";
          type: RECT;
          description { state: "default" 0.0;
-            color: 255 255 255 255;
+            fixed: 1 1;
+            rel1 {
+               to: "padding_left_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding_right_bottom";
+               relative: 0.0 0.0;
+            }
+            visible: 1;
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
-            color: 255 255 255 255;
+         }
+         description { state: "hide" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "elm.text.slide.clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               to: "padding_left_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding_right_bottom";
+               relative: 0.0 0.0;
+            }
+            visible: 0;
+         }
+         description { state: "show" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
       part { name: "event";
@@ -531,12 +810,14 @@ group { name: "elm/toolbar/item/tabbar";
       program { name: "selected_text";
          script{
             set_int(selected, 1);
+            stop_slide();
             if (!get_int(icon_text))
               set_state(PART:"elm.text", "text_selected", 0.0);
             else if (!get_int(landscape))
               set_state(PART:"elm.text", "icon_text_selected", 0.0);
             else
               set_state(PART:"elm.text", "icon_text_land_selected", 0.0);
+            set_int(g_timer_id, timer(1.5, "start_slide", 0));
          }
       }
       program { name: "go_passive";
@@ -556,6 +837,7 @@ group { name: "elm/toolbar/item/tabbar";
               set_state(PART:"elm.text", "icon_text", 0.0);
             else
               set_state(PART:"elm.text", "icon_text_land", 0.0);
+            stop_slide();
          }
       }
       program { name: "key,pressed";
@@ -657,6 +939,7 @@ group { name: "elm/toolbar/item/tabbar";
          source: "elm";
          script {
             set_int(item_state, ITEM_STATE_ENABLED);
+            stop_slide();
             set_state(PART:"bg_cover", "default", 0.0);
             if (!get_int(icon_text))
               set_state(PART:"elm.text", "text", 0.0);
@@ -666,6 +949,8 @@ group { name: "elm/toolbar/item/tabbar";
               set_state(PART:"elm.text", "icon_text_land", 0.0);
             set_state(PART:"elm.text.clipper", "default", 0.0);
             set_state(PART:"elm.icon.clipper", "default", 0.0);
+            if (get_int(selected))
+               set_int(g_timer_id, timer(1.5, "start_slide", 0));
          }
       }
       program { name: "disable";
@@ -673,6 +958,7 @@ group { name: "elm/toolbar/item/tabbar";
          source: "elm";
          script {
             set_int(item_state, ITEM_STATE_DISABLED);
+            stop_slide();
             set_state(PART:"bg_cover", "disabled", 0.0);
             if (!get_int(icon_text))
               set_state(PART:"elm.text", "text_disabled", 0.0);
@@ -703,6 +989,7 @@ group { name: "elm/toolbar/item/tabbar";
          source: "elm";
          script {
             set_int(item_text, 1);
+            stop_slide();
             if (!get_int(icon_text))
               {
                 if (get_int(selected))
@@ -735,6 +1022,8 @@ group { name: "elm/toolbar/item/tabbar";
                     set_state(PART:"elm.swallow.icon", "visible_land", 0.0);
                   }
               }
+            if (get_int(selected))
+               set_int(g_timer_id, timer(1.5, "start_slide", 0));
          }
       }
       program { name: "text_hide";
@@ -742,6 +1031,7 @@ group { name: "elm/toolbar/item/tabbar";
          source: "elm";
          script {
             set_int(item_text, 0);
+            stop_slide();
             set_state(PART:"elm.text", "default", 0.0);
          }
       }
@@ -750,6 +1040,7 @@ group { name: "elm/toolbar/item/tabbar";
          source: "elm";
          script {
             set_int(icon_text, 1);
+            stop_slide();
             if (!get_int(landscape))
               {
                 if (get_int(item_text))
@@ -778,6 +1069,8 @@ group { name: "elm/toolbar/item/tabbar";
                 set_state(PART:"padding_left_top", "icon_text_land", 0.0);
                 set_state(PART:"padding_right_bottom", "icon_text_land", 0.0);
               }
+            if (get_int(selected))
+               set_int(g_timer_id, timer(1.5, "start_slide", 0));
          }
       }
       program { name: "icon_hide";
@@ -785,10 +1078,13 @@ group { name: "elm/toolbar/item/tabbar";
          source: "elm";
          script {
             set_int(icon_text, 0);
+            stop_slide();
             set_state(PART:"elm.swallow.icon", "default", 0.0);
             set_state(PART:"elm.text", "text", 0.0);
             set_state(PART:"padding_left_top", "text", 0.0);
             set_state(PART:"padding_right_bottom", "text", 0.0);
+            if (get_int(selected))
+               set_int(g_timer_id, timer(1.5, "start_slide", 0));
          }
       }
       program { name: "tab_item";
@@ -813,6 +1109,7 @@ group { name: "elm/toolbar/item/tabbar";
          script {
             if (!get_int(landscape)) {
                set_int(landscape, 1);
+               stop_slide();
                if (get_int(shrink_scroll_enabled))
                   set_state(PART:"bg", "land_scroll", 0.0);
                else
@@ -843,6 +1140,8 @@ group { name: "elm/toolbar/item/tabbar";
                      set_state(PART:"elm.icon.clipper", "default", 0.0);
                    }
                  }
+               if (get_int(selected))
+                  set_int(g_timer_id, timer(1.5, "start_slide", 0));
             }
          }
       }
@@ -851,6 +1150,7 @@ group { name: "elm/toolbar/item/tabbar";
          script {
             if (get_int(landscape)) {
                set_int(landscape, 0);
+               stop_slide();
                if (get_int(shrink_scroll_enabled))
                   set_state(PART:"bg", "scroll", 0.0);
                else
@@ -881,6 +1181,8 @@ group { name: "elm/toolbar/item/tabbar";
                      set_state(PART:"elm.icon.clipper", "default", 0.0);
                    }
                }
+               if (get_int(selected))
+                  set_int(g_timer_id, timer(1.5, "start_slide", 0));
             }
          }
       }
@@ -1012,6 +1314,106 @@ group { name: "elm/toolbar/item/tabbar_with_title";
       public landscape = 0;
       public item_text = 0;
       public shrink_scroll_enabled = 0;
+      public g_duration = 0;
+      public g_stopslide = 0;
+      public g_timer_id = 0;
+      public g_anim_id = 0;
+      public g_tb_w = 0;
+      public g_tb_h = LABEL_FONT_SIZE_INC;
+      public org_text = 0;
+
+      public get_tb_width() {
+         new x, y, w, h;
+         get_geometry(PART:"elm.text.slide", x, y, w, h);
+         set_int(g_tb_w, w);
+         set_int(g_tb_h, h);
+         get_geometry(PART:"elm.text.slide.clipper", x, y, w, h);
+         set_int(org_text, w);
+      }
+      public slide_to_end_anim(val, Float:pos) {
+         new slide_start_timer;
+
+         if (get_int(g_stopslide)) return;
+         if (get_int(icon_text))
+            set_tween_state(PART:"elm.text.slide", pos*0.5, "icon_text_slide_begin", 0.0, "icon_text_slide_end", 0.0);
+         else
+            set_tween_state(PART:"elm.text.slide", pos*0.5, "slide_begin", 0.0, "slide_end", 0.0);
+
+         if (pos >= 1.0) {
+            slide_start_timer = get_int(g_timer_id);
+            if (slide_start_timer) {
+               cancel_timer(slide_start_timer);
+               set_int(g_timer_id, 0);
+            }
+            set_int(g_timer_id, timer(1.5, "start_slide", 0));
+            set_int(g_anim_id, 0);
+         }
+      }
+      public slide_to_end() {
+         new slide_anim_id;
+         if (get_int(g_stopslide)) return;
+         slide_anim_id = get_int(g_anim_id);
+         if (slide_anim_id) {
+            cancel_anim(slide_anim_id);
+            set_int(g_anim_id, 0);
+         }
+         set_int(g_anim_id, anim(get_float(g_duration), "slide_to_end_anim", 0));
+      }
+      public start_slide(val) {
+         new buf[256];
+         new buffer[TABBAR_COMMON_SLIDE_TEXT_MAX_LENGTH];
+         new Float:len;
+         set_int(g_stopslide, 0);
+         get_text(PART:"elm.text", buf, 256);
+         set_text(PART:"elm.text.slide", buf);
+         get_tb_width();
+         if (!get_float(g_duration)) {
+            len = get_int(g_tb_w);
+            set_float(g_duration, len / get_int(g_tb_h) * TABBAR_COMMON_SLIDE_SPEED_WEIGHT);
+         }
+         if(get_int(g_tb_w) > get_int(org_text)) {
+            get_text(PART:"elm.text", buf, 256);
+            snprintf(buffer, TABBAR_COMMON_SLIDE_TEXT_MAX_LENGTH, "%s", buf);
+            strcat(buffer, TABBAR_COMMON_SLIDE_TEXT_CHAR_GAP);
+            strcat(buffer, buf);
+            strcat(buffer, TABBAR_COMMON_SLIDE_TEXT_CHAR_GAP);
+            set_text(PART:"elm.text.slide", buffer);
+
+            if (get_int(icon_text)) {
+               set_state(PART:"elm.text.slide", "icon_text_slide_begin", 0.0);
+            } else {
+               set_state(PART:"elm.text.slide", "slide_begin", 0.0);
+            }
+
+            set_state(PART:"elm.text.clipper", "hide", 0.0);
+            set_state(PART:"elm.text.slide.clipper", "show", 0.0);
+            slide_to_end();
+         }
+         set_int(g_timer_id, 0);
+      }
+      public stop_slide() {
+         new slide_start_timer;
+         new slide_anim_id;
+         set_int(g_stopslide, 1);
+         set_float(g_duration, 0);
+         slide_start_timer = get_int(g_timer_id);
+         if (slide_start_timer) {
+            cancel_timer(slide_start_timer);
+            set_int(g_timer_id, 0);
+         }
+         slide_anim_id = get_int(g_anim_id);
+         if (slide_anim_id) {
+            cancel_anim(slide_anim_id);
+            set_int(g_anim_id, 0);
+         }
+         if (get_int(icon_text)) {
+            set_state(PART:"elm.text.slide", "icon_text", 0.0);
+         } else {
+            set_state(PART:"elm.text.slide", "default", 0.0);
+         }
+         set_state(PART:"elm.text.clipper", "default", 0.0);
+         set_state(PART:"elm.text.slide.clipper", "default", 0.0);
+      }
    }
    parts {
       part { name: "bg";
@@ -1272,6 +1674,82 @@ group { name: "elm/toolbar/item/tabbar_with_title";
             text.style: "tabbar_icon_text_style_T111D";
          }
       }
+      part { name: "slide_text_gap";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: TABBAR_COMMON_SLIDE_TEXT_GAP 0;
+            max: TABBAR_COMMON_SLIDE_TEXT_GAP -1;
+            align: 1.0 0.5;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
+            rel1 {
+               to: "padding_left_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to_x: "padding_left_top";
+               to_y: "padding_right_bottom";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "elm.text.slide";
+         type: TEXTBLOCK;
+         scale: 1;
+         clip_to: "elm.text.slide.clipper";
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            min: TABBAR_TITLE_TEXT_SIZE_INC;
+            max: TABBAR_TITLE_TEXT_SIZE_INC;
+            rel1 {
+               to: "padding_left_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding_right_bottom";
+               relative: 0.0 0.0;
+            }
+            text {
+               style: "tabbar_text_style_T1117S_slide";
+               min: 1 1;
+               max: 1 0;
+            }
+         }
+         description { state: "slide_begin" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "slide_end" 0.0;
+            inherit: "default" 0.0;
+            align: 1.0 0.5;
+            rel1 {
+               to_x: "slide_text_gap";
+               to_y: "padding_left_top";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "slide_text_gap";
+               to_y: "padding_right_bottom";
+               relative: 1.0 0.0;
+            }
+         }
+         description { state: "icon_text" 0.0;
+            inherit: "default" 0.0;
+            text {
+               style: "tabbar_icon_text_style_T111S_slide";
+               min: 1 1;
+               max: 1 0;
+            }
+         }
+         description { state: "icon_text_slide_begin" 0.0;
+            inherit: "icon_text" 0.0;
+         }
+         description { state: "icon_text_slide_end" 0.0;
+            inherit: "slide_end" 0.0;
+         }
+      }
       part { name: "elm.icon.clipper";
          type: RECT;
          description { state: "default" 0.0;
@@ -1293,11 +1771,42 @@ group { name: "elm/toolbar/item/tabbar_with_title";
       part { name: "elm.text.clipper";
          type: RECT;
          description { state: "default" 0.0;
-            color: 255 255 255 255;
+            fixed: 1 1;
+            rel1 {
+               to: "padding_left_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding_right_bottom";
+               relative: 0.0 0.0;
+            }
+            visible: 1;
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
-            color: 255 255 255 255;
+         }
+         description { state: "hide" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "elm.text.slide.clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               to: "padding_left_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding_right_bottom";
+               relative: 0.0 0.0;
+            }
+            visible: 0;
+         }
+         description { state: "show" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
       part { name: "event";
@@ -1320,10 +1829,13 @@ group { name: "elm/toolbar/item/tabbar_with_title";
       program { name: "selected_text";
          script{
             set_int(selected, 1);
+            stop_slide();
             if (!get_int(icon_text))
               set_state(PART:"elm.text", "text_selected", 0.0);
             else
               set_state(PART:"elm.text", "icon_text_selected", 0.0);
+            if (get_int(selected))
+               set_int(g_timer_id, timer(1.5, "start_slide", 0));
          }
       }
       program { name: "go_passive";
@@ -1341,6 +1853,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
               set_state(PART:"elm.text", "text", 0.0);
             else
               set_state(PART:"elm.text", "icon_text", 0.0);
+            stop_slide();
          }
       }
       program { name: "key,pressed";
@@ -1436,6 +1949,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          source: "elm";
          script {
             set_int(item_state, ITEM_STATE_ENABLED);
+            stop_slide();
             set_state(PART:"bg_cover", "default", 0.0);
             if (!get_int(icon_text))
               set_state(PART:"elm.text", "text", 0.0);
@@ -1443,6 +1957,8 @@ group { name: "elm/toolbar/item/tabbar_with_title";
               set_state(PART:"elm.text", "icon_text", 0.0);
             set_state(PART:"elm.text.clipper", "default", 0.0);
             set_state(PART:"elm.icon.clipper", "default", 0.0);
+            if (get_int(selected))
+               set_int(g_timer_id, timer(1.5, "start_slide", 0));
          }
       }
       program { name: "disable";
@@ -1450,6 +1966,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          source: "elm";
          script {
             set_int(item_state, ITEM_STATE_DISABLED);
+            stop_slide();
             set_state(PART:"bg_cover", "disabled", 0.0);
             if (!get_int(icon_text))
               set_state(PART:"elm.text", "text_disabled", 0.0);
@@ -1478,6 +1995,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          source: "elm";
          script {
             set_int(item_text, 1);
+            stop_slide();
             if (!get_int(icon_text))
               {
                 set_state(PART:"elm.text", "text", 0.0);
@@ -1491,6 +2009,8 @@ group { name: "elm/toolbar/item/tabbar_with_title";
                 set_state(PART:"padding_left_top", "icon_text", 0.0);
                 set_state(PART:"padding_right_bottom", "icon_text", 0.0);
               }
+            if (get_int(selected))
+               set_int(g_timer_id, timer(1.5, "start_slide", 0));
          }
       }
       program { name: "text_hide";
@@ -1498,6 +2018,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          source: "elm";
          script {
             set_int(item_text, 0);
+            stop_slide();
             set_state(PART:"elm.text", "default", 0.0);
          }
       }
@@ -1506,6 +2027,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          source: "elm";
          script {
             set_int(icon_text, 1);
+            stop_slide();
             if (get_int(item_text))
               {
                 set_state(PART:"elm.swallow.icon", "visible", 0.0);
@@ -1515,6 +2037,8 @@ group { name: "elm/toolbar/item/tabbar_with_title";
               set_state(PART:"elm.swallow.icon", "visible_icon_only", 0.0);
             set_state(PART:"padding_left_top", "icon_text", 0.0);
             set_state(PART:"padding_right_bottom", "icon_text", 0.0);
+            if (get_int(selected))
+               set_int(g_timer_id, timer(1.5, "start_slide", 0));
          }
       }
       program { name: "icon_hide";
@@ -1522,10 +2046,13 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          source: "elm";
          script {
             set_int(icon_text, 0);
+            stop_slide();
             set_state(PART:"elm.swallow.icon", "default", 0.0);
             set_state(PART:"elm.text", "text", 0.0);
             set_state(PART:"padding_left_top", "text", 0.0);
             set_state(PART:"padding_right_bottom", "text", 0.0);
+            if (get_int(selected))
+               set_int(g_timer_id, timer(1.5, "start_slide", 0));
          }
       }
       program { name: "tab_item";
@@ -1550,10 +2077,13 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          script {
             if (!get_int(landscape)) {
                set_int(landscape, 1);
+               stop_slide();
                if (get_int(shrink_scroll_enabled))
                   set_state(PART:"bg", "land_scroll", 0.0);
                else
                   set_state(PART:"bg", "land", 0.0);
+               if (get_int(selected))
+                  set_int(g_timer_id, timer(1.5, "start_slide", 0));
             }
          }
       }
@@ -1562,10 +2092,13 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          script {
             if (get_int(landscape)) {
                set_int(landscape, 0);
+               stop_slide();
                if (get_int(shrink_scroll_enabled))
                   set_state(PART:"bg", "scroll", 0.0);
                else
                   set_state(PART:"bg", "default", 0.0);
+               if (get_int(selected))
+                  set_int(g_timer_id, timer(1.5, "start_slide", 0));
             }
          }
       }
@@ -2161,6 +2694,82 @@ group { name: "elm/toolbar/item/light_view";
          description { state:"text_disabled" 0.0;
             inherit: "text" 0.0;
             text.style: "tabbar_text_style_T134D";
+         }
+         description { state: "icon_text" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            text {
+               style: "tabbar_text_style_T134";
+               min: 0 1;
+               max: 1 0;
+            }
+         }
+         description { state:"icon_text_pressed" 0.0;
+            inherit: "icon_text" 0.0;
+            text.style: "tabbar_text_style_T134P";
+         }
+         description { state:"icon_text_selected" 0.0;
+            inherit: "icon_text" 0.0;
+            text.style: "tabbar_text_style_T134S";
+         }
+         description { state:"icon_text_disabled" 0.0;
+            inherit: "icon_text" 0.0;
+            text.style: "tabbar_text_style_T134D";
+         }
+      }
+      part { name: "elm.text.slide";
+         type: TEXTBLOCK;
+         scale: 1;
+         clip_to: "elm.text.slide.clipper";
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            min: TABBAR_LIGHT_VIEW_TEXT_SIZE_INC;
+            max: TABBAR_LIGHT_VIEW_TEXT_SIZE_INC;
+            rel1 {
+               to: "padding_left_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding_right_bottom";
+               relative: 0.0 0.0;
+            }
+            text {
+               style: "tabbar_text_style_T134S_slide";
+               min: 1 1;
+               max: 1 0;
+            }
+         }
+         description { state: "slide_begin" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "slide_end" 0.0;
+            inherit: "default" 0.0;
+            align: 1.0 0.5;
+            rel1 {
+               to_x: "slide_text_gap";
+               to_y: "padding_left_top";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "slide_text_gap";
+               to_y: "padding_right_bottom";
+               relative: 1.0 0.0;
+            }
+         }
+         description { state: "icon_text" 0.0;
+            inherit: "default" 0.0;
+            text {
+               style: "tabbar_text_style_T134S_slide";
+               min: 1 1;
+               max: 1 0;
+            }
+         }
+         description { state: "icon_text_slide_begin" 0.0;
+            inherit: "icon_text" 0.0;
+         }
+         description { state: "icon_text_slide_end" 0.0;
+            inherit: "slide_end" 0.0;
          }
       }
    }
