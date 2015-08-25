@@ -19,6 +19,31 @@ all:
 		-id ./HD/images/Emoticon\
 		-id ./HD/images/Old\
 		-sd ./HD/sounds -fd ../objects \
+		-id ./SMALL/images/ \
+		-id ./SMALL/images/Activity_indicator/ \
+		-id ./SMALL/images/Activity_indicator/large \
+		-id ./SMALL/images/Activity_indicator/medium \
+		-id ./SMALL/images/Activity_indicator/small \
+		-id ./SMALL/images/Content_views \
+		-id ./SMALL/images/Controls \
+		-id ./SMALL/images/Copy_Paste \
+		-id ./SMALL/images/Emoticon \
+		-id ./SMALL/images/Navigation_elements \
+		-id ./SMALL/images/Popups \
+		-id ./SMALL/images/Indicator \
+		-sd ./SMALL/sounds -fd ../objects \
+		-id ./MIDDLE/images/ \
+		-id ./MIDDLE/images/Activity_indicator/ \
+		-id ./MIDDLE/images/Activity_indicator/large \
+		-id ./MIDDLE/images/Activity_indicator/medium \
+		-id ./MIDDLE/images/Activity_indicator/small \
+		-id ./MIDDLE/images/Content_views \
+		-id ./MIDDLE/images/Controls \
+		-id ./MIDDLE/images/Copy_Paste \
+		-id ./MIDDLE/images/Emoticon \
+		-id ./MIDDLE/images/Navigation_elements \
+		-id ./MIDDLE/images/Popups \
+		-sd ./MIDDLE/sounds -fd ../objects \
 		$(SRC).edc $(SRC).edj;
 	edje_cc $(EDJE_FLAGS_$(V)) \
 		-id default/images/tizen-hd -sd default/sounds -fd ../objects \
@@ -30,6 +55,17 @@ all:
 		-id ./HD/images/Copy_Paste\
 		-id ./HD/images/Emoticon\
 		-id ./HD/images/Old\
+		-id ./SMALL/images/\
+		-id ./SMALL/images/Activity_indicator/\
+		-id ./SMALL/images/Activity_indicator/large\
+		-id ./SMALL/images/Activity_indicator/medium\
+		-id ./SMALL/images/Activity_indicator/small\
+		-id ./SMALL/images/Content_views\
+		-id ./SMALL/images/Controls\
+		-id ./SMALL/images/Copy_Paste\
+		-id ./SMALL/images/Emoticon\
+		-id ./SMALL/images/Navigation_elements\
+		-id ./SMALL/images/Popups\
 		$(DEFAULT_SRC).edc $(DEFAULT_SRC).edj;
 
 
