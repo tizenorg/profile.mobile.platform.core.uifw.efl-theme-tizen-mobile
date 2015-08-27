@@ -5210,6 +5210,21 @@ group { name: "elm/button/base/hoversel_vertical/default";
    }
    script {
       public disabled = 0;
+      public mouse_down = 0;
+      public animate = 0;
+      public minw = 0;
+      public minh = 0;
+      public get_effect_min_size(base_effect, Float:ratio, min_w, min_h) {
+         new x, y, w, h;
+         get_geometry(base_effect, x, y, w, h);
+         if (w > h) {
+            set_float(min_w, w - h * (1 - ratio));
+            set_float(min_h, h * ratio);
+         } else {
+            set_float(min_w, w * ratio);
+            set_float(min_h, h - w * (1 - ratio));
+         }
+      }
    }
    parts {
       part { name: "base";
@@ -5219,6 +5234,46 @@ group { name: "elm/button/base/hoversel_vertical/default";
             min: 0 BUTTON_HOVERSEL_MIN_HEIGHT_INC;
          }
       }
+      part { name: "effect_spacer";
+         type: SPACER;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               to_x: "underline";
+               to_y: "base";
+               relative: 0.0 0.0;
+            }
+            rel2 {
+               to_x: "underline";
+               to_y: "base";
+               relative: 1.0 1.0;
+            }
+         }
+      }
+      part { name: "press_effect";
+         type: RECT;
+         mouse_events: 1;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1.to: "effect_spacer";
+            rel2.to: "effect_spacer";
+            rel1.relative: 0.5 0.5;
+            rel2.relative: 0.5 0.5;
+            color: 61 185 204 77;
+         }
+         description { state: "ready" 0.0;
+            inherit: "default" 0.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 1.0;
+            color: 61 185 204 0;
+         }
+         description { state: "pressed" 0.0;
+            inherit:  "default" 0.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
       part { name: "button_image";
          type: RECT;
          mouse_events: 1;
@@ -5226,11 +5281,10 @@ group { name: "elm/button/base/hoversel_vertical/default";
          description { state: "default" 0.0;
             rel1.to: "base";
             rel2.to: "base";
-            color: 0 0 0 0;
+            color: 250 250 250 0;
          }
          description { state: "pressed" 0.0;
             inherit: "default" 0.0;
-            color: 61 185 204 77;
          }
          description { state: "disabled" 0.0;
             inherit:  "default" 0.0;
@@ -5326,23 +5380,73 @@ group { name: "elm/button/base/hoversel_vertical/default";
       }
    }
    programs {
-      program { name: "press";
-         signal: "mouse,down,1";
-         source: "event";
+      program { name: "pressed_effect";
+         action: STATE_SET "pressed" 0.0;
+         target: "press_effect";
+         transition: GLIDE_EASE_OUT(0.3);
+         after: "pressed_effect3";
+      }
+      program { name: "pressed_effect2";
+         action: STATE_SET "pressed" 0.0;
+         target: "elm.text";
+         target: "button_image";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "pressed_effect3";
          script {
-            if (get_int(disabled) == 0) {
-               emit("elm,action,press", "");
-               set_state(PART:"button_image", "pressed", 0.0);
+            set_int(animate, 0);
+            if (get_int(mouse_down) == 0) {
+               emit("elm,action,unpress", "");
+               run_program(PROGRAM:"unpressed_effect");
             }
          }
       }
-      program { name: "unpress";
+      program { name: "unpressed_effect";
+         action: STATE_SET "ready" 0.0;
+         target: "press_effect";
+         transition: GLIDE_EASE_OUT(0.45);
+         after: "finished_animation";
+      }
+      program { name: "finished_animation";
+         script {
+            if (get_int(disabled) == 1) {
+               set_state(PART:"elm.text", "disabled",0.0);
+               set_state(PART:"button_image", "disabled",0.0);
+            } else {
+               set_state(PART:"elm.text", "default",0.0);
+               set_state(PART:"button_image", "default",0.0);
+            }
+         }
+      }
+      program { name: "pressed";
+         signal: "mouse,down,1*";
+         source: "event";
+         script {
+            if ((get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
+               set_int(mouse_down, 1);
+               set_int(animate, 1);
+               get_effect_min_size(PART:"effect_spacer", 0.7, minw, minh);
+               custom_state(PART:"press_effect", "default", 0.0);
+               set_state_val(PART:"press_effect", STATE_MIN, get_int(minw), get_int(minh));
+               set_state(PART:"press_effect", "custom",0.0);
+               emit("elm,action,press", "");
+               run_program(PROGRAM:"pressed_effect");
+               run_program(PROGRAM:"pressed_effect2");
+            }
+         }
+      }
+      program { name: "unpressed";
          signal: "mouse,up,1";
          source: "event";
          script {
-            if (get_int(disabled) == 0) {
-               emit("elm,action,unpress", "");
-               set_state(PART:"button_image", "default", 0.0);
+            if (get_int(mouse_down) == 1) {
+               set_int(mouse_down, 0);
+               if (get_int(animate) == 0) {
+                  if (get_int(disabled) == 0) {
+                     emit("elm,action,unpress", "");
+                     run_program(PROGRAM:"unpressed_effect");
+                  }
+               }
             }
          }
       }
