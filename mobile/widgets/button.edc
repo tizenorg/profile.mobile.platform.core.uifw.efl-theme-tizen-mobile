@@ -4433,30 +4433,79 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
       alias: "elm/button/base/spinner/increase/vertical_date_picker";
       alias: "elm/button/base/spinner/increase/datetime";
       data.item: "focus_highlight" "on";
+      data.item: "vector_ux" "no_bg";
+      data.item: "corner_radius" SPINNER_UP_DOWN_CORNER_RADIUS;
       images {
          image: "core_icon_picker_arrow_up.png" COMP;
       }
       script {
          public mouse_down = 0;
          public multi_down = 0;
+         public disabled = 0;
+         public animate = 0;
       }
       parts {
          part { name: "arrow.image.bg";
-            type: RECT;
+            type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
                align: 0.5 0.0;
                min: SPINNER_UP_DOWN_BG_IMAGE_SIZE_INC;
                max: SPINNER_UP_DOWN_BG_IMAGE_SIZE_INC;
             }
+         }
+         part { name: "effect_spacer";
+            type: SPACER;
+            description { state: "default" 0.0;
+               rel1.to: "arrow.image.bg";
+               rel2.to: "arrow.image.bg";
+            }
+         }
+         //Effect Shape Part
+         part { name: "tizen_vg_shape";
+            type: SWALLOW;
+            clip_to: "tizen_vg_shape_clipper";
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1.to: "effect_spacer";
+               rel2.to: "effect_spacer";
+               rel1.relative: 0.5 0.5;
+               rel2.relative: 0.5 0.5;
+            }
+            description { state: "ready" 0.0;
+               inherit: "default" 0.0;
+               min: SPINNER_UP_DOWN_EFFECT_MIN_SIZE_INC;
+            }
             description { state: "pressed" 0.0;
                inherit: "default" 0.0;
-               color: 61 184 204 76;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+         part { name: "tizen_vg_shape_clipper";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+               visible: 0;
+               fixed: 1 1;
+               rel1.to: "tizen_vg_shape";
+               rel2.to: "tizen_vg_shape";
+            }
+            description { state: "ready" 0.0;
+               inherit: "default" 0.0;
                visible: 1;
             }
-            description { state: "disabled" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
+               visible: 1;
+               color: 0 0 0 77;
+            }
+            description { state: "disabled" 0.0;
+               color: 0 0 0 77;
+               fixed: 1 1;
+               rel1.to: "tizen_vg_shape";
+               rel2.to: "tizen_vg_shape";
             }
          }
          part { name: "arrow.image";
@@ -4490,70 +4539,108 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
                inherit: "default" 0.0;
             }
          }
-         part { name: "over";
+         part { name: "event";
             type: RECT;
             repeat_events: 1;
             description { state: "default" 0.0;
+               rel1.to: "arrow.image.bg";
+               rel2.to: "arrow.image.bg";
                color: 0 0 0 0;
-            }
-         }
-         part { name: "disabler";
-            type: RECT;
-            description { state: "default" 0.0;
-               color: 0 0 0 0;
-               visible: 0;
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
             }
          }
       }
       programs {
-         program { name: "button_press";
-            signal: "mouse,down,1*";
-            source: "over";
+         program { name: "pressed_effect";
+            action: STATE_SET "ready" 0.0;
+            target: "tizen_vg_shape_clipper";
+            target: "tizen_vg_shape";
+            after: "pressed_effect2";
+         }
+         program { name: "pressed_effect2";
+            action: STATE_SET "pressed" 0.0;
+            target: "tizen_vg_shape_clipper";
+            target: "tizen_vg_shape";
+            target: "arrow.image";
+            transition: GLIDE_EASE_OUT(0.3);
+            after: "pressed_effect3";
+         }
+         program { name: "pressed_effect3";
             script {
-               if ((get_int(multi_down) == 0) &&
-                   (get_int(mouse_down) == 0)) {
-                     set_int(mouse_down, 1);
-                     run_program(PROGRAM:"button_press2");
+               set_int(animate, 0);
+               if (get_int(mouse_down) == 0) {
+                  emit("elm,action,unpress", "");
+                  run_program(PROGRAM:"unpressed_effect");
                }
             }
          }
-         program { name: "button_press2";
-            action: SIGNAL_EMIT "elm,action,press" "";
-            after: "button_press_anim";
+         program { name: "unpressed_effect";
+            script {
+               if (get_int(disabled) == 0) {
+                  run_program(PROGRAM:"unpressed_effect2");
+                  run_program(PROGRAM:"unpressed_effect3");
+               } else {
+                  run_program(PROGRAM:"disabled_effect");
+                  run_program(PROGRAM:"disabled_effect2");
+               }
+            }
          }
-         program { name: "button_press_anim";
-            action: STATE_SET "pressed" 0.0;
-            target: "arrow.image.bg";
+         program { name: "unpressed_effect2";
+            action: STATE_SET "default" 0.0;
             target: "arrow.image";
+            transition: GLIDE_EASE_OUT(0.45);
          }
-         program { name: "button_unpress";
-            signal: "mouse,up,1*";
-            source: "over";
+         program { name: "unpressed_effect3";
+            action: STATE_SET "ready" 0.0;
+            target: "tizen_vg_shape_clipper";
+            transition: GLIDE_EASE_OUT(0.45);
+            after: "finished_animation";
+         }
+         program { name: "disabled_effect";
+            action: STATE_SET "disabled" 0.0;
+            target: "arrow.image";
+            transition: GLIDE_EASE_OUT(0.45);
+         }
+         program { name: "disabled_effect2";
+            action: STATE_SET "ready" 0.0;
+            target: "tizen_vg_shape_clipper";
+            transition: GLIDE_EASE_OUT(0.45);
+            after: "finished_animation";
+         }
+         program { name: "finished_animation";
+            action: STATE_SET "default" 0.0;
+            target: "tizen_vg_shape_clipper";
+            target: "tizen_vg_shape";
+         }
+         program { name: "pressed";
+            signal: "mouse,down,1*";
+            source: "event";
+            script {
+               if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
+                  set_int(mouse_down, 1);
+                  set_int(animate, 1);
+                  emit("elm,action,press", "");
+                  run_program(PROGRAM:"pressed_effect");
+               }
+            }
+         }
+         program { name: "unpressed";
+            signal: "mouse,up,1";
+            source: "event";
             script {
                if (get_int(mouse_down) == 1) {
-                     set_int(mouse_down, 0);
-                     run_program(PROGRAM:"button_unpress2");
-                     run_program(PROGRAM:"button_unpress_anim");
+                  set_int(mouse_down, 0);
+                  if ((get_int(animate) == 0) && (get_int(disabled) == 0)) {
+                     emit("elm,action,unpress", "");
+                     run_program(PROGRAM:"unpressed_effect");
+                  }
                }
             }
-         }
-         program { name: "button_unpress2";
-            action: SIGNAL_EMIT "elm,action,unpress" "";
-         }
-         program { name: "button_unpress_anim";
-            action: STATE_SET "default" 0.0;
-            target: "arrow.image.bg";
-            target: "arrow.image";
          }
          program { name: "button_click";
             signal: "mouse,clicked,1";
-            source: "over";
+            source: "event";
             script {
-               if (get_int(multi_down) == 0) {
+               if ((get_int(multi_down) == 0) && (get_int(disabled) == 0)) {
                  run_program(PROGRAM:"play_sound");
                  run_program(PROGRAM:"button_click2");
                }
@@ -4566,16 +4653,6 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
             signal: "elm,action,longpress";
             source: "elm";
             action: RUN_PLUGIN "touch_haptic";
-         }
-         program { name: "action_unpressed";
-            signal: "elm,action,unpressed";
-            source: "elm";
-            after: "button_unpress_anim";
-         }
-         program { name: "action_pressed";
-            signal: "elm,action,pressed";
-            source: "elm";
-            after: "button_press_anim";
          }
          program { name: "button_click2";
             action: SIGNAL_EMIT "elm,action,click" "";
@@ -4595,32 +4672,24 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
          program { name: "access_pressed";
             signal: "elm,action,anim,activate";
             source: "elm";
-            action: STATE_SET "pressed" 0.0;
-            target: "arrow.image.bg";
-            target: "arrow.image";
-            after: "access_pressed_anim";
-         }
-         program { name: "access_pressed_anim";
-            action: STATE_SET "default" 0.0;
-            transition: DECELERATE 0.1;
-            target: "arrow.image.bg";
-            target: "arrow.image";
+            after: "pressed_effect";
          }
          program { name: "disable";
             signal: "elm,state,disabled";
             source: "elm";
-            action: STATE_SET "disabled" 0.0;
-            target: "arrow.image.bg";
-            target: "arrow.image";
-            target: "disabler";
+            script {
+               set_int(disabled, 1);
+               if (get_int(animate) == 1) return;
+               set_state(PART:"arrow.image", "disabled", 0.0);
+            }
          }
          program { name: "enable";
             signal: "elm,state,enabled";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "arrow.image.bg";
-            target: "arrow.image";
-            target: "disabler";
+            script {
+               set_int(disabled, 0);
+               set_state(PART:"arrow.image", "default", 0.0);
+            }
          }
          program {
             name: "multi_down";
@@ -4642,32 +4711,28 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
             signal: "elm,event,pass,enabled";
             source: "elm";
             script {
-               set_mouse_events(PART:"over", 0);
-               set_mouse_events(PART:"disabler", 0);
+               set_mouse_events(PART:"event", 0);
             }
          }
          program { name: "pass_event_disable";
             signal: "elm,event,pass,disabled";
             source:"elm";
             script {
-               set_mouse_events(PART:"over", 1);
-               set_mouse_events(PART:"disabler", 1);
+               set_mouse_events(PART:"event", 1);
             }
          }
          program { name: "repeat_event_enable";
             signal: "elm,event,repeat,enabled";
             source: "elm";
             script {
-               set_repeat_events(PART:"over", 1);
-               set_repeat_events(PART:"disabler", 1);
+               set_repeat_events(PART:"event", 1);
             }
          }
          program { name: "repeat_event_disable";
             signal: "elm,event,repeat,disabled";
             source:"elm";
             script {
-               set_repeat_events(PART:"over", 0);
-               set_repeat_events(PART:"disabler", 0);
+               set_repeat_events(PART:"event", 0);
             }
          }
       }
