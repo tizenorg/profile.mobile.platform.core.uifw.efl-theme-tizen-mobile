@@ -69,6 +69,7 @@
          }
          part { name: "tizen_vg_shape_clipper";
             type: RECT;
+            scale: 1;
             description { state: "default" 0.0;
                color: 82 198 216 255;
             }
@@ -78,15 +79,8 @@
          }
          part { name: "effect_spacer";
             type: SPACER;
+            scale: 1;
             description { state: "default" 0.0;
-               fixed: 1 1;
-               rel1.relative: 0.5 0.5;
-               rel2.relative: 0.5 0.5;
-            }
-            description { state: "pressed" 0.0;
-               fixed: 1 1;
-               rel1.relative: 0.0 0.0;
-               rel2.relative: 1.0 1.0;
             }
          }
          //Effect Shape Part
@@ -95,6 +89,7 @@
             clip_to: "tizen_vg_shape_clipper2";
             scale: 1;
             description { state: "default" 0.0;
+               fixed: 1 1;
                rel1.relative: 0.5 0.5;
                rel2.relative: 0.5 0.5;
             }
@@ -284,16 +279,17 @@
       programs {
          program { name: "pressed_effect";
             action: STATE_SET "ready" 0.0;
-            target: "tizen_vg_shape2";
             target: "tizen_vg_shape_clipper2";
+            action: STATE_SET "custom" 0.0;
+            target: "tizen_vg_shape2";
             after: "pressed_effect2";
          }
          program { name: "pressed_effect2";
             action: STATE_SET "pressed" 0.0;
             target: "elm.text";
             target: "clipper";
+            target: "tizen_vg_shape2";
             target: "tizen_vg_shape_clipper2";
-            target: "effect_spacer";
             transition: GLIDE_EASE_OUT(0.3);
             after: "pressed_effect3";
          }
@@ -320,6 +316,7 @@
          }
          program { name: "unpressed_effect2";
             action: STATE_SET "ready" 0.0;
+            target: "tizen_vg_shape2";
             target: "tizen_vg_shape_clipper2";
             transition: GLIDE_EASE_OUT(0.45);
          }
@@ -331,14 +328,13 @@
          }
          program { name: "unpressed_effect4";
             action: STATE_SET "default" 0.0;
-            target: "tizen_vg_shape2";
-            target: "tizen_vg_shape_clipper2";
             target: "elm.text";
             target: "clipper";
-            target: "effect_spacer";
+            after: "finished_animation";
          }
          program { name: "disabled_effect";
             action: STATE_SET "ready" 0.0;
+            target: "tizen_vg_shape2";
             target: "tizen_vg_shape_clipper2";
             transition: GLIDE_EASE_OUT(0.45);
          }
@@ -347,9 +343,9 @@
             target: "clipper";
             target: "tizen_vg_shape_clipper";
             transition: GLIDE_EASE_OUT(0.45);
-            after: "disabled_effect3";
+            after: "finished_animation";
          }
-         program { name: "disabled_effect3";
+         program { name: "finished_animation";
             action: STATE_SET "default" 0.0;
             target: "tizen_vg_shape2";
             target: "tizen_vg_shape_clipper2";
@@ -361,10 +357,9 @@
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
-                  get_effect_min_size(PART:"base", 0.7, minw, minh);
-                  custom_state(PART:"effect_spacer", "default", 0.0);
-                  set_state_val(PART:"effect_spacer", STATE_MIN, get_int(minw), get_int(minh));
-                  set_state(PART:"effect_spacer", "custom",0.0);
+                  custom_state(PART:"tizen_vg_shape2", "default", 0.0);
+                  get_effect_min_size(PART:"effect_spacer", 0.7, minw, minh);
+                  set_state_val(PART:"tizen_vg_shape2", STATE_MIN, get_int(minw), get_int(minh));
                   emit("elm,action,press", "");
                   run_program(PROGRAM:"pressed_effect");
                }
@@ -452,21 +447,21 @@
             signal: "elm,state,disabled";
             source: "elm";
             script {
-              set_int(disabled, 1);
-              if (get_int(animate) == 1) return;
-              set_state(PART:"clipper", "disabled", 0.0);
-              set_state(PART:"tizen_vg_shape_clipper", "disabled", 0.0);
-              set_state(PART:"elm.text", "disabled", 0.0);
+               set_int(disabled, 1);
+               if (get_int(animate) == 1) return;
+               set_state(PART:"clipper", "disabled", 0.0);
+               set_state(PART:"tizen_vg_shape_clipper", "disabled", 0.0);
+               set_state(PART:"elm.text", "disabled", 0.0);
             }
          }
          program { name: "enable";
             signal: "elm,state,enabled";
             source: "elm";
             script {
-              set_int(disabled, 0);
-              set_state(PART:"clipper", "default", 0.0);
-              set_state(PART:"tizen_vg_shape_clipper", "default", 0.0);
-              set_state(PART:"elm.text", "default", 0.0);
+               set_int(disabled, 0);
+               set_state(PART:"clipper", "default", 0.0);
+               set_state(PART:"tizen_vg_shape_clipper", "default", 0.0);
+               set_state(PART:"elm.text", "default", 0.0);
             }
          }
          program { name: "multi_down";
