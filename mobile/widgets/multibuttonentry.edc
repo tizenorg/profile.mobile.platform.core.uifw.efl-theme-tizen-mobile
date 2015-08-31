@@ -153,11 +153,16 @@
    name: "elm/multibuttonentry/btn/default";
 
    images.image: "core_contact_div.png" COMP;
+   images.image: "core_focus_round.#.png" COMP;
 
    styles {
       style {
          name: "multibuttonentry_btn_text_style";
          base: "font=Tizen:style=Medium font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#3DB9CCFF ellipsis=1.0";
+      }
+      style {
+         name: "multibuttonentry_btn_pressed_text_style";
+         base: "font=Tizen:style=Medium font_size="MULTIBUTTONENTRY_BUTTON_TEXT_SIZE_INC" color=#226873FF ellipsis=1.0";
       }
       style {
          name: "multibuttonentry_btn_disabled_text_style";
@@ -208,11 +213,11 @@
            fixed: 1 1;
            align: 1.0 0.5;
            rel1 {
-              to: "divider";
+              to_x: "divider";
               relative: 0.0 0.0;
            }
            rel2 {
-              to: "divider";
+              to_x: "divider";
               relative: 0.0 1.0;
            }
         }
@@ -222,8 +227,8 @@
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            rel1.to: "text";
-            rel2.to: "text";
+            rel1.to: "lt_pad";
+            rel2.to: "rb_pad";
             color: 0 0 0 0;
          }
          description { state: "pressed" 0.0;
@@ -277,9 +282,67 @@
             }
          }
          description {
+            state: "pressed" 0.0;
+            inherit: "default";
+            text.style: "multibuttonentry_btn_pressed_text_style";
+         }
+         description {
             state: "disabled" 0.0;
             inherit: "default";
             text.style: "multibuttonentry_btn_disabled_text_style";
+         }
+      }
+      part {
+         name: "lt_pad";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: MULTIBUTTONENTRY_LEFT_TOP_PADDNG_SIZE_INC;
+            max: MULTIBUTTONENTRY_LEFT_TOP_PADDNG_SIZE_INC;
+            fixed: 1 1;
+            align: 1.0 1.0;
+            rel1 {
+               to: "text";
+               relative: 0.0 0.0;
+            }
+            rel2 {
+               to: "text";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+      part {
+         name: "rb_pad";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: MULTIBUTTONENTRY_BOTTOM_DOWN_PADDNG_SIZE_INC;
+            max: MULTIBUTTONENTRY_BOTTOM_DOWN_PADDNG_SIZE_INC;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            rel1 {
+               to: "right.padding";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "right.padding";
+               relative: 1.0 1.0;
+            }
+         }
+      }
+      part { name: "focus_round";
+         scale:1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            image.normal: "core_focus_round.#.png";
+            color: 0 199 230 255;
+            rel1.to: "lt_pad";
+            rel2.to: "rb_pad";
+            visible: 0;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default";
+            visible: 1;
          }
       }
       part {
@@ -293,55 +356,27 @@
             color: 0 0 0 0;
          }
       }
-      part {
-         name: "drag";
-         type: RECT;
-         scale: 1;
-         repeat_events: 1;
-         dragable {
-            x: 1 1 0;
-            y: 1 1 0;
-         }
-         description {
-            state: "default" 0.0;
-            rel1.to: "button_bg";
-            rel2.to: "button_bg";
-            color: 0 0 0 0;
-         }
-      }
    }
    programs {
       program {
          name: "pressed";
          signal: "mouse,down,1";
-         source: "drag";
+         source: "events";
          script {
-            if (get_int(disabled) ==  0)
-              set_state(PART:"button_bg", "pressed", 0.0);
-         }
-      }
-      program {
-         name: "move";
-         signal: "drag";
-         source: "drag";
-         script {
-            new Float:dx, Float:dy;
-            if (get_int(disabled) ==  1)
-              return;
-            get_drag(PART:"drag", dx, dy);
-            if ((abs(dx) > 20) || (abs(dy) > 20)) {
-              set_state(PART:"button_bg", "default", 0.0);
+            if (get_int(disabled) ==  0) {
+                 set_state(PART:"button_bg", "pressed", 0.0);
+                 set_state(PART:"text", "pressed", 0.0);
             }
          }
       }
       program {
          name: "released";
          signal: "mouse,up,1";
-         source: "drag";
+         source: "events";
          script {
             if (get_int(disabled) ==  0) {
               set_state(PART:"button_bg", "default", 0.0);
-              set_drag(PART:"drag", 0.0, 0.0);
+              set_state(PART:"text", "default", 0.0);
             }
          }
       }
@@ -359,6 +394,11 @@
          signal: "elm,state,disabled";
          source: "elm";
          script {
+            new st[31];
+            new Float: vl;
+            get_state(PART:"focus_round", st, 30, vl);
+            if (!strcmp(st, "selected"))
+              set_state(PART:"focus_round", "default", 0.0);
             set_state(PART:"text", "disabled", 0.0);
             set_int(disabled , 1);
          }
@@ -366,18 +406,22 @@
       program {
          signal: "elm,state,default"; source: "elm";
          action: STATE_SET "default" 0.0;
-         target: "button_bg";
+         target: "focus_round";
       }
       program {
          signal: "elm,state,focused"; source: "elm";
-         action: STATE_SET "pressed" 0.0;
-         target: "button_bg";
+         action: STATE_SET "selected" 0.0;
+         target: "focus_round";
       }
       program {
          name: "clicked";
          signal: "mouse,clicked,1";
          source: "events";
-         action: SIGNAL_EMIT "elm,action,click" "";
+         script {
+            if (get_int(disabled) == 0) {
+              emit("elm,action,click", "");
+            }
+         }
          after: "touch_snd";
       }
       program {
