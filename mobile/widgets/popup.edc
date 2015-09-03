@@ -1269,10 +1269,17 @@ group { name: "elm/popup/base/toast";
             image: MEDIUM"images/Assist_Views/core_popup_noti_bg_stroke.#.png" COMP;
          }
       }
+      set {
+         name: "a11y_highlight.png";
+         image {
+            image: "default/images/tizen-hd/a11y_highlight.png" COMP;
+         }
+      }
    }
    data {
       item: "default_orient" "2"; //top, center:1 bottom:2
       item: "popup_outside_pad" POPUP_OUTSIDE_PADDING;
+      item: "access_highlight" "on";
    }
    parts {
       part { name: "bg";
@@ -1447,6 +1454,24 @@ group { name: "elm/popup/base/toast";
             fixed: 1 1;
          }
       }
+      part { name: "highlight";
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            image.normal: "a11y_highlight.png";
+            image.border: 12 12 12 12;
+            image.middle: 0;
+            fill.smooth: 0;
+            rel1.to: "bg";
+            rel1.offset: -7 -7 ;
+            rel2.to: "bg";
+            rel2.offset: 5 5;
+            visible: 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
    }
    programs {
       program { name: "part_text_show";
@@ -1480,6 +1505,18 @@ group { name: "elm/popup/base/toast";
          transition: GLIDE_EASE_OUT(0.25);
          target: "clipper";
          target: "bottom_padding";
+      }
+      program { name: "show_new_highlight";
+         signal: "elm,action,access_highlight,show";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         target: "highlight";
+      }
+      program { name: "hide_new_highlight";
+         signal: "elm,action,access_highlight,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "highlight";
       }
    }
 }
