@@ -3598,6 +3598,7 @@ group { name: "elm/button/base/contacts";
       script { \
          public mouse_down = 0; \
          public multi_down = 0; \
+         public click_cancel = 0; \
       } \
       parts { \
          part { name: "elm.swallow.content"; \
@@ -3647,6 +3648,7 @@ group { name: "elm/button/base/contacts";
                      set_int(mouse_down, 1); \
                      emit("elm,action,press", ""); \
                  } \
+               set_int(click_cancel, 0); \
             } \
          } \
          program { name: "button_unpress"; \
@@ -3664,9 +3666,17 @@ group { name: "elm/button/base/contacts";
             signal: "mouse,clicked,1"; \
             source: "over2"; \
             script { \
-               if (get_int(multi_down) == 0) { \
+               if ((get_int(multi_down) == 0) && (get_int(click_cancel) == 0)) { \
                  emit("elm,action,click", ""); \
                } \
+               set_int(click_cancel, 0); \
+            } \
+         } \
+         program { name: "mouse_over"; \
+            signal: "mouse,pressed,out"; \
+            source: "over2"; \
+            script { \
+               set_int(click_cancel, 1); \
             } \
          } \
          program { name: "action_focus"; \
