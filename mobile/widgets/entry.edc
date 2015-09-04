@@ -2392,18 +2392,55 @@ group { name: "elm/entry/handler/start/default";
       image: "copy&paste_handler_left_bottom.png" COMP;
       image: "copy&paste_handler_left_top.png" COMP;
    }
+   script {
+      public handler_ontop;
+      public handler_focused;
+      public handler_disabled;
+   }
    parts {
+      part { name: "edge";
+         type: RECT;
+         mouse_events: 1;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            fixed: 1 1;
+            align: 1 0;
+            rel2.offset: 1 0;
+            min: ENTRY_SELECTION_BLOCK_HANDLE_EDGE_WIDTH ENTRY_SELECTION_BLOCK_HANDLE_EDGE_HEIGHT;
+            max: ENTRY_SELECTION_BLOCK_HANDLE_EDGE_WIDTH ENTRY_SELECTION_BLOCK_HANDLE_EDGE_HEIGHT;
+            color: 0 184 230 255;
+         }
+         description { state: "show" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state: "top" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            align: 1 1;
+         }
+         description { state: "bottom_reversed" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            align: 1 0;
+         }
+         description { state: "top_reversed" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            align: 1 1;
+         }
+      }
       part { name: "handle";
          mouse_events: 1;
          scale: 1;
          description { state: "default" 0.0;
             visible: 0;
             fixed: 1 1;
-            align: 0.5 0;
-            rel2.offset: 0 0;
+            align: 1.0 0;
+            rel2.offset: 6 0;
             min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_INC;
             max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_INC;
-            color: 0 184 230 255;
             image {
                normal: "copy&paste_handler_left_bottom.png";
                border: 0 0 0 0;
@@ -2416,7 +2453,7 @@ group { name: "elm/entry/handler/start/default";
          description { state: "top" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            align: 0.5 1;
+            align: 1.0 1;
             image {
                normal: "copy&paste_handler_left_top.png";
             }
@@ -2436,11 +2473,6 @@ group { name: "elm/entry/handler/start/default";
          }
       }
    }
-   script {
-      public handler_ontop;
-      public handler_focused;
-      public handler_disabled;
-   }
    programs {
       program { name: "focused";
          signal: "edje,focus,in";
@@ -2455,6 +2487,7 @@ group { name: "elm/entry/handler/start/default";
          script {
             set_int(handler_focused, 0);
             set_state(PART:"handle", "default", 0.0);
+            set_state(PART:"edge", "default", 0.0);
          }
       }
       program { name: "bottom_reversed";
@@ -2465,8 +2498,10 @@ group { name: "elm/entry/handler/start/default";
             disabled = get_int(handler_disabled);
             if (disabled == 0) {
                set_state(PART:"handle", "bottom_reversed", 0.0);
+               set_state(PART:"edge", "bottom_reversed", 0.0);
             } else {
                set_state(PART:"handle", "default", 0.0);
+               set_state(PART:"edge", "default", 0.0);
             }
          }
       }
@@ -2478,8 +2513,10 @@ group { name: "elm/entry/handler/start/default";
             disabled = get_int(handler_disabled);
             if (disabled == 0) {
                set_state(PART:"handle", "top_reversed", 0.0);
+               set_state(PART:"edge", "top_reversed", 0.0);
             } else {
                set_state(PART:"handle", "default", 0.0);
+               set_state(PART:"edge", "default", 0.0);
             }
          }
       }
@@ -2493,8 +2530,10 @@ group { name: "elm/entry/handler/start/default";
             set_int(handler_ontop, 1);
             if ((focused == 1) && (disabled == 0)) {
                set_state(PART:"handle", "top", 0.0);
+               set_state(PART:"edge", "top", 0.0);
             } else {
                set_state(PART:"handle", "default", 0.0);
+               set_state(PART:"edge", "default", 0.0);
             }
          }
       }
@@ -2508,8 +2547,10 @@ group { name: "elm/entry/handler/start/default";
             set_int(handler_ontop, 0);
             if ((focused == 1) && (disabled == 0)) {
                set_state(PART:"handle", "show", 0.0);
+               set_state(PART:"edge", "show", 0.0);
             } else {
                set_state(PART:"handle", "default", 0.0);
+               set_state(PART:"edge", "default", 0.0);
             }
          }
       }
@@ -2538,18 +2579,56 @@ group { name: "elm/entry/handler/end/default";
       image: "copy&paste_handler_right_bottom.png" COMP;
       image: "copy&paste_handler_right_top.png" COMP;
    }
+   script {
+      public handler_ontop;
+      public handler_focused;
+      public handler_disabled;
+      public handler_pressed;
+   }
    parts {
+        part { name: "edge";
+         type: RECT;
+         mouse_events: 1;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            fixed: 1 1;
+            align: 0 0;
+            rel1.offset: -1 0;
+            min: ENTRY_SELECTION_BLOCK_HANDLE_EDGE_WIDTH ENTRY_SELECTION_BLOCK_HANDLE_EDGE_HEIGHT;
+            max: ENTRY_SELECTION_BLOCK_HANDLE_EDGE_WIDTH ENTRY_SELECTION_BLOCK_HANDLE_EDGE_HEIGHT;
+            color: 0 184 230 255;
+         }
+         description { state: "show" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state: "top" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            align: 0 1;
+         }
+         description { state: "bottom_reversed" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            align: 0 0;
+         }
+         description { state: "top_reversed" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            align: 0 1;
+         }
+      }
       part { name: "handle";
          mouse_events: 1;
          scale: 1;
          description { state: "default" 0.0;
             visible: 0;
             fixed: 1 1;
-            align: 0.5 0;
-            rel1.offset: 0 0;
+            align: 0 0;
+            rel1.offset: -7 0;
             min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_INC;
             max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_INC;
-            color: 0 184 230 255;
             image {
                normal: "copy&paste_handler_right_bottom.png";
                border: 0 0 0 0;
@@ -2562,7 +2641,7 @@ group { name: "elm/entry/handler/end/default";
          description { state: "top" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            align: 0.5 1;
+            align: 0 1;
             image {
                normal: "copy&paste_handler_right_top.png";
             }
@@ -2570,22 +2649,17 @@ group { name: "elm/entry/handler/end/default";
          description { state: "bottom_reversed" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            align: 0.5 0;
+            align: 0 0;
          }
          description { state: "top_reversed" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            align: 0.5 1;
+            align: 0 1;
             image {
                normal: "copy&paste_handler_right_top.png";
             }
          }
       }
-   }
-   script {
-      public handler_ontop;
-      public handler_focused;
-      public handler_disabled;
    }
    programs {
       program { name: "focused";
@@ -2601,6 +2675,7 @@ group { name: "elm/entry/handler/end/default";
          script {
             set_int(handler_focused, 0);
             set_state(PART:"handle", "default", 0.0);
+            set_state(PART:"edge", "default", 0.0);
          }
       }
       program { name: "top";
@@ -2613,8 +2688,10 @@ group { name: "elm/entry/handler/end/default";
             set_int(handler_ontop, 1);
             if ((focused == 1) && (disabled == 0)) {
                set_state(PART:"handle", "top", 0.0);
+               set_state(PART:"edge", "top", 0.0);
             } else {
                set_state(PART:"handle", "default", 0.0);
+               set_state(PART:"edge", "default", 0.0);
             }
          }
       }
@@ -2628,8 +2705,10 @@ group { name: "elm/entry/handler/end/default";
             set_int(handler_ontop, 0);
             if ((focused == 1) && (disabled == 0)) {
                set_state(PART:"handle", "show", 0.0);
+               set_state(PART:"edge", "show", 0.0);
             } else {
                set_state(PART:"handle", "default", 0.0);
+               set_state(PART:"edge", "default", 0.0);
             }
          }
       }
@@ -2641,8 +2720,10 @@ group { name: "elm/entry/handler/end/default";
             disabled = get_int(handler_disabled);
             if (disabled == 0) {
                set_state(PART:"handle", "bottom_reversed", 0.0);
+               set_state(PART:"edge", "bottom_reversed", 0.0);
             } else {
                set_state(PART:"handle", "default", 0.0);
+               set_state(PART:"edge", "default", 0.0);
             }
          }
       }
@@ -2654,8 +2735,10 @@ group { name: "elm/entry/handler/end/default";
             disabled = get_int(handler_disabled);
             if (disabled == 0) {
                set_state(PART:"handle", "top_reversed", 0.0);
+               set_state(PART:"edge", "top_reversed", 0.0);
             } else {
                set_state(PART:"handle", "default", 0.0);
+               set_state(PART:"edge", "default", 0.0);
             }
          }
       }
@@ -2725,7 +2808,6 @@ group { name: "elm/entry/cursor_handle/default";
             align: 0 0;
             visible: 0;
             align: 0.5 0;
-            color: 0 184 230 255;
             image {
                normal: "copy&paste_handler_center_circle";
                border: 0 0 0 0;
@@ -2844,6 +2926,18 @@ group { name: "elm/entry/handler/edge/start/default";
          }
       }
    }
+}
+
+group { name: "elm/entry/handler/edge/start/spinner/vertical";
+   alias: "elm/entry/handler/edge/start/spinner/datetime";
+   alias: "elm/entry/handler/edge/start/spinner/vertical_date_picker";
+   alias: "elm/entry/handler/edge/start/spinner/vertical_time_picker";
+}
+
+group { name: "elm/entry/handler/edge/end/spinner/vertical";
+   alias: "elm/entry/handler/edge/end/spinner/datetime";
+   alias: "elm/entry/handler/edge/end/spinner/vertical_date_picker";
+   alias: "elm/entry/handler/edge/end/spinner/vertical_time_picker";
 }
 
 group { name: "elm/entry/handler/edge/end/default";
