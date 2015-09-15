@@ -188,13 +188,16 @@ group { name: "elm/hover/base/hoversel_vertical/default";
          scale: 1;
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.slot.top";
-            rel2.to: "elm.swallow.slot.top";
-            color: 255 255 255 255;
-            visible: 0;
+            rel2 {
+               to_x: "elm.swallow.slot.top";
+               to_y: "elm.swallow.slot.middle";
+               relative: 1.0 0.0;
+            }
+            color: 255 255 255 0;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
+            color: 255 255 255 255;
          }
       }
       part { name: "top_border";
@@ -220,7 +223,7 @@ group { name: "elm/hover/base/hoversel_vertical/default";
          scale: 1;
          description { state: "default" 0.0;
             visible: 1;
-            align: 0.0 0.8;
+            align: 0.0 0.66;
             rel1 {
                to: "elm.swallow.slot.middle";
                relative: 0.0 0.0;
@@ -238,7 +241,7 @@ group { name: "elm/hover/base/hoversel_vertical/default";
          }
          description { state: "right" 0.0;
             inherit: "default" 0.0;
-            align: 1.0 0.8;
+            align: 1.0 0.66;
          }
          description { state: "right_visible" 0.0;
             inherit: "default" 0.0;
@@ -266,14 +269,19 @@ group { name: "elm/hover/base/hoversel_vertical/default";
          clip_to: "clipper";
          scale: 1;
          description { state: "default" 0.0;
-            rel1.to: "elm.swallow.slot.bottom";
+            rel1 {
+               to_x: "elm.swallow.slot.bottom";
+               to_y: "elm.swallow.slot.middle";
+               relative: 0.0 1.0;
+               offset: 0 -2;
+            }
             rel2.to: "elm.swallow.slot.bottom";
-            color: 255 255 255 255;
-            visible: 0;
+            color: 255 255 255 0;
          }
+         //description { state: "right_visible" 0.0;
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
+            color: 255 255 255 255;
          }
       }
       part { name: "bottom_border";
@@ -298,7 +306,7 @@ group { name: "elm/hover/base/hoversel_vertical/default";
          clip_to: "bottom_clipper";
          scale: 1;
          description { state: "default" 0.0;
-            align: 0.0 0.2;
+            align: 0.0 0.34;
             rel1 {
                to: "elm.swallow.slot.middle";
                relative: 0.0 1.0;
@@ -317,7 +325,7 @@ group { name: "elm/hover/base/hoversel_vertical/default";
          }
          description { state: "right" 0.0;
             inherit: "default" 0.0;
-            align: 1.0 0.2;
+            align: 1.0 0.34;
          }
          description { state: "right_visible" 0.0;
             inherit: "default" 0.0;
@@ -365,98 +373,130 @@ group { name: "elm/hover/base/hoversel_vertical/default";
       program { name: "topshow";
          signal: "elm,action,slot,top,show";
          source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "top_bg";
-         target: "top_clipper";
-         target: "top_border";
-         after: "topshow2";
+         script {
+            set_state(PART:"top_bg", "visible", 0.0);
+            set_state(PART:"top_border", "visible", 0.0);
+            set_state(PART:"button_image", "default", 0.0);
+            run_program(PROGRAM:"topshow2");
+         }
       }
       program { name: "topshow2";
-         transition: DECELERATE 0.25;
          script {
             if (get_int(right) == 0) {
-               set_state(PART:"elm.swallow.slot.top", "visible", 0.0);
+               run_program(PROGRAM:"topshow_default");
             }
             else {
-               set_state(PART:"elm.swallow.slot.top", "right_visible", 0.0);
+               run_program(PROGRAM:"topshow_right");
             }
             set_int(visible, 1);
          }
       }
-      program { name: "topshow3";
-         signal: "elm,action,slot,top,show";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "button_image";
+      program { name: "topshow_default";
+         action: STATE_SET "visible" 0.0;
+         target: "top_clipper";
+         target: "elm.swallow.slot.top";
+         transition: GLIDE_EASE_OUT(0.25);
+      }
+      program { name: "topshow_right";
+         action: STATE_SET "right_visible" 0.0;
+         target: "top_clipper";
+         target: "elm.swallow.slot.top";
+         transition: GLIDE_EASE_OUT(0.25);
       }
       program { name: "tophide";
          signal: "elm,action,slot,top,hide";
          source: "elm";
-         transition: DECELERATE 0.25;
          script {
             if (get_int(right) == 0) {
-               set_state(PART:"elm.swallow.slot.top", "default", 0.0);
+               run_program(PROGRAM:"tophide_default");
             }
             else {
-               set_state(PART:"elm.swallow.slot.top", "right", 0.0);
+               run_program(PROGRAM:"tophide_right");
             }
             set_int(visible, 0);
+            run_program(PROGRAM:"tophide2");
          }
-         after: "tophide2";
       }
       program { name: "tophide2";
          action: STATE_SET "default" 0.0;
          target: "top_bg";
-         target: "top_clipper";
          target: "top_border";
+      }
+      program { name: "tophide_default";
+         action: STATE_SET "default" 0.0;
+         target: "top_clipper";
+         target: "elm.swallow.slot.top";
+         transition: GLIDE_EASE_OUT(0.25);
+      }
+      program { name: "tophide_right";
+         action: STATE_SET "right" 0.0;
+         target: "top_clipper";
+         target: "elm.swallow.slot.top";
+         transition: GLIDE_EASE_OUT(0.25);
       }
       program { name: "bottomshow";
          signal: "elm,action,slot,bottom,show";
          source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "bottom_bg";
-         target: "bottom_clipper";
-         target: "bottom_border";
-         after: "bottomshow2";
+         script {
+            set_state(PART:"bottom_bg", "visible", 0.0);
+            set_state(PART:"bottom_border", "visible", 0.0);
+            set_state(PART:"button_image", "bottom", 0.0);
+            run_program(PROGRAM:"bottomshow2");
+         }
       }
       program { name: "bottomshow2";
-         transition: DECELERATE 0.25;
          script {
             if (get_int(right) == 0) {
-               set_state(PART:"elm.swallow.slot.bottom", "visible", 0.0);
+               run_program(PROGRAM:"bottomshow_default");
             }
             else {
-               set_state(PART:"elm.swallow.slot.bottom", "right_visible", 0.0);
+               run_program(PROGRAM:"bottomshow_right");
             }
             set_int(visible, 1);
          }
       }
-      program { name: "bottomshow3";
-         signal: "elm,action,slot,bottom,show";
-         source: "elm";
-         action: STATE_SET "bottom" 0.0;
-         target: "button_image";
+      program { name: "bottomshow_default";
+         action: STATE_SET "visible" 0.0;
+         target: "bottom_clipper";
+         target: "elm.swallow.slot.bottom";
+         transition: GLIDE_EASE_OUT(0.25);
+      }
+      program { name: "bottomshow_right";
+         action: STATE_SET "right_visible" 0.0;
+         target: "bottom_clipper";
+         target: "elm.swallow.slot.bottom";
+         transition: GLIDE_EASE_OUT(0.25);
       }
       program { name: "bottomhide";
          signal: "elm,action,slot,bottom,hide";
          source: "elm";
-         transition: DECELERATE 0.25;
          script {
             if (get_int(right) == 0) {
-               set_state(PART:"elm.swallow.slot.bottom", "default", 0.0);
+               run_program(PROGRAM:"bottomhide_default");
             }
             else {
-               set_state(PART:"elm.swallow.slot.bottom", "right", 0.0);
+               run_program(PROGRAM:"bottomhide_right");
             }
             set_int(visible, 0);
+            run_program(PROGRAM:"bottomhide2");
          }
-         after: "bottomhide2";
       }
       program { name: "bottomhide2";
          action: STATE_SET "default" 0.0;
          target: "bottom_bg";
-         target: "bottom_clipper";
          target: "bottom_border";
+      }
+      program { name: "bottomhide_default";
+         action: STATE_SET "default" 0.0;
+         target: "bottom_clipper";
+         target: "elm.swallow.slot.bottom";
+         transition: GLIDE_EASE_OUT(0.25);
+      }
+      program { name: "bottomhide_right";
+         action: STATE_SET "right" 0.0;
+         target: "bottom_clipper";
+         target: "elm.swallow.slot.bottom";
+         transition: GLIDE_EASE_OUT(0.25);
       }
       program { name: "align_right";
          signal: "elm,state,align,right";
