@@ -1367,10 +1367,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          new slide_start_timer;
 
          if (get_int(g_stopslide)) return;
-         if (get_int(icon_text))
-            set_tween_state(PART:"elm.text.slide", pos*0.5, "icon_text_slide_begin", 0.0, "icon_text_slide_end", 0.0);
-         else
-            set_tween_state(PART:"elm.text.slide", pos*0.5, "slide_begin", 0.0, "slide_end", 0.0);
+         set_tween_state(PART:"elm.text.slide", pos*0.5, "slide_begin", 0.0, "slide_end", 0.0);
 
          if (pos >= 1.0) {
             slide_start_timer = get_int(g_timer_id);
@@ -1412,11 +1409,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
             strcat(buffer, TABBAR_COMMON_SLIDE_TEXT_CHAR_GAP);
             set_text(PART:"elm.text.slide", buffer);
 
-            if (get_int(icon_text)) {
-               set_state(PART:"elm.text.slide", "icon_text_slide_begin", 0.0);
-            } else {
-               set_state(PART:"elm.text.slide", "slide_begin", 0.0);
-            }
+            set_state(PART:"elm.text.slide", "slide_begin", 0.0);
 
             set_state(PART:"elm.text.clipper", "hide", 0.0);
             set_state(PART:"elm.text.slide.clipper", "show", 0.0);
@@ -1439,11 +1432,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
             cancel_anim(slide_anim_id);
             set_int(g_anim_id, 0);
          }
-         if (get_int(icon_text)) {
-            set_state(PART:"elm.text.slide", "icon_text", 0.0);
-         } else {
-            set_state(PART:"elm.text.slide", "default", 0.0);
-         }
+         set_state(PART:"elm.text.slide", "default", 0.0);
          set_state(PART:"elm.text.clipper", "default", 0.0);
          set_state(PART:"elm.text.slide.clipper", "default", 0.0);
       }
@@ -1686,27 +1675,6 @@ group { name: "elm/toolbar/item/tabbar_with_title";
             inherit: "text" 0.0;
             text.style: "tabbar_text_style_T1117D";
          }
-         description { state: "icon_text" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            text {
-               style: "tabbar_icon_text_style_T111";
-               min: 0 1;
-               max: 1 0;
-            }
-         }
-         description { state:"icon_text_pressed" 0.0;
-            inherit: "icon_text" 0.0;
-            text.style: "tabbar_icon_text_style_T111P";
-         }
-         description { state:"icon_text_selected" 0.0;
-            inherit: "icon_text" 0.0;
-            text.style: "tabbar_icon_text_style_T111S";
-         }
-         description { state:"icon_text_disabled" 0.0;
-            inherit: "icon_text" 0.0;
-            text.style: "tabbar_icon_text_style_T111D";
-         }
       }
       part { name: "slide_text_gap";
          type: SPACER;
@@ -1768,20 +1736,6 @@ group { name: "elm/toolbar/item/tabbar_with_title";
                to_y: "padding_right_bottom";
                relative: 1.0 0.0;
             }
-         }
-         description { state: "icon_text" 0.0;
-            inherit: "default" 0.0;
-            text {
-               style: "tabbar_icon_text_style_T111S_slide";
-               min: 1 1;
-               max: 1 0;
-            }
-         }
-         description { state: "icon_text_slide_begin" 0.0;
-            inherit: "icon_text" 0.0;
-         }
-         description { state: "icon_text_slide_end" 0.0;
-            inherit: "slide_end" 0.0;
          }
       }
       part { name: "elm.icon.clipper";
@@ -1863,10 +1817,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          script{
             set_int(selected, 1);
             stop_slide();
-            if (!get_int(icon_text))
-              set_state(PART:"elm.text", "text_selected", 0.0);
-            else
-              set_state(PART:"elm.text", "icon_text_selected", 0.0);
+            set_state(PART:"elm.text", "text_selected", 0.0);
             if (get_int(selected))
                set_int(g_timer_id, timer(TABBAR_COMMON_SLIDE_START_DELAY_SEC, "start_slide", 0));
          }
@@ -1887,10 +1838,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
       program { name: "unselected_text";
          script{
             set_int(selected, 0);
-            if (!get_int(icon_text))
-              set_state(PART:"elm.text", "text", 0.0);
-            else
-              set_state(PART:"elm.text", "icon_text", 0.0);
+            set_state(PART:"elm.text", "text", 0.0);
             stop_slide();
          }
          after: "unselected_line_anim";
@@ -1915,10 +1863,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
               {
                 set_int(mouse_down, 1);
                 set_state(PART:"bg_cover", "pressed", 0.0);
-                if (!get_int(icon_text))
-                  set_state(PART:"elm.text", "text_pressed", 0.0);
-                else
-                  set_state(PART:"elm.text", "icon_text_pressed", 0.0);
+                set_state(PART:"elm.text", "text_pressed", 0.0);
                 set_state(PART:"elm.icon.clipper", "pressed", 0.0);
                 set_int(pressed, 1);
               }
@@ -1941,18 +1886,12 @@ group { name: "elm/toolbar/item/tabbar_with_title";
                 set_state(PART:"bg_cover", "default", 0.0);
                 if (get_int(selected))
                   {
-                     if (!get_int(icon_text))
-                       set_state(PART:"elm.text", "text_selected", 0.0);
-                     else
-                       set_state(PART:"elm.text", "icon_text_selected", 0.0);
+                    set_state(PART:"elm.text", "text_selected", 0.0);
                     set_state(PART:"elm.icon.clipper", "selected", 0.0);
                   }
                 else
                   {
-                     if (!get_int(icon_text))
-                       set_state(PART:"elm.text", "text", 0.0);
-                     else
-                       set_state(PART:"elm.text", "icon_text", 0.0);
+                    set_state(PART:"elm.text", "text", 0.0);
                     set_state(PART:"elm.icon.clipper", "default", 0.0);
                   }
               }
@@ -1995,17 +1934,10 @@ group { name: "elm/toolbar/item/tabbar_with_title";
             set_int(item_state, ITEM_STATE_ENABLED);
             stop_slide();
             set_state(PART:"bg_cover", "default", 0.0);
-            if (!get_int(icon_text)) {
-               if (!get_int(selected))
-                  set_state(PART:"elm.text", "text", 0.0);
-               else
-                  set_state(PART:"elm.text", "text_selected", 0.0);
-            } else {
-               if (!get_int(selected))
-                  set_state(PART:"elm.text", "icon_text", 0.0);
-               else
-                  set_state(PART:"elm.text", "icon_text_selected", 0.0);
-            }
+            if (!get_int(selected))
+               set_state(PART:"elm.text", "text", 0.0);
+            else
+               set_state(PART:"elm.text", "text_selected", 0.0);
             set_state(PART:"elm.text.clipper", "default", 0.0);
             set_state(PART:"elm.icon.clipper", "default", 0.0);
             if (get_int(selected))
@@ -2019,10 +1951,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
             set_int(item_state, ITEM_STATE_DISABLED);
             stop_slide();
             set_state(PART:"bg_cover", "disabled", 0.0);
-            if (!get_int(icon_text))
-              set_state(PART:"elm.text", "text_disabled", 0.0);
-            else
-              set_state(PART:"elm.text", "icon_text_disabled", 0.0);
+            set_state(PART:"elm.text", "text_disabled", 0.0);
             set_state(PART:"elm.text.clipper", "disabled", 0.0);
             set_state(PART:"elm.icon.clipper", "disabled", 0.0);
          }
@@ -2047,21 +1976,17 @@ group { name: "elm/toolbar/item/tabbar_with_title";
          script {
             set_int(item_text, 1);
             stop_slide();
+            if (!get_int(selected))
+               set_state(PART:"elm.text", "text", 0.0);
+            else
+               set_state(PART:"elm.text", "text_selected", 0.0);
             if (!get_int(icon_text))
               {
-                if (!get_int(selected))
-                   set_state(PART:"elm.text", "text", 0.0);
-                else
-                   set_state(PART:"elm.text", "text_selected", 0.0);
                 set_state(PART:"padding_left_top", "text", 0.0);
                 set_state(PART:"padding_right_bottom", "text", 0.0);
               }
             else
               {
-                if (!get_int(selected))
-                   set_state(PART:"elm.text", "icon_text", 0.0);
-                else
-                   set_state(PART:"elm.text", "icon_text_selected", 0.0);
                 set_state(PART:"elm.swallow.icon", "visible", 0.0);
                 set_state(PART:"padding_left_top", "icon_text", 0.0);
                 set_state(PART:"padding_right_bottom", "icon_text", 0.0);
@@ -2086,13 +2011,7 @@ group { name: "elm/toolbar/item/tabbar_with_title";
             set_int(icon_text, 1);
             stop_slide();
             if (get_int(item_text))
-              {
-                if (!get_int(selected))
-                   set_state(PART:"elm.text", "icon_text", 0.0);
-                else
-                   set_state(PART:"elm.text", "icon_text_selected", 0.0);
-                set_state(PART:"elm.swallow.icon", "visible", 0.0);
-              }
+              set_state(PART:"elm.swallow.icon", "visible", 0.0);
             else
               set_state(PART:"elm.swallow.icon", "visible_icon_only", 0.0);
             set_state(PART:"padding_left_top", "icon_text", 0.0);
