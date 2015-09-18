@@ -301,11 +301,11 @@
          program { name: "pressed_effect3";
             script {
                set_int(animate, 0);
-               if (get_int(mouse_down) == 0) {
-                  emit("elm,action,unpress", "");
-                  run_program(PROGRAM:"unpressed_effect");
-               }
             }
+         }
+         program { name: "delay_unpressed_effect";
+            in: 0.1 0.0;
+            after: "unpressed_effect";
          }
          program { name: "unpressed_effect";
             script {
@@ -364,6 +364,7 @@
             source: "event";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
+                  stop_program(PROGRAM:"delay_unpressed_effect");
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
                   custom_state(PART:"tizen_vg_shape2", "default", 0.0);
@@ -380,11 +381,17 @@
             script {
                if (get_int(mouse_down) == 1) {
                   set_int(mouse_down, 0);
-                  if (get_int(animate) == 0) {
-                     if (get_int(disabled) == 0) {
-                        emit("elm,action,unpress", "");
+                  if (get_int(disabled) == 0) {
+                     if (get_int(animate) == 0) {
                         run_program(PROGRAM:"unpressed_effect");
+                     } else {
+                        set_state(PART:"elm.text", "pressed", 0.0);
+                        set_state(PART:"clipper", "pressed", 0.0);
+                        set_state(PART:"tizen_vg_shape2", "pressed", 0.0);
+                        set_state(PART:"tizen_vg_shape_clipper2", "pressed", 0.0);
+                        run_program(PROGRAM:"delay_unpressed_effect");
                      }
+                     emit("elm,action,unpress", "");
                   }
                }
             }
@@ -396,13 +403,17 @@
                if (get_int(multi_down) == 0) {
                   if (get_int(disabled) == 0) {
                      run_program(PROGRAM:"touch_sound");
-                     emit("elm,action,click", "");
+                     run_program(PROGRAM:"clicked_signal");
                   }
                }
             }
          }
          program { name: "touch_sound";
             action: RUN_PLUGIN "touch_sound";
+         }
+         program { name: "clicked_signal";
+            in: 0.001 0.0;
+            action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "icon_show";
             signal: "elm,state,icon,visible";
@@ -728,11 +739,11 @@
          program { name: "pressed_effect3";
             script {
                set_int(animate, 0);
-               if (get_int(mouse_down) == 0) {
-                  emit("elm,action,unpress", "");
-                  run_program(PROGRAM:"unpressed_effect");
-               }
             }
+         }
+         program { name: "delay_unpressed_effect";
+            in: 0.1 0.0;
+            after: "unpressed_effect";
          }
          program { name: "unpressed_effect";
             script {
@@ -789,6 +800,7 @@
             source: "event";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
+                  stop_program(PROGRAM:"delay_unpressed_effect");
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
                   emit("elm,action,press", "");
@@ -802,10 +814,16 @@
             script {
                if (get_int(mouse_down) == 1) {
                   set_int(mouse_down, 0);
-                  if (get_int(animate) == 0) {
-                     if (get_int(disabled) == 0) {
+                  if (get_int(disabled) == 0) {
+                     if (get_int(animate) == 0) {
                         emit("elm,action,unpress", "");
                         run_program(PROGRAM:"unpressed_effect");
+                     } else {
+                        set_state(PART:"elm.text", "pressed", 0.0);
+                        set_state(PART:"clipper", "pressed", 0.0);
+                        set_state(PART:"tizen_vg_shape2", "pressed", 0.0);
+                        set_state(PART:"tizen_vg_shape_clipper2", "pressed", 0.0);
+                        run_program(PROGRAM:"delay_unpressed_effect");
                      }
                   }
                }
@@ -818,13 +836,17 @@
                if (get_int(multi_down) == 0) {
                   if (get_int(disabled) == 0) {
                      run_program(PROGRAM:"touch_sound");
-                     emit("elm,action,click", "");
+                     run_program(PROGRAM:"clicked_signal");
                   }
                }
             }
          }
          program { name: "touch_sound";
             action: RUN_PLUGIN "touch_sound";
+         }
+         program { name: "clicked_signal";
+            in: 0.001 0.0;
+            action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "text_show";
             signal: "elm,state,text,visible";
@@ -1032,11 +1054,11 @@
          program { name: "pressed_effect3";
             script {
                set_int(animate, 0);
-               if (get_int(mouse_down) == 0) {
-                  emit("elm,action,unpress", "");
-                  run_program(PROGRAM:"unpressed_effect");
-               }
             }
+         }
+         program { name: "delay_unpressed_effect";
+            in: 0.1 0.0;
+            after: "unpressed_effect";
          }
          program { name: "unpressed_effect";
             script {
@@ -1081,6 +1103,7 @@
             source: "event";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
+                  stop_program(PROGRAM:"delay_unpressed_effect");
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
                   set_state(PART:"effect_spacer", "default", 0.0);
@@ -1099,11 +1122,15 @@
             script {
                if (get_int(mouse_down) == 1) {
                   set_int(mouse_down, 0);
-                  if (get_int(animate) == 0) {
-                     if (get_int(disabled) == 0) {
-                        emit("elm,action,unpress", "");
+                  if (get_int(disabled) == 0) {
+                     if (get_int(animate) == 0) {
                         run_program(PROGRAM:"unpressed_effect");
+                     } else {
+                        set_state(PART:"tizen_vg_shape", "pressed", 0.0);
+                        set_state(PART:"tizen_vg_shape_clipper", "pressed", 0.0);
+                        run_program(PROGRAM:"delay_unpressed_effect");
                      }
+                     emit("elm,action,unpress", "");
                   }
                }
             }
@@ -1114,12 +1141,16 @@
             script {
                if (get_int(multi_down) == 0) {
                  run_program(PROGRAM:"play_sound");
-                 emit("elm,action,click", "");
+                 run_program(PROGRAM:"clicked_signal");
                }
             }
          }
          program { name: "play_sound";
             action: RUN_PLUGIN "touch_sound";
+         }
+         program { name: "clicked_signal";
+            in: 0.001 0.0;
+            action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "enable";
             signal: "elm,state,enabled";
@@ -1695,11 +1726,11 @@
          program { name: "pressed_effect3"; \
             script { \
                set_int(animate, 0); \
-               if (get_int(mouse_down) == 0) { \
-                  emit("elm,action,unpress", ""); \
-                  run_program(PROGRAM:"unpressed_effect"); \
-               } \
             } \
+         } \
+         program { name: "delay_unpressed_effect"; \
+            in: 0.1 0.0; \
+            after: "unpressed_effect"; \
          } \
          program { name: "unpressed_effect"; \
             script { \
@@ -1745,6 +1776,7 @@
             source: "event"; \
             script { \
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) { \
+                  stop_program(PROGRAM:"delay_unpressed_effect"); \
                   set_int(mouse_down, 1); \
                   set_int(animate, 1); \
                   get_circumscription_radius(PART:"button_bg", min_radius); \
@@ -1762,11 +1794,16 @@
             script { \
                if (get_int(mouse_down) == 1) { \
                   set_int(mouse_down, 0); \
-                  if (get_int(animate) == 0) { \
-                     if (get_int(disabled) == 0) { \
-                        emit("elm,action,unpress", ""); \
+                  if (get_int(disabled) == 0) { \
+                     if (get_int(animate) == 0) { \
                         run_program(PROGRAM:"unpressed_effect"); \
+                     } else { \
+                        set_state(PART:"tizen_vg_shape", "pressed", 0.0); \
+                        set_state(PART:"tizen_vg_shape_clipper", "pressed", 0.0); \
+                        set_state(PART:"button_center_part", "pressed", 0.0); \
+                        run_program(PROGRAM:"delay_unpressed_effect"); \
                      } \
+                     emit("elm,action,unpress", ""); \
                   } \
                } \
             } \
@@ -1789,6 +1826,7 @@
             action: RUN_PLUGIN "touch_sound"; \
          } \
          program { name: "button_click2"; \
+            in: 0.001 0.0; \
             action: SIGNAL_EMIT "elm,action,click" ""; \
          } \
          program { name: "disable"; \
@@ -2950,18 +2988,17 @@ group { name: "elm/button/base/contacts";
             target: "tizen_vg_shape_clipper";
             target: "tizen_vg_shape";
             target: "elm.text";
-            target: "effect_spacer";
             transition: GLIDE_EASE_OUT(0.15);
             after: "pressed_effect3";
          }
          program { name: "pressed_effect3";
             script {
                set_int(animate, 0);
-               if (get_int(mouse_down) == 0) {
-                  emit("elm,action,unpress", "");
-                  run_program(PROGRAM:"unpressed_effect");
-               }
             }
+         }
+         program { name: "delay_unpressed_effect";
+            in: 0.1 0.0;
+            after: "unpressed_effect";
          }
          program { name: "unpressed_effect";
             script {
@@ -3006,6 +3043,7 @@ group { name: "elm/button/base/contacts";
             source: "event";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
+                  stop_program(PROGRAM:"delay_unpressed_effect");
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
                   custom_state(PART:"tizen_vg_shape", "ready", 0.0);
@@ -3022,11 +3060,16 @@ group { name: "elm/button/base/contacts";
             script {
                if (get_int(mouse_down) == 1) {
                   set_int(mouse_down, 0);
-                  if (get_int(animate) == 0) {
-                     if (get_int(disabled) == 0) {
-                        emit("elm,action,unpress", "");
+                  if (get_int(disabled) == 0) {
+                     if (get_int(animate) == 0) {
                         run_program(PROGRAM:"unpressed_effect");
+                     } else {
+                        set_state(PART:"tizen_vg_shape", "pressed", 0.0);
+                        set_state(PART:"tizen_vg_shape_clipper", "pressed", 0.0);
+                        set_state(PART:"elm.text", "pressed", 0.0);
+                        run_program(PROGRAM:"delay_unpressed_effect");
                      }
+                     emit("elm,action,unpress", "");
                   }
                }
             }
@@ -3037,12 +3080,16 @@ group { name: "elm/button/base/contacts";
             script {
                if (get_int(multi_down) == 0) {
                  run_program(PROGRAM:"play_sound");
-                 emit("elm,action,click", "");
+                 run_program(PROGRAM:"clicked_signal");
                }
             }
          }
          program { name: "play_sound";
             action: RUN_PLUGIN "touch_sound";
+         }
+         program { name: "clicked_signal";
+            in: 0.001 0.0;
+            action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "enable";
             signal: "elm,state,enabled";
@@ -3321,11 +3368,11 @@ group { name: "elm/button/base/contacts";
          program { name: "pressed_effect3";
             script {
                set_int(animate, 0);
-               if (get_int(mouse_down) == 0) {
-                  emit("elm,action,unpress", "");
-                  run_program(PROGRAM:"unpressed_effect");
-               }
             }
+         }
+         program { name: "delay_unpressed_effect";
+            in: 0.1 0.0;
+            after: "unpressed_effect";
          }
          program { name: "unpressed_effect";
             script {
@@ -3348,6 +3395,7 @@ group { name: "elm/button/base/contacts";
             source: "event";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
+                  stop_program(PROGRAM:"delay_unpressed_effect");
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
                   emit("elm,action,press", "");
@@ -3361,9 +3409,15 @@ group { name: "elm/button/base/contacts";
             script {
                if (get_int(mouse_down) == 1) {
                   set_int(mouse_down, 0);
-                  if ((get_int(animate) == 0) && (get_int(disabled) == 0)) {
+                  if (get_int(disabled) == 0) {
+                     if (get_int(animate) == 0) {
+                        run_program(PROGRAM:"unpressed_effect");
+                     } else {
+                        set_state(PART:"tizen_vg_shape", "pressed", 0.0);
+                        set_state(PART:"tizen_vg_shape_clipper", "pressed", 0.0);
+                        run_program(PROGRAM:"delay_unpressed_effect");
+                     }
                      emit("elm,action,unpress", "");
-                     run_program(PROGRAM:"unpressed_effect");
                   }
                }
             }
@@ -3374,12 +3428,16 @@ group { name: "elm/button/base/contacts";
             script {
                if ((get_int(multi_down) == 0) && (get_int(disabled) == 0)) {
                  run_program(PROGRAM:"play_sound");
-                 emit("elm,action,click", "");
+                 run_program(PROGRAM:"clicked_signal");
                }
             }
          }
          program { name: "play_sound";
             action: RUN_PLUGIN "touch_sound";
+         }
+         program { name: "clicked_signal";
+            in: 0.001 0.0;
+            action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "enable";
             signal: "elm,state,enabled";
@@ -4753,11 +4811,11 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
          program { name: "pressed_effect3";
             script {
                set_int(animate, 0);
-               if (get_int(mouse_down) == 0) {
-                  emit("elm,action,unpress", "");
-                  run_program(PROGRAM:"unpressed_effect");
-               }
             }
+         }
+         program { name: "delay_unpressed_effect";
+            in: 0.1 0.0;
+            after: "unpressed_effect";
          }
          program { name: "unpressed_effect";
             script {
@@ -4802,6 +4860,7 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
             source: "event";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
+                  stop_program(PROGRAM:"delay_unpressed_effect");
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
                   emit("elm,action,press", "");
@@ -4815,9 +4874,16 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
             script {
                if (get_int(mouse_down) == 1) {
                   set_int(mouse_down, 0);
-                  if ((get_int(animate) == 0) && (get_int(disabled) == 0)) {
+                  if (get_int(disabled) == 0) {
+                     if (get_int(animate) == 0) {
+                        run_program(PROGRAM:"unpressed_effect");
+                     } else {
+                        set_state(PART:"tizen_vg_shape", "pressed", 0.0);
+                        set_state(PART:"tizen_vg_shape_clipper", "pressed", 0.0);
+                        set_state(PART:"arrow.image", "pressed", 0.0);
+                        run_program(PROGRAM:"delay_unpressed_effect");
+                     }
                      emit("elm,action,unpress", "");
-                     run_program(PROGRAM:"unpressed_effect");
                   }
                }
             }
@@ -4841,6 +4907,7 @@ BUTTON_DEFAULT_FOCUS_STYLES("focus")
             action: RUN_PLUGIN "touch_haptic";
          }
          program { name: "button_click2";
+            in: 0.001 0.0;
             action: SIGNAL_EMIT "elm,action,click" "";
          }
          program { name: "action_focus";
@@ -5581,11 +5648,11 @@ group { name: "elm/button/base/hoversel_vertical/default";
       program { name: "pressed_effect3";
          script {
             set_int(animate, 0);
-            if (get_int(mouse_down) == 0) {
-               emit("elm,action,unpress", "");
-               run_program(PROGRAM:"unpressed_effect");
-            }
          }
+      }
+      program { name: "delay_unpressed_effect";
+         in: 0.1 0.0;
+         after: "unpressed_effect";
       }
       program { name: "unpressed_effect";
          script {
@@ -5625,6 +5692,7 @@ group { name: "elm/button/base/hoversel_vertical/default";
          source: "event";
          script {
             if ((get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
+               stop_program(PROGRAM:"delay_unpressed_effect");
                set_int(mouse_down, 1);
                set_int(animate, 1);
                get_effect_min_size(PART:"effect_spacer", 0.7, minw, minh);
@@ -5643,11 +5711,17 @@ group { name: "elm/button/base/hoversel_vertical/default";
          script {
             if (get_int(mouse_down) == 1) {
                set_int(mouse_down, 0);
-               if (get_int(animate) == 0) {
-                  if (get_int(disabled) == 0) {
+               if (get_int(disabled) == 0) {
+                  if (get_int(animate) == 0) {
                      emit("elm,action,unpress", "");
                      run_program(PROGRAM:"unpressed_effect");
+                  } else {
+                     set_state(PART:"elm.text", "pressed", 0.0);
+                     set_state(PART:"button_image", "pressed", 0.0);
+                     set_state(PART:"press_effect", "pressed", 0.0);
+                     run_program(PROGRAM:"delay_unpressed_effect");
                   }
+                  emit("elm,action,unpress", "");
                }
             }
          }
@@ -5658,7 +5732,7 @@ group { name: "elm/button/base/hoversel_vertical/default";
          script {
             if (get_int(disabled) == 0) {
                run_program(PROGRAM:"touch_sound");
-               emit("elm,action,click", "");
+               run_program(PROGRAM:"clicked_signal");
             }
          }
       }
@@ -5684,6 +5758,10 @@ group { name: "elm/button/base/hoversel_vertical/default";
       }
       program { name: "touch_sound";
          action: RUN_PLUGIN "touch_sound";
+      }
+      program { name: "clicked_signal";
+         in: 0.001 0.0;
+         action: SIGNAL_EMIT "elm,action,click" "";
       }
       program { name: "pass_event_enable";
          signal: "elm,event,pass,enabled";
