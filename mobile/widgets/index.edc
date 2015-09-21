@@ -25,6 +25,9 @@
  */
 
    group { name: "elm/index/base/vertical/default";
+      script {
+         public animate = 0;
+      }
       images {
          set {
             name: "core_index_scroll_popup_bg";
@@ -591,14 +594,47 @@
          program { name: "index.active";
             signal: "elm,indicator,state,active";
             source: "elm";
+            script {
+               if (get_int(animate) == 0) {
+                 set_int(animate, 1);
+                 run_program(PROGRAM:"active_effect");
+               }
+               else {
+                 set_state(PART:"clip2", "default", 0.0);
+                 run_program(PROGRAM:"active_effect");
+               }
+            }
+         }
+         program { name: "active_effect";
             action: STATE_SET "active" 0.0;
             target: "clip2";
+            transition: GLIDE_EASE_OUT(0.15);
+            after: "animate_finish";
          }
          program { name: "index.inactive";
             signal: "elm,indicator,state,inactive";
             source: "elm";
+            script {
+               if (get_int(animate) == 0) {
+                 set_int(animate, 1);
+                 run_program(PROGRAM:"inactive_effect");
+               }
+               else {
+                 set_state(PART:"clip2", "active", 0.0);
+                 run_program(PROGRAM:"inactive_effect");
+               }
+            }
+         }
+         program { name: "inactive_effect";
             action: STATE_SET "default" 0.0;
             target: "clip2";
+            transition: GLIDE_EASE_OUT(0.45);
+            after: "animate_finish";
+         }
+         program { name: "animate_finish";
+            script {
+               set_int(animate, 0);
+            }
          }
          program { name: "event.inactive";
             signal: "elm,priority,up";
