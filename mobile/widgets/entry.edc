@@ -2395,9 +2395,10 @@ group { name: "elm/entry/handler/start/default";
       image: "copy&paste_handler_top_r.png" COMP;
    }
    script {
-      public handler_ontop;
-      public handler_focused;
-      public handler_disabled;
+      public handler_on_top = 0;
+      public handler_focused = 0;
+      public handler_disabled = 0;
+      public handler_zoomed = 0;
    }
    parts {
       part { name: "handle";
@@ -2441,6 +2442,26 @@ group { name: "elm/entry/handler/start/default";
                normal: "copy&paste_handler_top_r.png";
             }
          }
+         description { state: "zoom_show" 0.0;
+            inherit: "show" 0.0;
+            min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+            max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+         }
+         description { state: "zoom_top" 0.0;
+            inherit: "top" 0.0;
+            min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+            max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+         }
+         description { state: "zoom_bottom_reversed" 0.0;
+            inherit: "bottom_reversed" 0.0;
+            min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+            max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+         }
+         description { state: "zoom_top_reversed" 0.0;
+            inherit: "top_reversed" 0.0;
+            min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+            max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+         }
       }
    }
    programs {
@@ -2459,42 +2480,139 @@ group { name: "elm/entry/handler/start/default";
             set_state(PART:"handle", "default", 0.0);
          }
       }
-      program { name: "bottom_reversed";
-         signal: "elm,state,bottom,reversed";
-         source: "elm";
+      program { name: "pressed_show";
+         action: STATE_SET "zoom_show" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "pressed_top";
+         action: STATE_SET "zoom_top" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "pressed_bottom_reversed";
+         action: STATE_SET "zoom_bottom_reversed" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "pressed_top_reversed";
+         action: STATE_SET "zoom_top_reversed" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "released_show";
+         action: STATE_SET "show" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "released_top";
+         action: STATE_SET "top" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "released_bottom_reversed";
+         action: STATE_SET "bottom_reversed" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "released_top_reversed";
+         action: STATE_SET "top_reversed" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "pressed";
+         signal: "mouse,down,1";
+         source: "handle";
          script {
-            new disabled;
-            disabled = get_int(handler_disabled);
-            if (disabled == 0) {
-               set_state(PART:"handle", "bottom_reversed", 0.0);
-            } else {
-               set_state(PART:"handle", "default", 0.0);
-            }
+            set_int(handler_zoomed, 1);
+            new st[31];
+            new Float:vl;
+            get_state(PART:"handle", st, 30, vl);
+            if (!strcmp(st, "show"))
+              {
+                 run_program(PROGRAM:"pressed_show");
+              }
+            else if (!strcmp(st, "top"))
+              {
+                 run_program(PROGRAM:"pressed_top");
+              }
+            else if (!strcmp(st, "bottom_reversed"))
+              {
+                 run_program(PROGRAM:"pressed_bottom_reversed");
+              }
+            else if (!strcmp(st, "top_reversed"))
+              {
+                 run_program(PROGRAM:"pressed_top_reversed");
+              }
          }
       }
-      program { name: "top_reversed";
-         signal: "elm,state,top,reversed";
-         source: "elm";
+      program { name: "released";
+         signal: "mouse,up,1";
+         source: "handle";
          script {
-            new disabled;
-            disabled = get_int(handler_disabled);
-            if (disabled == 0) {
-               set_state(PART:"handle", "top_reversed", 0.0);
-            } else {
-               set_state(PART:"handle", "default", 0.0);
-            }
+            set_int(handler_zoomed, 0);
+            new st[31];
+            new Float:vl;
+            get_state(PART:"handle", st, 30, vl);
+            if (!strcmp(st, "zoom_show"))
+              {
+                 run_program(PROGRAM:"released_show");
+              }
+            else if (!strcmp(st, "zoom_top"))
+              {
+                 run_program(PROGRAM:"released_top");
+              }
+            else if (!strcmp(st, "zoom_bottom_reversed"))
+              {
+                 run_program(PROGRAM:"released_bottom_reversed");
+              }
+            else if (!strcmp(st, "zoom_top_reversed"))
+              {
+                 run_program(PROGRAM:"released_top_reversed");
+              }
+         }
+         after: "released2";
+      }
+      program { name: "released2";
+         in: 0.3 0.0;
+         script {
+            set_int(handler_zoomed, 0);
+            new st[31];
+            new Float:vl;
+            get_state(PART:"handle", st, 30, vl);
+            if (!strcmp(st, "zoom_show"))
+              {
+                 run_program(PROGRAM:"released_show");
+              }
+            else if (!strcmp(st, "zoom_top"))
+              {
+                 run_program(PROGRAM:"released_top");
+              }
+            else if (!strcmp(st, "zoom_bottom_reversed"))
+              {
+                 run_program(PROGRAM:"released_bottom_reversed");
+              }
+            else if (!strcmp(st, "zoom_top_reversed"))
+              {
+                 run_program(PROGRAM:"released_top_reversed");
+              }
          }
       }
       program { name: "top";
          signal: "elm,state,top";
          source: "elm";
          script {
-            new focused, disabled;
+            new focused, disabled, zoomed;
             focused = get_int(handler_focused);
             disabled = get_int(handler_disabled);
-            set_int(handler_ontop, 1);
+            set_int(handler_on_top, 1);
             if ((focused == 1) && (disabled == 0)) {
-               set_state(PART:"handle", "top", 0.0);
+               zoomed = get_int(handler_zoomed);
+               if (zoomed) {
+                    set_state(PART:"handle", "zoom_top", 0.0);
+                 } else {
+                    set_state(PART:"handle", "top", 0.0);
+                 }
             } else {
                set_state(PART:"handle", "default", 0.0);
             }
@@ -2504,12 +2622,53 @@ group { name: "elm/entry/handler/start/default";
          signal: "elm,state,bottom";
          source: "elm";
          script {
-            new focused, disabled;
+            new focused, disabled, zoomed;
             focused = get_int(handler_focused);
             disabled = get_int(handler_disabled);
-            set_int(handler_ontop, 0);
+            zoomed = get_int(handler_zoomed);
+            set_int(handler_on_top, 0);
             if ((focused == 1) && (disabled == 0)) {
-               set_state(PART:"handle", "show", 0.0);
+               if (zoomed) {
+                  set_state(PART:"handle", "zoom_show", 0.0);
+               } else {
+                  set_state(PART:"handle", "show", 0.0);
+               }
+            } else {
+               set_state(PART:"handle", "default", 0.0);
+            }
+         }
+      }
+      program { name: "bottom_reversed";
+         signal: "elm,state,bottom,reversed";
+         source: "elm";
+         script {
+            new disabled, zoomed;
+            disabled = get_int(handler_disabled);
+            zoomed = get_int(handler_zoomed);
+            if (disabled == 0) {
+               if (zoomed) {
+                  set_state(PART:"handle", "zoom_bottom_reversed", 0.0);
+               } else {
+                  set_state(PART:"handle", "bottom_reversed", 0.0);
+               }
+            } else {
+               set_state(PART:"handle", "default", 0.0);
+            }
+         }
+      }
+      program { name: "top_reversed";
+         signal: "elm,state,top,reversed";
+         source: "elm";
+         script {
+            new disabled, zoomed;
+            disabled = get_int(handler_disabled);
+            zoomed = get_int(handler_zoomed);
+            if (disabled == 0) {
+               if (zoomed) {
+                  set_state(PART:"handle", "zoom_top_reversed", 0.0);
+               } else {
+                  set_state(PART:"handle", "top_reversed", 0.0);
+               }
             } else {
                set_state(PART:"handle", "default", 0.0);
             }
@@ -2543,10 +2702,10 @@ group { name: "elm/entry/handler/end/default";
       image: "copy&paste_handler_top_r.png" COMP;
    }
    script {
-      public handler_ontop;
-      public handler_focused;
-      public handler_disabled;
-      public handler_pressed;
+      public handler_on_top = 0;
+      public handler_focused = 0;
+      public handler_disabled = 0;
+      public handler_zoomed = 0;
    }
    parts {
       part { name: "handle";
@@ -2590,6 +2749,26 @@ group { name: "elm/entry/handler/end/default";
                normal: "copy&paste_handler_top_l.png";
             }
          }
+         description { state: "zoom_show" 0.0;
+            inherit: "show" 0.0;
+            min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+            max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+         }
+         description { state: "zoom_top" 0.0;
+            inherit: "top" 0.0;
+            min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+            max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+         }
+         description { state: "zoom_bottom_reversed" 0.0;
+            inherit: "bottom_reversed" 0.0;
+            min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+            max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+         }
+         description { state: "zoom_top_reversed" 0.0;
+            inherit: "top_reversed" 0.0;
+            min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+            max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
+         }
       }
    }
    programs {
@@ -2608,18 +2787,141 @@ group { name: "elm/entry/handler/end/default";
             set_state(PART:"handle", "default", 0.0);
          }
       }
+      program { name: "pressed_show";
+         action: STATE_SET "zoom_show" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "pressed_top";
+         action: STATE_SET "zoom_top" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "pressed_bottom_reversed";
+         action: STATE_SET "zoom_bottom_reversed" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "pressed_top_reversed";
+         action: STATE_SET "zoom_top_reversed" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "released_show";
+         action: STATE_SET "show" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "released_top";
+         action: STATE_SET "top" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "released_bottom_reversed";
+         action: STATE_SET "bottom_reversed" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "released_top_reversed";
+         action: STATE_SET "top_reversed" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "pressed";
+         signal: "mouse,down,1";
+         source: "handle";
+         script {
+            set_int(handler_zoomed, 1);
+            new st[31];
+            new Float:vl;
+            get_state(PART:"handle", st, 30, vl);
+            if (!strcmp(st, "show"))
+              {
+                 run_program(PROGRAM:"pressed_show");
+              }
+            else if (!strcmp(st, "top"))
+              {
+                 run_program(PROGRAM:"pressed_top");
+              }
+            else if (!strcmp(st, "bottom_reversed"))
+              {
+                 run_program(PROGRAM:"pressed_bottom_reversed");
+              }
+            else if (!strcmp(st, "top_reversed"))
+              {
+                 run_program(PROGRAM:"pressed_top_reversed");
+              }
+         }
+      }
+      program { name: "released";
+         signal: "mouse,up,1";
+         source: "handle";
+         script {
+            set_int(handler_zoomed, 0);
+            new st[31];
+            new Float:vl;
+            get_state(PART:"handle", st, 30, vl);
+            if (!strcmp(st, "zoom_show"))
+              {
+                 run_program(PROGRAM:"released_show");
+              }
+            else if (!strcmp(st, "zoom_top"))
+              {
+                 run_program(PROGRAM:"released_top");
+              }
+            else if (!strcmp(st, "zoom_bottom_reversed"))
+              {
+                 run_program(PROGRAM:"released_bottom_reversed");
+              }
+            else if (!strcmp(st, "zoom_top_reversed"))
+              {
+                 run_program(PROGRAM:"released_top_reversed");
+              }
+         }
+         after: "released2";
+      }
+      program { name: "released2";
+         in: 0.3 0.0;
+         script {
+            set_int(handler_zoomed, 0);
+            new st[31];
+            new Float:vl;
+            get_state(PART:"handle", st, 30, vl);
+            if (!strcmp(st, "zoom_show"))
+              {
+                 run_program(PROGRAM:"released_show");
+              }
+            else if (!strcmp(st, "zoom_top"))
+              {
+                 run_program(PROGRAM:"released_top");
+              }
+            else if (!strcmp(st, "zoom_bottom_reversed"))
+              {
+                 run_program(PROGRAM:"released_bottom_reversed");
+              }
+            else if (!strcmp(st, "zoom_top_reversed"))
+              {
+                 run_program(PROGRAM:"released_top_reversed");
+              }
+         }
+      }
       program { name: "top";
          signal: "elm,state,top";
          source: "elm";
          script {
-            new focused, disabled;
+            new focused, disabled, zoomed;
             focused = get_int(handler_focused);
             disabled = get_int(handler_disabled);
-            set_int(handler_ontop, 1);
+            set_int(handler_on_top, 1);
             if ((focused == 1) && (disabled == 0)) {
-               set_state(PART:"handle", "top", 0.0);
+                 zoomed = get_int(handler_zoomed);
+                 if (zoomed) {
+                      set_state(PART:"handle", "zoom_top", 0.0);
+                 } else {
+                      set_state(PART:"handle", "top", 0.0);
+                 }
             } else {
-               set_state(PART:"handle", "default", 0.0);
+                 set_state(PART:"handle", "default", 0.0);
             }
          }
       }
@@ -2627,12 +2929,17 @@ group { name: "elm/entry/handler/end/default";
          signal: "elm,state,bottom";
          source: "elm";
          script {
-            new focused, disabled;
+            new focused, disabled, zoomed;
             focused = get_int(handler_focused);
             disabled = get_int(handler_disabled);
-            set_int(handler_ontop, 0);
+            zoomed = get_int(handler_zoomed);
+            set_int(handler_on_top, 0);
             if ((focused == 1) && (disabled == 0)) {
-               set_state(PART:"handle", "show", 0.0);
+               if (zoomed) {
+                  set_state(PART:"handle", "zoom_show", 0.0);
+               } else {
+                  set_state(PART:"handle", "show", 0.0);
+               }
             } else {
                set_state(PART:"handle", "default", 0.0);
             }
@@ -2642,10 +2949,15 @@ group { name: "elm/entry/handler/end/default";
          signal: "elm,state,bottom,reversed";
          source: "elm";
          script {
-            new disabled;
+            new disabled, zoomed;
             disabled = get_int(handler_disabled);
+            zoomed = get_int(handler_zoomed);
             if (disabled == 0) {
-               set_state(PART:"handle", "bottom_reversed", 0.0);
+               if (zoomed) {
+                  set_state(PART:"handle", "zoom_bottom_reversed", 0.0);
+               } else {
+                  set_state(PART:"handle", "bottom_reversed", 0.0);
+               }
             } else {
                set_state(PART:"handle", "default", 0.0);
             }
@@ -2655,10 +2967,15 @@ group { name: "elm/entry/handler/end/default";
          signal: "elm,state,top,reversed";
          source: "elm";
          script {
-            new disabled;
+            new disabled, zoomed;
             disabled = get_int(handler_disabled);
+            zoomed = get_int(handler_zoomed);
             if (disabled == 0) {
-               set_state(PART:"handle", "top_reversed", 0.0);
+               if (zoomed) {
+                  set_state(PART:"handle", "zoom_top_reversed", 0.0);
+               } else {
+                  set_state(PART:"handle", "top_reversed", 0.0);
+               }
             } else {
                set_state(PART:"handle", "default", 0.0);
             }
@@ -2726,12 +3043,97 @@ group { name: "elm/entry/cursor_handle/default";
                normal: "copy&paste_handler_top_center.png";
             }
          }
+         description { state: "zoom_show" 0.0;
+            inherit: "show" 0.0;
+            min: ENTRY_CURSOR_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_CURSOR_HANDLE_MIN_HEIGHT_ZOOM_INC;
+            max: ENTRY_CURSOR_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_CURSOR_HANDLE_MIN_HEIGHT_ZOOM_INC;
+         }
+         description { state: "zoom_top" 0.0;
+            inherit: "top" 0.0;
+            min: ENTRY_CURSOR_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_CURSOR_HANDLE_MIN_HEIGHT_ZOOM_INC;
+            max: ENTRY_CURSOR_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_CURSOR_HANDLE_MIN_HEIGHT_ZOOM_INC;
+         }
       }
    }
    script {
-      public on_top;
+      public on_top = 0;
+      public zoomed = 0;
    }
    programs {
+      program { name: "pressed_show";
+         action: STATE_SET "zoom_show" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "pressed_top";
+         action: STATE_SET "zoom_top" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "released_show";
+         action: STATE_SET "show" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "released_top";
+         action: STATE_SET "top" 0.0;
+         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
+      }
+      program { name: "pressed";
+         signal: "mouse,down,1";
+         source: "handle";
+         script {
+            set_int(zoomed, 1);
+            new st[31];
+            new Float:vl;
+            get_state(PART:"handle", st, 30, vl);
+            if (!strcmp(st, "show"))
+              {
+                 run_program(PROGRAM:"pressed_show");
+              }
+            else if (!strcmp(st, "top"))
+              {
+                 run_program(PROGRAM:"pressed_top");
+              }
+         }
+      }
+      program { name: "released";
+         signal: "mouse,up,1";
+         source: "handle";
+         script {
+            set_int(zoomed, 0);
+            new st[31];
+            new Float:vl;
+            get_state(PART:"handle", st, 30, vl);
+            if (!strcmp(st, "zoom_show"))
+              {
+                 run_program(PROGRAM:"released_show");
+              }
+            else if (!strcmp(st, "zoom_top"))
+              {
+                 run_program(PROGRAM:"released_top");
+              }
+         }
+         after: "released2";
+      }
+      program { name: "released2";
+         in: 0.3 0.0;
+         script {
+            set_int(zoomed, 0);
+            new st[31];
+            new Float:vl;
+            get_state(PART:"handle", st, 30, vl);
+            if (!strcmp(st, "zoom_show"))
+              {
+                 run_program(PROGRAM:"released_show");
+              }
+            else if (!strcmp(st, "zoom_top"))
+              {
+                 run_program(PROGRAM:"released_top");
+              }
+         }
+      }
       program { name: "focused";
          signal: "edje,focus,in";
          source: "edje";
@@ -2756,7 +3158,12 @@ group { name: "elm/entry/cursor_handle/default";
          source: "edje";
          script {
             set_int(on_top, 0);
-            set_state(PART:"handle", "show", 0.0);
+            new zoomed_val = get_int(zoomed);
+            if (zoomed_val) {
+                 set_state(PART:"handle", "zoom_show", 0.0);
+            } else {
+                 set_state(PART:"handle", "show", 0.0);
+            }
          }
       }
       program { name: "hide";
@@ -2771,7 +3178,12 @@ group { name: "elm/entry/cursor_handle/default";
          source: "edje";
          script {
             set_int(on_top, 1);
-            set_state(PART:"handle", "top", 0.0);
+            new zoomed_val = get_int(zoomed);
+            if (zoomed_val) {
+                 set_state(PART:"handle", "zoom_top", 0.0);
+            } else {
+                 set_state(PART:"handle", "top", 0.0);
+            }
          }
       }
    }
