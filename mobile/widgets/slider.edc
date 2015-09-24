@@ -881,6 +881,9 @@ group { name: "elm/slider/horizontal/warning";
          public disabled = 0;
          public popup_show = 1;
          public show = 0;
+         public warning_area = 0;
+         public warning_area_set = 0;
+
          public set_popup_show() {
             set_int(popup_show, 1);
          }
@@ -945,55 +948,130 @@ group { name: "elm/slider/horizontal/warning";
             new Float:dx, Float:dy;
             get_drag(PART:"elm.dragable.slider", dx, dy);
             if (!get_int(invert_on)) {
-               if (dx > SLIDER_WARNING_LEVEL) {
-                 if (!get_int(disabled)) {
-                   set_state(PART:"handle_color", "warning", 0.0);
-                   if (get_int(popup_show))
-                     emit("popup,warning", "popup,emit");
-                 }
-                 else {
-                   set_state(PART:"handle_color", "disabled_warning", 0.0);
-                 }
-                 set_state(PART:"level_warning_clip", "warning", 0.0);
-                 set_int(warning, 1);
+               if (get_int(warning_area_set)) {
+                  if (dx > get_float(warning_area)) {
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "warning", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,warning", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled_warning", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "warning", 0.0);
+                     set_int(warning, 1);
+                  }
+                  else {
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "default", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,default", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "default", 0.0);
+                     set_int(warning, 0);
+                  }
                }
                else {
-                 if (!get_int(disabled)) {
-                   set_state(PART:"handle_color", "default", 0.0);
-                   if (get_int(popup_show))
-                     emit("popup,default", "popup,emit");
-                 }
-                 else {
-                   set_state(PART:"handle_color", "disabled", 0.0);
-                 }
-                 set_state(PART:"level_warning_clip", "default", 0.0);
-                 set_int(warning, 0);
+                  if (dx > SLIDER_WARNING_LEVEL) {
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "warning", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,warning", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled_warning", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "warning", 0.0);
+                     set_int(warning, 1);
+                  }
+                  else {
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "default", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,default", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "default", 0.0);
+                     set_int(warning, 0);
+                  }
                }
             }
             else {
-               if (dx < (1.0 - SLIDER_WARNING_LEVEL)) {
-                 if (!get_int(disabled)) {
-                   set_state(PART:"handle_color", "warning", 0.0);
-                   if (get_int(popup_show))
-                     emit("popup,warning", "popup,emit");
-                 }
-                 else {
-                   set_state(PART:"handle_color", "disabled_warning", 0.0);
-                 }
-                 set_state(PART:"level_warning_clip", "inverted_warning", 0.0);
-                 set_int(warning, 1);
+               if (get_int(warning_area_set)) {
+                  if (dx < (1.0 - get_float(warning_area))) {
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "warning", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,warning", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled_warning", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "inverted_warning", 0.0);
+                     set_int(warning, 1);
+                  }
+                  else {
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "default", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,default", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "inverted", 0.0);
+                     set_int(warning, 0);
+                  }
                }
                else {
-                 if (!get_int(disabled)) {
-                   set_state(PART:"handle_color", "default", 0.0);
-                   if (get_int(popup_show))
-                     emit("popup,default", "popup,emit");
-                 }
-                 else {
-                   set_state(PART:"handle_color", "disabled", 0.0);
-                 }
-                 set_state(PART:"level_warning_clip", "inverted", 0.0);
-                 set_int(warning, 0);
+                  if (dx < (1.0 - SLIDER_WARNING_LEVEL)) {
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "warning", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,warning", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled_warning", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "inverted_warning", 0.0);
+                     set_int(warning, 1);
+                  }
+                  else {
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "default", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,default", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "inverted", 0.0);
+                     set_int(warning, 0);
+                  }
+               }
+            }
+         }
+         public message(Msg_Type:type, id, ...) {
+            if (type == MSG_FLOAT_SET) {
+               new Float:ratio;
+               ratio = getfarg(2);
+               if (id == 0) {
+                  set_float(warning_area, ratio);
+                  set_int(warning_area_set, 1);
+                  custom_state(PART:"center_point", "default", 0.0);
+                  if (!get_int(invert_on)) {
+                     set_state_val(PART:"center_point", STATE_ALIGNMENT, ratio, 0.5);
+                  }
+                  else {
+                     set_state_val(PART:"center_point", STATE_ALIGNMENT, 1 - ratio, 0.5);
+                  }
+                  set_state(PART:"center_point", "custom", 0.0);
+                  drag_state_warning();
                }
             }
          }
@@ -2539,8 +2617,11 @@ group { name: "elm/slider/vertical/default";
          public invert_on = 0;
          public warning = 0;
          public disabled = 0;
-         public show = 0;
          public popup_show = 1;
+         public show = 0;
+         public warning_area = 0;
+         public warning_area_set = 0;
+
          public set_popup_show() {
             set_int(popup_show, 0);
          }
@@ -2605,47 +2686,130 @@ group { name: "elm/slider/vertical/default";
             new Float:dx, Float:dy;
             get_drag(PART:"elm.dragable.slider", dx, dy);
             if (!get_int(invert_on)) {
-               if (dy > SLIDER_WARNING_LEVEL) {
-                  if (!get_int(disabled)) {
-                     set_state(PART:"handle_color", "warning", 0.0);
+               if (get_int(warning_area_set)) {
+                  if (dy > get_float(warning_area)) {
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "warning", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,warning", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled_warning", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "warning", 0.0);
+                     set_int(warning, 1);
                   }
                   else {
-                     set_state(PART:"handle_color", "disabled_warning", 0.0);
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "default", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,default", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "default", 0.0);
+                     set_int(warning, 0);
                   }
-                  set_state(PART:"level_warning_clip", "warning", 0.0);
-                  set_int(warning, 1);
                }
                else {
-                  if (!get_int(disabled)) {
-                     set_state(PART:"handle_color", "default", 0.0);
+                  if (dy > SLIDER_WARNING_LEVEL) {
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "warning", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,warning", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled_warning", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "warning", 0.0);
+                     set_int(warning, 1);
                   }
                   else {
-                     set_state(PART:"handle_color", "disabled", 0.0);
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "default", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,default", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "default", 0.0);
+                     set_int(warning, 0);
                   }
-                  set_state(PART:"level_warning_clip", "default", 0.0);
-                  set_int(warning, 0);
                }
             }
             else {
-               if (dy < (1.0 - SLIDER_WARNING_LEVEL)) {
-                  if (!get_int(disabled)) {
-                     set_state(PART:"handle_color", "warning", 0.0);
+               if (get_int(warning_area_set)) {
+                  if (dy < (1.0 - get_float(warning_area))) {
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "warning", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,warning", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled_warning", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "inverted_warning", 0.0);
+                     set_int(warning, 1);
                   }
                   else {
-                     set_state(PART:"handle_color", "disabled_warning", 0.0);
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "default", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,default", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "inverted", 0.0);
+                     set_int(warning, 0);
                   }
-                  set_state(PART:"level_warning_clip", "inverted_warning", 0.0);
-                  set_int(warning, 1);
                }
                else {
-                  if (!get_int(disabled)) {
-                     set_state(PART:"handle_color", "default", 0.0);
+                  if (dy < (1.0 - SLIDER_WARNING_LEVEL)) {
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "warning", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,warning", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled_warning", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "inverted_warning", 0.0);
+                     set_int(warning, 1);
                   }
                   else {
-                     set_state(PART:"handle_color", "disabled", 0.0);
+                     if (!get_int(disabled)) {
+                        set_state(PART:"handle_color", "default", 0.0);
+                        if (get_int(popup_show))
+                           emit("popup,default", "popup,emit");
+                     }
+                     else {
+                        set_state(PART:"handle_color", "disabled", 0.0);
+                     }
+                     set_state(PART:"level_warning_clip", "inverted", 0.0);
+                     set_int(warning, 0);
                   }
-                  set_state(PART:"level_warning_clip", "inverted", 0.0);
-                  set_int(warning, 0);
+               }
+            }
+         }
+         public message(Msg_Type:type, id, ...) {
+            if (type == MSG_FLOAT_SET) {
+               new Float:ratio;
+               ratio = getfarg(2);
+               if (id == 0) {
+                  set_float(warning_area, ratio);
+                  set_int(warning_area_set, 1);
+                  custom_state(PART:"center_point", "default", 0.0);
+                  if (!get_int(invert_on)) {
+                     set_state_val(PART:"center_point", STATE_ALIGNMENT, 0.5, ratio);
+                  }
+                  else {
+                     set_state_val(PART:"center_point", STATE_ALIGNMENT, 0.5, 1 - ratio);
+                  }
+                  set_state(PART:"center_point", "custom", 0.0);
+                  drag_state_warning();
                }
             }
          }
@@ -2654,10 +2818,10 @@ group { name: "elm/slider/vertical/default";
          part { name: "access";
             type: RECT;
                description { state: "default" 0.0;
-               fixed: 1 1;
-               color: 0 0 0 0;
+                  fixed: 1 1;
+                  color: 0 0 0 0;
                }
-          }
+            }
             part {
                name: "bg";
                type: SPACER;
@@ -2678,7 +2842,7 @@ group { name: "elm/slider/vertical/default";
                   max: SLIDER_TOP_PADDING_SIZE_INC;
                   fixed: 1 1;
                   rel1 {
-                     relative: 0.0  0.0;
+                     relative: 0.0 0.0;
                      to: "bg";
                   }
                   rel2 {
