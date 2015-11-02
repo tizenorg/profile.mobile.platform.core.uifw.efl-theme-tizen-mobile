@@ -41,8 +41,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_datadir}/elementary/themes/efl-theme-tizen-mobile.edj
 %{_datadir}/elementary/themes/default-mobile.edj
-#TODO
-#%manifest %{name}.manifest
+%manifest %{name}.manifest
 #license
 #elementary config for mobile
 
