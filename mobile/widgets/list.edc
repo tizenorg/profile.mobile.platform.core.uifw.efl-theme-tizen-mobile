@@ -104,11 +104,46 @@ group { name: "elm/list/item/default";
          DSC_FROM_B("default" 0.0,
             min: 0 LIST_BOTTOMLINE_HEIGHT;
             max: -1  LIST_BOTTOMLINE_HEIGHT;
-            color: 192 213 222 255;
+            color: 230 230 230 255;
          )
       )
+      part { name: "event";
+         type: RECT;
+         scale:1;
+         repeat_events:1;
+         description { state: "default" 0.0;
+            color : 0 0 0 0;
+         }
+      }
    }
-   LIST_PROGRAMS( target: "elm.text"; )
+   programs {
+      LIST_PROGRAM_DEFAULT(
+         target: "elm.text";
+         target: "bg";
+      )
+      LIST_PROGRAM_DISABLED(
+         target: "elm.text";
+         target: "bg";
+      )
+      LIST_PROGRAM_SELECT(
+         target: "elm.text";
+         target: "bg";
+      )
+      LIST_PROGRAM_REORDER(
+         target: "elm.text";
+         target: "bg";
+      )
+      program { name: "play_sound";
+         signal: "mouse,clicked,1";
+         source: "event";
+         script {
+            run_program(PROGRAM:"touch_sound");
+         }
+      }
+      program { name: "touch_sound";
+         action: RUN_PLUGIN "touch_sound";
+      }
+   }
 }
 
 group { name: "elm/list/item/ctxpopup";

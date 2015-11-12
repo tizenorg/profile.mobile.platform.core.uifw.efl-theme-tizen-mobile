@@ -45,10 +45,6 @@ group {
          description {
             state: "show_up" 0.0;
             inherit: "default" 0.0;
-         }
-         description {
-            state: "visible" 0.0;
-            inherit: "default" 0.0;
             min: 0 0;
          }
       }
@@ -66,10 +62,6 @@ group {
          }
          description {
             state: "show_down" 0.0;
-            inherit: "default" 0.0;
-         }
-         description {
-            state: "visible" 0.0;
             inherit: "default" 0.0;
             min: 0 0;
          }
@@ -89,10 +81,6 @@ group {
          description {
             state: "show_left" 0.0;
             inherit: "default" 0.0;
-         }
-         description {
-            state: "visible" 0.0;
-            inherit: "default" 0.0;
             min: 0 0;
          }
       }
@@ -111,10 +99,6 @@ group {
          description {
             state: "show_right" 0.0;
             inherit: "default" 0.0;
-         }
-         description {
-            state: "visible" 0.0;
-            inherit: "default" 0.0;
             min: 0 0;
          }
       }
@@ -132,6 +116,12 @@ group {
             rel1 {to_x:"left_padding"; to_y:"top_padding"; relative: 1.0 1.0;}
             rel2 {to_x:"right_padding"; to_y:"top_padding"; relative: 0.0 1.0;}
             align: 0.5 0.0;
+            visible: 0;
+         }
+         description {
+            state: "show_up_visible" 0.0;
+            inherit: "show_up" 0.0;
+            visible: 1;
          }
          description {
             state: "show_down" 0.0;
@@ -140,16 +130,31 @@ group {
             align: 0.5 1.0;
          }
          description {
+            state: "show_down_visible" 0.0;
+            inherit: "show_down" 0.0;
+            visible: 1;
+         }
+         description {
             state: "show_left" 0.0;
             rel1 {to_x:"left_padding"; to_y:"top_padding"; relative: 1.0 1.0;}
             rel2 {to_x:"left_padding"; to_y:"bottom_padding"; relative: 1.0 0.0;}
             align: 0.0 0.5;
          }
          description {
+            state: "show_left_visible" 0.0;
+            inherit: "show_left" 0.0;
+            visible: 1;
+         }
+         description {
             state: "show_right" 0.0;
             rel1 {to_x:"right_padding"; to_y:"top_padding"; relative: 0.0 1.0;}
             rel2 {to_x:"right_padding"; to_y:"bottom_padding"; relative: 0.0 0.0;}
             align: 1.0 0.5;
+         }
+         description {
+            state: "show_right_visible" 0.0;
+            inherit: "show_right" 0.0;
+            visible: 1;
          }
       }
       part {
@@ -250,33 +255,33 @@ group {
          signal: "elm,state,show,*";
          source: "elm";
          action: STATE_SET "visible" 0.0;
-         transition: SIN_FAC 0.25 0.5;
+         transition: GLIDE_EASE_OUT(0.1);
          target: "layout_clip";
          target: "event_blocker";
       }
       program {
          name:   "showupend";
-         action: STATE_SET "visible" 0.0;
-         transition: SIN_FAC 0.25 1.7;
-         target: "top_padding";
+         action: STATE_SET "show_up_visible" 0.0;
+         transition: GLIDE_EASE_OUT(0.1);
+         target: "swallow";
       }
       program {
          name:   "showdownend";
-         action: STATE_SET "visible" 0.0;
-         transition: SIN_FAC 0.25 1.7;
-         target: "bottom_padding";
+         action: STATE_SET "show_down_visible" 0.0;
+         transition: GLIDE_EASE_OUT(0.1);
+         target: "swallow";
       }
       program {
          name:   "showleftend";
-         action: STATE_SET "visible" 0.0;
-         transition: SIN_FAC 0.25 1.7;
-         target: "left_padding";
+         action: STATE_SET "show_left_visible" 0.0;
+         transition: GLIDE_EASE_OUT(0.1);
+         target: "swallow";
       }
       program {
          name:   "showrightend";
-         action: STATE_SET "visible" 0.0;
-         transition: SIN_FAC 0.25 1.7;
-         target: "right_padding";
+         action: STATE_SET "show_right_visible" 0.0;
+         transition: GLIDE_EASE_OUT(0.1);
+         target: "swallow";
       }
       program {
          name:   "hideup";
@@ -284,8 +289,7 @@ group {
          source: "elm";
          action: STATE_SET "show_up" 0.0;
          target: "swallow";
-         target: "top_padding";
-         transition: SIN_FAC 0.13 1.1;
+         transition: GLIDE_EASE_OUT(0.1);
          after: "be_default";
       }
       program {
@@ -294,8 +298,7 @@ group {
          source: "elm";
          action: STATE_SET "show_down" 0.0;
          target: "swallow";
-         target: "bottom_padding";
-         transition: SIN_FAC 0.13 1.1;
+         transition: GLIDE_EASE_OUT(0.1);
          after: "be_default";
       }
       program {
@@ -304,8 +307,7 @@ group {
          source: "elm";
          action: STATE_SET "show_left" 0.0;
          target: "swallow";
-         target: "left_padding";
-         transition: SIN_FAC 0.13 1.1;
+         transition: GLIDE_EASE_OUT(0.1);
          after: "be_default";
       }
       program {
@@ -314,8 +316,7 @@ group {
          source: "elm";
          action: STATE_SET "show_right" 0.0;
          target: "swallow";
-         target: "right_padding";
-         transition: SIN_FAC 0.13 1.1;
+         transition: GLIDE_EASE_OUT(0.1);
          after: "be_default";
       }
       program {
@@ -323,8 +324,8 @@ group {
          signal: "elm,state,hide,*";
          source: "elm";
          action: STATE_SET "default" 0.0;
+         transition: GLIDE_EASE_OUT(0.1);
          target: "layout_clip";
-         transition: SIN_FAC 0.13 0.5;
          after: "be_default";
       }
       program {
@@ -435,7 +436,7 @@ group {
       program {
          name: "showupend";
          action: STATE_SET "visible" 0.0;
-         transition: SIN_FAC 0.3 1.7;
+         transition: GLIDE_EASE_OUT(0.3);
          target: "swallow";
          after:"transition_finished";
       }
@@ -444,8 +445,8 @@ group {
          signal: "elm,state,hide,up";
          source: "elm";
          action: STATE_SET "show_up" 0.0;
+         transition: GLIDE_EASE_OUT(0.3);
          target: "swallow";
-         transition: SIN_FAC 0.1 1.1;
          after: "be_default";
       }
       program {
@@ -490,15 +491,14 @@ group {
          mouse_events: 1;
          description {
             state: "default" 0.0;
-            visible: 0;
             image.normal: "core_theme_bg_dim.png";
-            color: 255 255 255 255;
+            color: 255 255 255 0;
          }
          description {
             state: "visible" 0.0;
             inherit: "default" 0.0;
             align: 0.0 0.0;
-            visible: 1;
+            color: 255 255 255 179;
          }
       }
       part {
@@ -520,7 +520,7 @@ group {
    programs {
       program {
          name: "transition_finished";
-         in: 0.5 0.0;
+         in: 0.3 0.0;
          action: STATE_SET "visible" 0.0;
          target: "event_blocker";
       }
@@ -535,6 +535,7 @@ group {
          signal: "elm,state,show";
          source: "elm";
          action: STATE_SET "visible" 0.0;
+         transition: GLIDE_EASE_OUT(0.3);
          target: "bg";
          after:"transition_finished";
       }
@@ -543,6 +544,7 @@ group {
          signal: "elm,state,hide";
          source: "elm";
          action: STATE_SET "default" 0.0;
+         transition: GLIDE_EASE_OUT(0.3);
          target: "bg";
       }
    }
@@ -680,7 +682,6 @@ group {
 ///////////////////////////////////////////////////////////////////////////////
 group {
    name: "elm/ctxpopup/base/default";
-   alias: "elm/ctxpopup/base/copypaste";
    images {
       set {
          name: "core_contextual_popup_bg.#.png";
@@ -723,7 +724,7 @@ group {
             state: "default" 0.0;
             min: CTXPOPUP_CONTENT_LEFT_PADDING CTXPOPUP_CONTENT_TOP_PADDING;
             max: CTXPOPUP_CONTENT_LEFT_PADDING CTXPOPUP_CONTENT_TOP_PADDING;
-            rel1 {to:"frame_shadow_left_top_padding";  relative: 1.0 1.0;}
+            rel2 { relative: 0 0; }
             align: 0 0;
             fixed: 1 1;
          }
@@ -736,7 +737,7 @@ group {
             state: "default" 0.0;
             min: CTXPOPUP_CONTENT_RIGHT_PADDING CTXPOPUP_CONTENT_BOTTOM_PADDING;
             max: CTXPOPUP_CONTENT_RIGHT_PADDING CTXPOPUP_CONTENT_BOTTOM_PADDING;
-            rel2 {to:"frame_shadow_right_bottom_padding";  relative: 0.0 0.0;}
+            rel1{relative: 1 1;}
             align: 1 1;
             fixed: 1 1;
          }
@@ -997,6 +998,178 @@ group {
       }
    }
 }
+
+group {
+   name: "elm/ctxpopup/base/copypaste";
+   inherit: "elm/ctxpopup/base/default";
+   parts {
+      part {
+         name:"content_left_top_padding";
+         type: SPACER;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: CTXPOPUP_CONTENT_LEFT_PADDING 0;
+            max: CTXPOPUP_CONTENT_LEFT_PADDING 0;
+            rel2 { relative: 0 0; }
+            align: 0 0;
+            fixed: 1 1;
+         }
+      }
+      part {
+         name:"content_right_bottom_padding";
+         type: SPACER;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: CTXPOPUP_CONTENT_RIGHT_PADDING 0;
+            max: CTXPOPUP_CONTENT_RIGHT_PADDING 0;
+            rel1{relative: 1 1;}
+            align: 1 1;
+            fixed: 1 1;
+         }
+      }
+      part { name: "arrow_area_left";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: CTXPOPUP_COPYPASTE_ARROW_SIZE_INC;
+            fixed: 1 1;
+            align: 1 0.5;
+            rel1 {
+               relative: 1 1;
+               to_x:"arrow_left_top_padding";
+               to_y: "ctxpopup_frame_left_top";
+            }
+            rel2 {
+               relative: 1 0;
+               to_x:"arrow_left_top_padding";
+               to_y:"ctxpopup_frame_right_bottom";
+            }
+         }
+      }
+      part { name: "arrow_area_right";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: CTXPOPUP_COPYPASTE_ARROW_SIZE_INC;
+            fixed: 1 1;
+            align: 0 0.5;
+            rel1 {
+               relative: 0 1;
+               to_x:"arrow_right_bottom_padding";
+               to_y:"ctxpopup_frame_left_top";
+            }
+            rel2 {
+               relative: 0 0;
+               to_x:"arrow_right_bottom_padding";
+               to_y: "ctxpopup_frame_right_bottom";
+            }
+         }
+      }
+      part { name: "arrow_area_up";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: CTXPOPUP_COPYPASTE_ARROW_SIZE_INC;
+            align: 0.5 1;
+            rel1 {
+               relative: 1 1;
+               to_x: "ctxpopup_frame_left_top";
+               to_y: "arrow_left_top_padding";
+            }
+            rel2 {
+               relative: 0 1;
+               to_x:"ctxpopup_frame_right_bottom";
+               to_y: "arrow_left_top_padding";
+            }
+         }
+      }
+      part { name: "arrow_area_down";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: CTXPOPUP_COPYPASTE_ARROW_SIZE_INC;
+            fixed: 1 1;
+            align: 0.5 0;
+            rel1 {
+               relative: 1 0;
+               to_x:"ctxpopup_frame_left_top";
+               to_y:"arrow_right_bottom_padding";
+            }
+            rel2 {
+               relative: 0 0;
+               to_x: "ctxpopup_frame_right_bottom";
+               to_y:"arrow_right_bottom_padding";
+            }
+         }
+      }
+      part { name: "elm.swallow.arrow_up";
+         type: SWALLOW;
+         mouse_events: 0;
+         scale: 1;
+         dragable {
+            x: 1 1 0;
+            y: 1 1 0;
+            confine: "arrow_area_up";
+         }
+         description {
+            state: "default" 0.0;
+            min: CTXPOPUP_COPYPASTE_ARROW_SIZE_INC;
+            fixed: 1 1;
+            visible: 1;
+         }
+      }
+      part { name: "elm.swallow.arrow_down";
+         type: SWALLOW;
+         mouse_events: 0;
+         scale: 1;
+         dragable {
+            x: 1 1 0;
+            y: 1 1 0;
+            confine: "arrow_area_down";
+         }
+         description {
+            state: "default" 0.0;
+            min: CTXPOPUP_COPYPASTE_ARROW_SIZE_INC;
+            fixed: 1 1;
+            visible: 1;
+         }
+      }
+      part { name: "elm.swallow.arrow_left";
+         type: SWALLOW;
+         mouse_events: 0;
+         scale: 1;
+         dragable {
+            x: 1 1 0;
+            y: 1 1 0;
+            confine: "arrow_area_left";
+         }
+         description {
+            state: "default" 0.0;
+            min: CTXPOPUP_COPYPASTE_ARROW_SIZE_INC;
+            fixed: 1 1;
+            visible: 1;
+         }
+      }
+      part { name: "elm.swallow.arrow_right";
+         type: SWALLOW;
+         mouse_events: 0;
+         scale: 1;
+         dragable {
+            x: 1 1 0;
+            y: 1 1 0;
+            confine: "arrow_area_right";
+         }
+         description {
+            state: "default" 0.0;
+            min: CTXPOPUP_COPYPASTE_ARROW_SIZE_INC;
+            fixed: 1 1;
+            visible: 1;
+         }
+      }
+   }
+}
 ///////////////////////////////////////////////////////////////////////////////
 group {
    name: "elm/ctxpopup/arrow/default";
@@ -1012,7 +1185,7 @@ group {
       public multi_down = 0;
    }
 
-   data.item: "item_max_size" CTXPOPUP_TEXT_MAX_INC;
+   data.item: "item_max_size" CTXPOPUP_ITEM_TEXT_STYLE_TEXT_MAX_INC;
    parts {
       part {
          name: "event_blocker";
@@ -1031,7 +1204,7 @@ group {
          description {
             state: "default" 0.0;
             min: (CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC*2) CTXPOPUP_ITEM_HEIGHT_MAX_INC;
-            max: CTXPOPUP_WIDTH_INC (CTXPOPUP_ITEM_HEIGHT_MAX_INC-CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC*2);
+            max: CTXPOPUP_ITEM_MAX_INC CTXPOPUP_ITEM_HEIGHT_MAX_INC;
             rel1 {to_y: "separator"; relative: 0.0 1.0;}
             color: 255 255 255 255;
          }
@@ -1081,7 +1254,6 @@ group {
          description {
             state: "default" 0.0;
             min: 1 CTXPOPUP_ITEM_TEXT_HEIGHT_MIN_INC;
-            max: CTXPOPUP_TEXT_MAX_INC (CTXPOPUP_ITEM_HEIGHT_MAX_INC-CTXPOPUP_ITEM_TEXT_STYLE_TEXT_LR_PADDING_INC*2);
             align: 0.5 0.5;
             rel1 {
                relative: 1.0 0.0;
@@ -1116,7 +1288,7 @@ group {
          description {
             state: "ellipsis" 0.0;
             inherit: "default" 0.0;
-            min: CTXPOPUP_TEXT_MAX_INC CTXPOPUP_ITEM_TEXT_HEIGHT_MIN_INC;
+            min: CTXPOPUP_ITEM_TEXT_STYLE_TEXT_MAX_INC CTXPOPUP_ITEM_TEXT_HEIGHT_MIN_INC;
             text.min: 0 1;
          }
          description {
@@ -1324,7 +1496,7 @@ group {
       public multi_down = 0;
    }
 
-   data.item: "item_max_size" CTXPOPUP_MORE_TEXT_MAX_INC;
+   data.item: "item_max_size" CTXPOPUP_MORE_ITEM_TEXT_MAX_INC;
    parts {
       part {
          name: "event_blocker";
@@ -1344,8 +1516,7 @@ group {
             state: "default" 0.0;
             min: CTXPOPUP_WIDTH_INC CTXPOPUP_MORE_ITEM_HEIGHT_MIN_INC;
             max: CTXPOPUP_WIDTH_INC CTXPOPUP_MORE_ITEM_HEIGHT_MAX_INC;
-            color: 255 255 255 255;
-            fixed: 1 0;
+            color: 250 250 250 255;
          }
          description {
             state: "clicked" 0.0;
@@ -1375,15 +1546,13 @@ group {
          description {
             state: "default" 0.0;
             min: 1 CTXPOPUP_MORE_ITEM_TEXT_HEIGHT_MIN_INC;
-            max: (CTXPOPUP_WIDTH_INC-CTXPOPUP_MORE_ITEM_TEXT_LR_PADDING_INC*2) (CTXPOPUP_MORE_ITEM_HEIGHT_MAX_INC-CTXPOPUP_MORE_ITEM_TEXT_TB_PADDING_INC*2);
             align: 0.5 0.5;
             rel1 {relative: 1.0 0.0; to_x: "left_padding";}
             rel2 {relative: 0.0 1.0; to_x: "right_padding";}
-            color: 26 26 26 255;
+            color: 0 0 0 255;
             text {
                font: "Tizen:style=Regular"; size: "40";
-               text_class: "tizen";
-               size_range: CTXPOPUP_MORE_ITEM_TEXT_SIZE_INC (CTXPOPUP_MORE_ITEM_TEXT_SIZE_INC*2);
+               text_class: "list_item";
                align: 0 0.5;
                min: 1 1;
             }
@@ -1392,15 +1561,15 @@ group {
             state: "clicked" 0.0;
             inherit: "default" 0.0;
             text.font: "Tizen:style=Regular"; text.size: "40";
-            text.text_class: "tizen";
-            color: 26 26 26 255;
+            text.text_class: "list_item";
+            color: 0 0 0 255;
          }
          description {
             state: "disabled" 0.0;
             inherit: "default" 0.0;
             text.font: "Tizen:style=Regular"; text.size: "40";
-            text.text_class: "tizen";
-            color: 26 26 26 77;
+            text.text_class: "list_item";
+            color: 0 0 0 163;
          }
          description {
             state: "ellipsis" 0.0;
@@ -1412,15 +1581,15 @@ group {
             state: "ellipsis_clicked" 0.0;
             inherit: "ellipsis" 0.0;
             text.font: "Tizen:style=Regular"; text.size: "40";
-            text.text_class: "tizen";
-            color: 26 26 26 255;
+            text.text_class: "list_item";
+            color: 0 0 0 255;
          }
          description {
             state: "ellipsis_disabled" 0.0;
             inherit: "ellipsis" 0.0;
             text.font: "Tizen:style=Regular"; text.size: "40";
-            text.text_class: "tizen";
-            color: 26 26 26 77;
+            text.text_class: "list_item";
+            color: 0 0 0 163;
          }
       }
       part {
@@ -1611,14 +1780,14 @@ group {
          description {
             state: "default" 0.0;
             visible: 0;
-            min: (CTXPOPUP_ITEM_HORIZONTAL_WIDTH_MIN_INC-1) CTXPOPUP_ITEM_HORIZONTAL_HEIGHT_INC;
+            min: (CTXPOPUP_ITEM_TEXT_HORIZONTAL_PADDING_INC*2) CTXPOPUP_ITEM_HORIZONTAL_HEIGHT_INC;
             rel1 {to: "separator"; relative: 1.0 0.0;}
          }
          description {
             state: "clicked" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            color: 2 61 132 76; /*(Changeable UI) color_class: "B066P";*/
+            color: 61 185 204 77;
          }
       }
       part {
@@ -1628,7 +1797,7 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            color: 7 7 7 51; /*(Changeable UI) color_class: "B069";*/
+            color: 61 185 204 77; /*(Changeable UI) color_class: "B069";*/
             align: 0 0.5;
             min: 0 0;
             max: 0 -1;
@@ -1668,7 +1837,21 @@ group {
                text_class: "tizen";
                min: 1 1;
             }
-            color: 7 7 7 255; /*(Changeable UI) color_class: "T130";*/
+            color: 0 0 0 255; /*(Changeable UI) color_class: "T130";*/
+         }
+         description {
+            state: "clicked" 0.0;
+            inherit: "default" 0.0;
+            text.font: "Tizen:style=Regular"; text.size: "26";
+            text.text_class: "tizen";
+            color: 0 0 0 255;
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text.font: "Tizen:style=Regular"; text.size: "26";
+            text.text_class: "tizen";
+            color: 0 0 0 115;
          }
       }
       part {
@@ -1705,21 +1888,36 @@ group {
             color: CTXPOPUP_ITEM_DISABLED_COLOR;
          }
       }
-      part {
-         name: "bottom_line";
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            min: 1 1;
-            max: -1 1;
-            fixed: 0 1;
-            align: 0.5 1.0;
-            color: 192 213 222 255;
-            rel1.relative: 0.0 1.0;
-         }
-      }
    }
    programs {
+      program {
+         name: "text_default";
+         signal: "elm,state,text,default";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strcmp(st, "disabled"))
+              set_state(PART:"elm.text", "disabled", 0.0);
+            else
+              set_state(PART:"elm.text", "default", 0.0);
+         }
+      }
+      program {
+         name: "hide_separator";
+         signal: "elm,state,default";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "separator";
+      }
+      program {
+         name: "show_separator";
+         signal: "elm,state,separator";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         target: "separator";
+      }
       program {
          name: "item_click";
          signal: "mouse,clicked,1";
@@ -1740,6 +1938,7 @@ group {
          signal: "elm,state,disabled";
          source: "elm";
          script {
+            set_state(PART:"elm.text", "disabled", 0.0);
             set_state(PART:"disclip", "disabled", 0.0);
          }
       }
@@ -1748,22 +1947,9 @@ group {
          signal: "elm,state,enabled";
          source: "elm";
          script {
+            set_state(PART:"elm.text", "default", 0.0);
             set_state(PART:"disclip", "default", 0.0);
          }
-      }
-      program {
-         name: "hide_separator";
-         signal: "elm,state,default";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "separator";
-      }
-      program {
-         name: "show_separator";
-         signal: "elm,state,separator";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "separator";
       }
       program {
          name: "item_pressed";
@@ -1773,6 +1959,7 @@ group {
             if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
                set_int(mouse_down, 1);
                set_state(PART:"bg", "clicked", 0.0);
+               set_state(PART:"elm.text", "clicked", 0.0);
             }
          }
       }
@@ -1789,6 +1976,7 @@ group {
             if (get_int(mouse_down) == 1) {
                set_int(mouse_down, 0);
                set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"elm.text", "default", 0.0);
             }
          }
       }
@@ -2247,6 +2435,7 @@ group {
       public multi_down = 0;
    }
 
+   data.item: "item_max_size" CTXPOPUP_ITEM_ICON_TEXT_STYLE_TEXT_MAX_INC;
    parts {
       part {
          name: "bg";
@@ -2255,8 +2444,8 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: (CTXPOPUP_ITEM_ICON_LEFT_PADDING_INC+CTXPOPUP_ICON_WIDTH_INC+CTXPOPUP_ITEM_ICON_RIGHT_PADDING_INC+CTXPOPUP_ITEM_TEXT_HORIZONTAL_PADDING_INC) CTXPOPUP_ITEM_HEIGHT_MAX_INC;
-            max: CTXPOPUP_WIDTH_INC CTXPOPUP_ITEM_HEIGHT_MAX_INC;
+            min: (CTXPOPUP_ITEM_ICON_TEXT_STYLE_ICON_LEFT_PADDING_INC+CTXPOPUP_ICON_WIDTH_INC+CTXPOPUP_ITEM_ICON_TEXT_STYLE_ICON_RIGHT_PADDING_INC+CTXPOPUP_ITEM_ICON_TEXT_STYLE_TEXT_RIGHT_PADDING_INC) CTXPOPUP_ITEM_HEIGHT_MAX_INC;
+            max: CTXPOPUP_ITEM_MAX_INC CTXPOPUP_ITEM_HEIGHT_MAX_INC;
             rel1 {to_y: "separator"; relative: 0.0 1.0;}
             color: 255 255 255 255;
          }
@@ -2292,8 +2481,8 @@ group {
          type: SPACER;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_ITEM_ICON_LEFT_PADDING_INC 1;
-            max: CTXPOPUP_ITEM_ICON_LEFT_PADDING_INC 1;
+            min: CTXPOPUP_ITEM_ICON_TEXT_STYLE_ICON_LEFT_PADDING_INC 1;
+            max: CTXPOPUP_ITEM_ICON_TEXT_STYLE_ICON_LEFT_PADDING_INC 1;
             fixed: 1 1;
             align: 0.0 0.5;
          }
@@ -2330,8 +2519,8 @@ group {
          type: SPACER;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_ITEM_ICON_RIGHT_PADDING_INC 1;
-            max: CTXPOPUP_ITEM_ICON_RIGHT_PADDING_INC 1;
+            min: CTXPOPUP_ITEM_ICON_TEXT_STYLE_ICON_RIGHT_PADDING_INC 1;
+            max: CTXPOPUP_ITEM_ICON_TEXT_STYLE_ICON_RIGHT_PADDING_INC 1;
             fixed: 1 1;
             align: 0.0 0.5;
             rel1 { relative: 1.0 0.0; to_x:"elm.swallow.icon"; }
@@ -2345,14 +2534,13 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: (CTXPOPUP_ITEM_HORIZONTAL_WIDTH_MIN_INC-CTXPOPUP_ITEM_TEXT_HORIZONTAL_PADDING_INC*2) CTXPOPUP_ITEM_TEXT_HEIGHT_MIN_INC;
-            max: -1 CTXPOPUP_ITEM_TEXT_HEIGHT_MIN_INC;
+            min: 1 CTXPOPUP_ITEM_TEXT_HEIGHT_MIN_INC;
             align: 0.0 0.5;
             rel1 {relative: 1.0 0.0; to_x: "icon_right_padding";}
             rel2 {relative: 0.0 1.0; to_x: "text_right_padding";}
             color: 0 0 0 255;
             text {
-               font: "Tizen:style=Regular"; size: "26";
+               font: "Tizen:style=Regular"; size: "30";
                text_class: "tizen";
                align: 0 0.5;
                min: 1 1;
@@ -2362,8 +2550,28 @@ group {
             state: "disabled" 0.0;
             inherit: "default" 0.0;
             color: 0 0 0 115;
-            text.font: "Tizen:style=Regular"; text.size: "26";
+            text.font: "Tizen:style=Regular"; text.size: "30";
             text.text_class: "tizen";
+         }
+         description {
+            state: "ellipsis" 0.0;
+            inherit: "default" 0.0;
+            min: CTXPOPUP_ITEM_ICON_TEXT_STYLE_TEXT_MAX_INC CTXPOPUP_ITEM_TEXT_HEIGHT_MIN_INC;
+            text.min: 0 1;
+         }
+         description {
+            state: "ellipsis_clicked" 0.0;
+            inherit: "ellipsis" 0.0;
+            text.font: "Tizen:style=Regular"; text.size: "30";
+            text.text_class: "tizen";
+            color: 0 0 0 255;
+         }
+         description {
+            state: "ellipsis_disabled" 0.0;
+            inherit: "ellipsis" 0.0;
+            text.font: "Tizen:style=Regular"; text.size: "30";
+            text.text_class: "tizen";
+            color: 0 0 0 115;
          }
       }
       part {
@@ -2372,8 +2580,8 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
-            min: CTXPOPUP_ITEM_TEXT_RIGHT_PADDING_INC 1;
-            max: CTXPOPUP_ITEM_TEXT_RIGHT_PADDING_INC 1;
+            min: CTXPOPUP_ITEM_ICON_TEXT_STYLE_TEXT_RIGHT_PADDING_INC 1;
+            max: CTXPOPUP_ITEM_ICON_TEXT_STYLE_TEXT_RIGHT_PADDING_INC 1;
             align: 1.0 0.5;
          }
       }
@@ -2403,6 +2611,48 @@ group {
    }
    programs {
       program {
+         name: "text_default";
+         signal: "elm,state,text,default";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strcmp(st, "disabled") || !strcmp(st, "ellipsis_disabled"))
+              set_state(PART:"elm.text", "disabled", 0.0);
+            else
+              set_state(PART:"elm.text", "default", 0.0);
+         }
+      }
+      program {
+         name: "text_ellipsis";
+         signal: "elm,state,text,ellipsis";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strcmp(st, "disabled") || !strcmp(st, "elipsis_disabled"))
+              set_state(PART:"elm.text", "ellipsis_disabled", 0.0);
+            else
+              set_state(PART:"elm.text", "ellipsis", 0.0);
+         }
+      }
+      program {
+         name: "hide_separator";
+         signal: "elm,state,default";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "separator";
+      }
+      program {
+         name: "show_separator";
+         signal: "elm,state,separator";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         target: "separator";
+      }
+      program {
          name: "item_click";
          signal: "mouse,clicked,1";
          source: "events";
@@ -2421,31 +2671,31 @@ group {
          name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
-         action: STATE_SET "disabled" 0.0;
-         target: "disclip";
-         target: "elm.text";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if ((!strcmp(st, "ellipsis")) || (!strcmp(st, "ellipsis_disabled")))
+              set_state(PART:"elm.text", "ellipsis_disabled", 0.0);
+            else
+              set_state(PART:"elm.text", "disabled", 0.0);
+            set_state(PART:"disclip", "disabled", 0.0);
+         }
       }
       program {
          name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "disclip";
-         target: "elm.text";
-      }
-      program {
-         name: "hide_separator";
-         signal: "elm,state,default";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "separator";
-      }
-      program {
-         name: "show_separator";
-         signal: "elm,state,separator";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "separator";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if ((!strcmp(st, "ellipsis")) || (!strcmp(st, "ellipsis_disabled")))
+              set_state(PART:"elm.text", "ellipsis", 0.0);
+            else
+              set_state(PART:"elm.text", "default", 0.0);
+            set_state(PART:"disclip", "default", 0.0);
+         }
       }
       program {
          name: "item_pressed";
@@ -2455,6 +2705,13 @@ group {
             if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
                set_int(mouse_down, 1);
                set_state(PART:"bg", "clicked", 0.0);
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "default"))
+                 set_state(PART:"elm.text", "clicked", 0.0);
+               else
+                 set_state(PART:"elm.text", "ellipsis_clicked", 0.0);
             }
          }
       }
@@ -2471,6 +2728,13 @@ group {
             if (get_int(mouse_down) == 1) {
                set_int(mouse_down, 0);
                set_state(PART:"bg", "default", 0.0);
+               new st[31];
+               new Float:vl;
+               get_state(PART:"elm.text", st, 30, vl);
+               if (!strcmp(st, "default") || !strcmp(st, "clicked"))
+                 set_state(PART:"elm.text", "default", 0.0);
+               else
+                 set_state(PART:"elm.text", "ellipsis", 0.0);
             }
          }
       }
@@ -2607,6 +2871,20 @@ group {
                min: 1 1;
             }
          }
+         description {
+            state: "clicked" 0.0;
+            inherit: "default" 0.0;
+            text.font: "Tizen:style=Regular"; text.size: "26";
+            text.text_class: "tizen";
+            color: 0 0 0 255;
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text.font: "Tizen:style=Regular"; text.size: "26";
+            text.text_class: "tizen";
+            color: 0 0 0 115;
+         }
       }
       part {
          name: "text_left_padding";
@@ -2667,6 +2945,34 @@ group {
    }
    programs {
       program {
+         name: "text_default";
+         signal: "elm,state,text,default";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strcmp(st, "disabled"))
+              set_state(PART:"elm.text", "disabled", 0.0);
+            else
+              set_state(PART:"elm.text", "default", 0.0);
+         }
+      }
+      program {
+         name: "hide_separator";
+         signal: "elm,state,default";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "separator";
+      }
+      program {
+         name: "show_separator";
+         signal: "elm,state,separator";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         target: "separator";
+      }
+      program {
          name: "item_click";
          signal: "mouse,clicked,1";
          source: "events";
@@ -2685,29 +2991,19 @@ group {
          name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
-         action: STATE_SET "disabled" 0.0;
-         target: "disclip";
+         script {
+            set_state(PART:"elm.text", "disabled", 0.0);
+            set_state(PART:"disclip", "disabled", 0.0);
+         }
       }
       program {
          name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "disclip";
-      }
-      program {
-         name: "hide_separator";
-         signal: "elm,state,default";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "separator";
-      }
-      program {
-         name: "show_separator";
-         signal: "elm,state,separator";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "separator";
+         script {
+            set_state(PART:"elm.text", "default", 0.0);
+            set_state(PART:"disclip", "default", 0.0);
+         }
       }
       program {
          name: "item_pressed";
@@ -2717,6 +3013,7 @@ group {
             if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
                set_int(mouse_down, 1);
                set_state(PART:"bg", "clicked", 0.0);
+               set_state(PART:"elm.text", "clicked", 0.0);
             }
          }
       }
@@ -2733,6 +3030,7 @@ group {
             if (get_int(mouse_down) == 1) {
                set_int(mouse_down, 0);
                set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"elm.text", "default", 0.0);
             }
          }
       }
@@ -2767,8 +3065,6 @@ group {
       public mouse_down = 0;
       public multi_down = 0;
    }
-
-   data.item: "item_max_size" (CTXPOPUP_COPYPASTE_ITEM_HORIZONTAL_WIDTH_MAX_INC-CTXPOPUP_ITEM_TEXT_PADDING_INC*2);
 
    parts {
       part {
@@ -2867,25 +3163,6 @@ group {
             text.font: "Tizen:style=Regular"; text.size: "26";
             text.text_class: "tizen";
          }
-         description {
-            state: "ellipsis" 0.0;
-            inherit: "default" 0.0;
-            min: (CTXPOPUP_COPYPASTE_ITEM_HORIZONTAL_WIDTH_MAX_INC-CTXPOPUP_ITEM_TEXT_PADDING_INC*2) CTXPOPUP_COPYPASTE_TEXT_STYLE_TEXT_SIZE_INC;
-            text.min: 0 1;
-         }
-         description {
-            state: "ellipsis_clicked" 0.0;
-            inherit: "ellipsis" 0.0;
-            text.font: "Regular"; text.size: "26";
-            color: 0 0 0 255;
-         }
-         description {
-            state: "ellipsis_disabled" 0.0;
-            inherit: "ellipsis" 0.0;
-            color: 0 0 0 255;
-            text.font: "Tizen:style=Regular"; text.size: "26";
-            text.text_class: "tizen";
-         }
       }
       part {
          name: "text_left_padding";
@@ -2956,24 +3233,10 @@ group {
             new st[31];
             new Float:vl;
             get_state(PART:"elm.text", st, 30, vl);
-            if ((!strcmp(st, "disabled")) || (!strcmp(st, "ellipsis_disabled")))
+            if (!strcmp(st, "disabled"))
               set_state(PART:"elm.text", "disabled", 0.0);
             else
               set_state(PART:"elm.text", "default", 0.0);
-         }
-      }
-      program {
-         name: "text_ellipsis";
-         signal: "elm,state,text,ellipsis";
-         source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "disabled") || !strcmp(st, "ellipsis_disabled"))
-              set_state(PART:"elm.text", "ellipsis_disabled", 0.0);
-            else
-              set_state(PART:"elm.text", "ellipsis", 0.0);
          }
       }
       program {
@@ -2995,31 +3258,17 @@ group {
          name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
-            if ((!strcmp(st, "ellipsis")) || (!strcmp(st, "ellipsis_disabled")))
-              set_state(PART:"elm.text", "ellipsis_disabled", 0.0);
-            else
-              set_state(PART:"elm.text", "disabled", 0.0);
-            set_state(PART:"disclip", "disabled", 0.0);
-         }
+         action: STATE_SET "disabled" 0.0;
+         target: "disclip";
+         target: "elm.text";
       }
       program {
          name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
-            if ((!strcmp(st, "ellipsis")) || (!strcmp(st, "ellipsis_disabled")))
-              set_state(PART:"elm.text", "ellipsis", 0.0);
-            else
-              set_state(PART:"elm.text", "default", 0.0);
-            set_state(PART:"disclip", "default", 0.0);
-         }
+         action: STATE_SET "default" 0.0;
+         target: "disclip";
+         target: "elm.text";
       }
       program {
          name: "hide_separator";
@@ -3043,13 +3292,7 @@ group {
             if (get_int(multi_down) == 0 && get_int(mouse_down) == 0) {
                set_int(mouse_down, 1);
                set_state(PART:"bg", "clicked", 0.0);
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "default"))
-                 set_state(PART:"elm.text", "clicked", 0.0);
-               else
-                 set_state(PART:"elm.text", "ellipsis_clicked", 0.0);
+               set_state(PART:"elm.text", "clicked", 0.0);
             }
          }
       }
@@ -3066,13 +3309,7 @@ group {
             if (get_int(mouse_down) == 1) {
                set_int(mouse_down, 0);
                set_state(PART:"bg", "default", 0.0);
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "default") || !strcmp(st, "clicked"))
-                 set_state(PART:"elm.text", "default", 0.0);
-               else
-                 set_state(PART:"elm.text", "ellipsis", 0.0);
+               set_state(PART:"elm.text", "default", 0.0);
             }
          }
       }
@@ -3604,19 +3841,6 @@ group {
             color: 0 0 0 0;
          }
       }
-      part {
-         name: "bottom_line";
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            min: 1 1;
-            max: -1 1;
-            fixed: 0 1;
-            align: 0.5 1.0;
-            color: 192 213 222 255;
-            rel1.relative: 0.0 1.0;
-         }
-      }
    }
    programs {
       program {
@@ -3934,19 +4158,6 @@ group {
             state: "disabled" 0.0;
             visible: 1;
             color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "bottom_line";
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            min: 1 1;
-            max: -1 1;
-            fixed: 0 1;
-            align: 0.5 1.0;
-            color: 192 213 222 255;
-            rel1.relative: 0.0 1.0;
          }
       }
    }

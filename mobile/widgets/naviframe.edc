@@ -24,22 +24,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define NAVIFRAME_VIEW_PUSH_TRANS_TIME 0.5
-#define NAVIFRAME_VIEW_POP_TRANS_TIME 0.5
+#define NAVIFRAME_VIEW_PUSH_TRANS_TIME 0.2
+#define NAVIFRAME_VIEW_POP_TRANS_TIME 0.2
 
    styles {
       style { name: "naviframe_title_style";
-         base: "font=Samsung Condensed:style=Regular align=center font_size="NAVIFRAME_TITLE_TEXT_FONT_SIZE_INC" color=#FFFFFFFF wrap=mixed ellipsis=1.0 text_class=tizen";
+         base: "font=Tizen:style=Condensed align=center font_size="NAVIFRAME_TITLE_TEXT_FONT_SIZE_INC" color=#FFFFFFFF wrap=none ellipsis=1.0 text_class=tizen";
          tag:  "br" "\n";
          tag:  "tab" "\t";
       }
       style { name: "naviframe_subtitle_visible_style";
-         base: "font=Samsung Condensed:style=Regular align=center font_size="NAVIFRAME_SUBTITLE_VISIBLE_TEXT_FONT_SIZE_INC" color=#FFFFFFFF wrap=mixed ellipsis=1.0 text_class=tizen";
+         base: "font=Tizen:style=Condensed align=center font_size="NAVIFRAME_SUBTITLE_VISIBLE_TEXT_FONT_SIZE_INC" color=#FFFFFFFF wrap=none ellipsis=1.0 text_class=tizen";
          tag:  "br" "\n";
          tag:  "tab" "\t";
       }
       style { name: "naviframe_subtitle_style";
-         base: "font=Samsung Condensed:style=Regular align=center font_size="NAVIFRAME_VISIBLE_TEXT_FONT_SIZE_INC" color=#FFFFFFFF wrap=mixed ellipsis=1.0 text_class=tizen";
+         base: "font=Tizen:style=Condensed align=center font_size="NAVIFRAME_VISIBLE_TEXT_FONT_SIZE_INC" color=#FFFFFFFF wrap=none ellipsis=1.0 text_class=tizen";
          tag:  "br" "\n";
          tag:  "tab" "\t";
       }
@@ -66,6 +66,15 @@
                   image: MEDIUM"images/Assist_Views/core_icon_badge_container.#.png" COMP;
                }
          }
+         set {
+            name: "core_theme_bg_01";
+               image {
+                  image: SMALL"images/core_theme_bg_01.png" COMP;
+               }
+               image {
+                  image: MEDIUM"images/core_theme_bg_01.png" COMP;
+               }
+         }
       }
       script {
          public landscape_mode = 0;          //Landscape status
@@ -75,12 +84,27 @@
          public tabbar_visible = 0;          //Tabbar visible status (This value is used for tabbar group)
       }
       parts {
-         part { name: "base";
-            type: RECT;
-            mouse_events:  0;
+         part { name: "bg_img";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 0;
             clip_to: "clipper";
             description { state: "default" 0.0;
-               color: 255 255 255 255; /*(Changeable UI) color_class: "B0211";*/
+               rel1.to: "base";
+               rel2.to: "base";
+               align: 0.5 0.0;
+               fixed: 0 1;
+               min: 0 NAVIFRAME_BG_PORTRAIT_HEIGHT_INC;
+               image.normal: "core_theme_bg_01";
+            }
+            description { state: "landscape" 0.0;
+               inherit: "default" 0.0;
+               min: 0 NAVIFRAME_BG_LANDSCAPE_HEIGHT_INC;
+            }
+         }
+         part { name: "base";
+            type: SPACER;
+            description { state: "default" 0.0;
             }
             description { state: "hidden" 0.0;
                rel1.relative: 1.0 0.0;
@@ -117,7 +141,6 @@
             type: RECT;
             scale: 1;
             mouse_events: 0;
-            clip_to: "title_clipper";
             description { state: "default" 0.0;
                min: 0 NAVIFRAME_TITLE_HEIGHT_INC;
                max: -1 NAVIFRAME_TITLE_HEIGHT_INC;
@@ -159,7 +182,7 @@
             }
             description { state: "prev_btn_visible" 0.0;
                rel1.to: "title_bg";
-               rel2 { to_x: "prev_btn_right_padding"; to_y: "title_bg"; relative: 1.0 1.0; }
+               rel2 { to_x: "elm.swallow.prev_btn"; to_y: "title_bg"; relative: 1.0 1.0; }
             }
          }
          part { name: "title_text_right_padding";
@@ -184,13 +207,23 @@
             mouse_events: 0;
             clip_to: "title_text_clipper";
             description { state: "default" 0.0;
-               text { style: "naviframe_title_style";}
+               text {
+                  style: "naviframe_title_style";
+                  size: NAVIFRAME_TITLE_TEXT_FONT_SIZE_INC;
+                  size_range: NAVIFRAME_TITLE_TEXT_FONT_RANGE_INC;
+                  fit: 1 0;
+               }
                fixed: 1 1;
                rel1 { to_x: "title_text_left_padding"; to_y: "title_bg"; relative: 1.0 0.0; }
                rel2 { to_x: "title_text_right_padding"; to_y: "title_bg"; relative: 0.0 1.0; }
             }
             description { state: "subtitle_visible" 0.0;
-               text { style: "naviframe_subtitle_visible_style";}
+               text {
+                  style: "naviframe_subtitle_visible_style";
+                  size: NAVIFRAME_SUBTITLE_VISIBLE_TEXT_FONT_SIZE_INC;
+                  size_range: NAVIFRAME_SUBTITLE_VISIBLE_TEXT_FONT_RANGE_INC;
+                  fit: 1 0;
+               }
                fixed: 1 1;
                rel1 { to_x: "title_text_left_padding"; to_y: "title_top_padding"; relative: 1.0 1.0; }
                rel2 { to_x: "title_text_right_padding"; to_y: "elm.text.subtitle"; relative: 0.0 0.0; }
@@ -225,7 +258,7 @@
                text { style: "naviframe_subtitle_style";}
                min: 0 NAVIFRAME_SUBTITLE_HEIGHT_INC;
                max: -1 NAVIFRAME_SUBTITLE_HEIGHT_INC;
-               fixed: 0 1;
+               fixed: 1 1;
                align: 0.5 1.0;
                rel1 { to_x: "title_text_left_padding"; to_y: "subtitle_bottom_padding"; relative: 1.0 0.0; }
                rel2 { to_x: "title_text_right_padding"; to_y: "subtitle_bottom_padding"; relative: 0.0 0.0; }
@@ -538,6 +571,7 @@
          }
          part { name: "toolbar_bg";
             type: RECT;
+            scale: 1;
             clip_to: "toolbar_clipper";
             description { state: "default" 0.0;
                rel1.to: "toolbar";
@@ -553,7 +587,7 @@
                min: 0 0;
                max: -1 0;
                fixed: 0 1;
-               align: 0.0 1.0;
+               align: 0.5 1.0;
                rel1 { to: "base"; relative: 0.0 1.0; }
                rel2 { to: "base"; relative: 1.0 1.0; }
                visible: 0;
@@ -604,18 +638,6 @@
                visible: 0;
             }
          }
-         part { name: "prev_btn_right_padding";
-            type: SPACER;
-            scale: 1;
-            description { state: "default" 0.0;
-               min: NAVIFRAME_BACK_BUTTON_LR_PADDING_WIDTH_INC 0;
-               max: NAVIFRAME_BACK_BUTTON_LR_PADDING_WIDTH_INC -1;
-               align: 0.0 0.0;
-               fixed: 1 1;
-               rel1 { to: "elm.swallow.prev_btn"; relative: 1.0 0.0; }
-               rel2 { to: "elm.swallow.prev_btn"; relative: 1.0 1.0; }
-            }
-         }
          part { name: "prev_btn_title_right_padding";
             type: SPACER;
             scale: 1;
@@ -648,7 +670,7 @@
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "base";
-            transition: SIN_FAC NAVIFRAME_VIEW_PUSH_TRANS_TIME 1.7;
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_PUSH_TRANS_TIME);
             after: "show_finished";
          }
          program { name: "content_cur_pushed";
@@ -656,7 +678,7 @@
             source: "elm";
             action: STATE_SET "leftout" 0.0;
             target: "base";
-            transition: SIN_FAC NAVIFRAME_VIEW_PUSH_TRANS_TIME 1.7;
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_PUSH_TRANS_TIME);
             after: "pushed_finished";
             after: "restore_default";
          }
@@ -666,7 +688,7 @@
             action: STATE_SET "default" 0.0;
             target: "base";
             target: "pop_clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_POP_TRANS_TIME 1.7;
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_POP_TRANS_TIME);
             after: "show_finished";
          }
          program { name: "content_cur_popped";
@@ -674,7 +696,7 @@
             source: "elm";
             action: STATE_SET "hidden" 0.0;
             target: "base";
-            transition: SIN_FAC NAVIFRAME_VIEW_POP_TRANS_TIME 1.7;
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_POP_TRANS_TIME);
             after: "popped_finished";
          }
          program { name: "new_pushed";
@@ -742,6 +764,10 @@
                   set_state(PART:"title_right_btn", "visible", 0.0);
                   set_state(PART:"title_left_btn_bg", "visible", 0.0);
                   set_state(PART:"title_left_padding", "hidden", 0.0);
+                  if (get_int(prev_btn_visible) == 1){
+                     set_state(PART:"title_text_left_padding", "default", 0.0);
+                     set_state(PART:"title_text_right_padding", "default", 0.0);
+                  }
                }
             }
          }
@@ -763,6 +789,10 @@
                set_state(PART:"title_right_padding", "default", 0.0);
                set_state(PART:"title_right_btn", "default", 0.0);
                set_state(PART:"elm.swallow.prev_btn", "hidden", 0.0);
+               if (get_int(prev_btn_visible) == 1){
+                  set_state(PART:"title_text_left_padding", "prev_btn_visible", 0.0);
+                  set_state(PART:"title_text_right_padding", "prev_btn_visible", 0.0);
+               }
             }
          }
          program { name: "title_hide_trans";
@@ -788,11 +818,11 @@
             signal: "elm,state,prev_btn,show";
             source: "elm";
             script {
+               set_int(prev_btn_visible, 1);
                if (get_int(title_left_btn_visible) == 0) {
                   set_state(PART:"elm.swallow.prev_btn", "default", 0.0);
                   set_state(PART:"title_text_left_padding", "prev_btn_visible", 0.0);
                   set_state(PART:"title_text_right_padding", "prev_btn_visible", 0.0);
-                  set_int(prev_btn_visible, 1);
                }
             }
          }
@@ -847,6 +877,10 @@
                set_state(PART:"title_right_btn", "visible", 0.0);
                set_state(PART:"title_left_btn_bg", "visible", 0.0);
                set_state(PART:"title_left_padding", "hidden", 0.0);
+               if (get_int(prev_btn_visible) == 1){
+                  set_state(PART:"title_text_left_padding", "default", 0.0);
+                  set_state(PART:"title_text_right_padding", "default", 0.0);
+               }
                set_int(title_right_btn_visible, 1);
             }
          }
@@ -860,6 +894,10 @@
                set_state(PART:"title_left_padding", "default", 0.0);
                set_state(PART:"title_left_btn_bg", "default", 0.0);
                set_int(title_right_btn_visible, 0);
+               if (get_int(prev_btn_visible) == 1){
+                  set_state(PART:"title_text_left_padding", "prev_btn_visible", 0.0);
+                  set_state(PART:"title_text_right_padding", "prev_btn_visible", 0.0);
+               }
             }
          }
          program { name: "title_badge_show";
@@ -921,6 +959,7 @@
                if (!get_int(landscape_mode)) {
                   set_int(landscape_mode, 1);
                }
+               set_state(PART:"bg_img", "landscape", 0.0);
             }
          }
          program { name: "change_to_portrait";
@@ -928,6 +967,7 @@
                if (get_int(landscape_mode)) {
                   set_int(landscape_mode, 0);
                }
+               set_state(PART:"bg_img", "default", 0.0);
             }
          }
          program { name: "landscape_mode";
@@ -957,6 +997,19 @@
       alias: "elm/naviframe/item/tabbar/icon/default";
       inherit: "elm/naviframe/item/basic/default";
       parts {
+         part { name: "tabbar_top_padding";
+            type: SPACER;
+            scale: 1;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               min: 0 NAVIFRAME_TABBAR_TITLE_TOP_PADDING_HEIGHT_INC;
+               max: -1 NAVIFRAME_TABBAR_TITLE_TOP_PADDING_HEIGHT_INC;
+               fixed: 0 1;
+               align: 0.5 0.0;
+               rel1 { to: "title_bg"; relative: 0.0 0.0; }
+               rel2 { to: "title_bg"; relative: 1.0 0.0; }
+            }
+         }
          part { name: "tabbar";
             type: SWALLOW;
             scale: 1;
@@ -966,8 +1019,8 @@
                max: -1 0;
                fixed: 0 1;
                align: 0.5 0.0;
-               rel1 { to: "title_bg"; relative: 0.0 1.0; }
-               rel2 { to: "title_bg"; relative: 1.0 1.0; }
+               rel1 { to: "tabbar_top_padding"; relative: 0.0 1.0; }
+               rel2 { to: "tabbar_top_padding"; relative: 1.0 1.0; }
                visible: 0;
             }
             description { state: "visible" 0.0;
@@ -987,8 +1040,8 @@
                max: -1 0;
                fixed: 0 1;
                align: 0.5 0.0;
-               rel1 { to: "tabbar"; relative: 0.0 0.0; }
-               rel2 { to: "tabbar"; relative: 1.0 0.0; }
+               rel1 { to: "tabbar_clipper"; relative: 0.0 0.0; }
+               rel2 { to: "tabbar_clipper"; relative: 1.0 0.0; }
                color: 244 244 244 25;
                visible: 0;
             }
@@ -1001,11 +1054,16 @@
          }
          part { name: "tabbar_clipper";
             type: RECT;
+            scale: 1;
             mouse_events: 0;
             clip_to: "clipper";
             description { state: "default" 0.0;
-               rel1.to_y: "tabbar";
-               rel2.to_y: "tabbar";
+               min: 0 NAVIFRAME_TABBAR_TITLE_CLIPPER_HEIGHT_INC;
+               max: -1 NAVIFRAME_TABBAR_TITLE_CLIPPER_HEIGHT_INC;
+               fixed: 0 1;
+               align: 0.5 1.0;
+               rel1 { to: "tabbar"; relative: 0.0 1.0; }
+               rel2 { to: "tabbar"; relative: 1.0 1.0; }
             }
          }
          part { name: "elm.swallow.content";
@@ -1221,27 +1279,82 @@
 
    group { name: "elm/naviframe/item/tabbar/notitle/default";
       data.item: "tizen_zoom" 1;
+      images {
+         set {
+            name: "core_icon_badge_container.#";
+               image {
+                  image: SMALL"images/Assist_Views/core_icon_badge_container.#.png" COMP;
+               }
+               image {
+                  image: MEDIUM"images/Assist_Views/core_icon_badge_container.#.png" COMP;
+               }
+         }
+         set {
+            name: "core_theme_bg_01";
+               image {
+                  image: SMALL"images/core_theme_bg_01.png" COMP;
+               }
+               image {
+                  image: MEDIUM"images/core_theme_bg_01.png" COMP;
+               }
+         }
+      }
       script {
          public landscape_mode = 0; //Landscape status
          public tabbar_visible = 0; //Tabbar visible status
       }
       parts {
-         part { name: "base";
-            type: RECT;
-            mouse_events:  0;
+         part { name: "bg_img";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 0;
             clip_to: "clipper";
             description { state: "default" 0.0;
-               color: 255 255 255 255; /*(Changeable UI) color_class: "B0211";*/
+               rel1.to: "base";
+               rel2.to: "base";
+               align: 0.5 0.0;
+               fixed: 0 1;
+               min: 0 NAVIFRAME_BG_PORTRAIT_HEIGHT_INC;
+               image.normal: "core_theme_bg_01";
+            }
+            description { state: "landscape" 0.0;
+               inherit: "default" 0.0;
+               min: 0 NAVIFRAME_BG_LANDSCAPE_HEIGHT_INC;
+            }
+         }
+         part { name: "base";
+            type: SPACER;
+            description { state: "default" 0.0;
+            }
+            description { state: "hidden" 0.0;
+               rel1.relative: 1.0 0.0;
+               rel2.relative: 2.0 1.0;
+            }
+            description { state: "leftout" 0.0;
+               rel1.relative: -0.2 0.0;
+               rel2.relative: 0.8 1.0;
             }
          }
          part { name: "clipper";
             type: RECT;
             mouse_events: 0;
+            clip_to: "pop_clipper";
             description { state: "default" 0.0;
                visible: 1;
             }
             description { state: "hidden" 0.0;
                visible: 0;
+            }
+         }
+         part { name: "pop_clipper";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "leftout" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.0 1.0;
             }
          }
          part { name: "tabbar";
@@ -1295,6 +1408,7 @@
          }
          part { name: "toolbar_bg";
             type: RECT;
+            scale: 1;
             clip_to: "toolbar_clipper";
             description { state: "default" 0.0;
                rel1.to: "toolbar";
@@ -1310,7 +1424,7 @@
                min: 0 0;
                max: -1 0;
                fixed: 0 1;
-               align: 0.0 1.0;
+               align: 0.5 1.0;
                rel1 { to: "base"; relative: 0.0 1.0; }
                rel2 { to: "base"; relative: 1.0 1.0; }
                visible: 0;
@@ -1363,51 +1477,61 @@
             signal: "elm,state,new,pushed,deferred";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_PUSH_TRANS_TIME 1.7;
+            target: "base";
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_PUSH_TRANS_TIME);
             after: "show_finished";
          }
          program { name: "content_cur_pushed";
             signal: "elm,state,cur,pushed,deferred";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_PUSH_TRANS_TIME 1.7;
+            action: STATE_SET "leftout" 0.0;
+            target: "base";
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_PUSH_TRANS_TIME);
             after: "pushed_finished";
+            after: "restore_default";
          }
          program { name: "content_prev_popped";
             signal: "elm,state,prev,popped,deferred";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_POP_TRANS_TIME 1.7;
+            target: "base";
+            target: "pop_clipper";
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_POP_TRANS_TIME);
             after: "show_finished";
          }
          program { name: "content_cur_popped";
             signal: "elm,state,cur,popped,deferred";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_POP_TRANS_TIME 1.7;
+            action: STATE_SET "hidden" 0.0;
+            target: "base";
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_POP_TRANS_TIME);
             after: "popped_finished";
          }
          program { name: "new_pushed";
             signal: "elm,state,new,pushed";
             source: "elm";
             action: STATE_SET "hidden" 0.0;
-            target: "clipper";
+            target: "base";
          }
          program { name: "prev_popped";
             signal: "elm,state,prev,popped";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "clipper";
+            script {
+               set_state(PART:"base", "leftout", 0.0);
+               set_state(PART:"pop_clipper", "leftout", 0.0);
+               set_state(PART:"clipper", "default", 0.0);
+            }
          }
          program { name: "show_finished";
             action: SIGNAL_EMIT "elm,action,show,finished" "";
          }
          program { name: "pushed_finished";
             action: SIGNAL_EMIT "elm,action,pushed,finished" "";
+         }
+         program { name: "restore_default";
+            action: STATE_SET "default" 0.0;
+            target: "base";
+            target: "pop_clipper";
          }
          program { name: "popped_finished";
             action: SIGNAL_EMIT "elm,action,popped,finished" "";
@@ -1623,22 +1747,56 @@
                   image: MEDIUM"images/Assist_Views/core_icon_badge_container.#.png" COMP;
                }
          }
+         set {
+            name: "core_theme_bg_01";
+               image {
+                  image: SMALL"images/core_theme_bg_01.png" COMP;
+               }
+               image {
+                  image: MEDIUM"images/core_theme_bg_01.png" COMP;
+               }
+         }
       }
       script {
+         public landscape_mode = 0;   //Landscape status
          public drawers_visible  = 0; //Drawers visible status
       }
       parts {
-         part { name: "base";
-            type: RECT;
-            mouse_events:  0;
+         part { name: "bg_img";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 0;
             clip_to: "clipper";
             description { state: "default" 0.0;
-               color: 255 255 255 255; /*(Changeable UI) color_class: "B0211";*/
+               rel1.to: "base";
+               rel2.to: "base";
+               align: 0.5 0.0;
+               fixed: 0 1;
+               min: 0 NAVIFRAME_BG_PORTRAIT_HEIGHT_INC;
+               image.normal: "core_theme_bg_01";
+            }
+            description { state: "landscape" 0.0;
+               inherit: "default" 0.0;
+               min: 0 NAVIFRAME_BG_LANDSCAPE_HEIGHT_INC;
+            }
+         }
+         part { name: "base";
+            type: SPACER;
+            description { state: "default" 0.0;
+            }
+            description { state: "hidden" 0.0;
+               rel1.relative: 1.0 0.0;
+               rel2.relative: 2.0 1.0;
+            }
+            description { state: "leftout" 0.0;
+               rel1.relative: -0.2 0.0;
+               rel2.relative: 0.8 1.0;
             }
          }
          part { name: "clipper";
             type: RECT;
             mouse_events: 0;
+            clip_to: "pop_clipper";
             description { state: "default" 0.0;
                visible: 1;
             }
@@ -1646,11 +1804,21 @@
                visible: 0;
             }
          }
+         part { name: "pop_clipper";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "leftout" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.0 1.0;
+            }
+         }
          part { name: "title_bg";
             type: RECT;
             scale: 1;
             mouse_events: 0;
-            clip_to: "title_clipper";
             description { state: "default" 0.0;
                min: 0 NAVIFRAME_TITLE_HEIGHT_INC;
                max: -1 NAVIFRAME_TITLE_HEIGHT_INC;
@@ -2040,6 +2208,7 @@
          }
          part { name: "toolbar_bg";
             type: RECT;
+            scale: 1;
             clip_to: "toolbar_clipper";
             description { state: "default" 0.0;
                rel1.to: "toolbar";
@@ -2055,7 +2224,7 @@
                min: 0 0;
                max: -1 0;
                fixed: 0 1;
-               align: 0.0 1.0;
+               align: 0.5 1.0;
                rel1 { to: "base"; relative: 0.0 1.0; }
                rel2 { to: "base"; relative: 1.0 1.0; }
                visible: 0;
@@ -2108,51 +2277,61 @@
             signal: "elm,state,new,pushed,deferred";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_PUSH_TRANS_TIME 1.7;
+            target: "base";
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_PUSH_TRANS_TIME);
             after: "show_finished";
          }
          program { name: "content_cur_pushed";
             signal: "elm,state,cur,pushed,deferred";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_PUSH_TRANS_TIME 1.7;
+            target: "base";
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_PUSH_TRANS_TIME);
             after: "pushed_finished";
+            after: "restore_default";
          }
          program { name: "content_prev_popped";
             signal: "elm,state,prev,popped,deferred";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_POP_TRANS_TIME 1.7;
+            target: "base";
+            target: "pop_clipper";
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_POP_TRANS_TIME);
             after: "show_finished";
          }
          program { name: "content_cur_popped";
             signal: "elm,state,cur,popped,deferred";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_POP_TRANS_TIME 1.7;
+            target: "base";
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_POP_TRANS_TIME);
             after: "popped_finished";
          }
          program { name: "new_pushed";
             signal: "elm,state,new,pushed";
             source: "elm";
             action: STATE_SET "hidden" 0.0;
-            target: "clipper";
+            target: "base";
          }
          program { name: "prev_popped";
             signal: "elm,state,prev,popped";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "clipper";
+            script {
+               set_state(PART:"base", "leftout", 0.0);
+               set_state(PART:"pop_clipper", "leftout", 0.0);
+               set_state(PART:"clipper", "default", 0.0);
+            }
          }
          program { name: "show_finished";
             action: SIGNAL_EMIT "elm,action,show,finished" "";
          }
          program { name: "pushed_finished";
             action: SIGNAL_EMIT "elm,action,pushed,finished" "";
+         }
+         program { name: "restore_default";
+            action: STATE_SET "default" 0.0;
+            target: "base";
+            target: "pop_clipper";
          }
          program { name: "popped_finished";
             action: SIGNAL_EMIT "elm,action,popped,finished" "";
@@ -2291,28 +2470,112 @@
                emit("elm,action,title,clicked", "");
             }
          }
+         program { name: "change_to_landscape";
+            script {
+               if (!get_int(landscape_mode)) {
+                  set_int(landscape_mode, 1);
+               }
+               set_state(PART:"bg_img", "landscape", 0.0);
+            }
+         }
+         program { name: "change_to_portrait";
+            script {
+               if (get_int(landscape_mode)) {
+                  set_int(landscape_mode, 0);
+               }
+               set_state(PART:"bg_img", "default", 0.0);
+            }
+         }
+         program { name: "landscape_mode";
+            source: "elm";
+            signal: "elm,state,orient,90";
+            after: "change_to_landscape";
+         }
+         program { name: "landscape_mode2";
+            source: "elm";
+            signal: "elm,state,orient,270";
+            after: "change_to_landscape";
+         }
+         program { name: "portrait_mode";
+            source: "elm";
+            signal: "elm,state,orient,0";
+            after: "change_to_portrait";
+         }
+         program { name: "portrait_mode2";
+            source: "elm";
+            signal: "elm,state,orient,180";
+            after: "change_to_portrait";
+         }
       }
    }
 
    group { name: "elm/naviframe/item/empty/default";
-      data.item: "tizen_zoom" 1;
+      images {
+         set {
+            name: "core_theme_bg_01";
+               image {
+                  image: SMALL"images/core_theme_bg_01.png" COMP;
+               }
+               image {
+                  image: MEDIUM"images/core_theme_bg_01.png" COMP;
+               }
+         }
+      }
+      script {
+         public landscape_mode = 0; //Landscape status
+      }
       parts {
-         part { name: "base";
-            type: RECT;
-            mouse_events:  0;
+         part { name: "bg_img";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 0;
             clip_to: "clipper";
             description { state: "default" 0.0;
-               color: 255 255 255 255; /*(Changeable UI) color_class: "B0211";*/
+               rel1.to: "base";
+               rel2.to: "base";
+               align: 0.5 0.0;
+               fixed: 0 1;
+               min: 0 NAVIFRAME_BG_PORTRAIT_HEIGHT_INC;
+               image.normal: "core_theme_bg_01";
+            }
+            description { state: "landscape" 0.0;
+               inherit: "default" 0.0;
+               min: 0 NAVIFRAME_BG_LANDSCAPE_HEIGHT_INC;
+            }
+         }
+         part { name: "base";
+            type: SPACER;
+            description { state: "default" 0.0;
+            }
+            description { state: "hidden" 0.0;
+               rel1.relative: 1.0 0.0;
+               rel2.relative: 2.0 1.0;
+            }
+            description { state: "leftout" 0.0;
+               rel1.relative: -0.2 0.0;
+               rel2.relative: 0.8 1.0;
             }
          }
          part { name: "clipper";
             type: RECT;
             mouse_events: 0;
+            clip_to: "pop_clipper";
             description { state: "default" 0.0;
                visible: 1;
             }
             description { state: "hidden" 0.0;
                visible: 0;
+            }
+         }
+         part { name: "pop_clipper";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color: 255 255 255 255; /*(Changeable UI) color_class: "B0211";*/
+            }
+            description { state: "leftout" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.0 1.0;
             }
          }
          part { name: "title";
@@ -2366,6 +2629,7 @@
          }
          part { name: "toolbar_bg";
             type: RECT;
+            scale: 1;
             clip_to: "toolbar_clipper";
             description { state: "default" 0.0;
                rel1.to: "toolbar";
@@ -2381,7 +2645,7 @@
                min: 0 0;
                max: -1 0;
                fixed: 0 1;
-               align: 0.0 1.0;
+               align: 0.5 1.0;
                rel1 { to: "base"; relative: 0.0 1.0; }
                rel2 { to: "base"; relative: 1.0 1.0; }
                visible: 0;
@@ -2434,45 +2698,49 @@
             signal: "elm,state,new,pushed,deferred";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_PUSH_TRANS_TIME 1.7;
+            target: "base";
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_PUSH_TRANS_TIME);
             after: "show_finished";
          }
          program { name: "content_cur_pushed";
             signal: "elm,state,cur,pushed,deferred";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_PUSH_TRANS_TIME 1.7;
+            action: STATE_SET "leftout" 0.0;
+            target: "base";
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_PUSH_TRANS_TIME);
             after: "pushed_finished";
          }
          program { name: "content_prev_popped";
             signal: "elm,state,prev,popped,deferred";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_POP_TRANS_TIME 1.7;
+            target: "base";
+            target: "pop_clipper";
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_POP_TRANS_TIME);
             after: "show_finished";
          }
          program { name: "content_cur_popped";
             signal: "elm,state,cur,popped,deferred";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_POP_TRANS_TIME 1.7;
+            action: STATE_SET "hidden" 0.0;
+            target: "base";
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_POP_TRANS_TIME);
             after: "popped_finished";
          }
          program { name: "new_pushed";
             signal: "elm,state,new,pushed";
             source: "elm";
             action: STATE_SET "hidden" 0.0;
-            target: "clipper";
+            target: "base";
          }
          program { name: "prev_popped";
             signal: "elm,state,prev,popped";
             source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "clipper";
+            script {
+               set_state(PART:"base", "leftout", 0.0);
+               set_state(PART:"pop_clipper", "leftout", 0.0);
+               set_state(PART:"clipper", "default", 0.0);
+            }
          }
          program { name: "show_finished";
             action: SIGNAL_EMIT "elm,action,show,finished" "";
@@ -2482,6 +2750,11 @@
          }
          program { name: "popped_finished";
             action: SIGNAL_EMIT "elm,action,popped,finished" "";
+         }
+         program { name: "restore_default";
+            action: STATE_SET "default" 0.0;
+            target: "base";
+            target: "pop_clipper";
          }
          program { name: "visible";
             signal: "elm,state,visible";
@@ -2540,6 +2813,40 @@
                emit("elm,action,title,clicked", "");
             }
          }
+         program { name: "change_to_landscape";
+            script {
+               if (!get_int(landscape_mode)) {
+                  set_int(landscape_mode, 1);
+               }
+            }
+         }
+         program { name: "change_to_portrait";
+            script {
+               if (get_int(landscape_mode)) {
+                  set_int(landscape_mode, 0);
+               }
+            }
+         }
+         program { name: "landscape_mode";
+            source: "elm";
+            signal: "elm,state,orient,90";
+            after: "change_to_landscape";
+         }
+         program { name: "landscape_mode2";
+            source: "elm";
+            signal: "elm,state,orient,270";
+            after: "change_to_landscape";
+         }
+         program { name: "portrait_mode";
+            source: "elm";
+            signal: "elm,state,orient,0";
+            after: "change_to_portrait";
+         }
+         program { name: "portrait_mode2";
+            source: "elm";
+            signal: "elm,state,orient,180";
+            after: "change_to_portrait";
+         }
       }
    }
 
@@ -2581,7 +2888,7 @@
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_PUSH_TRANS_TIME 1.7;
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_PUSH_TRANS_TIME);
             after: "show_finished";
          }
          program { name: "content_cur_pushed";
@@ -2589,7 +2896,7 @@
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "clipper";
-            transition: SIN_FAC NAVIFRAME_VIEW_PUSH_TRANS_TIME 1.7;
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_PUSH_TRANS_TIME);
             after: "pushed_finished";
          }
          program { name: "content_prev_popped";
@@ -2597,7 +2904,7 @@
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "base";
-            transition: SIN_FAC NAVIFRAME_VIEW_POP_TRANS_TIME 1.7;
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_POP_TRANS_TIME);
             after: "show_finished";
          }
          program { name: "content_cur_popped";
@@ -2605,7 +2912,7 @@
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "base";
-            transition: SIN_FAC NAVIFRAME_VIEW_POP_TRANS_TIME 1.7;
+            transition: GLIDE_EASE_OUT(NAVIFRAME_VIEW_POP_TRANS_TIME);
             after: "popped_finished";
          }
          program { name: "new_pushed";
@@ -2649,12 +2956,15 @@
    group { name: "elm/naviframe/item/basic/transparent/default";
       inherit: "elm/naviframe/item/basic/default";
       parts {
-         part { name: "base";
-            type: RECT;
-            mouse_events:  0;
-            clip_to: "clipper";
+         part { name: "bg_img";
+            type: SPACER;
+            scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
+               rel1.to: "base";
+               rel2.to: "base";
+            }
+            description { state: "landscape" 0.0;
+               inherit: "default" 0.0;
             }
          }
       }
@@ -2663,12 +2973,15 @@
    group { name: "elm/naviframe/item/drawers/transparent/default";
       inherit: "elm/naviframe/item/drawers/default";
       parts {
-         part { name: "base";
-            type: RECT;
-            mouse_events:  0;
-            clip_to: "clipper";
+         part { name: "bg_img";
+            type: SPACER;
+            scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
+               rel1.to: "base";
+               rel2.to: "base";
+            }
+            description { state: "landscape" 0.0;
+               inherit: "default" 0.0;
             }
          }
       }
@@ -2677,12 +2990,15 @@
    group { name: "elm/naviframe/item/tabbar/transparent/default";
       inherit: "elm/naviframe/item/tabbar/default";
       parts {
-         part { name: "base";
-            type: RECT;
-            mouse_events:  0;
-            clip_to: "clipper";
+         part { name: "bg_img";
+            type: SPACER;
+            scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
+               rel1.to: "base";
+               rel2.to: "base";
+            }
+            description { state: "landscape" 0.0;
+               inherit: "default" 0.0;
             }
          }
       }
@@ -2691,12 +3007,15 @@
    group { name: "elm/naviframe/item/tabbar/notitle/transparent/default";
       inherit: "elm/naviframe/item/tabbar/notitle/default";
       parts {
-         part { name: "base";
-            type: RECT;
-            mouse_events:  0;
-            clip_to: "clipper";
+         part { name: "bg_img";
+            type: SPACER;
+            scale: 1;
             description { state: "default" 0.0;
-               visible: 0;
+               rel1.to: "base";
+               rel2.to: "base";
+            }
+            description { state: "landscape" 0.0;
+               inherit: "default" 0.0;
             }
          }
       }
@@ -2705,12 +3024,41 @@
    group { name: "elm/naviframe/item/empty/transparent/default";
       inherit: "elm/naviframe/item/empty/default";
       parts {
-         part { name: "base";
-            type: RECT;
-            mouse_events:  0;
-            clip_to: "clipper";
+         part { name: "bg_img";
+            type: SPACER;
+            scale: 1;
             description { state: "default" 0.0;
+               rel1.to: "base";
+               rel2.to: "base";
+            }
+            description { state: "landscape" 0.0;
+               inherit: "default" 0.0;
+            }
+         }
+      }
+   }
+
+   group { name: "elm/naviframe/item/light_view/default";
+      inherit: "elm/naviframe/item/tabbar/notitle/default";
+      parts {
+         part { name: "tabbar";
+            type: SWALLOW;
+            scale: 1;
+            clip_to: "tabbar_clipper";
+            description { state: "default" 0.0;
+               min: 0 0;
+               max: -1 0;
+               fixed: 0 1;
+               align: 0.5 0.0;
+               rel1 { to: "base"; relative: 0.0 0.0; }
+               rel2 { to: "base"; relative: 1.0 0.0; }
                visible: 0;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               min: 0 NAVIFRAME_TABBAR_LIGHT_VIEW_HEIGHT_INC;
+               max: -1 NAVIFRAME_TABBAR_LIGHT_VIEW_HEIGHT_INC;
+               visible: 1;
             }
          }
       }

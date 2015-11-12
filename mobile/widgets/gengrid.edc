@@ -30,7 +30,7 @@
 /********************************************************************************/
 
 #define GRID_DEFAULT_BG_COLOR 0 0 0 0
-#define GRID_ICON_PRESSED_COLOR 255 255 255 178
+#define GRID_ICON_PRESSED_COLOR 0 0 0 77
 #define GRID_POPUP_TEXT_FONT_SIZE 24
 
 #define GENGRID_PROGRAM_DEFAULT( TARGET ) \
@@ -44,7 +44,21 @@
 
 styles {
    style { name: "grid_popup_style";
-      base: "font=Tizen:style=Regular font_size=32 color=#070707FF text_class=tizen align=center wrap=mixed ellipsis=1.0 linegap=-3";
+      base: "font=Tizen:style=Condensed font_size=32 color=#000000DE text_class=tizen align=center wrap=mixed ellipsis=1.0 linegap=-3";
+      tag: "br" "\n";
+      tag: "ps" "ps";
+      tag: "tab" "\t";
+      tag: "b" "+ font_weight=Bold";
+      }
+   style { name: "grid_popup_style_pressed";
+      base: "font=Tizen:style=Condensed font_size=32 color=#000000DE text_class=tizen align=center wrap=mixed ellipsis=1.0 linegap=-3";
+      tag: "br" "\n";
+      tag: "ps" "ps";
+      tag: "tab" "\t";
+      tag: "b" "+ font_weight=Bold";
+      }
+   style { name: "grid_popup_style_disabled";
+      base: "font=Tizen:style=Condensed font_size=32 color=#000000A3 text_class=tizen align=center wrap=mixed ellipsis=1.0 linegap=-3";
       tag: "br" "\n";
       tag: "ps" "ps";
       tag: "tab" "\t";
@@ -173,13 +187,14 @@ styles {
             type: RECT;
             description { state: "default" 0.0;
                visible: 0;
-               rel1.to: "item_bg";
-               rel2.to: "item_bg";
-               color: 2 61 132 255;
+               rel1.to: "elm.swallow.icon";
+               rel2.to: "elm.swallow.icon";
+               color: 0 0 0 0;
             }
             description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                visible: 1;
+               color: 2 61 132 255;
                color: GRID_ICON_PRESSED_COLOR;
             }
          }
@@ -264,9 +279,14 @@ styles {
          }
       }
       programs {
+         program { name: "play_sound";
+            signal: "elm,state,selected";
+            source: "elm";
+            script {
+               run_program(PROGRAM:"touch_sound");
+            }
+         }
          program { name: "touch_sound";
-            signal: "mouse,clicked,1";
-            source: "reorder_bg";
             action: RUN_PLUGIN "touch_sound";
          }
          program { name: "selected";
@@ -274,12 +294,14 @@ styles {
             source: "elm";
             action: STATE_SET "pressed" 0.0;
             target: "select_bg";
+            transition: GLIDE_EASE_OUT(0.25);
          }
          program { name: "unselected";
             signal: "elm,state,unselected";
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "select_bg";
+            transition: GLIDE_EASE_OUT(0.25);
          }
          program { name: "action_focus";
             signal: "elm,action,focus_highlight,show";
@@ -398,43 +420,17 @@ styles {
          }
       }
       parts {
-         part { name: "select_clip";
-            type: RECT;
-            description { state: "default" 0.0;
-               visible: 1;
-               color: 255 255 255 255;
-            }
-            description { state: "selected" 0.0;
-               visible: 1;
-               color: GRID_ICON_PRESSED_COLOR;
-            }
-         }
          part { name: "bg";
             type: RECT;
             description { state: "default" 0.0;
                color: GRID_DEFAULT_BG_COLOR;
             }
          }
-         part { name: "selected_bg";
-            type: RECT;
-            description { state: "default" 0.0;
-               visible: 0;
-               rel1.to: "item_real_bg";
-               rel2.to: "item_real_bg";
-            }
-            description { state: "enabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "item_real_bg";
+         part { name: "item_bg";
             type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
-               align: 0.5 0.0;
                min: GRID_POPUP_ITEM_REAL_BG_SIZE;
-               max: GRID_POPUP_ITEM_REAL_BG_SIZE;
-               rel2.relative: 1.0 0.0;
             }
          }
          part { name: "left_top_padding";
@@ -443,11 +439,10 @@ styles {
             description { state: "default" 0.0;
                min: GRID_POPUP_PADDING_LEFT_TOP_SIZE;
                align: 0.0 0.0;
-               fixed: 1 1;
-               rel1.to: "item_real_bg";
+               rel1.to: "item_bg";
                rel2 {
                   relative: 0.0 0.0;
-                  to: "item_real_bg";
+                  to: "item_bg";
                }
             }
          }
@@ -457,15 +452,14 @@ styles {
             description { state: "default" 0.0;
                min: GRID_POPUP_PADDING_RIGHT_BOTTOM_SIZE;
                align: 1.0 1.0;
-               fixed: 1 1;
                rel1 {
                   relative: 1.0 0.0;
-                  to_x: "item_real_bg";
+                  to_x: "item_bg";
                   to_y: "elm.text";
                }
                rel2 {
                   relative: 1.0 0.0;
-                  to_x: "item_real_bg";
+                  to_x: "item_bg";
                   to_y: "elm.text";
                }
             }
@@ -475,16 +469,14 @@ styles {
             scale: 1;
             description { state: "default" 0.0;
                min: GRID_POPUP_PADDING_BOTTOM_SIZE;
-               min: GRID_POPUP_PADDING_BOTTOM_SIZE;
                align: 1.0 1.0;
-               fixed: 1 1;
                rel1 {
                   relative: 1.0 1.0;
-                  to: "item_real_bg";
+                  to: "item_bg";
                }
                rel2 {
                   relative: 1.0 1.0;
-                  to: "item_real_bg";
+                  to: "item_bg";
                }
             }
          }
@@ -493,16 +485,14 @@ styles {
             scale: 1;
             description { state: "default" 0.0;
                min: GRID_POPUP_PADDING_BOTTOM_SIZE;
-               min: GRID_POPUP_PADDING_BOTTOM_SIZE;
                align: 0.0 1.0;
-               fixed: 1 1;
                rel1 {
                   relative: 0.0 1.0;
-                  to: "item_real_bg";
+                  to: "item_bg";
                }
                rel2 {
                   relative: 0.0 1.0;
-                  to: "item_real_bg";
+                  to: "item_bg";
                }
             }
          }
@@ -511,8 +501,6 @@ styles {
             scale: 1;
             description { state: "default" 0.0;
                min: GRID_POPUP_SWALLOW_ICON_SIZE;
-               max: GRID_POPUP_SWALLOW_ICON_SIZE;
-               align: 0.5 0.5;
                rel1 {
                   relative: 1.0 1.0;
                   to: "left_top_padding";
@@ -522,7 +510,6 @@ styles {
                   to: "icon_text_padding";
                }
             }
-            clip_to: "select_clip";
          }
          part { name: "elm.swallow.end";
             type: SWALLOW;
@@ -537,9 +524,8 @@ styles {
             mouse_events: 0;
             scale: 1;
             description { state: "default" 0.0;
-               min: 164 GRID_POPUP_TEXT_HEIGHT;
-               max: 164 GRID_POPUP_TEXT_HEIGHT;
-               fixed: 1 1;
+               min: GRID_POPUP_TEXT_MIN_SIZE GRID_POPUP_TEXT_HEIGHT;
+               fixed: 0 1;
                align: 0.5 1.0;
                rel1 {
                   relative: 1.0 0.0;
@@ -554,37 +540,58 @@ styles {
                   align: 0.5 0.0;
                }
             }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               text.style: "grid_popup_style_pressed";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               text.style: "grid_popup_style_disabled";
+            }
          }
-         part { name: "reorder_bg";
+         part { name: "select_bg";
             type: RECT;
-            repeat_events: 1;
             description { state: "default" 0.0;
-               rel1.to: "selected_bg";
-               rel2.to: "selected_bg";
+               visible: 0;
+               rel1.to: "item_bg";
+               rel2.to: "item_bg";
                color: 0 0 0 0;
+            }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 61 185 204 77;
             }
          }
          part { name: "outline_bg";
-            repeat_events: 1;
             description { state: "default" 0.0;
                visible: 0;
-               rel1.to: "item_real_bg";
-               rel2.to: "item_real_bg";
+               rel1.to: "item_bg";
+               rel2.to: "item_bg";
                image.normal: "core_focus.#";
-               color: 4 110 239 255;
+               color: 0 221 255 255;
             }
             description { state: "enabled" 0.0;
                inherit: "default" 0.0;
                visible: 1;
             }
          }
+         part { name: "reorder_bg";
+            type: RECT;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               rel1.to: "item_bg";
+               rel2.to: "item_bg";
+               color: 0 0 0 0;
+            }
+         }
          part { name: "focus_bg";
             description { state: "default" 0.0;
                visible: 0;
-               rel1.to: "item_real_bg";
-               rel2.to: "item_real_bg";
+               rel1.to: "item_bg";
+               rel2.to: "item_bg";
                image.normal: "core_focus.#";
-               color: 4 110 239 255;
+               color: 0 221 255 255;
             }
             description { state: "enabled" 0.0;
                inherit: "default" 0.0;
@@ -594,38 +601,45 @@ styles {
       }
       programs
       {
-         program { name: "touch_snd";
-            signal: "mouse,clicked,1";
-            source: "reorder_bg";
+         program { name: "play_sound";
+            signal: "elm,state,selected";
+            source: "elm";
+            script {
+               run_program(PROGRAM:"touch_sound");
+            }
+         }
+         program { name: "touch_sound";
             action: RUN_PLUGIN "touch_sound";
          }
          program { name: "selected";
             signal: "elm,state,selected";
             source: "elm";
-            script {
-               set_state(PART:"selected_bg", "default",  0.0);
-               set_state(PART:"outline_bg", "default", 0.0);
-               set_state(PART:"select_clip", "selected",  0.0);
-            }
+            action: STATE_SET "pressed" 0.0;
+            target: "select_bg";
+            target: "elm.text";
+            transition: GLIDE_EASE_OUT(0.25);
          }
          program { name: "unselected";
             signal: "elm,state,unselected";
             source: "elm";
             action: STATE_SET "default" 0.0;
-            target: "select_clip";
+            target: "select_bg";
+            target: "elm.text";
+            transition: GLIDE_EASE_OUT(0.25);
          }
          program { name: "select_enabled";
             signal: "elm,select,enabled";
             source: "";
-            action: STATE_SET "enabled" 0.0;
-            target: "selected_bg";
-            target: "outline_bg";
+            script {
+               set_state(PART:"select_bg", "default", 0.0);
+               set_state(PART:"elm.text", "default", 0.0);
+               set_state(PART:"outline_bg", "enabled", 0.0);
+            }
          }
          program { name: "select_disabled";
             signal: "elm,select,disabled";
             source: "";
             action: STATE_SET "default" 0.0;
-            target: "selected_bg";
             target: "outline_bg";
          }
          program { name: "action_focus";
@@ -641,10 +655,11 @@ styles {
             target: "focus_bg";
          }
          GENGRID_PROGRAM_DEFAULT(
-            target: "selected_bg";
-            target: "outline_bg";
+            target: "elm.swallow.icon";
+            target: "elm.swallow.end";
+            target: "select_bg";
             target: "elm.text";
-            target: "select_clip";
+            target: "outline_bg";
          )
       }
    }

@@ -132,7 +132,7 @@ group { name: "elm/notify/bottom/popup/default";
       }
       program { name: "end2";
          action: STATE_SET "end" 0.0;
-         transition: SIN_FAC 0.33 1.7;
+         transition: GLIDE_EASE_OUT(0.35);
          target: "elm.swallow.content";
          target: "block";
          after: "showfinished";
@@ -147,20 +147,85 @@ group { name: "elm/notify/bottom/popup/default";
          target: "elm.swallow.content";
       }
       program { name: "hide_effect";
-         signal: "effect,hide";
+         signal: "elm,state,hide";
          source: "elm";
-         transition: SIN_FAC 0.33 1.7;
+         transition: GLIDE_EASE_OUT(0.35);
          action: STATE_SET "default" 0.0;
          target: "elm.swallow.content";
          after: "hide_effect_done";
       }
       program { name: "hide_effect_done";
-         action: SIGNAL_EMIT "effect,hide,finished" "";
+         action: SIGNAL_EMIT "elm,state,hide,finished" "elm";
       }
    }
 }
 
+group { name: "elm/notify/center/default";
+   parts {
+      part { name: "base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
+         }
+      }
+   }
+}
+
+group { name: "elm/notify/center/theme_bg";
+   images {
+      image: "core_theme_bg_01.png" COMP;
+   }
+
+   parts {
+      part { name: "base";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      part { name: "mesh_bg";
+         scale: 1;
+         clip_to: "clip";
+         description { state: "default" 0.0;
+            image.normal: "core_theme_bg_01.png";
+         }
+      }
+      part { name: "elm.swallow.content";
+        type: SWALLOW;
+        scale: 1;
+        description { state: "default" 0.0;
+           rel1.to: "base";
+           rel2.to: "base";
+           align: 0.5 0.5;
+        }
+      }
+      part { name: "clip";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+           max: NOTIFY_THEME_BG_CLIP_MAX_INC;
+           rel1.to: "elm.swallow.content";
+           rel2.to: "elm.swallow.content";
+         }
+      }
+   }
+}
+
+
+
 group { name: "elm/notify/bottom/toast";
+   data.item: "hide_finished_signal" "on";
    parts {
       part { name: "base";
          type: RECT;
@@ -226,7 +291,7 @@ group { name: "elm/notify/bottom/toast";
          target: "elm.swallow.content";
       }
       program { name: "hide_effect";
-         signal: "effect,hide";
+         signal: "elm,state,hide";
          source: "elm";
          action: STATE_SET "default" 0.0;
          transition: LINEAR 0.1;
@@ -234,12 +299,45 @@ group { name: "elm/notify/bottom/toast";
          after: "hide_effect_done";
       }
       program { name: "hide_effect_done";
-         action: SIGNAL_EMIT "effect,hide,finished" "";
+         action: SIGNAL_EMIT "elm,state,hide,finished" "elm";
+      }
+   }
+}
+
+group { name: "elm/notify/bottom/theme_bg";
+   inherit: "elm/notify/bottom/popup";
+
+   images {
+      image: "core_theme_bg_01.png" COMP;
+   }
+
+   parts {
+      part { name: "mesh_bg";
+         scale: 1;
+         insert_after: "base";
+         clip_to: "clip";
+         description { state: "default" 0.0;
+            min: NOTIFY_THEME_BG_DEFAULT_MIN_INC;
+            fixed: 1 1;
+            align: 0.5 1.0;
+            image.normal: "core_theme_bg_01.png";
+         }
+      }
+      part { name: "clip";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+           max: NOTIFY_THEME_BG_CLIP_MAX_INC;
+           rel1.to: "elm.swallow.content";
+           rel2.to: "elm.swallow.content";
+         }
       }
    }
 }
 
 group { name: "elm/notify/block_events/popup";
+   alias: "elm/notify/block_events/theme_bg";
+
    images {
       image: "core_theme_bg_dim.png" COMP;
    }
@@ -275,7 +373,7 @@ group { name: "elm/notify/block_events/popup";
          target: "block_events_color";
       }
       program { name: "hide_effect";
-         signal: "effect,hide";
+         signal: "elm,state,hide";
          source: "elm";
          action: STATE_SET "default" 0.0;
          transition: SIN_FAC 0.33 1.7;
@@ -283,7 +381,7 @@ group { name: "elm/notify/block_events/popup";
          after: "hide_effect_done";
       }
       program { name: "hide_effect_done";
-         action: SIGNAL_EMIT "effect,hide,finished" "elm";
+         action: SIGNAL_EMIT "elm,state,hide,finished" "elm";
       }
       program { name: "block_clicked";
          signal: "mouse,clicked,1";
@@ -382,6 +480,7 @@ group { name: "elm/notify/block_events/center_popup";
 group { name: "elm/label/base/popup/default";
    alias: "elm/label/base/popup/center_popup";
    alias: "elm/label/base/popup/transparent";
+   alias: "elm/label/base/popup/theme_bg";
    styles {
       style { name: "popup_desc_style";
          base: "font=Tizen:style=Regular font_size="POPUP_DESCRIPTION_DEFAULT_TEXT_FONT_SIZE_INC" align=left color=#070707FF wrap=mixed text_class=label";
@@ -487,6 +586,14 @@ group { name: "elm/label/base/popup/toast";
       }
    }
    parts {
+      part { name: "multiline_width";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: POPUP_TOAST_TEXT_MULTI_LINE_MIN_INC POPUP_TOAST_TEXT_MIN_HEIGHT_INC;
+            fixed: 1 1;
+         }
+      }
       part { name: "elm.text";
          type: TEXTBLOCK;
          mouse_events: 0;
@@ -512,10 +619,10 @@ group { name: "elm/label/base/popup/toast";
          signal: "elm,state,text,visible";
          source: "elm";
          script {
-            new tx, ty, tw, th, w;
-            get_geometry(PART:"elm.text", tx, ty, tw, th);
-            w = POPUP_TOAST_TEXT_MULTI_LINE_MIN_INC;
-            if (tw >= w)
+            new tx1, ty1, tw1, th1, tx2, ty2, tw2, th2;
+            get_geometry(PART:"elm.text", tx1, ty1, tw1, th1);
+            get_geometry(PART:"multiline_width", tx2, ty2, tw2, th2);
+            if (tw1 >= tw2)
                set_state(PART:"elm.text", "multiline", 0.0);
             else
                set_state(PART:"elm.text", "default", 0.0);
@@ -563,6 +670,7 @@ group { name: "elm/popup/base/default";
          description { state: "default" 0.0;
             rel1.to: "base";
             rel2.to: "base";
+            color : 249 249 249 255;
          }
       }
       part { name: "access.outline";
@@ -585,6 +693,7 @@ group { name: "elm/popup/base/default";
             rel1.to: "base";
             rel2.to: "base";
             rel2.relative: 1.0 0.0;
+            color : 249 249 249 255;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
@@ -620,6 +729,11 @@ group { name: "elm/popup/base/default";
             fixed: 1 1;
             min: POPUP_TITLE_RIGHT_PADDING POPUP_TITLE_BOTTOM_PADDING;
             max: POPUP_TITLE_RIGHT_PADDING POPUP_TITLE_BOTTOM_PADDING;
+         }
+         description { state: "subtitle_visible" 0.0;
+            inherit: "default" 0.0;
+            min: POPUP_TITLE_RIGHT_PADDING POPUP_TITLE_BOTTOM_SUB_PADDING;
+            max: POPUP_TITLE_RIGHT_PADDING POPUP_TITLE_BOTTOM_SUB_PADDING;
          }
       }
       part { name: "elm.text.title";
@@ -747,6 +861,7 @@ group { name: "elm/popup/base/default";
             inherit: "default" 0.0;
             min: POPUP_BASE_DEFAULT_BUTTON_BG_DEFAULT_MIN_INC;
             visible: 1;
+            color : 249 249 249 255;
          }
       }
       part { name: "elm.swallow.action_area";
@@ -764,6 +879,7 @@ group { name: "elm/popup/base/default";
          source: "elm";
          action: STATE_SET "subtitle_visible" 0.0;
          target: "title_left_top_padding";
+         target: "title_right_bottom_padding";
          target: "elm.bg.title";
          target: "elm.text.title";
          target: "elm.text.subtitle";
@@ -1216,16 +1332,25 @@ group { name: "elm/popup/base/toast";
             image: MEDIUM"images/Assist_Views/core_popup_noti_bg_stroke.#.png" COMP;
          }
       }
+      set {
+         name: "a11y_highlight.png";
+         image {
+            image: "default/images/tizen-hd/a11y_highlight.png" COMP;
+         }
+      }
    }
    data {
       item: "default_orient" "2"; //top, center:1 bottom:2
       item: "popup_outside_pad" POPUP_OUTSIDE_PADDING;
+      item: "access_highlight" "on";
+      item: "hide_finished_signal" "on";
    }
    parts {
       part { name: "bg";
          scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
+            fixed: 1 1;
             rel1.to: "bg_outer";
             rel2.to: "bg_outer";
             image.normal: "core_popup_noti_bg.#";
@@ -1235,6 +1360,7 @@ group { name: "elm/popup/base/toast";
          scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
+            fixed: 1 1;
             image.normal: "core_popup_noti_bg_stroke.#";
             color: 61 185 204 255;
             rel1.to_x: "title_left_padding";
@@ -1347,10 +1473,7 @@ group { name: "elm/popup/base/toast";
          description { state: "default" 0.0;
             min: POPUP_TOAST_TEXT_MIN_WIDTH_INC POPUP_TOAST_TEXT_MIN_HEIGHT_INC;
             max: POPUP_TOAST_TEXT_MAX_WIDTH_INC POPUP_TOAST_TEXT_MAX_HEIGHT_INC;
-            align: 0.5 1.0;
-            rel1.to_y: "title_bottom_padding";
-            rel1.relative: 0.0 0.0;
-            rel2.to_y: "title_bottom_padding";
+            rel2.to: "title_bottom_padding";
             rel2.relative: 1.0 0.0;
             text {
                style: "popup_toast_style";
@@ -1369,10 +1492,7 @@ group { name: "elm/popup/base/toast";
          clip_to: "clipper";
          scale: 1;
          description { state: "default" 0.0;
-            align: 0.5 1.0;
-            rel1.to_y: "title_bottom_padding";
-            rel1.relative: 0.0 0.0;
-            rel2.to_y: "title_bottom_padding";
+            rel2.to: "title_bottom_padding";
             rel2.relative: 1.0 0.0;
          }
       }
@@ -1380,6 +1500,7 @@ group { name: "elm/popup/base/toast";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
+            fixed: 1 1;
             color: 255 255 255 0;
             rel1.to: "bg";
             rel2.to: "bg";
@@ -1389,16 +1510,42 @@ group { name: "elm/popup/base/toast";
             color: 255 255 255 255;
          }
       }
+      part { name: "multiline_width";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: POPUP_TOAST_TEXT_MULTI_LINE_MIN_INC POPUP_TOAST_TEXT_MIN_HEIGHT_INC;
+            fixed: 1 1;
+         }
+      }
+      part { name: "highlight";
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            image.normal: "a11y_highlight.png";
+            image.border: 12 12 12 12;
+            image.middle: 0;
+            fill.smooth: 0;
+            rel1.to: "bg";
+            rel1.offset: -7 -7 ;
+            rel2.to: "bg";
+            rel2.offset: 5 5;
+            visible: 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
    }
    programs {
       program { name: "part_text_show";
          signal: "elm,state,text,visible";
          source: "elm";
          script {
-            new tx, ty, tw, th, w;
-            get_geometry(PART:"elm.text", tx, ty, tw, th);
-            w = POPUP_TOAST_TEXT_MULTI_LINE_MIN_INC;
-            if (tw >= w)
+            new tx1, ty1, tw1, th1, tx2, ty2, tw2, th2;
+            get_geometry(PART:"elm.text", tx1, ty1, tw1, th1);
+            get_geometry(PART:"multiline_width", tx2, ty2, tw2, th2);
+            if (tw1 >= tw2)
                set_state(PART:"elm.text", "multiline", 0.0);
             else
                set_state(PART:"elm.text", "default", 0.0);
@@ -1411,17 +1558,59 @@ group { name: "elm/popup/base/toast";
       program { name: "show_effect";
          signal: "show";
          action: STATE_SET "show_effect" 0.0;
-         transition: LINEAR 0.1;
+         transition: GLIDE_EASE_OUT(0.25);
          target: "clipper";
          target: "bottom_padding";
       }
       program { name: "hide_effect";
-         signal: "elm,state,tizen,content,hide";
+         signal: "elm,state,hide";
          source: "elm";
          action: STATE_SET "default" 0.0;
-         transition: LINEAR 0.1;
+         transition: GLIDE_EASE_OUT(0.25);
          target: "clipper";
          target: "bottom_padding";
+      }
+      program { name: "show_new_highlight";
+         signal: "elm,action,access_highlight,show";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         target: "highlight";
+      }
+      program { name: "hide_new_highlight";
+         signal: "elm,action,access_highlight,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "highlight";
+      }
+   }
+}
+
+group { name: "elm/popup/base/theme_bg";
+   inherit: "elm/popup/base/default";
+
+   parts{
+      part { name: "base";
+         description { state: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "landscape" 0.0;
+            visible: 0;
+         }
+      }
+      part { name : "bg";
+         description { state: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part {name : "fg_color";
+         type:  RECT;
+         scale: 1;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 61 185 204 10;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+         }
       }
    }
 }

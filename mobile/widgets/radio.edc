@@ -39,6 +39,37 @@ group { name: "elm/radio/base/default";
             min: RADIO_SIZE;
          }
       }
+
+      //bg shape
+      part { name: "tizen_vg_shape_bg";
+         type: SWALLOW;
+         clip_to: "tizen_vg_shape_bg_clipper";
+         scale: 1;
+         description { state: "default" 0.0;
+            min: CHECK_DEFAULT_SIZE;
+            rel1.relative: 0 0.5;
+            rel2.relative: 0 0.5;
+            align: 0 0.5;
+            fixed: 1 1;
+         }
+      }
+
+      part { name: "tizen_vg_shape_bg_clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 249 249 249 150;
+         }
+         description { state: "on" 0.0;
+            color: 249 249 249 255;
+         }
+         description { state: "disabled_on" 0.0;
+            color: 249 249 249 77;
+         }
+         description { state: "disabled_off" 0.0;
+            color: 249 249 249 52;
+         }
+      }
+
       //Outline
       part { name: "tizen_vg_shape";
          type: SWALLOW;
@@ -58,13 +89,16 @@ group { name: "elm/radio/base/default";
             color: 61 184 204 255;
          }
          description { state: "on" 0.0;
-            color: 61 184 204 0;
+            color: 61 184 204 255;
          }
-         description { state: "disabled" 0.0;
+         description { state: "disabled_off" 0.0;
+            color: 61 184 204 77;
+         }
+         description { state: "disabled_on" 0.0;
             color: 61 184 204 77;
          }
       }
-      //Middle Circle
+      //Iconic Circle
       part { name: "tizen_vg_shape2";
          type: SWALLOW;
          clip_to: "tizen_vg_shape_clipper2";
@@ -76,33 +110,15 @@ group { name: "elm/radio/base/default";
       part { name: "tizen_vg_shape_clipper2";
          type: RECT;
          description { state: "default" 0.0;
-            color: 255 255 255 0;
-         }
-         description { state: "on" 0.0;
-            color: 255 255 255 255;
-         }
-         description { state: "disabled" 0.0;
-            color: 255 255 255 77;
-         }
-      }
-      //Iconic Circle
-      part { name: "tizen_vg_shape3";
-         type: SWALLOW;
-         clip_to: "tizen_vg_shape_clipper3";
-         description { state: "default" 0.0;
-            rel1.to: "tizen_vg_shape";
-            rel2.to: "tizen_vg_shape";
-         }
-      }
-      part { name: "tizen_vg_shape_clipper3";
-         type: RECT;
-         description { state: "default" 0.0;
             color: 61 184 204 0;
          }
          description { state: "on" 0.0;
             color: 61 184 204 255;
          }
-         description { state: "disabled" 0.0;
+         description { state: "disabled_off" 0.0;
+            color: 61 184 204 0;
+         }
+         description { state: "disabled_on" 0.0;
             color: 61 184 204 77;
          }
       }
@@ -206,24 +222,37 @@ group { name: "elm/radio/base/default";
       program { name: "toggle_on_effect";
          action: STATE_SET "on" 0.0;
          target: "tizen_vg_shape_clipper";
-         target: "tizen_vg_shape_clipper3";
+         target: "tizen_vg_shape_clipper2";
+         target: "tizen_vg_shape_bg_clipper";
          transition: DECELERATE 0.3;
+         after: "finished_animation";
       }
       program { name: "toggle_off_effect";
          action: STATE_SET "default" 0.0;
          target: "tizen_vg_shape_clipper";
-         target: "tizen_vg_shape_clipper3";
+         target: "tizen_vg_shape_clipper2";
+         target: "tizen_vg_shape_bg_clipper";
          transition: DECELERATE 0.3;
+         after: "finished_animation";
       }
-      program { name: "toggle_on_effect2";
-         action: STATE_SET "on" 0.0;
+      program { name: "toggle_disabled_on_effect";
+         action: STATE_SET "disabled_on" 0.0;
+         target: "tizen_vg_shape_clipper";
          target: "tizen_vg_shape_clipper2";
-         transition: DECELERATE 0.15;
+         target: "tizen_vg_shape_bg_clipper";
+         transition: DECELERATE 0.3;
+         after: "finished_animation";
       }
-      program { name: "toggle_off_effect2";
-         action: STATE_SET "default" 0.0;
+      program { name: "toggle_disabled_off_effect";
+         action: STATE_SET "disabled_off" 0.0;
+         target: "tizen_vg_shape_clipper";
          target: "tizen_vg_shape_clipper2";
-         transition: DECELERATE 0.15;
+         target: "tizen_vg_shape_bg_clipper";
+         transition: DECELERATE 0.3;
+         after: "finished_animation";
+      }
+      program { name: "finished_animation";
+         action: SIGNAL_EMIT "animation,finished" "";
       }
       program { name: "text_show";
          signal: "elm,state,text,visible";
@@ -252,17 +281,22 @@ group { name: "elm/radio/base/default";
          source: "elm";
          script {
             if (get_int(disabled) == 1) {
-               set_state(PART:"tizen_vg_shape_clipper", "disabled", 0.0);
-               set_state(PART:"tizen_vg_shape_clipper2", "disabled", 0.0);
-               set_state(PART:"tizen_vg_shape_clipper3", "disabled", 0.0);
+               if (get_int(animate) == 0) {
+                 set_state(PART:"tizen_vg_shape_clipper", "disabled_on", 0.0);
+                 set_state(PART:"tizen_vg_shape_clipper2", "disabled_on", 0.0);
+                 set_state(PART:"tizen_vg_shape_bg_clipper", "disabled_on", 0.0);
+               } else {
+                 run_program(PROGRAM:"toggle_disabled_on_effect");
+               }
             }else {
                if (get_int(animate) == 0) {
                  set_state(PART:"tizen_vg_shape_clipper", "on", 0.0);
                  set_state(PART:"tizen_vg_shape_clipper2", "on", 0.0);
-                 set_state(PART:"tizen_vg_shape_clipper3", "on", 0.0);
+                 set_state(PART:"tizen_vg_shape_bg_clipper", "on", 0.0);
+                 emit("elm,radio,state,toggle", "tizen_vg");
                } else {
                  run_program(PROGRAM:"toggle_on_effect");
-                 run_program(PROGRAM:"toggle_on_effect2");
+                 emit("elm,radio,action,toggle", "tizen_vg");
                }
             }
             set_int(animate, 0);
@@ -274,17 +308,22 @@ group { name: "elm/radio/base/default";
          source: "elm";
          script {
             if (get_int(disabled) == 1) {
-               set_state(PART:"tizen_vg_shape_clipper", "disabled", 0.0);
-               set_state(PART:"tizen_vg_shape_clipper2", "disabled", 0.0);
-               set_state(PART:"tizen_vg_shape_clipper3", "disabled", 0.0);
+              if (get_int(animate) == 0) {
+               set_state(PART:"tizen_vg_shape_clipper", "disabled_off", 0.0);
+               set_state(PART:"tizen_vg_shape_clipper2", "disabled_off", 0.0);
+               set_state(PART:"tizen_vg_shape_bg_clipper", "disabled_off", 0.0);
+              } else {
+                 run_program(PROGRAM:"toggle_disabled_off_effect");
+              }
             }else {
               if (get_int(animate) == 0) {
                  set_state(PART:"tizen_vg_shape_clipper", "default", 0.0);
                  set_state(PART:"tizen_vg_shape_clipper2", "default", 0.0);
-                 set_state(PART:"tizen_vg_shape_clipper3", "default", 0.0);
+                 set_state(PART:"tizen_vg_shape_bg_clipper", "default", 0.0);
+                 emit("elm,radio,state,toggle", "tizen_vg");
               } else {
                  run_program(PROGRAM:"toggle_off_effect");
-                 run_program(PROGRAM:"toggle_off_effect2");
+                 emit("elm,radio,action,toggle", "tizen_vg");
               }
             }
             set_int(animate, 0);
@@ -309,11 +348,11 @@ group { name: "elm/radio/base/default";
             if (get_int(radio_state) == 1) {
                set_state(PART:"tizen_vg_shape_clipper", "on", 0.0);
                set_state(PART:"tizen_vg_shape_clipper2", "on", 0.0);
-               set_state(PART:"tizen_vg_shape_clipper3", "on", 0.0);
+               set_state(PART:"tizen_vg_shape_bg_clipper", "on", 0.0);
             }else {
                set_state(PART:"tizen_vg_shape_clipper", "default", 0.0);
                set_state(PART:"tizen_vg_shape_clipper2", "default", 0.0);
-               set_state(PART:"tizen_vg_shape_clipper3", "default", 0.0);
+               set_state(PART:"tizen_vg_shape_bg_clipper", "default", 0.0);
             }
             if (get_int(text) == 1) {
               set_state(PART:"elm.text", "visible", 0.0);
@@ -325,9 +364,16 @@ group { name: "elm/radio/base/default";
          source: "elm";
          script {
             set_int(disabled, 1);
-            set_state(PART:"tizen_vg_shape_clipper", "disabled", 0.0);
-            set_state(PART:"tizen_vg_shape_clipper2", "disabled", 0.0);
-            set_state(PART:"tizen_vg_shape_clipper3", "disabled", 0.0);
+            if (get_int(radio_state) == 1) {
+              set_state(PART:"tizen_vg_shape_clipper", "disabled_on", 0.0);
+              set_state(PART:"tizen_vg_shape_clipper2", "disabled_on", 0.0);
+              set_state(PART:"tizen_vg_shape_bg_clipper", "disabled_on", 0.0);
+
+            }else {
+              set_state(PART:"tizen_vg_shape_clipper", "disabled_off", 0.0);
+              set_state(PART:"tizen_vg_shape_clipper2", "disabled_off", 0.0);
+              set_state(PART:"tizen_vg_shape_bg_clipper", "disabled_off", 0.0);
+            }
             if (get_int(text) == 1) {
               set_state(PART:"elm.text", "disabled", 0.0);
             }
@@ -341,15 +387,43 @@ group { name: "elm/radio/base/default";
             if (get_int(radio_state) == 1) {
                 set_state(PART:"tizen_vg_shape_clipper", "on", 0.0);
                 set_state(PART:"tizen_vg_shape_clipper2", "on", 0.0);
-                set_state(PART:"tizen_vg_shape_clipper3", "on", 0.0);
+                set_state(PART:"tizen_vg_shape_bg_clipper", "on", 0.0);
             } else {
                 set_state(PART:"tizen_vg_shape_clipper", "default", 0.0);
                 set_state(PART:"tizen_vg_shape_clipper2", "default", 0.0);
-                set_state(PART:"tizen_vg_shape_clipper3", "default", 0.0);
+                set_state(PART:"tizen_vg_shape_bg_clipper", "default", 0.0);
             }
             if (get_int(text) == 1) {
               set_state(PART:"elm.text", "visible", 0.0);
             }
+         }
+      }
+      program { name: "pass_event_enable";
+         signal: "elm,event,pass,enabled";
+         source: "elm";
+         script {
+            set_mouse_events(PART:"event", 0);
+         }
+      }
+      program { name: "pass_event_disable";
+         signal: "elm,event,pass,disabled";
+         source:"elm";
+         script {
+            set_mouse_events(PART:"event", 1);
+         }
+      }
+      program { name: "repeat_event_enable";
+         signal: "elm,event,repeat,enabled";
+         source: "elm";
+         script {
+            set_repeat_events(PART:"event", 1);
+         }
+      }
+      program { name: "repeat_event_disable";
+         signal: "elm,event,repeat,disabled";
+         source:"elm";
+         script {
+            set_repeat_events(PART:"event", 0);
          }
       }
    }

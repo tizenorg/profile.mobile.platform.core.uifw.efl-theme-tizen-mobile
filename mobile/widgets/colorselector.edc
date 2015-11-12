@@ -35,9 +35,17 @@ group {
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0.0 0.0;
             min: COLORSELECTOR_PALETTE_COLORPLANE_WIDTH_INC COLORSELECTOR_PALETTE_COLORPLANE_HEIGHT_INC;
             max: -1 -1;
+         }
+      }
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
+            color: 250 250 250 255;
          }
       }
       part { name: "top_padding";
@@ -61,7 +69,7 @@ group {
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0.0 0.0;
+            align: 0.5 0.0;
             fixed: 0 1;
             rel1 {
                relative: 0.0 1.0;
@@ -229,6 +237,7 @@ group {
             set_state(PART:"selected_image", "selected", 0.0);
             set_state(PART:"selected_bg_image", "selected", 0.0);
             emit("elm,state,up", "");
+            run_program(PROGRAM:"touch_sound_over1");
          }
       }
       program { name: "item_unselect";
@@ -237,22 +246,6 @@ group {
          script {
             set_state(PART:"selected_image", "default", 0.0);
             set_state(PART:"selected_bg_image", "default", 0.0);
-         }
-      }
-      program { name: "item_down";
-         signal: "mouse,down,1";
-         source: "over1";
-         script {
-            emit("elm,state,down", "");
-         }
-      }
-      program { name: "item_clicked";
-         signal: "mouse,clicked,1";
-         source: "over1";
-         script {
-            set_state(PART:"selected_image", "selected", 0.0);
-            set_state(PART:"selected_bg_image", "selected", 0.0);
-            emit("elm,state,up", "");
          }
       }
       program { name: "item_unfocus_all";
@@ -276,7 +269,6 @@ group {
          target: "highlight";
       }
       program { name: "touch_sound_over1";
-        signal: "mouse,clicked,1";
         source: "over1";
         action: RUN_PLUGIN "touch_sound";
       }
