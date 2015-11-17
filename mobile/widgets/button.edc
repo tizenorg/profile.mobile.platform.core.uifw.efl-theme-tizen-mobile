@@ -41,11 +41,11 @@
             new x, y, w, h;
             get_geometry(base_effect, x, y, w, h);
             if (w > h) {
-               set_float(min_w, w - h * (1 - ratio));
-               set_float(min_h, h * ratio);
+               set_float(min_w, (w - h * (1 - ratio)) / w);
+               set_float(min_h, ratio);
             } else {
-               set_float(min_w, w * ratio);
-               set_float(min_h, h - w * (1 - ratio));
+               set_float(min_w, ratio);
+               set_float(min_h, (h - w * (1 - ratio)) / h);
             }
          }
       }
@@ -82,6 +82,8 @@
             type: SPACER;
             scale: 1;
             description { state: "default" 0.0;
+               rel1.to: "tizen_vg_shape";
+               rel2.to: "tizen_vg_shape";
             }
          }
          //Effect Shape Part
@@ -364,12 +366,16 @@
             source: "event";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
+                  new Float:rel_w, Float:rel_h;
                   stop_program(PROGRAM:"delay_unpressed_effect");
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
                   custom_state(PART:"tizen_vg_shape2", "default", 0.0);
                   get_effect_min_size(PART:"effect_spacer", 0.7, minw, minh);
-                  set_state_val(PART:"tizen_vg_shape2", STATE_MIN, get_int(minw), get_int(minh));
+                  rel_w = (1 - get_float(minw)) / 2;
+                  rel_h = (1 - get_float(minh)) / 2;
+                  set_state_val(PART:"tizen_vg_shape2", STATE_REL1, rel_w, rel_h);
+                  set_state_val(PART:"tizen_vg_shape2", STATE_REL2, 1 - rel_w, 1 - rel_h);
                   emit("elm,action,press", "");
                   run_program(PROGRAM:"pressed_effect");
                }
@@ -2825,11 +2831,11 @@ group { name: "elm/button/base/contacts";
             new x, y, w, h;
             get_geometry(base_effect, x, y, w, h);
             if (w > h) {
-               set_float(min_w, w - h * (1 - ratio));
-               set_float(min_h, h * ratio);
+               set_float(min_w, (w - h * (1 - ratio)) / w);
+               set_float(min_h, ratio);
             } else {
-               set_float(min_w, w * ratio);
-               set_float(min_h, h - w * (1 - ratio));
+               set_float(min_w, ratio);
+               set_float(min_h, (h - w * (1 - ratio)) / h);
             }
          }
       }
@@ -3049,12 +3055,16 @@ group { name: "elm/button/base/contacts";
             source: "event";
             script {
                if ((get_int(multi_down) == 0) && (get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
+                  new Float:rel_w, Float:rel_h;
                   stop_program(PROGRAM:"delay_unpressed_effect");
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
                   custom_state(PART:"tizen_vg_shape", "ready", 0.0);
                   get_effect_min_size(PART:"effect_spacer", 0.7, minw, minh);
-                  set_state_val(PART:"tizen_vg_shape", STATE_MIN, get_int(minw), get_int(minh));
+                  rel_w = (1 - get_float(minw)) / 2;
+                  rel_h = (1 - get_float(minh)) / 2;
+                  set_state_val(PART:"tizen_vg_shape", STATE_REL1, rel_w, rel_h);
+                  set_state_val(PART:"tizen_vg_shape", STATE_REL2, 1 - rel_w, 1 - rel_h);
                   emit("elm,action,press", "");
                   run_program(PROGRAM:"pressed_effect");
                }
@@ -5480,11 +5490,11 @@ group { name: "elm/button/base/hoversel_vertical/default";
          new x, y, w, h;
          get_geometry(base_effect, x, y, w, h);
          if (w > h) {
-            set_float(min_w, w - h * (1 - ratio));
-            set_float(min_h, h * ratio);
+            set_float(min_w, (w - h * (1 - ratio)) / w);
+            set_float(min_h, ratio);
          } else {
-            set_float(min_w, w * ratio);
-            set_float(min_h, h - w * (1 - ratio));
+            set_float(min_w, ratio);
+            set_float(min_h, (h - w * (1 - ratio)) / h);
          }
       }
    }
@@ -5703,12 +5713,16 @@ group { name: "elm/button/base/hoversel_vertical/default";
          source: "event";
          script {
             if ((get_int(mouse_down) == 0) && (get_int(disabled) == 0)) {
+               new Float:rel_w, Float:rel_h;
                stop_program(PROGRAM:"delay_unpressed_effect");
                set_int(mouse_down, 1);
                set_int(animate, 1);
                get_effect_min_size(PART:"effect_spacer", 0.7, minw, minh);
                custom_state(PART:"press_effect", "default", 0.0);
-               set_state_val(PART:"press_effect", STATE_MIN, get_int(minw), get_int(minh));
+               rel_w = (1 - get_float(minw)) / 2;
+               rel_h = (1 - get_float(minh)) / 2;
+               set_state_val(PART:"press_effect", STATE_REL1, rel_w, rel_h);
+               set_state_val(PART:"press_effect", STATE_REL2, 1 - rel_w, 1 - rel_h);
                set_state(PART:"press_effect", "custom",0.0);
                emit("elm,action,press", "");
                run_program(PROGRAM:"pressed_effect");
