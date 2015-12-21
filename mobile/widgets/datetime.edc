@@ -28,6 +28,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 group { name: "elm/datetime/base/default";
    alias: "elm/datetime/base/date_layout";
+
+   script {
+      public field0_visible = 0;
+      public field1_visible = 0;
+      public field2_visible = 0;
+   }
+
    parts {
       part { name: "base_bg";
         type: RECT;
@@ -41,6 +48,9 @@ group { name: "elm/datetime/base/default";
          scale: 1;
          description { state: "default" 0.0;
             min: DATETIME_LAYOUT_BASE_BG_SIZE_INC;
+         }
+         description { state: "2field" 0.0;
+            min: DATETIME_LAYOUT_2FIELD_BG_SIZE_INC;
          }
       }
       part { name: "bg.top.padding";
@@ -95,6 +105,11 @@ group { name: "elm/datetime/base/default";
             }
             color: 250 250 250 255;
          }
+         description { state: "2field" 0.0;
+            inherit: "default";
+            min: DATETIME_LAYOUT_2FIELD_CONTENT_SIZE_INC;
+            max: DATETIME_LAYOUT_2FIELD_CONTENT_SIZE_INC;
+         }
       }
       part { name: "left.padding";
          type: SPACER;
@@ -146,6 +161,11 @@ group { name: "elm/datetime/base/default";
             rel2.to: "left.padding";
             align: 0.0 0.5;
          }
+         description { state: "disabled" 0.0;
+            inherit: "default";
+            visible: 0;
+            min: 0 0;
+         }
       }
       part { name: "center.padding1";
          type: SPACER;
@@ -160,6 +180,11 @@ group { name: "elm/datetime/base/default";
             }
             rel2.to: "field0";
             align: 0.0 0.5;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default";
+            min: 0 0;
+            max: 0 -1;
          }
       }
       part { name: "field1";
@@ -178,6 +203,11 @@ group { name: "elm/datetime/base/default";
                to_y: "center.padding1";
             }
          }
+         description { state: "disabled" 0.0;
+            inherit: "default";
+            visible: 0;
+            min: 0 0;
+         }
       }
       part { name: "center.padding2";
          type: SPACER;
@@ -193,6 +223,11 @@ group { name: "elm/datetime/base/default";
             }
             align: 1.0 0.5;
          }
+         description { state: "disabled" 0.0;
+            inherit: "default";
+            min: 0 0;
+            max: 0 -1;
+         }
       }
       part { name: "field2";
          type: SWALLOW;
@@ -206,6 +241,11 @@ group { name: "elm/datetime/base/default";
                to: "right.padding";
             }
             align: 1.0 0.5;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default";
+            visible: 0;
+            min: 0 0;
          }
       }
       part { name: "field3";
@@ -258,6 +298,98 @@ group { name: "elm/datetime/base/default";
             rel1.to: "bg";
             rel2.to: "bg";
             color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      program {
+         name: "field_0_enable";
+         signal: "field0,enable";
+         source: "elm";
+         script {
+            set_int(field0_visible, 1);
+
+            if (get_int(field1_visible) == 1 && get_int(field2_visible) == 1) {
+               set_state(PART:"field0", "default", 0.0);
+               set_state(PART:"base", "default", 0.0);
+               set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"center.padding1", "default", 0.0);
+            }
+         }
+      }
+      program {
+         name: "field_0_disable";
+         signal: "field0,disable";
+         source: "elm";
+         script {
+            set_int(field0_visible, 0);
+
+            if (get_int(field1_visible) == 1 && get_int(field2_visible) == 1) {
+               set_state(PART:"field0", "disabled", 0.0);
+               set_state(PART:"base", "2field", 0.0);
+               set_state(PART:"bg", "2field", 0.0);
+               set_state(PART:"center.padding1", "disabled", 0.0);
+            }
+         }
+      }
+      program {
+         name: "field_1_enable";
+         signal: "field1,enable";
+         source: "elm";
+         script {
+            set_int(field1_visible, 1);
+
+            if (get_int(field0_visible) == 1 && get_int(field2_visible) == 1) {
+               set_state(PART:"field1", "default", 0.0);
+               set_state(PART:"base", "default", 0.0);
+               set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"center.padding1", "default", 0.0);
+            }
+         }
+      }
+      program {
+         name: "field_1_disable";
+         signal: "field1,disable";
+         source: "elm";
+         script {
+            set_int(field1_visible, 0);
+
+            if (get_int(field0_visible) == 1 && get_int(field2_visible) == 1) {
+               set_state(PART:"field1", "disabled", 0.0);
+               set_state(PART:"base", "2field", 0.0);
+               set_state(PART:"bg", "2field", 0.0);
+               set_state(PART:"center.padding1", "disabled", 0.0);
+            }
+         }
+      }
+      program {
+         name: "field_2_enable";
+         signal: "field2,enable";
+         source: "elm";
+         script {
+            set_int(field2_visible, 1);
+
+            if (get_int(field0_visible) == 1 && get_int(field1_visible) == 1) {
+               set_state(PART:"field2", "default", 0.0);
+               set_state(PART:"base", "default", 0.0);
+               set_state(PART:"bg", "default", 0.0);
+               set_state(PART:"center.padding2", "default", 0.0);
+            }
+         }
+      }
+      program {
+         name: "field_2_disable";
+         signal: "field2,disable";
+         source: "elm";
+         script {
+            set_int(field2_visible, 0);
+
+            if (get_int(field0_visible) == 1 && get_int(field1_visible) == 1) {
+               set_state(PART:"field2", "disabled", 0.0);
+               set_state(PART:"base", "2field", 0.0);
+               set_state(PART:"bg", "2field", 0.0);
+               set_state(PART:"center.padding2", "disabled", 0.0);
+            }
          }
       }
    }
