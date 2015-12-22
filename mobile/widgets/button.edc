@@ -945,12 +945,14 @@
          public multi_down = 0;
          public disabled = 0;
          public animate = 0;
-         public min_radius = 0;
-         public max_radius = 0;
-         public get_circumscription_radius(base_effect, radius) {
-            new x, y, w, h;
+         public rel_x = 0;
+         public rel_y = 0;
+         public get_circumscription_radius(base_effect, radius_w, radius_h) {
+            new x, y, w, h, Float:radius;
             get_geometry(base_effect, x, y, w, h);
-            set_float(radius, sqrt(pow(w, 2) + pow(h, 2)));
+            radius = sqrt(pow(w, 2) + pow(h, 2));
+            set_float(radius_w, ((radius / w) - 1) / 2);
+            set_float(radius_h, ((radius / h) - 1) / 2);
          }
       }
       parts {
@@ -1115,10 +1117,11 @@
                   set_int(mouse_down, 1);
                   set_int(animate, 1);
                   set_state(PART:"effect_spacer", "default", 0.0);
-                  get_circumscription_radius(PART:"effect_spacer", max_radius);
-                  custom_state(PART:"effect_spacer", "default", 0.0)
-                  set_state_val(PART:"effect_spacer", STATE_MIN, get_int(max_radius), get_int(max_radius));
+                  get_circumscription_radius(PART:"effect_spacer", rel_x, rel_y);
+                  custom_state(PART:"effect_spacer", "default", 0.0);
                   set_state(PART:"effect_spacer", "custom", 0.0);
+                  set_state_val(PART:"effect_spacer", STATE_REL1, (get_float(rel_x) * -1), (get_float(rel_y) * -1));
+                  set_state_val(PART:"effect_spacer", STATE_REL2, (get_float(rel_x) + 1), (get_float(rel_y) + 1));
                   emit("elm,action,press", "");
                   run_program(PROGRAM:"pressed_effect");
                }
@@ -1622,15 +1625,14 @@
          public multi_down = 0; \
          public disabled = 0; \
          public animate = 0; \
-         public min_radius = 0; \
-         public max_radius = 0; \
-         public get_circumscription_radius(base_effect, radius) { \
-            new x, y, w, h; \
+         public rel_x = 0; \
+         public rel_y = 0; \
+         public get_circumscription_radius(base_effect, radius_w, radius_h) { \
+            new x, y, w, h, Float:radius; \
             get_geometry(base_effect, x, y, w, h); \
-            set_float(radius, sqrt(pow(w, 2) + pow(h, 2))); \
-            get_geometry(PART:"effect_spacer", x, y, w, h); \
-            if (w > get_float(radius)) \
-               set_float(radius, w); \
+            radius = sqrt(pow(w, 2) + pow(h, 2)); \
+            set_float(radius_w, ((radius / w) - 1) / 2); \
+            set_float(radius_h, ((radius / h) - 1) / 2); \
          } \
       } \
       parts { \
@@ -1649,7 +1651,6 @@
                fixed: 1 1; \
                rel1.relative: 0.5 0.5; \
                rel2.relative: 0.5 0.5; \
-               min: BUTTON_ICON_MIN_RADIUS_INC BUTTON_ICON_MIN_RADIUS_INC; \
             } \
          } \
          part { name: "tizen_vg_shape"; \
@@ -1790,10 +1791,11 @@
                   stop_program(PROGRAM:"delay_unpressed_effect"); \
                   set_int(mouse_down, 1); \
                   set_int(animate, 1); \
-                  get_circumscription_radius(PART:"button_bg", min_radius); \
+                  get_circumscription_radius(PART:"button_bg", rel_x, rel_y); \
                   custom_state(PART:"effect_spacer", "default", 0.0); \
-                  set_state_val(PART:"effect_spacer", STATE_MIN, get_int(min_radius), get_int(min_radius)); \
                   set_state(PART:"effect_spacer", "custom",0.0); \
+                  set_state_val(PART:"effect_spacer", STATE_REL1, (get_float(rel_x) * -1), (get_float(rel_y) * -1)); \
+                  set_state_val(PART:"effect_spacer", STATE_REL2, (get_float(rel_x) + 1), (get_float(rel_y) + 1)); \
                   emit("elm,action,press", ""); \
                   run_program(PROGRAM:"pressed_effect"); \
                } \
