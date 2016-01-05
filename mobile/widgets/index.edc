@@ -327,7 +327,7 @@
             }
          }
          part {
-            name: "elm.text.1";
+            name: "elm.text";
             type: "TEXT";
             mouse_events: 0;
             scale: 1;
@@ -360,7 +360,7 @@
             }
          }
          part {
-            name: "elm.text";
+            name: "elm.text.body";
             type: "TEXT";
             mouse_events: 0;
             scale: 1;
@@ -402,18 +402,18 @@
                state: "default" 0.0;
                min: INDEX_TEXT_LEFT_PADDING_SIZE_INC 0;
                fixed: 1 0;
-               rel1.to: "elm.text.1";
+               rel1.to: "elm.text";
                rel2 {
-                  to: "elm.text.1";
+                  to: "elm.text";
                   relative: 0.0 1.0;
                }
             }
              description {
                state: "active" 0.0;
                inherit: "default" 0.0;
-               rel1.to: "elm.text";
+               rel1.to: "elm.text.body";
                rel2 {
-                  to: "elm.text";
+                  to: "elm.text.body";
                   relative: 0.0 1.0;
                }
             }
@@ -427,10 +427,10 @@
                min: INDEX_TEXT_RIGHT_PADDING_SIZE_INC 0;
                fixed: 1 0;
                rel1 {
-                  to: "elm.text.1";
+                  to: "elm.text";
                   relative: 1.0 0.0;
                }
-               rel2.to: "elm.text.1";
+               rel2.to: "elm.text";
             }
          }
          part { name: "text.bottom.padding";
@@ -442,16 +442,16 @@
                min: 0 INDEX_TEXT_BOTTOM_PADDING_SIZE_INC;
                fixed: 0 1;
                rel1 {
-                  to: "elm.text.1";
+                  to: "elm.text";
                   relative: 0.0 1.0;
                }
-               rel2.to: "elm.text.1";
+               rel2.to: "elm.text";
             }
             description {
                state: "active" 0.0;
                inherit: "default" 0.0;
                fixed: 1 1;
-               rel2.to: "elm.text";
+               rel2.to: "elm.text.body";
             }
          }
          part { name: "elm.swallow.event.0";
@@ -530,8 +530,8 @@
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "elm.swallow.index.1";
-            target: "elm.text.1";
             target: "elm.text";
+            target: "elm.text.body";
             target: "left.line.index.1";
             target: "index1.top.padding";
             target: "index1.bottom.padding";
@@ -563,14 +563,16 @@
                set_state(PART:"index1.bottom.padding", "active", 0.0);
                set_state(PART:"popup_bg", "active", 0.0);
                set_state(PART:"text.left.padding", "active", 0.0);
+
+               run_program(PROGRAM:"index1.text");
             }
          }
          program { name: "index1.text";
             signal: "index1.text.enable";
             source: "";
             action: STATE_SET "active" 0.0;
-            target: "elm.text.1";
             target: "elm.text";
+            target: "elm.text.body";
             target: "text.left.padding";
          }
          program { name: "index0.hide";
@@ -693,8 +695,8 @@
       }
    }
 
-   group { name: "elm/index/item1/vertical/default";
-      alias: "elm/index/item1_odd/vertical/default";
+   group { name: "elm/index/item/vertical/default";
+      alias: "elm/index/item_odd/vertical/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       images {
@@ -709,7 +711,7 @@
                rel1.to: "focus.top";
                rel2.to: "focus.bottom";
                color: 255 255 255 255;
-               visible: 0;
+               visible: 1;
             }
             description { state: "active" 0.0;
                inherit: "default" 0.0;
@@ -864,17 +866,6 @@
             source: "elm";
             action: STATE_SET "inactive" 0.0;
             target: "divider";
-         }
-      }
-   }
-   group { name: "elm/index/item2/vertical/default";
-      inherit: "elm/index/item1/vertical/default";
-      alias: "elm/index/item2_odd/vertical/default";
-      parts {
-         part { name: "scroll.bg";
-            description { state: "default" 0.0;
-               visible: 1;
-            }
          }
       }
    }
