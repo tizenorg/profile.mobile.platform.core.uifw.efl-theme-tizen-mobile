@@ -4,7 +4,7 @@ Name: efl-theme-tizen-mobile
 Version: 1.0
 Release: 0
 Group: Mobile/Themes
-License: BSD 2-Clause
+License: BSD 2-clause
 Source: %{name}-%{version}.tar.gz
 BuildRequires: autoconf
 BuildRequires: automake
