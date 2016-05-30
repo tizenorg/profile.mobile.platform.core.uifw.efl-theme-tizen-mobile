@@ -2292,6 +2292,7 @@ group { name: "elm/slider/vertical/default";
       script {
          public warning = 0;
          public show = 0;
+         public visible = 1;
       }
       parts {
          part { name: "elm.swallow.tizen_vg_shape2";
@@ -2374,30 +2375,14 @@ group { name: "elm/slider/vertical/default";
             signal: "elm,state,val,show";
             source: "elm";
             script {
-               if (!get_int(show))
-                 {
-                   set_int(show, 1);
-                   if (!get_int(warning))
-                     run_program(PROGRAM:"pressed_effect1");
-                   else
-                     run_program(PROGRAM:"pressed_warning_effect1");
-                   run_program(PROGRAM:"pressed_effect2");
-                 }
+               set_int(visible, 1);
             }
          }
          program { name: "popup,val,hide";
             signal: "elm,state,val,hide";
             source: "elm";
             script {
-               if (get_int(show))
-                 {
-                   set_int(show, 0);
-                   if (!get_int(warning))
-                     run_program(PROGRAM:"release_effect1");
-                   else
-                     run_program(PROGRAM:"release_warning_effect1");
-                   run_program(PROGRAM:"release_effect2");
-                 }
+               set_int(visible, 0);
             }
          }
          program { name: "popup,show";
@@ -2411,7 +2396,8 @@ group { name: "elm/slider/vertical/default";
                      run_program(PROGRAM:"pressed_effect1");
                    else
                      run_program(PROGRAM:"pressed_warning_effect1");
-                   run_program(PROGRAM:"pressed_effect2");
+                   if (get_int(visible))
+                     run_program(PROGRAM:"pressed_effect2");
                  }
             }
          }
