@@ -170,6 +170,10 @@
       }
    }
 
+   data {
+      item: "access_highlight" "on";
+   }
+
    script {
       public disabled = 0;
    }
@@ -345,6 +349,23 @@
             visible: 1;
          }
       }
+      part { name: "highlight";
+         description { state: "default" 0.0;
+            image.normal: "a11y_highlight.png";
+            image.border: 12 12 12 12;
+            image.middle: 0;
+            fill.smooth: 0;
+            rel1.to: "focus_round";
+            rel1.offset: -7 -7 ;
+            rel2.to: "focus_round";
+            rel2.offset: 5 5;
+            visible: 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
       part {
          name: "events";
          type: RECT;
@@ -427,6 +448,18 @@
       program {
          name: "touch_snd";
          action: RUN_PLUGIN "touch_sound" ;
+      }
+      program { name: "show_new_highlight";
+         signal: "elm,action,access_highlight,show";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         target: "highlight";
+      }
+      program { name: "hide_new_highlight";
+         signal: "elm,action,access_highlight,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "highlight";
       }
    }
 }
