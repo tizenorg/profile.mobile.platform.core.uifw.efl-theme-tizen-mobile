@@ -435,33 +435,6 @@ group { name: "elm/slider/horizontal/default";
                   }
                }
             }
-            part { name:"center_point";
-               type: RECT;
-               scale: 1;
-               description { state: "default" 0.0;
-                  min: SLIDER_CENTER_POINT_SIZE_INC;
-                  visible: 0;
-                  rel1 {
-                     to: "base";
-                     relative: 0.5 0.5;
-                  }
-                  rel2 {
-                     to: "base";
-                     relative: 0.5 0.5;
-                  }
-                  fixed: 1 1;
-                  color: 61 184 204 255;
-               }
-               description { state: "visible" 0.0;
-                  inherit: "default" 0.0;
-                  visible: 1;
-               }
-               description { state: "disabled" 0.0;
-                  inherit: "default" 0.0;
-                  visible: 1;
-                  color: 61 184 204 77;
-               }
-            }
             part { name: "elm.swallow.tizen_vg_shape1";
                type: SWALLOW;
                mouse_events: 0;
@@ -504,17 +477,6 @@ group { name: "elm/slider/horizontal/default";
                   fixed: 1 1;
                   rel1.to: "level";
                   rel2.to: "level";
-               }
-            }
-            part { name: "elm.swallow.tizen_vg_shape5";
-               type: SWALLOW;
-               mouse_events: 0;
-               scale: 1;
-               clip_to: "center_point";
-               description { state: "default" 0.0;
-                  fixed: 1 1;
-                  rel1.to: "center_point";
-                  rel2.to: "center_point";
                }
             }
             part { name: "elm.dragable.slider";
@@ -663,28 +625,10 @@ group { name: "elm/slider/horizontal/default";
             target: "bar_icon_right_padding_2";
             target: "drag_base";
          }
-         program { name: "center_point_enable";
-            signal: "slider,center,point,show";
-            source: "elm";
-            script {
-               set_state(PART:"center_point", "visible", 0.0);
-               set_int(show, 1);
-            }
-         }
-         program { name: "center_point_disable";
-            signal: "slider,center,point,hide";
-            source: "elm";
-            script {
-               set_state(PART:"center_point", "default", 0.0);
-               set_int(show, 0);
-            }
-         }
          program { name: "slider_disable";
             signal: "elm,state,disabled";
             source: "elm";
             script {
-               if (get_int(show))
-                  set_state(PART:"center_point", "disabled", 0.0);
                set_state(PART:"disabler", "disabled", 0.0);
                set_state(PART:"icon_clipper", "disabled", 0.0);
                set_state(PART:"base", "disabled", 0.0);
@@ -703,8 +647,6 @@ group { name: "elm/slider/horizontal/default";
             signal: "elm,state,enabled";
             source: "elm";
             script {
-               if (get_int(show))
-                  set_state(PART:"center_point", "visible", 0.0);
                set_state(PART:"disabler", "default", 0.0);
                set_state(PART:"icon_clipper", "default", 0.0);
                set_state(PART:"base", "default", 0.0);
@@ -837,13 +779,21 @@ group { name: "elm/slider/horizontal/center_point";
                   visible: 1;
                   color: 61 184 204 255;
                }
-               description { state: "visible" 0.0;
-                  inherit: "default";
-               }
                description { state: "disabled" 0.0;
                   inherit: "default" 0.0;
                   visible: 1;
                   color: 61 184 204 77;
+               }
+            }
+            part { name: "elm.swallow.tizen_vg_shape5";
+               type: SWALLOW;
+               mouse_events: 0;
+               scale: 1;
+               clip_to: "center_point";
+               description { state: "default" 0.0;
+                  fixed: 1 1;
+                  rel1.to: "center_point";
+                  rel2.to: "center_point";
                }
             }
          }
