@@ -1010,6 +1010,11 @@
                rel1 { to: "title_bg"; relative: 0.0 0.0; }
                rel2 { to: "title_bg"; relative: 1.0 0.0; }
             }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               min: 0 0;
+               max: -1 0;
+            }
          }
          part { name: "tabbar";
             type: SWALLOW;
@@ -1086,6 +1091,7 @@
             script {
                set_state(PART:"title_bg", "default", 0.0);
                set_state(PART:"title_clipper", "default", 0.0);
+               set_state(PART:"tabbar_top_padding", "default", 0.0);
                if (get_int(title_left_btn_visible)) {
                   set_state(PART:"title_left_btn_bg", "visible", 0.0);
                   set_state(PART:"title_left_padding", "hidden", 0.0);
@@ -1120,8 +1126,11 @@
                set_state(PART:"title_right_btn_bg", "default", 0.0);
                set_state(PART:"title_right_padding", "default", 0.0);
                set_state(PART:"title_right_btn", "default", 0.0);
-               set_state(PART:"tabbar", "default", 0.0);
-               set_state(PART:"tabbar_top_divider", "default", 0.0);
+               if (!get_int(tabbar_visible)) {
+                  set_state(PART:"tabbar", "default", 0.0);
+                  set_state(PART:"tabbar_top_divider", "default", 0.0);
+               }
+               set_state(PART:"tabbar_top_padding", "hidden", 0.0);
                set_state(PART:"elm.swallow.prev_btn", "hidden", 0.0);
             }
          }
@@ -1567,7 +1576,9 @@
             signal: "elm,state,title,hide";
             source: "elm";
             script {
-               set_state(PART:"tabbar", "default", 0.0);
+               if (!get_int(tabbar_visible)) {
+                  set_state(PART:"tabbar", "default", 0.0);
+               }
             }
          }
          program { name: "title_hide_trans";
