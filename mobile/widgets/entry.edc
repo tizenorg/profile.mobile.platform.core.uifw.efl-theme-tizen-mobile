@@ -2387,7 +2387,6 @@ group { name: "elm/entry/handler/start/default";
    alias: "elm/entry/selection/block_handle_left";
    data.item: "height" ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_INC;
    data.item: "gap" ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_INC;
-   data.item: "selection_offset" ENTRY_SELECTION_BLOCK_OFFSET_HEIGHT_INC;
    images {
       image: "copy&paste_handler_bottom_l.png" COMP;
       image: "copy&paste_handler_bottom_r.png" COMP;
@@ -2401,20 +2400,8 @@ group { name: "elm/entry/handler/start/default";
       public handler_zoomed = 0;
    }
    parts {
-      part { name: "rotate_center";
-         mouse_events: 0;
-         scale: 0;
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            color: 0 0 0 0;
-            min: 1 1;
-            max: 1 1;
-         }
-      }
       part { name: "handle";
-         mouse_events: 0;
+         mouse_events: 1;
          scale: 1;
          description { state: "default" 0.0;
             visible: 0;
@@ -2425,23 +2412,12 @@ group { name: "elm/entry/handler/start/default";
             image {
                normal: "copy&paste_handler_bottom_l.png";
             }
-            map {
-               on: 1;
-               smooth: 1;
-               perspective_on: 1;
-               rotation {
-                  center: "rotate_center";
-                  x: 0;
-                  y: 0;
-                  z: 0;
-               }
-            }
          }
-         description { state: "bottom_left" 0.0;
+         description { state: "show" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
-         description { state: "top_left" 0.0;
+         description { state: "top" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             align: 1.0 1;
@@ -2449,7 +2425,7 @@ group { name: "elm/entry/handler/start/default";
                normal: "copy&paste_handler_top_l.png";
             }
          }
-         description { state: "bottom_right" 0.0;
+         description { state: "bottom_reversed" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             align: 0 0;
@@ -2457,7 +2433,7 @@ group { name: "elm/entry/handler/start/default";
                normal: "copy&paste_handler_bottom_r.png";
             }
          }
-         description { state: "top_right" 0.0;
+         description { state: "top_reversed" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             align: 0.0 1;
@@ -2465,92 +2441,25 @@ group { name: "elm/entry/handler/start/default";
                normal: "copy&paste_handler_top_r.png";
             }
          }
-         description { state: "zoom_bottom_left" 0.0;
-            inherit: "bottom_left" 0.0;
+         description { state: "zoom_show" 0.0;
+            inherit: "show" 0.0;
             min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
             max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
          }
-         description { state: "zoom_top_left" 0.0;
-            inherit: "top_left" 0.0;
+         description { state: "zoom_top" 0.0;
+            inherit: "top" 0.0;
             min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
             max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
          }
-         description { state: "zoom_bottom_right" 0.0;
-            inherit: "bottom_right" 0.0;
+         description { state: "zoom_bottom_reversed" 0.0;
+            inherit: "bottom_reversed" 0.0;
             min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
             max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
          }
-         description { state: "zoom_top_right" 0.0;
-            inherit: "top_right" 0.0;
+         description { state: "zoom_top_reversed" 0.0;
+            inherit: "top_reversed" 0.0;
             min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
             max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
-         }
-         description { state: "top_left_map_bottom_right" 0.0;
-            inherit: "top_left" 0.0;
-            map.rotation.z: 180; //top left -> bottom right
-         }
-         description { state: "top_left_map_top_right" 0.0;
-            inherit: "top_left" 0.0;
-            map.rotation.z: 66; //top left -> top right
-         }
-         description { state: "top_right_map_top_left" 0.0;
-            inherit: "top_right" 0.0;
-            map.rotation.z: -66; //top left -> top right
-         }
-         description { state: "bottom_left_map_bottom_right" 0.0;
-            inherit: "bottom_left" 0.0;
-            map.rotation.z: -66; //bottom left -> bottom right
-         }
-         description { state: "bottom_right_map_bottom_left" 0.0;
-            inherit: "bottom_right" 0.0;
-            map.rotation.z: 66; //bottom right -> bottom left
-         }
-         description { state: "zoom_top_left_map_bottom_right" 0.0;
-            inherit: "zoom_top_left" 0.0;
-            map.rotation.z: 180; //top left -> bottom right
-         }
-         description { state: "zoom_top_left_map_top_right" 0.0;
-            inherit: "zoom_top_left" 0.0;
-            map.rotation.z: 66; //top left -> top right
-         }
-         description { state: "zoom_top_right_map_top_left" 0.0;
-            inherit: "zoom_top_right" 0.0;
-            map.rotation.z: -66; //top left -> top right
-         }
-         description { state: "zoom_bottom_left_map_bottom_right" 0.0;
-            inherit: "zoom_bottom_left" 0.0;
-            map.rotation.z: -66; //bottom left -> bottom right
-         }
-         description { state: "zoom_bottom_right_map_bottom_left" 0.0;
-            inherit: "zoom_bottom_right" 0.0;
-            map.rotation.z: 66; //bottom right -> bottom left
-         }
-      }
-      part { name: "event";
-         mouse_events: 1;
-         scale: 1;
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            visible: 1;
-            color: 0 0 0 0;
-            rel1.to: "handle";
-            rel2.to: "handle";
-         }
-         description { state: "bottom_left" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "top_left" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "bottom" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "bottom_right" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "top_right" 0.0;
-            inherit: "default" 0.0;
          }
       }
    }
@@ -2570,147 +2479,95 @@ group { name: "elm/entry/handler/start/default";
             set_state(PART:"handle", "default", 0.0);
          }
       }
-      program { name: "pressed_bottom_left";
-         action: STATE_SET "zoom_bottom_left" 0.0;
+      program { name: "pressed_show";
+         action: STATE_SET "zoom_show" 0.0;
          target: "handle";
          transition: GLIDE_EASE_OUT(0.3);
       }
       program { name: "pressed_top";
-         action: STATE_SET "zoom_top_left" 0.0;
+         action: STATE_SET "zoom_top" 0.0;
          target: "handle";
          transition: GLIDE_EASE_OUT(0.3);
       }
-      program { name: "pressed_bottom_right";
-         action: STATE_SET "zoom_bottom_right" 0.0;
+      program { name: "pressed_bottom_reversed";
+         action: STATE_SET "zoom_bottom_reversed" 0.0;
          target: "handle";
          transition: GLIDE_EASE_OUT(0.3);
       }
-      program { name: "pressed_top_right";
-         action: STATE_SET "zoom_top_right" 0.0;
+      program { name: "pressed_top_reversed";
+         action: STATE_SET "zoom_top_reversed" 0.0;
          target: "handle";
          transition: GLIDE_EASE_OUT(0.3);
       }
-      program { name: "released_bottom_left";
-         action: STATE_SET "bottom_left" 0.0;
+      program { name: "released_show";
+         action: STATE_SET "show" 0.0;
          target: "handle";
-         target: "event";
          transition: GLIDE_EASE_OUT(0.3);
       }
       program { name: "released_top";
-         action: STATE_SET "top_left" 0.0;
+         action: STATE_SET "top" 0.0;
          target: "handle";
-         target: "event";
          transition: GLIDE_EASE_OUT(0.3);
       }
-      program { name: "released_bottom_right";
-         action: STATE_SET "bottom_right" 0.0;
+      program { name: "released_bottom_reversed";
+         action: STATE_SET "bottom_reversed" 0.0;
          target: "handle";
-         target: "event";
          transition: GLIDE_EASE_OUT(0.3);
       }
-      program { name: "released_top_right";
-         action: STATE_SET "top_right" 0.0;
+      program { name: "released_top_reversed";
+         action: STATE_SET "top_reversed" 0.0;
          target: "handle";
-         target: "event";
          transition: GLIDE_EASE_OUT(0.3);
-      }
-      program { name: "set_bottom_right";
-         action: STATE_SET "bottom_right" 0.0;
-         target: "handle";
-      }
-      program { name: "set_zoom_bottom_right";
-         action: STATE_SET "zoom_bottom_right" 0.0;
-         target: "handle";
-      }
-      program { name: "set_bottom_left";
-         action: STATE_SET "bottom_left" 0.0;
-         target: "handle";
-      }
-      program { name: "set_zoom_bottom_left";
-         action: STATE_SET "zoom_bottom_left" 0.0;
-         target: "handle";
-      }
-      program { name: "set_top_right";
-         action: STATE_SET "top_right" 0.0;
-         target: "handle";
-      }
-      program { name: "set_zoom_top_right";
-         action: STATE_SET "zoom_top_right" 0.0;
-         target: "handle";
-      }
-      program { name: "set_top_left";
-         action: STATE_SET "top_left" 0.0;
-         target: "handle";
-      }
-      program { name: "set_zoom_top_left";
-         action: STATE_SET "zoom_top_left" 0.0;
-         target: "handle";
       }
       program { name: "pressed";
          signal: "mouse,down,1";
-         source: "event";
+         source: "handle";
          script {
             set_int(handler_zoomed, 1);
             new st[31];
             new Float:vl;
             get_state(PART:"handle", st, 30, vl);
-            if (!strcmp(st, "bottom_left"))
+            if (!strcmp(st, "show"))
               {
-                 run_program(PROGRAM:"pressed_bottom_left");
+                 run_program(PROGRAM:"pressed_show");
               }
-            else if (!strcmp(st, "top_left"))
+            else if (!strcmp(st, "top"))
               {
                  run_program(PROGRAM:"pressed_top");
               }
-            else if (!strcmp(st, "bottom_right"))
+            else if (!strcmp(st, "bottom_reversed"))
               {
-                 run_program(PROGRAM:"pressed_bottom_right");
+                 run_program(PROGRAM:"pressed_bottom_reversed");
               }
-            else if (!strcmp(st, "top_right"))
+            else if (!strcmp(st, "top_reversed"))
               {
-                 run_program(PROGRAM:"pressed_top_right");
+                 run_program(PROGRAM:"pressed_top_reversed");
               }
          }
       }
       program { name: "released";
          signal: "mouse,up,1";
-         source: "event";
+         source: "handle";
          script {
             set_int(handler_zoomed, 0);
-            new st[41];
+            new st[31];
             new Float:vl;
-            get_state(PART:"handle", st, 40, vl);
-            if (!strcmp(st, "zoom_bottom_left"))
+            get_state(PART:"handle", st, 30, vl);
+            if (!strcmp(st, "zoom_show"))
               {
-                 run_program(PROGRAM:"released_bottom_left");
+                 run_program(PROGRAM:"released_show");
               }
-            else if (!strcmp(st, "zoom_top_left"))
+            else if (!strcmp(st, "zoom_top"))
               {
                  run_program(PROGRAM:"released_top");
               }
-            else if (!strcmp(st, "zoom_bottom_right"))
+            else if (!strcmp(st, "zoom_bottom_reversed"))
               {
-                 run_program(PROGRAM:"released_bottom_right");
+                 run_program(PROGRAM:"released_bottom_reversed");
               }
-            else if (!strcmp(st, "zoom_top_right"))
+            else if (!strcmp(st, "zoom_top_reversed"))
               {
-                 run_program(PROGRAM:"released_top_right");
-              }
-            else if (!strcmp(st, "top_left_map_top_right"))
-              {
-                 set_state(PART:"handle", "top_right", 0.0);
-              }
-            else if (!strcmp(st, "zoom_top_right_map_top_left"))
-              {
-                 set_state(PART:"handle", "top_left", 0.0);
-              }
-            else if (!strcmp(st, "zoom_bottom_left_map_bottom_right"))
-              {
-                 set_state(PART:"handle", "bottom_right", 0.0);
-              }
-            else if (!strcmp(st, "zoom_bottom_right_map_bottom_left"))
-              {
-                 set_state(PART:"handle", "bottom_left", 0.0);
+                 run_program(PROGRAM:"released_top_reversed");
               }
          }
          after: "released2";
@@ -2719,44 +2576,28 @@ group { name: "elm/entry/handler/start/default";
          in: 0.3 0.0;
          script {
             set_int(handler_zoomed, 0);
-            new st[41];
+            new st[31];
             new Float:vl;
-            get_state(PART:"handle", st, 40, vl);
-            if (!strcmp(st, "zoom_bottom_left"))
+            get_state(PART:"handle", st, 30, vl);
+            if (!strcmp(st, "zoom_show"))
               {
-                 run_program(PROGRAM:"released_bottom_left");
+                 run_program(PROGRAM:"released_show");
               }
-            else if (!strcmp(st, "zoom_top_left"))
+            else if (!strcmp(st, "zoom_top"))
               {
                  run_program(PROGRAM:"released_top");
               }
-            else if (!strcmp(st, "zoom_bottom_right"))
+            else if (!strcmp(st, "zoom_bottom_reversed"))
               {
-                 run_program(PROGRAM:"released_bottom_right");
+                 run_program(PROGRAM:"released_bottom_reversed");
               }
-            else if (!strcmp(st, "zoom_top_right"))
+            else if (!strcmp(st, "zoom_top_reversed"))
               {
-                 run_program(PROGRAM:"released_top_right");
-              }
-            else if (!strcmp(st, "top_left_map_top_right"))
-              {
-                 set_state(PART:"handle", "top_right", 0.0);
-              }
-            else if (!strcmp(st, "zoom_top_right_map_top_left"))
-              {
-                 set_state(PART:"handle", "top_left", 0.0);
-              }
-            else if (!strcmp(st, "zoom_bottom_left_map_bottom_right"))
-              {
-                 set_state(PART:"handle", "bottom_right", 0.0);
-              }
-            else if (!strcmp(st, "zoom_bottom_right_map_bottom_left"))
-              {
-                 set_state(PART:"handle", "bottom_left", 0.0);
+                 run_program(PROGRAM:"released_top_reversed");
               }
          }
       }
-      program { name: "top_left";
+      program { name: "top";
          signal: "elm,state,top";
          source: "elm";
          script {
@@ -2767,9 +2608,9 @@ group { name: "elm/entry/handler/start/default";
             if ((focused == 1) && (disabled == 0)) {
                zoomed = get_int(handler_zoomed);
                if (zoomed) {
-                    set_state(PART:"handle", "zoom_top_left", 0.0);
+                    set_state(PART:"handle", "zoom_top", 0.0);
                  } else {
-                    set_state(PART:"handle", "top_left", 0.0);
+                    set_state(PART:"handle", "top", 0.0);
                  }
             } else {
                set_state(PART:"handle", "default", 0.0);
@@ -2787,16 +2628,16 @@ group { name: "elm/entry/handler/start/default";
             set_int(handler_on_top, 0);
             if ((focused == 1) && (disabled == 0)) {
                if (zoomed) {
-                  set_state(PART:"handle", "zoom_bottom_left", 0.0);
+                  set_state(PART:"handle", "zoom_show", 0.0);
                } else {
-                  set_state(PART:"handle", "bottom_left", 0.0);
+                  set_state(PART:"handle", "show", 0.0);
                }
             } else {
                set_state(PART:"handle", "default", 0.0);
             }
          }
       }
-      program { name: "bottom_right";
+      program { name: "bottom_reversed";
          signal: "elm,state,bottom,reversed";
          source: "elm";
          script {
@@ -2805,16 +2646,16 @@ group { name: "elm/entry/handler/start/default";
             zoomed = get_int(handler_zoomed);
             if (disabled == 0) {
                if (zoomed) {
-                  set_state(PART:"handle", "zoom_bottom_right", 0.0);
+                  set_state(PART:"handle", "zoom_bottom_reversed", 0.0);
                } else {
-                  set_state(PART:"handle", "bottom_right", 0.0);
+                  set_state(PART:"handle", "bottom_reversed", 0.0);
                }
             } else {
                set_state(PART:"handle", "default", 0.0);
             }
          }
       }
-      program { name: "top_right";
+      program { name: "top_reversed";
          signal: "elm,state,top,reversed";
          source: "elm";
          script {
@@ -2823,9 +2664,9 @@ group { name: "elm/entry/handler/start/default";
             zoomed = get_int(handler_zoomed);
             if (disabled == 0) {
                if (zoomed) {
-                  set_state(PART:"handle", "zoom_top_right", 0.0);
+                  set_state(PART:"handle", "zoom_top_reversed", 0.0);
                } else {
-                  set_state(PART:"handle", "top_right", 0.0);
+                  set_state(PART:"handle", "top_reversed", 0.0);
                }
             } else {
                set_state(PART:"handle", "default", 0.0);
@@ -2846,146 +2687,6 @@ group { name: "elm/entry/handler/start/default";
             set_int(handler_disabled, 0);
          }
       }
-      program { name: "rotate_top_left_bottom_right";
-         action: STATE_SET "top_left_map_bottom_right" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_bottom_right";
-      }
-      program { name: "zoom_rotate_top_left_bottom_right";
-         action: STATE_SET "zoom_top_left_map_bottom_right" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_zoom_bottom_right";
-      }
-      program { name: "rotate_tl_br";
-         signal: "elm,rotate,tl_br";
-         source: "elm";
-         script {
-            new zoomed;
-            zoomed = get_int(handler_zoomed);
-            if (zoomed == 0)
-              {
-                 run_program(PROGRAM:"rotate_top_left_bottom_right");
-              }
-            else
-              {
-                 run_program(PROGRAM:"zoom_rotate_top_left_bottom_right");
-              }
-         }
-      }
-      program { name: "rotate_top_left_top_right";
-         action: STATE_SET "top_left_map_top_right" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_top_right";
-      }
-      program { name: "zoom_rotate_top_left_top_right";
-         action: STATE_SET "zoom_top_left_map_top_right" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_zoom_top_right";
-      }
-      program { name: "rotate_tl_tr";
-         signal: "elm,rotate,tl_tr";
-         source: "elm";
-         script {
-            new zoomed;
-            zoomed = get_int(handler_zoomed);
-            if (zoomed == 0)
-              {
-                 run_program(PROGRAM:"rotate_top_left_top_right");
-              }
-            else
-              {
-                 run_program(PROGRAM:"zoom_rotate_top_left_top_right");
-              }
-         }
-      }
-      program { name: "rotate_top_right_top_left";
-         action: STATE_SET "top_right_map_top_left" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_top_left";
-      }
-      program { name: "zoom_rotate_top_right_top_left";
-         action: STATE_SET "zoom_top_right_map_top_left" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_zoom_top_left";
-      }
-      program { name: "rotate_tr_tl";
-         signal: "elm,rotate,tr_tl";
-         source: "elm";
-         script {
-            new zoomed;
-            zoomed = get_int(handler_zoomed);
-            if (zoomed == 0)
-              {
-                 run_program(PROGRAM:"rotate_top_right_top_left");
-              }
-            else
-              {
-                 run_program(PROGRAM:"zoom_rotate_top_right_top_left");
-              }
-         }
-      }
-      program { name: "rotate_bottom_left_bottom_right";
-         action: STATE_SET "bottom_left_map_bottom_right" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_bottom_right";
-      }
-      program { name: "zoom_rotate_bottom_left_bottom_right";
-         action: STATE_SET "zoom_bottom_left_map_bottom_right" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_zoom_bottom_right";
-      }
-      program { name: "rotate_bl_br";
-         signal: "elm,rotate,bl_br";
-         source: "elm";
-         script {
-            new zoomed;
-            zoomed = get_int(handler_zoomed);
-            if (zoomed == 0)
-              {
-                 run_program(PROGRAM:"rotate_bottom_left_bottom_right");
-              }
-            else
-              {
-                 run_program(PROGRAM:"zoom_rotate_bottom_left_bottom_right");
-              }
-         }
-      }
-      program { name: "rotate_bottom_right_bottom_left";
-         action: STATE_SET "bottom_right_map_bottom_left" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_bottom_left";
-      }
-      program { name: "zoom_rotate_bottom_right_bottom_left";
-         action: STATE_SET "zoom_bottom_right_map_bottom_left" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_zoom_bottom_left";
-      }
-      program { name: "rotate_br_bl";
-         signal: "elm,rotate,br_bl";
-         source: "elm";
-         script {
-            new zoomed;
-            zoomed = get_int(handler_zoomed);
-            if (zoomed == 0)
-              {
-                 run_program(PROGRAM:"rotate_bottom_right_bottom_left");
-              }
-            else
-              {
-                 run_program(PROGRAM:"zoom_rotate_bottom_right_bottom_left");
-              }
-         }
-      }
    }
 }
 
@@ -2993,7 +2694,6 @@ group { name: "elm/entry/handler/end/default";
    alias: "elm/entry/selection/block_handle_right";
    data.item: "height" ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_INC;
    data.item: "gap" ENTRY_SELECTION_BLOCK_HANDLE_MIN_WEIGHT_INC;
-   data.item: "selection_offset" ENTRY_SELECTION_BLOCK_OFFSET_HEIGHT_INC;
    images {
       image: "copy&paste_handler_bottom_l.png" COMP;
       image: "copy&paste_handler_bottom_r.png" COMP;
@@ -3007,19 +2707,7 @@ group { name: "elm/entry/handler/end/default";
       public handler_zoomed = 0;
    }
    parts {
-     part { name: "rotate_center";
-         mouse_events: 0;
-         scale: 0;
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            visible: 1;
-            color: 0 0 0 0;
-            min: 1 1;
-            max: 1 1;
-         }
-     }
-     part { name: "handle";
+      part { name: "handle";
          mouse_events: 1;
          scale: 1;
          description { state: "default" 0.0;
@@ -3031,23 +2719,12 @@ group { name: "elm/entry/handler/end/default";
             image {
                normal: "copy&paste_handler_bottom_r.png";
             }
-            map {
-               on: 1;
-               smooth: 1;
-               perspective_on: 1;
-               rotation {
-                  center: "rotate_center";
-                  x: 0;
-                  y: 0;
-                  z: 0;
-               }
-            }
          }
-         description { state: "bottom_right" 0.0;
+         description { state: "show" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
-         description { state: "top_right" 0.0;
+         description { state: "top" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             align: 0 1;
@@ -3055,7 +2732,7 @@ group { name: "elm/entry/handler/end/default";
                normal: "copy&paste_handler_top_r.png";
             }
          }
-         description { state: "bottom_left" 0.0;
+         description { state: "bottom_reversed" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             align: 1 0;
@@ -3063,7 +2740,7 @@ group { name: "elm/entry/handler/end/default";
                normal: "copy&paste_handler_bottom_l.png";
             }
          }
-         description { state: "top_left" 0.0;
+         description { state: "top_reversed" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             align: 1 1;
@@ -3071,92 +2748,25 @@ group { name: "elm/entry/handler/end/default";
                normal: "copy&paste_handler_top_l.png";
             }
          }
-         description { state: "zoom_bottom_right" 0.0;
-            inherit: "bottom_right" 0.0;
+         description { state: "zoom_show" 0.0;
+            inherit: "show" 0.0;
             min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
             max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
          }
-         description { state: "zoom_top_right" 0.0;
-            inherit: "top_right" 0.0;
+         description { state: "zoom_top" 0.0;
+            inherit: "top" 0.0;
             min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
             max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
          }
-         description { state: "zoom_bottom_left" 0.0;
-            inherit: "bottom_left" 0.0;
+         description { state: "zoom_bottom_reversed" 0.0;
+            inherit: "bottom_reversed" 0.0;
             min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
             max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
          }
-         description { state: "zoom_top_left" 0.0;
-            inherit: "top_left" 0.0;
+         description { state: "zoom_top_reversed" 0.0;
+            inherit: "top_reversed" 0.0;
             min: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
             max: ENTRY_SELECTION_BLOCK_HANDLE_MIN_WIDTH_ZOOM_INC ENTRY_SELECTION_BLOCK_HANDLE_MIN_HEIGHT_ZOOM_INC;
-         }
-         description { state: "top_left_map_bottom_right" 0.0;
-            inherit: "top_right" 0.0;
-            map.rotation.z: 180; //top left -> bottom right
-         }
-         description { state: "top_left_map_top_right" 0.0;
-            inherit: "top_left" 0.0;
-            map.rotation.z: 66; //top left -> top right
-         }
-         description { state: "top_right_map_top_left" 0.0;
-            inherit: "top_right" 0.0;
-            map.rotation.z: -66; //top right -> top left
-         }
-         description { state: "bottom_left_map_bottom_right" 0.0;
-            inherit: "bottom_left" 0.0;
-            map.rotation.z: -66; //bottom left -> bottom right
-         }
-         description { state: "bottom_right_map_bottom_left" 0.0;
-            inherit: "bottom_right" 0.0;
-            map.rotation.z: 66; //bottom right -> bottom left
-         }
-         description { state: "zoom_top_left_map_bottom_right" 0.0;
-            inherit: "zoom_top_left" 0.0;
-            map.rotation.z: 180; //top left -> bottom right
-         }
-         description { state: "zoom_top_left_map_top_right" 0.0;
-            inherit: "zoom_top_left" 0.0;
-            map.rotation.z: 66; //top left -> top right
-         }
-         description { state: "zoom_top_right_map_top_left" 0.0;
-            inherit: "zoom_top_right" 0.0;
-            map.rotation.z: -66; //top right -> top left
-         }
-         description { state: "zoom_bottom_left_map_bottom_right" 0.0;
-            inherit: "zoom_bottom_left" 0.0;
-            map.rotation.z: -66; //bottom left -> bottom right
-         }
-         description { state: "zoom_bottom_right_map_bottom_left" 0.0;
-            inherit: "zoom_bottom_right" 0.0;
-            map.rotation.z: 66; //bottom right -> bottom left
-         }
-      }
-     part { name: "event";
-         mouse_events: 1;
-         scale: 1;
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            visible: 1;
-            color: 0 0 0 0;
-            rel1.to: "handle";
-            rel2.to: "handle";
-         }
-         description { state: "bottom_right" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "top_left" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "bottom" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "bottom_right" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "top_right" 0.0;
-            inherit: "default" 0.0;
          }
       }
    }
@@ -3176,147 +2786,95 @@ group { name: "elm/entry/handler/end/default";
             set_state(PART:"handle", "default", 0.0);
          }
       }
-      program { name: "pressed_bottom_right";
-         action: STATE_SET "zoom_bottom_right" 0.0;
+      program { name: "pressed_show";
+         action: STATE_SET "zoom_show" 0.0;
          target: "handle";
          transition: GLIDE_EASE_OUT(0.3);
       }
       program { name: "pressed_top";
-         action: STATE_SET "zoom_top_right" 0.0;
+         action: STATE_SET "zoom_top" 0.0;
          target: "handle";
          transition: GLIDE_EASE_OUT(0.3);
       }
-      program { name: "pressed_bottom_left";
-         action: STATE_SET "zoom_bottom_left" 0.0;
+      program { name: "pressed_bottom_reversed";
+         action: STATE_SET "zoom_bottom_reversed" 0.0;
          target: "handle";
          transition: GLIDE_EASE_OUT(0.3);
       }
-      program { name: "pressed_top_left";
-         action: STATE_SET "zoom_top_left" 0.0;
+      program { name: "pressed_top_reversed";
+         action: STATE_SET "zoom_top_reversed" 0.0;
          target: "handle";
          transition: GLIDE_EASE_OUT(0.3);
       }
-      program { name: "released_bottom_right";
-         action: STATE_SET "bottom_right" 0.0;
+      program { name: "released_show";
+         action: STATE_SET "show" 0.0;
          target: "handle";
-         target: "event";
-         transition: GLIDE_EASE_OUT(0.24);
+         transition: GLIDE_EASE_OUT(0.3);
       }
       program { name: "released_top";
-         action: STATE_SET "top_right" 0.0;
+         action: STATE_SET "top" 0.0;
          target: "handle";
-         target: "event";
-         transition: GLIDE_EASE_OUT(0.24);
+         transition: GLIDE_EASE_OUT(0.3);
       }
-      program { name: "released_bottom_left";
-         action: STATE_SET "bottom_left" 0.0;
+      program { name: "released_bottom_reversed";
+         action: STATE_SET "bottom_reversed" 0.0;
          target: "handle";
-         target: "event";
-         transition: GLIDE_EASE_OUT(0.24);
+         transition: GLIDE_EASE_OUT(0.3);
       }
-      program { name: "released_top_left";
-         action: STATE_SET "top_left" 0.0;
+      program { name: "released_top_reversed";
+         action: STATE_SET "top_reversed" 0.0;
          target: "handle";
-         target: "event";
-         transition: GLIDE_EASE_OUT(0.24);
-      }
-      program { name: "set_bottom_right";
-         action: STATE_SET "bottom_right" 0.0;
-         target: "handle";
-      }
-      program { name: "set_zoom_bottom_right";
-         action: STATE_SET "zoom_bottom_right" 0.0;
-         target: "handle";
-      }
-      program { name: "set_bottom_left";
-         action: STATE_SET "bottom_left" 0.0;
-         target: "handle";
-      }
-      program { name: "set_zoom_bottom_left";
-         action: STATE_SET "zoom_bottom_left" 0.0;
-         target: "handle";
-      }
-      program { name: "set_top_right";
-         action: STATE_SET "top_right" 0.0;
-         target: "handle";
-      }
-      program { name: "set_zoom_top_right";
-         action: STATE_SET "zoom_top_right" 0.0;
-         target: "handle";
-      }
-      program { name: "set_top_left";
-         action: STATE_SET "top_left" 0.0;
-         target: "handle";
-      }
-      program { name: "set_zoom_top_left";
-         action: STATE_SET "zoom_top_left" 0.0;
-         target: "handle";
+         transition: GLIDE_EASE_OUT(0.3);
       }
       program { name: "pressed";
          signal: "mouse,down,1";
-         source: "event";
+         source: "handle";
          script {
             set_int(handler_zoomed, 1);
             new st[31];
             new Float:vl;
             get_state(PART:"handle", st, 30, vl);
-            if (!strcmp(st, "bottom_right"))
+            if (!strcmp(st, "show"))
               {
-                 run_program(PROGRAM:"pressed_bottom_right");
+                 run_program(PROGRAM:"pressed_show");
               }
-            else if (!strcmp(st, "top_right"))
+            else if (!strcmp(st, "top"))
               {
                  run_program(PROGRAM:"pressed_top");
               }
-            else if (!strcmp(st, "bottom_left"))
+            else if (!strcmp(st, "bottom_reversed"))
               {
-                 run_program(PROGRAM:"pressed_bottom_left");
+                 run_program(PROGRAM:"pressed_bottom_reversed");
               }
-            else if (!strcmp(st, "top_left"))
+            else if (!strcmp(st, "top_reversed"))
               {
-                 run_program(PROGRAM:"pressed_top_left");
+                 run_program(PROGRAM:"pressed_top_reversed");
               }
          }
       }
       program { name: "released";
          signal: "mouse,up,1";
-         source: "event";
+         source: "handle";
          script {
             set_int(handler_zoomed, 0);
-            new st[41];
+            new st[31];
             new Float:vl;
-            get_state(PART:"handle", st, 40, vl);
-            if (!strcmp(st, "zoom_bottom_right"))
+            get_state(PART:"handle", st, 30, vl);
+            if (!strcmp(st, "zoom_show"))
               {
-                 run_program(PROGRAM:"released_bottom_right");
+                 run_program(PROGRAM:"released_show");
               }
-            else if (!strcmp(st, "zoom_top_right"))
+            else if (!strcmp(st, "zoom_top"))
               {
                  run_program(PROGRAM:"released_top");
               }
-            else if (!strcmp(st, "zoom_bottom_left"))
+            else if (!strcmp(st, "zoom_bottom_reversed"))
               {
-                 run_program(PROGRAM:"released_bottom_left");
+                 run_program(PROGRAM:"released_bottom_reversed");
               }
-            else if (!strcmp(st, "zoom_top_left"))
+            else if (!strcmp(st, "zoom_top_reversed"))
               {
-                 run_program(PROGRAM:"released_top_left");
-              }
-            else if (!strcmp(st, "top_left_map_top_right"))
-              {
-                 set_state(PART:"handle", "top_right", 0.0);
-              }
-            else if (!strcmp(st, "zoom_top_right_map_top_left"))
-              {
-                 set_state(PART:"handle", "top_left", 0.0);
-              }
-            else if (!strcmp(st, "zoom_bottom_left_map_bottom_right"))
-              {
-                 set_state(PART:"handle", "bottom_right", 0.0);
-              }
-            else if (!strcmp(st, "zoom_bottom_right_map_bottom_left"))
-              {
-                 set_state(PART:"handle", "bottom_left", 0.0);
+                 run_program(PROGRAM:"released_top_reversed");
               }
          }
          after: "released2";
@@ -3325,44 +2883,28 @@ group { name: "elm/entry/handler/end/default";
          in: 0.3 0.0;
          script {
             set_int(handler_zoomed, 0);
-            new st[41];
+            new st[31];
             new Float:vl;
-            get_state(PART:"handle", st, 40, vl);
-            if (!strcmp(st, "zoom_bottom_right"))
+            get_state(PART:"handle", st, 30, vl);
+            if (!strcmp(st, "zoom_show"))
               {
-                 run_program(PROGRAM:"released_bottom_right");
+                 run_program(PROGRAM:"released_show");
               }
-            else if (!strcmp(st, "zoom_top_right"))
+            else if (!strcmp(st, "zoom_top"))
               {
                  run_program(PROGRAM:"released_top");
               }
-            else if (!strcmp(st, "zoom_bottom_left"))
+            else if (!strcmp(st, "zoom_bottom_reversed"))
               {
-                 run_program(PROGRAM:"released_bottom_left");
+                 run_program(PROGRAM:"released_bottom_reversed");
               }
-            else if (!strcmp(st, "zoom_top_left"))
+            else if (!strcmp(st, "zoom_top_reversed"))
               {
-                 run_program(PROGRAM:"released_top_left");
-              }
-            else if (!strcmp(st, "top_left_map_top_right"))
-              {
-                 set_state(PART:"handle", "top_right", 0.0);
-              }
-            else if (!strcmp(st, "zoom_top_right_map_top_left"))
-              {
-                 set_state(PART:"handle", "top_left", 0.0);
-              }
-            else if (!strcmp(st, "zoom_bottom_left_map_bottom_right"))
-              {
-                 set_state(PART:"handle", "bottom_right", 0.0);
-              }
-            else if (!strcmp(st, "zoom_bottom_right_map_bottom_left"))
-              {
-                 set_state(PART:"handle", "bottom_left", 0.0);
+                 run_program(PROGRAM:"released_top_reversed");
               }
          }
       }
-      program { name: "top_right";
+      program { name: "top";
          signal: "elm,state,top";
          source: "elm";
          script {
@@ -3373,9 +2915,9 @@ group { name: "elm/entry/handler/end/default";
             if ((focused == 1) && (disabled == 0)) {
                  zoomed = get_int(handler_zoomed);
                  if (zoomed) {
-                      set_state(PART:"handle", "zoom_top_right", 0.0);
+                      set_state(PART:"handle", "zoom_top", 0.0);
                  } else {
-                      set_state(PART:"handle", "top_right", 0.0);
+                      set_state(PART:"handle", "top", 0.0);
                  }
             } else {
                  set_state(PART:"handle", "default", 0.0);
@@ -3393,16 +2935,16 @@ group { name: "elm/entry/handler/end/default";
             set_int(handler_on_top, 0);
             if ((focused == 1) && (disabled == 0)) {
                if (zoomed) {
-                  set_state(PART:"handle", "zoom_bottom_right", 0.0);
+                  set_state(PART:"handle", "zoom_show", 0.0);
                } else {
-                  set_state(PART:"handle", "bottom_right", 0.0);
+                  set_state(PART:"handle", "show", 0.0);
                }
             } else {
                set_state(PART:"handle", "default", 0.0);
             }
          }
       }
-      program { name: "bottom_left";
+      program { name: "bottom_reversed";
          signal: "elm,state,bottom,reversed";
          source: "elm";
          script {
@@ -3411,16 +2953,16 @@ group { name: "elm/entry/handler/end/default";
             zoomed = get_int(handler_zoomed);
             if (disabled == 0) {
                if (zoomed) {
-                  set_state(PART:"handle", "zoom_bottom_left", 0.0);
+                  set_state(PART:"handle", "zoom_bottom_reversed", 0.0);
                } else {
-                  set_state(PART:"handle", "bottom_left", 0.0);
+                  set_state(PART:"handle", "bottom_reversed", 0.0);
                }
             } else {
                set_state(PART:"handle", "default", 0.0);
             }
          }
       }
-      program { name: "top_left";
+      program { name: "top_reversed";
          signal: "elm,state,top,reversed";
          source: "elm";
          script {
@@ -3429,9 +2971,9 @@ group { name: "elm/entry/handler/end/default";
             zoomed = get_int(handler_zoomed);
             if (disabled == 0) {
                if (zoomed) {
-                  set_state(PART:"handle", "zoom_top_left", 0.0);
+                  set_state(PART:"handle", "zoom_top_reversed", 0.0);
                } else {
-                  set_state(PART:"handle", "top_left", 0.0);
+                  set_state(PART:"handle", "top_reversed", 0.0);
                }
             } else {
                set_state(PART:"handle", "default", 0.0);
@@ -3450,146 +2992,6 @@ group { name: "elm/entry/handler/end/default";
          source: "app";
          script {
             set_int(handler_disabled, 0);
-         }
-      }
-      program { name: "rotate_top_left_bottom_right";
-         action: STATE_SET "top_left_map_bottom_right" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_bottom_right";
-      }
-      program { name: "zoom_rotate_top_left_bottom_right";
-         action: STATE_SET "zoom_top_left_map_bottom_right" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_zoom_bottom_right";
-      }
-      program { name: "rotate_tl_br";
-         signal: "elm,rotate,tl_br";
-         source: "elm";
-         script {
-            new zoomed;
-            zoomed = get_int(handler_zoomed);
-            if (zoomed == 0)
-              {
-                 run_program(PROGRAM:"rotate_top_left_bottom_right");
-              }
-            else
-              {
-                 run_program(PROGRAM:"zoom_rotate_top_left_bottom_right");
-              }
-         }
-      }
-      program { name: "rotate_top_left_top_right";
-         action: STATE_SET "top_left_map_top_right" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_top_right";
-      }
-      program { name: "zoom_rotate_top_left_top_right";
-         action: STATE_SET "zoom_top_left_map_top_right" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_zoom_top_right";
-      }
-      program { name: "rotate_tl_tr";
-         signal: "elm,rotate,tl_tr";
-         source: "elm";
-         script {
-            new zoomed;
-            zoomed = get_int(handler_zoomed);
-            if (zoomed == 0)
-              {
-                 run_program(PROGRAM:"rotate_top_left_top_right");
-              }
-            else
-              {
-                 run_program(PROGRAM:"zoom_rotate_top_left_top_right");
-              }
-         }
-      }
-      program { name: "rotate_top_right_top_left";
-         action: STATE_SET "top_right_map_top_left" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_top_left";
-      }
-      program { name: "zoom_rotate_top_right_top_left";
-         action: STATE_SET "zoom_top_right_map_top_left" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_zoom_top_left";
-      }
-      program { name: "rotate_tr_tl";
-         signal: "elm,rotate,tr_tl";
-         source: "elm";
-         script {
-            new zoomed;
-            zoomed = get_int(handler_zoomed);
-            if (zoomed == 0)
-              {
-                 run_program(PROGRAM:"rotate_top_right_top_left");
-              }
-            else
-              {
-                 run_program(PROGRAM:"zoom_rotate_top_right_top_left");
-              }
-         }
-      }
-      program { name: "rotate_bottom_left_bottom_right";
-         action: STATE_SET "bottom_left_map_bottom_right" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_bottom_right";
-      }
-      program { name: "zoom_rotate_bottom_left_bottom_right";
-         action: STATE_SET "zoom_bottom_left_map_bottom_right" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_zoom_bottom_right";
-      }
-      program { name: "rotate_bl_br";
-         signal: "elm,rotate,bl_br";
-         source: "elm";
-         script {
-            new zoomed;
-            zoomed = get_int(handler_zoomed);
-            if (zoomed == 0)
-              {
-                 run_program(PROGRAM:"rotate_bottom_left_bottom_right");
-              }
-            else
-              {
-                 run_program(PROGRAM:"zoom_rotate_bottom_left_bottom_right");
-              }
-         }
-      }
-      program { name: "rotate_bottom_right_bottom_left";
-         action: STATE_SET "bottom_right_map_bottom_left" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_bottom_left";
-      }
-      program { name: "zoom_rotate_bottom_right_bottom_left";
-         action: STATE_SET "zoom_bottom_right_map_bottom_left" 0.0;
-         target: "handle";
-         transition: GLIDE_EASE_OUT(ENTRY_SELECTION_BLOCK_HANDLE_TIME_ROTATE);
-         after: "set_zoom_bottom_left";
-      }
-      program { name: "rotate_br_bl";
-         signal: "elm,rotate,br_bl";
-         source: "elm";
-         script {
-            new zoomed;
-            zoomed = get_int(handler_zoomed);
-            if (zoomed == 0)
-              {
-                 run_program(PROGRAM:"rotate_bottom_right_bottom_left");
-              }
-            else
-              {
-                 run_program(PROGRAM:"zoom_rotate_bottom_right_bottom_left");
-              }
          }
       }
    }
