@@ -31,6 +31,22 @@ group { name: "elm/check/base/default";
       public disabled;
       public text;
       public animate = 0;
+      public timer_id;
+      public timer_state;
+      public timer0(val) {
+         if (val) {
+            emit("elm,action,check,toggle,on", "");
+         }
+         else {
+            emit("elm,action,check,toggle,off", "");
+         }
+         set_int(timer_id, 0);
+      }
+      public proceed_timer(t_id) {
+         cancel_timer(t_id);
+         set_int(timer_id, 0);
+         timer0(get_int(timer_state));
+      }
    }
    parts {
       part { name: "base";
@@ -175,8 +191,26 @@ group { name: "elm/check/base/default";
          signal: "mouse,clicked,1";
          source: "event";
          script {
+            new state;
+            new id;
+
             if (get_int(disabled) == 0) {
-               emit("elm,action,check,toggle", "");
+               id = get_int(timer_id);
+               if (id)
+                  proceed_timer(id);
+
+               state = !get_int(check_state);
+               set_int(timer_state, state);
+               set_int(timer_id, timer(1.0, "timer0", state));
+               //emit("elm,action,check,toggle", "");
+
+               set_int(animate, 1);
+               if (state) {
+                  run_program(PROGRAM:"check_on");
+               } else {
+                  run_program(PROGRAM:"check_off");
+               }
+
                run_program(PROGRAM:"touch_sound");
             }
          }
@@ -198,38 +232,75 @@ group { name: "elm/check/base/default";
             set_int(animate, 1);
          }
       }
-      program { name: "check_on";
+      program { name: "check_on_deactivate";
          signal: "elm,state,check,on";
          source: "elm";
          script {
-            if (get_int(animate) == 0) {
-               emit("elm,check,state,toggle", "tizen_vg");
-            } else {
-               emit("elm,check,action,toggle", "tizen_vg");
-            }
-            set_state(PART:"tizen_vg_shape_bg_clipper", "default", 0.0);
             set_int(animate, 0);
-            set_int(check_state, 1);
          }
       }
-      program { name: "check_off";
+      program { name: "check_off_deactivate";
          signal: "elm,state,check,off";
          source: "elm";
          script {
+            set_int(animate, 0);
+         }
+      }
+      program { name: "check_on2";
+         signal: "elm,state,tizen,on";
+         source: "elm";
+         script {
+            new id;
+
+            id = get_int(timer_id);
+            if (id)
+               proceed_timer(id);
+         }
+         after: "check_on";
+      }
+      program { name: "check_off2";
+         signal: "elm,state,tizen,off";
+         source: "elm";
+         script {
+            new id;
+
+            id = get_int(timer_id);
+            if (id)
+               proceed_timer(id);
+         }
+         after: "check_off";
+      }
+      program { name: "check_on";
+         script {
+            set_int(check_state, 1);
             if (get_int(animate) == 0) {
-               emit("elm,check,state,toggle", "tizen_vg");
+               emit("elm,check,state,on", "tizen_vg");
             } else {
-               emit("elm,check,action,toggle", "tizen_vg");
+               emit("elm,check,action,on", "tizen_vg");
+            }
+            set_state(PART:"tizen_vg_shape_bg_clipper", "default", 0.0);
+         }
+      }
+      program { name: "check_off";
+         script {
+            set_int(check_state, 0);
+            if (get_int(animate) == 0) {
+               emit("elm,check,state,off", "tizen_vg");
+            } else {
+               emit("elm,check,action,off", "tizen_vg");
             }
             set_state(PART:"tizen_vg_shape_bg_clipper", "off", 0.0);
-            set_int(animate, 0);
-            set_int(check_state, 0);
          }
       }
       program { name: "disabled";
          signal: "elm,state,disabled";
          source: "elm";
          script {
+            new id;
+
+            id = get_int(timer_id);
+            if (id)
+               proceed_timer(id);
             set_int(disabled, 1);
             set_state(PART:"tizen_vg_shape_clipper", "disabled", 0.0);
             if (get_int(check_state) == 0) {
