@@ -38,6 +38,7 @@ group { name: "elm/conformant/base/default";
       public attach_panel_state = ATTACH_PANEL_STATE_HIDE;  //check attach_panel state
       public landscape_mode = 0;        //Landscape mode status
       public overlap_mode = 0;          //Overlap mode
+      public translucent_mode = 0;
    }
    parts {
       part { name: "base";
@@ -112,7 +113,11 @@ group { name: "elm/conformant/base/default";
          }
          description { state: "transparent" 0.0;
             inherit: "default" 0.0;
-            color: 0 0 0 255;
+            color: 0 0 0 0;
+         }
+         description { state: "translucent" 0.0;
+            inherit: "default" 0.0;
+            color: 127 127 127 127;
          }
       }
       part { name: "elm.swallow.indicator_bg";
@@ -124,7 +129,7 @@ group { name: "elm/conformant/base/default";
          }
          description { state: "transparent" 0.0;
             inherit: "default" 0.0;
-            visible: 0;
+            visible: 1;
          }
       }
       part { name: "overlap_clipper";
@@ -240,6 +245,7 @@ group { name: "elm/conformant/base/default";
           source: "elm";
           script {
              set_int(transparent_mode, 0);
+             set_int(translucent_mode, 0);
              set_state(PART:"indicator_bg", "default", 0.0);
              set_state(PART:"elm.swallow.indicator_bg", "default", 0.0);
              run_program(PROGRAM:"update_indicator_adapter");
@@ -250,9 +256,34 @@ group { name: "elm/conformant/base/default";
           source: "elm";
           script {
              set_int(transparent_mode, 1);
+             set_int(translucent_mode, 0);
              set_state(PART:"indicator_bg", "transparent", 0.0);
              set_state(PART:"elm.swallow.indicator_bg", "transparent", 0.0);
              run_program(PROGRAM:"update_indicator_adapter");
+          }
+      }
+      program { name: "translucent_indicator";
+          signal: "elm,state,indicator,translucent";
+          source: "elm";
+          script {
+             set_int(transparent_mode, 0);
+             set_int(translucent_mode, 1);
+             set_state(PART:"indicator_bg", "translucent", 0.0);
+             set_state(PART:"elm.swallow.indicator_bg", "transparent", 0.0);
+             run_program(PROGRAM:"update_indicator_adapter");
+             run_program(PROGRAM:"show_indicator");
+          }
+      }
+      program { name: "bg_transparent_indicator";
+          signal: "elm,state,indicator,bg_transparent";
+          source: "elm";
+          script {
+             set_int(transparent_mode, 0);
+             set_int(translucent_mode, 1);
+             set_state(PART:"indicator_bg", "transparent", 0.0);
+             set_state(PART:"elm.swallow.indicator_bg", "transparent", 0.0);
+             run_program(PROGRAM:"update_indicator_adapter");
+             run_program(PROGRAM:"show_indicator");
           }
       }
       program { name: "show_full_attach_panel";
@@ -365,16 +396,12 @@ group { name: "elm/conformant/base/default";
          script {
             set_int(landscape_mode, 1);
             run_program(PROGRAM:"update_indicator_adapter");
-            set_state(PART:"indicator_bg", "transparent", 0.0);
          }
       }
       program { name: "change_to_portrait";
          script {
             set_int(landscape_mode, 0);
             run_program(PROGRAM:"update_indicator_adapter");
-            if (get_int(transparent_mode) == 0) {
-               set_state(PART:"indicator_bg", "default", 0.0);
-            }
          }
       }
       program { name: "overlap_mode";
@@ -401,18 +428,12 @@ group { name: "elm/conformant/base/default";
             if ((get_int(transparent_mode) == 1) ||
                 (get_int(indicator_visible) == 0) ||
                 (get_int(overlap_mode) == 1) ||
-                (get_int(landscape_mode) == 1)) {
+                (get_int(landscape_mode) == 1) ||
+                (get_int(translucent_mode) == 1)) {
                set_state(PART:"indicator_base", "hide", 0.0);
             } else {
                set_state(PART:"indicator_base", "default", 0.0);
             }
-            //update indicator adapter
-            if ((get_int(transparent_mode) == 1) ||
-                (get_int(indicator_visible) == 0) ||
-                (get_int(landscape_mode)))
-              set_state(PART:"indicator_adapter", "hide", 0.0);
-            else
-              set_state(PART:"indicator_adapter", "default", 0.0);
          }
       }
       program { name: "landscape_mode";
